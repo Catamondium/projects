@@ -1,2 +1,2 @@
 # effective-eureka
-Mucking about.
+Experimenting in anticipation of future use and possible microcontroller DIY.
