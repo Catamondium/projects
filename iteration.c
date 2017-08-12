@@ -1,10 +1,11 @@
 #include <stdio.h>
 
 int main () {
-  int n = +20; //variable to n=20
-  int current; //declare trace
-  for (current, n; current <= n; current++); //link trace, loop condition, iterate trace
+  int n; //declare nth
+  
+  for (n = 1; n <= 20; n = n +1) //initial value, do if true condition, iterate for repeat
   {
-    int current = 1; //initalise tracer
-    printf("%dth:\t%d\n", n, current);}
-  return 0;}
+    printf("%dth\n", n);
+  }
+  return 0;
+}
