@@ -1,16 +1,22 @@
 #include <stdio.h>
 
 main () {
-  printf("1.\tRandom number\nSelect:\t");
-  int n;
-  int rand(void) //initialise random, CHECK
-  scanf("%d", n); //take input
+  printf("Number:\t");
+  float n;
+  scanf("%f", n);
   switch (n) {
-  case 1:
-    printf("%d", rand() );
+    
+  case n < 0:
+    printf("Number is negative");
     break;
+    
+  case n > 0:
+    printf("Number is positive");
+    break;
+    
   default:
-    printf("Bad input!");
+    printf("Number is 0");
+    break;
   };
-  return 0
+  return 0;
     };
