@@ -1,9 +1,10 @@
 #include <stdio.h>
+#include <>
 
 main () {
-  printf("Number:\t");
-  float n;
-  scanf("%f", n);
+  printf("Integer:\t");
+  signed int n;
+  scanf("%i", n);
   switch (n) {
     
   case n < 0:
