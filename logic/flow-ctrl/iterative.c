@@ -6,17 +6,22 @@ main (){
 
   int fib(int i) {
     int result;
-    for (int n = 0; n == i; n++)
+    if (i == 0) {return 0;}
+    if (i == 1) {return 1;}
+    else
       {
-	int first = 0;
-	int second = 1;
-	result = first + second; //summate next term
-	first = second; //prepare next set
-	second = result; //prepare next set
+	for (int n = 0; n <= i; n++)
+	  {
+	    int first = 0;
+	    int second = 1;
+	    result = first + second; //summate next term
+	    first = second; //prepare next set
+	    second = result; //prepare next set
+	  }
+	return result;
       }
-    return result;
   }
   
-  printf("%d", fib(INPUT)); //output
+  printf("%d\n", fib(INPUT)); //output
   return fib(INPUT);
 }
