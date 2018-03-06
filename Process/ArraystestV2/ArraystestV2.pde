@@ -14,7 +14,7 @@ void draw() {
   }
 
   if (breakvar == 0) {
-    saveFrame("rectangles.png"); 
+    saveFrame("output.png"); 
     breakvar++;
   }
 }
