@@ -11,7 +11,6 @@ void draw() {
   for (int i : data) {
     fill(y* divisions, 255, 255);
     rect(0, y*divisions, i, divisions);
-    println(y*divisions);
     y++;
     if (y > data.length) { 
       y = 0;
