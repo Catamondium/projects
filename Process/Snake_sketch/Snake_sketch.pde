@@ -2,13 +2,14 @@ Snake s;
 int scl = 20;
 PVector food = new PVector(0, 0);
 PFont f;
-char[] dict = {'S', 'c', 'o', 'r', 'e', ':', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+char[] SCORENUM = {'S', 'c', 'o', 'r', 'e', ':', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 void setup() {
   size(600, 600);
-  f = createFont("Ubuntu Mono", 16, false, dict);
+  f = createFont("Roboto Regular", 20, false, SCORENUM);
   s = new Snake();
   pickLocation(food);
+  
 }
 
 void draw() {
@@ -17,8 +18,7 @@ void draw() {
   s.run();
   fill(255, 255, 0);
   textFont(f, 20);
-  text("Score: " + s.score, 0, 15);
-
+  text("Score: " + s.score, 0, 20);
 
   if (s.eat(food)) {
     pickLocation(food);
@@ -27,8 +27,6 @@ void draw() {
   keyPressed();
   fill(255, 0, 0);
   rect(food.x, food.y, scl, scl);
-
-  println(frameRate);
 }
 
 void pickLocation(PVector entity) {
