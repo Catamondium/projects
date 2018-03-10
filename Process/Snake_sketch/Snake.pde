@@ -1,6 +1,6 @@
 class Snake {
   PVector coord = new PVector(0, 0);
-  PVector vel = new PVector(1, 0);
+  PVector vel = new PVector(0, 0);
   int score = 0;
   ArrayList<PVector> tail = new ArrayList<PVector>();
 
@@ -11,6 +11,7 @@ class Snake {
   }
 
   Snake() {
+    pickLocation(coord);
   }
 
   void update() {
@@ -57,7 +58,7 @@ class Snake {
       PVector other = tail.get(i);
       float d = coord.dist(other);
       if (d < 1) {
-        println("Starting over");
+        // println("Starting over");
         score = 0;
         tail.clear();
       }

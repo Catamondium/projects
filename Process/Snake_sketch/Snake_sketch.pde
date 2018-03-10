@@ -1,13 +1,14 @@
 Snake s;
 int scl = 20;
-PVector food;
+PVector food = new PVector(0, 0);
 PFont f;
+char[] dict = {'S', 'c', 'o', 'r', 'e', ':', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 void setup() {
   size(600, 600);
-  f = createFont("Ubuntu Mono", 16, true);
+  f = createFont("Ubuntu Mono", 16, false, dict);
   s = new Snake();
-  pickLocation();
+  pickLocation(food);
 }
 
 void draw() {
@@ -18,35 +19,41 @@ void draw() {
   textFont(f, 20);
   text("Score: " + s.score, 0, 15);
 
+
   if (s.eat(food)) {
-    pickLocation();
+    pickLocation(food);
   }
 
   keyPressed();
   fill(255, 0, 0);
   rect(food.x, food.y, scl, scl);
-  
-//saveFrame("snakeframes-0001.png");
-//noLoop();
+
+  println(frameRate);
 }
 
-void pickLocation() {
+void pickLocation(PVector entity) {
   int cols = floor(width/scl);
   int rows = floor(height/scl);
-  food = new PVector(floor(random(cols)), floor(random(rows)));
-  food.mult(scl);
+  entity.set(floor(random(cols)), floor(random(rows)));
+  entity.mult(scl);
 }
 
 void keyPressed() {
-  if (keyCode == UP) {
+  switch(keyCode) {
+  case UP:
     s.dir(0, -1);
-  } else if (keyCode == DOWN) {
+    break;
+
+  case DOWN:
     s.dir(0, 1);
-  } else if (keyCode == LEFT) {
+    break;
+
+  case LEFT:
     s.dir(-1, 0);
-  } else if (keyCode == RIGHT) {
+    break;
+
+  case RIGHT:
     s.dir(1, 0);
-  } else {
-    //do nothing
+    break;
   }
 }
