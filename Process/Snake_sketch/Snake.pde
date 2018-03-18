@@ -38,8 +38,8 @@ class Snake {
     rect(coord.x, coord.y, scl, scl);
   }
 
-  void dir(int _x, int _y) {
-    vel.set(_x, _y);
+  void dir(int x_, int y_) {
+    vel.set(x_, y_);
   }
 
   boolean eat(PVector other) {
