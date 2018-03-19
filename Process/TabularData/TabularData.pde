@@ -26,7 +26,7 @@ void draw() {
 }
 
 void read() {
-  data = loadTable("table.tsv", "header");
+  data = loadTable("data.tsv", "header");
 
   for (int i = 0; i < data.getRowCount(); i++) {
     TableRow row = data.getRow(i);
@@ -49,7 +49,7 @@ void write(Circle entity) {
   row.setInt("diam", entity.diam);
   row.setInt("hue", entity.hue);
   row.setString("label", entity.label);
-  saveTable(data, "data/table.tsv");
+  saveTable(data, "data/data.tsv");
 }
 
 void mousePressed() {
