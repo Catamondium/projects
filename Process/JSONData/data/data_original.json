@@ -1,0 +1,17 @@
+{"circles": [
+{"circle" : {
+	"pos": {"x":200, "y":400},
+	"diameter":100,
+	"hue":300,
+	"label":"Violet"}},
+{"circle" : {
+	"pos":{"x":500, "y":200},
+	"diameter":50,
+	"hue":30,
+	"label":"Isaac"}},
+{"circle" : {
+	"pos":{"x":200, "y":300},
+	"diameter":50,
+	"hue":100,
+	"label":"Lily"}}
+]}
