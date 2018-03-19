@@ -1,4 +1,4 @@
-Table table;
+Table data;
 ArrayList<Circle> circles = new ArrayList<Circle>();
 
 void setup() {
@@ -26,10 +26,10 @@ void draw() {
 }
 
 void read() {
-  table = loadTable("table.tsv", "header");
+  data = loadTable("table.tsv", "header");
 
-  for (int i = 0; i < table.getRowCount(); i++) {
-    TableRow row = table.getRow(i);
+  for (int i = 0; i < data.getRowCount(); i++) {
+    TableRow row = data.getRow(i);
 
     int x_row = row.getInt("x");
     int y_row = row.getInt("y");
@@ -41,15 +41,19 @@ void read() {
   }
 }
 
-void write() {
-  TableRow row = table.addRow();
-  Circle rcircle = new Circle(mouseX, mouseY);
+void write(Circle entity) {
+  TableRow row = data.addRow();
 
-  row.setInt("x", mouseX);
-  row.setInt("y", mouseY);
-  row.setInt("diam", rcircle.diam);
-  row.setInt("hue", rcircle.hue);
-  row.setString("label", rcircle.label);
+  row.setInt("x", entity.x);
+  row.setInt("y", entity.y);
+  row.setInt("diam", entity.diam);
+  row.setInt("hue", entity.hue);
+  row.setString("label", entity.label);
+  saveTable(data, "data/table.tsv");
+}
 
-  circles.add(rcircle);
+void mousePressed() {
+  Circle newcircle = new Circle(mouseX, mouseY);
+  circles.add(newcircle);
+  write(newcircle);
 }

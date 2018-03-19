@@ -20,7 +20,7 @@ class Circle {
     x = x_;
     y = y_;
     diam = floor(random(20, 100));
-    label = "New oblong";
+    label = "New circle";
   }
 
   void show() {
