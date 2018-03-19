@@ -40,3 +40,16 @@ void read() {
     circles.add(new Circle(x_row, y_row, diam_row, hue_row, label_row));
   }
 }
+
+void write() {
+  TableRow row = table.addRow();
+  Circle rcircle = new Circle(mouseX, mouseY);
+
+  row.setInt("x", mouseX);
+  row.setInt("y", mouseY);
+  row.setInt("diam", rcircle.diam);
+  row.setInt("hue", rcircle.hue);
+  row.setString("label", rcircle.label);
+
+  circles.add(rcircle);
+}
