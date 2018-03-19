@@ -1,4 +1,4 @@
-x	y	width	height
-0	0	100	200
-100	10	50	50
-200	300	50	100
+x	y	diam	hue	label
+200	400	100	300	Violet
+500	200	50	50	Isaac
+200	300	50	100	Lily
