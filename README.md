@@ -1,2 +1,2 @@
 # Prototyping
-Experimenting and possible Pi DIY.
+Experimenting with various operations, graphics, data processing. etc.
