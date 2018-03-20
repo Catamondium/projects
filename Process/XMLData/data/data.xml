@@ -1,31 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <circles>
-	<circle>
-		<pos>
-			<x>200</x>
-			<y>400</y>
-		</pos>
-		<diameter>100</diameter>
-		<hue>300</hue>
-		<label>Violet</label>
-	</circle>
-
-	<circle>
-		<pos>
-			<x>500</x>
-			<y>200</y>
-		</pos>
-		<diameter>50</diameter>
-		<hue>50</hue>
-		<label>Isaac</label>
-	</circle>
-
-	<circle>
-		<pos>
-			<x>200</x>
-			<y>300</y>
-		</pos>
-		<diameter>50</diameter>
-		<hue>100</hue>
-		<label>Lily</label>
-	</circle>
+  <circle>
+    <pos>
+      <x>500</x>
+      <y>200</y>
+    </pos>
+    <diameter>50</diameter>
+    <hue>50</hue>
+    <label>Isaac</label>
+  </circle>
+  <circle>
+    <pos>
+      <x>390</x>
+      <y>119</y>
+    </pos>
+    <diameter>34</diameter>
+    <hue>36</hue>
+    <label>New circle</label>
+  </circle>
+  <circle>
+    <pos>
+      <x>292</x>
+      <y>220</y>
+    </pos>
+    <diameter>25</diameter>
+    <hue>44</hue>
+    <label>New circle</label>
+  </circle>
+  <circle>
+    <pos>
+      <x>319</x>
+      <y>408</y>
+    </pos>
+    <diameter>47</diameter>
+    <hue>17</hue>
+    <label>New circle</label>
+  </circle>
+  <circle>
+    <pos>
+      <x>462</x>
+      <y>322</y>
+    </pos>
+    <diameter>45</diameter>
+    <hue>86</hue>
+    <label>New circle</label>
+  </circle>
+  <circle>
+    <pos>
+      <x>131</x>
+      <y>167</y>
+    </pos>
+    <diameter>42</diameter>
+    <hue>155</hue>
+    <label>New circle</label>
+  </circle>
+  <circle>
+    <pos>
+      <x>88</x>
+      <y>213</y>
+    </pos>
+    <diameter>25</diameter>
+    <hue>230</hue>
+    <label>New circle</label>
+  </circle>
+  <circle>
+    <pos>
+      <x>158</x>
+      <y>286</y>
+    </pos>
+    <diameter>50</diameter>
+    <hue>41</hue>
+    <label>New circle</label>
+  </circle>
+  <circle>
+    <pos>
+      <x>219</x>
+      <y>275</y>
+    </pos>
+    <diameter>95</diameter>
+    <hue>176</hue>
+    <label>New circle</label>
+  </circle>
+  <circle>
+    <pos>
+      <x>313</x>
+      <y>404</y>
+    </pos>
+    <diameter>73</diameter>
+    <hue>237</hue>
+    <label>New circle</label>
+  </circle>
+  <circle>
+    <pos>
+      <x>280</x>
+      <y>141</y>
+    </pos>
+    <diameter>54</diameter>
+    <hue>41</hue>
+    <label>New circle</label>
+  </circle>
+  <circle>
+    <pos>
+      <x>370</x>
+      <y>351</y>
+    </pos>
+    <diameter>73</diameter>
+    <hue>229</hue>
+    <label>New circle</label>
+  </circle>
+  <circle>
+    <pos>
+      <x>216</x>
+      <y>353</y>
+    </pos>
+    <diameter>28</diameter>
+    <hue>264</hue>
+    <label>New circle</label>
+  </circle>
+  <circle>
+    <pos>
+      <x>311</x>
+      <y>84</y>
+    </pos>
+    <diameter>31</diameter>
+    <hue>268</hue>
+    <label>New circle</label>
+  </circle>
 </circles>

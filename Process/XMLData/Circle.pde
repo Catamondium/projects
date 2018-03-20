@@ -28,10 +28,10 @@ class Circle {
     fill(hue, 360, 360);
     ellipse(x, y, diam, diam);
 
-    if (over) {
-      textAlign(CENTER);
-      fill(360);
-      text(label, x, y);
-    }
+    //if (over) {
+    //  textAlign(CENTER);
+    //  fill(360);
+    //  text(label, x, y);
+    //}
   }
 }
