@@ -20,6 +20,7 @@ class Circle {
     x = x_;
     y = y_;
     diam = floor(random(20, 100));
+    hue = floor(random(10, 350));
     label = "New circle";
   }
 

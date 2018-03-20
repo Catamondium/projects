@@ -12,7 +12,7 @@ void draw() {
 
   for (Circle entity : circles) {
     float d = dist(entity.x, entity.y, mouseX, mouseY);
-    if (d < entity.diam) {
+    if (d < 0.5 * entity.diam) {
       entity.over = true;
     } else {
       entity.over = false;
@@ -21,8 +21,7 @@ void draw() {
     entity.show();
   }
 
-  //saveFrame();
-  //noLoop();
+  noLoop();
 }
 
 void read() {
@@ -49,6 +48,12 @@ void write(Circle entity) {
   row.setInt("diam", entity.diam);
   row.setInt("hue", entity.hue);
   row.setString("label", entity.label);
+
+  if (circles.size() > 10) {
+    int item = floor(random(0, circles.size()));
+    data.removeRow(item);
+    circles.remove(item);
+  }
   saveTable(data, "data/data.tsv");
 }
 
@@ -56,4 +61,5 @@ void mousePressed() {
   Circle newcircle = new Circle(mouseX, mouseY);
   circles.add(newcircle);
   write(newcircle);
+  redraw();
 }
