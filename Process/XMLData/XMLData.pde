@@ -12,12 +12,12 @@ void draw() {
   background(0);
 
   for (Circle entity : circles) {
-    //float d = dist(entity.x, entity.y, mouseX, mouseY);
-    //if (d < 0.5 * entity.diam) {
-    //  entity.over = true;
-    //} else {
-    //  entity.over = false;
-    //}
+    float d = dist(entity.x, entity.y, mouseX, mouseY);
+    if (d < 0.5 * entity.diam) {
+      entity.over = true;
+    } else {
+      entity.over = false;
+    }
 
     entity.show();
   }
@@ -40,7 +40,7 @@ void read() {
     XML r_hue = dataArray[i].getChild("hue");
     int data_hue = r_hue.getIntContent();
 
-    String data_label = dataArray[i].getString("label");
+    String data_label = dataArray[i].getContent(); // *** Bugged, but avoids null pointer exception
 
     circles.add(new Circle(data_x, data_y, data_diam, data_hue, data_label));
   }

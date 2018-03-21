@@ -20,8 +20,6 @@ void draw() {
 
     entity.show();
   }
-
-  noLoop();
 }
 
 void read() {
@@ -30,13 +28,13 @@ void read() {
   for (int i = 0; i < data.getRowCount(); i++) {
     TableRow row = data.getRow(i);
 
-    int x_row = row.getInt("x");
-    int y_row = row.getInt("y");
-    int diam_row = row.getInt("diam");
-    int hue_row = row.getInt("hue");
-    String label_row = row.getString("label");
+    int data_x = row.getInt("x");
+    int data_y = row.getInt("y");
+    int data_diam = row.getInt("diam");
+    int data_hue = row.getInt("hue");
+    String data_label = row.getString("label");
 
-    circles.add(new Circle(x_row, y_row, diam_row, hue_row, label_row));
+    circles.add(new Circle(data_x, data_y, data_diam, data_hue, data_label));
   }
 }
 
@@ -61,5 +59,4 @@ void mousePressed() {
   Circle newcircle = new Circle(mouseX, mouseY);
   circles.add(newcircle);
   write(newcircle);
-  redraw();
 }
