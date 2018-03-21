@@ -40,7 +40,8 @@ void read() {
     XML r_hue = dataArray[i].getChild("hue");
     int data_hue = r_hue.getIntContent();
 
-    String data_label = dataArray[i].getContent(); // *** Bugged, but avoids null pointer exception
+    XML r_label = dataArray[i].getChild("label");
+    String data_label = r_label.getContent();
 
     circles.add(new Circle(data_x, data_y, data_diam, data_hue, data_label));
   }
