@@ -10,6 +10,7 @@ void draw() {
   fill(50);
   ellipse(mouse.x, mouse.y, 24, 24);
   for (Vehicle all : vehicles) {
+    all.separate(vehicles);
     all.seek(mouse);
     all.arrive(mouse);
     all.update();

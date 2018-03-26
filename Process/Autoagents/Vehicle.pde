@@ -6,7 +6,7 @@ class Vehicle {
     pos = new PVector(x_, y_);
     vel = new PVector(0, -2);
     acc = new PVector(0, 0);
-    r = 6;
+    r = 5;
     maxvel = 4;
     maxforce = 0.1;
   }
@@ -58,5 +58,31 @@ class Vehicle {
     PVector steer = PVector.sub(desired, vel);
     steer.limit(maxforce);
     applyForce(steer);
+  }
+
+  // Group behaviors
+
+  void separate(ArrayList<Vehicle> vehicles) {
+    float desiredsep = r * 2;
+    PVector sum = new PVector();
+    int count = 0;
+    for (Vehicle other : vehicles) {
+      float d = PVector.dist(pos, other.pos);
+      if ((d > 0) && (d < desiredsep)) {
+        PVector diff = PVector.sub(pos, other.pos);
+        diff.normalize();
+        diff.div(d);
+        sum.add(diff);
+        count++;
+      }
+    }
+    if (count > 0) {
+      sum.div(count);
+      sum.setMag(maxvel);
+      
+      PVector steer = PVector.sub(sum, vel);
+      steer.limit(maxforce);
+      applyForce(steer);
+    }
   }
 }
