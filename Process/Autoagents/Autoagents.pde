@@ -18,5 +18,7 @@ void draw() {
 }
 
 void mousePressed() {
-  vehicles.add(new Vehicle(mouseX, mouseY));
+  for (int i = 0; i < 5; i++) {
+    vehicles.add(new Vehicle(mouseX + floor(random(-10, 10)), mouseY + floor(random(-10, 10))));
+  }
 }
