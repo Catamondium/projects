@@ -1,7 +1,8 @@
-ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
+ArrayList<Drone> drones = new ArrayList<Drone>();
 
 void setup() {
   size(600, 600);
+  colorMode(HSB, 360);
 }
 
 void draw() {
@@ -9,10 +10,7 @@ void draw() {
   PVector mouse = new PVector(mouseX, mouseY);
   fill(50);
   ellipse(mouse.x, mouse.y, 24, 24);
-  for (Vehicle all : vehicles) {
-    all.separate(vehicles);
-    all.seek(mouse);
-    all.arrive(mouse);
+  for (Drone all : drones) {
     all.update();
     all.show();
   }
@@ -20,6 +18,6 @@ void draw() {
 
 void mousePressed() {
   for (int i = 0; i < 5; i++) {
-    vehicles.add(new Vehicle(mouseX + floor(random(-10, 10)), mouseY + floor(random(-10, 10))));
+    drones.add(new Drone(mouseX + floor(random(-10, 10)), mouseY + floor(random(-10, 10))));
   }
 }
