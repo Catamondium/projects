@@ -3,11 +3,11 @@ class Drone {
   float r, maxvel, maxforce;
   int hue;
 
-  Drone(int x_, int y_) {
+  Drone(float x_, float y_) {
     pos = new PVector(x_, y_);
-    vel = new PVector(0, -2);
+    vel = new PVector(0, 0);
     acc = new PVector(0, 0);
-    r = floor(random(5, 8));
+    r = random(5, 8);
     maxvel = random(4, 6);
     maxforce = random(0.1, 0.3);
     hue = color(floor(random(0, 360)), 360, 360);
@@ -37,13 +37,13 @@ class Drone {
     if (pos.x < -r) {
       pos.x = width + r;
     }
-    if (pos.y < -this.r) {
-      pos.y = height + this.r;
+    if (pos.y < -r) {
+      pos.y = height + r;
     }
-    if (pos.x > width + this.r) {
+    if (pos.x > width + r) {
       pos.x = -r;
     }
-    if (pos.y > height + this.r) {
+    if (pos.y > height + r) {
       pos.y = -r;
     }
   }
@@ -53,8 +53,9 @@ class Drone {
   }
 
   void applyBehaviors(ArrayList<Drone> drones) {
-    PVector seekF = seek(new PVector(mouseX, mouseY));
-    PVector arriveF = arrive(new PVector(mouseX, mouseY));
+    PVector target = new PVector(mouseX, mouseY);
+    PVector seekF = seek(target);
+    PVector arriveF = arrive(target);
     PVector sepF = separate(drones, r*2);
     PVector cohF = cohesion(drones, r*4);
     PVector alnF = align(drones, r*4);
@@ -108,7 +109,6 @@ class Drone {
   PVector separate(ArrayList<Drone> drones, float dist_) {
     float desiredSep = dist_;
     PVector steer = new PVector(0, 0);
-    PVector sum = new PVector();
     int count = 0;
     for (Drone other : drones) {
       float d = PVector.dist(pos, other.pos);
