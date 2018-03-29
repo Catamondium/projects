@@ -5,10 +5,10 @@ class Drone {
 
   Drone(float x_, float y_) {
     pos = new PVector(x_, y_);
-    vel = new PVector(0, 0);
+    vel = new PVector(random(-2, 2), random(-2, 2));
     acc = new PVector(0, 0);
-    r = random(5, 8);
-    maxvel = random(4, 6);
+    r = random(4, 8);
+    maxvel = random(3, 6);
     maxforce = random(0.1, 0.3);
     hue = color(floor(random(0, 360)), 360, 360);
   }
@@ -62,12 +62,12 @@ class Drone {
 
     seekF.mult(1);
     arriveF.mult(1);
-    sepF.mult(4);
-    cohF.mult(2);
-    alnF.mult(2);
+    sepF.mult(2);
+    cohF.mult(1);
+    alnF.mult(1.5);
 
-    applyForce(seekF);
-    applyForce(arriveF);
+    //applyForce(seekF); // Disabled to show flocking behaviors
+    //applyForce(arriveF);
     applyForce(sepF);
     applyForce(cohF);
     applyForce(alnF);
@@ -149,7 +149,7 @@ class Drone {
     return steer;
   }
 
-  // Maintain similar direction
+  // Maintain similar direction to other drones
   PVector align(ArrayList<Drone> drones, float dist_) {
     float aligndist = dist_;
     PVector steer = new PVector();
