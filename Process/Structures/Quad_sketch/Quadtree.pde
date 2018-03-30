@@ -1,11 +1,3 @@
-class Point {
-  float x, y;
-  Point(float x_, float y_) {
-    x = x_;
-    y = y_;
-  }
-}
-
 class Rectangle {
   float x, y, w, h;
   Rectangle(float x_, float y_, float w_, float h_) {
@@ -15,7 +7,7 @@ class Rectangle {
     h = h_;
   }
 
-  boolean contains(Point a) {
+  boolean contains(PVector a) {
     return ((a.x >= x - w) &&
       (a.x <= x + w) &&
       (a.y >= y - h) &&
@@ -33,7 +25,7 @@ class Rectangle {
 class QuadTree {
   Rectangle boundary;
   int capacity;
-  ArrayList<Point> points;
+  ArrayList<PVector> points;
   boolean divided = false;
 
   // Children trees
@@ -45,7 +37,7 @@ class QuadTree {
   QuadTree(Rectangle boundary_, int n) {
     boundary = boundary_;
     capacity = n;
-    points = new ArrayList<Point>(n);
+    points = new ArrayList<PVector>(n);
   }
 
   void subdivide() {
@@ -71,7 +63,7 @@ class QuadTree {
     divided = true;
   }
 
-  boolean insert(Point a) {
+  boolean insert(PVector a) {
     if (!boundary.contains(a)) {
       return false;
     }
@@ -94,11 +86,11 @@ class QuadTree {
     }
   }
 
-  ArrayList query(Rectangle range, ArrayList<Point> found) {
+  ArrayList query(Rectangle range, ArrayList<PVector> found) {
     if (!boundary.intersects(range)) {
       return found;
     } else {
-      for (Point p : points) {
+      for (PVector p : points) {
         if (range.contains(p)) {
           found.add(p);
         }
@@ -120,7 +112,7 @@ class QuadTree {
     noFill();
     rect(boundary.x, boundary.y, boundary.w * 2, boundary.h * 2);
 
-    for ( Point p : points) {
+    for ( PVector p : points) {
       stroke(255, 0, 0);
       strokeWeight(3);
       point(p.x, p.y);
