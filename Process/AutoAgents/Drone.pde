@@ -8,13 +8,19 @@ class Drone {
     vel = new PVector(random(-2, 2), random(-2, 2));
     acc = new PVector(0, 0);
     r = random(4, 8);
-    maxvel = random(3, 6);
-    maxforce = random(0.1, 0.3);
+    maxvel = 5;
+    maxforce = 0.2;
     hue = color(floor(random(0, 360)), 360, 360);
   }
 
+  void run(ArrayList<Drone> drones) {
+    hive(drones);
+    update();
+    edges();
+    show();
+  }
+
   void update() {
-    applyBehaviors(drones);
     vel.add(acc);
     vel.limit(maxvel);
     pos.add(vel);
@@ -52,7 +58,7 @@ class Drone {
     acc.add(force);
   }
 
-  void applyBehaviors(ArrayList<Drone> drones) {
+  void hive(ArrayList<Drone> drones) {
     PVector target = new PVector(mouseX, mouseY);
     PVector seekF = seek(target);
     PVector arriveF = arrive(target);
