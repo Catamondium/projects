@@ -13,8 +13,8 @@ class Drone {
     hue = color(floor(random(0, 360)), 360, 360);
   }
 
-  void run(ArrayList<Drone> drones) {
-    hive(drones);
+  void run(QuadTree t, ArrayList<Drone> drones) {
+    hive(t, drones);
     update();
     edges();
     show();
@@ -58,12 +58,12 @@ class Drone {
     acc.add(force);
   }
 
-  void hive(ArrayList<Drone> drones) {
+  void hive(QuadTree t, ArrayList<Drone> drones) {
     PVector target = new PVector(mouseX, mouseY);
     PVector seekF = seek(target);
     PVector arriveF = arrive(target);
-    PVector sepF = separate(drones, r*2);
-    PVector cohF = cohesion(drones, r*4);
+    PVector sepF = separate(t, r * 2);
+    PVector cohF = cohesion(t, r * 4);
     PVector alnF = align(drones, r*4);
 
     seekF.mult(1);
@@ -112,14 +112,17 @@ class Drone {
   // Group behaviors
 
   // Keep apart
-  PVector separate(ArrayList<Drone> drones, float dist_) {
-    float desiredSep = dist_;
+  PVector separate(QuadTree t, float desiredSep) {
+    Rectangle range = new Rectangle(pos.x, pos.y, desiredSep, desiredSep);
+    ArrayList<PVector> drones = new ArrayList<PVector>();
+    t.query(range, drones);
+
     PVector steer = new PVector(0, 0);
     int count = 0;
-    for (Drone other : drones) {
-      float d = PVector.dist(pos, other.pos);
+    for (PVector Opos : drones) {
+      float d = PVector.dist(pos, Opos);
       if ((d > 0) && (d < desiredSep)) {
-        PVector diff = PVector.sub(pos, other.pos);
+        PVector diff = PVector.sub(pos, Opos);
         diff.normalize();
         diff.div(d);
         steer.add(diff);
@@ -137,14 +140,16 @@ class Drone {
   }
 
   // Keep together
-  PVector cohesion(ArrayList<Drone> drones, float dist_) {
-    float desiredDist = dist_;
+  PVector cohesion(QuadTree t, float desiredDist) {
+    Rectangle range = new Rectangle(pos.x, pos.y, desiredDist, desiredDist);
+    ArrayList<PVector> drones = new ArrayList<PVector>();
+    t.query(range, drones);
     PVector steer = new PVector(0, 0);
     int count = 0;
-    for (Drone other : drones) {
-      float d = PVector.dist(pos, other.pos);
+    for (PVector Opos : drones) {
+      float d = PVector.dist(pos, Opos);
       if ((d > 0) && (d < desiredDist)) {
-        steer.add(other.pos);
+        steer.add(Opos);
         count++;
       }
     }
@@ -156,13 +161,12 @@ class Drone {
   }
 
   // Maintain similar direction to other drones
-  PVector align(ArrayList<Drone> drones, float dist_) {
-    float aligndist = dist_;
-    PVector steer = new PVector();
+  PVector align(ArrayList<Drone> drones, float checkdist) {
+    PVector steer = new PVector(0, 0);
     int count = 0;
     for (Drone other : drones) {
       float d = PVector.dist(pos, other.pos);
-      if ((d > 0) && (d < aligndist)) {
+      if ((d > 0) && (d < checkdist)) {
         steer.add(other.vel);
         count++;
       }
