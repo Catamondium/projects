@@ -63,7 +63,7 @@ class Drone {
     PVector seekF = seek(target);
     PVector arriveF = arrive(target);
     PVector sepF = separate(t, r * 2);
-    PVector cohF = cohesion(t, r * 4);
+    PVector cohF = cohere(t, r * 4);
     PVector alnF = align(drones, r*4);
 
     seekF.mult(1);
@@ -140,7 +140,7 @@ class Drone {
   }
 
   // Keep together
-  PVector cohesion(QuadTree t, float desiredDist) {
+  PVector cohere(QuadTree t, float desiredDist) {
     Rectangle range = new Rectangle(pos.x, pos.y, desiredDist, desiredDist);
     ArrayList<PVector> drones = new ArrayList<PVector>();
     t.query(range, drones);
