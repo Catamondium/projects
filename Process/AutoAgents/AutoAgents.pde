@@ -19,7 +19,7 @@ void draw() {
   hive.run();
   textAlign(LEFT);
   fill(360);
-  text(("Framerate: " + floor(frameRate)), 0, 15);
+  text(("Framerate: " + floor(frameRate) + "\n" + "Units: " + hive.drones.size()), 1, 15);
 
   if (mousePressed) {
     for (int i = 0; i < 5; i++) {

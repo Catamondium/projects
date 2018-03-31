@@ -161,13 +161,12 @@ class Drone {
   }
 
   // Maintain similar direction to other drones
-  PVector align(ArrayList<Drone> drones, float dist_) {
-    float aligndist = dist_;
-    PVector steer = new PVector();
+  PVector align(ArrayList<Drone> drones, float checkdist) {
+    PVector steer = new PVector(0, 0);
     int count = 0;
     for (Drone other : drones) {
       float d = PVector.dist(pos, other.pos);
-      if ((d > 0) && (d < aligndist)) {
+      if ((d > 0) && (d < checkdist)) {
         steer.add(other.vel);
         count++;
       }

@@ -24,8 +24,8 @@ class Rectangle {
 
 class QuadTree {
   Rectangle boundary;
-  int capacity;
-  ArrayList<PVector> points;
+  int occupancy = 0;
+  PVector[] vectors;
   boolean divided = false;
 
   // Children trees
@@ -33,8 +33,7 @@ class QuadTree {
 
   QuadTree(Rectangle boundary_, int n) {
     boundary = boundary_;
-    capacity = n;
-    points = new ArrayList<PVector>(n);
+    vectors = new PVector[n];
   }
 
   void subdivide() {
@@ -46,16 +45,16 @@ class QuadTree {
     float new_height = boundary.h / 2;
 
     Rectangle nw = new Rectangle(west, north, new_width, new_height);
-    NorthWest = new QuadTree(nw, capacity);
+    NorthWest = new QuadTree(nw, vectors.length);
 
     Rectangle ne = new Rectangle(east, north, new_width, new_height);
-    NorthEast = new QuadTree(ne, capacity);
+    NorthEast = new QuadTree(ne, vectors.length);
 
     Rectangle sw = new Rectangle(west, south, new_width, new_height);
-    SouthWest = new QuadTree(sw, capacity);
+    SouthWest = new QuadTree(sw, vectors.length);
 
     Rectangle se = new Rectangle(east, south, new_width, new_height);
-    SouthEast = new QuadTree(se, capacity);
+    SouthEast = new QuadTree(se, vectors.length);
 
     divided = true;
   }
@@ -65,8 +64,9 @@ class QuadTree {
       return false;
     }
 
-    if (points.size() < capacity) {
-      points.add(a);
+    if (occupancy < vectors.length) {
+      vectors[occupancy] = new PVector(a.x, a.y);
+      occupancy++;
       return true;
     } else {
       if (!divided) {
@@ -87,9 +87,9 @@ class QuadTree {
     if (!boundary.intersects(range)) {
       return found;
     } else {
-      for (PVector p : points) {
-        if (range.contains(p)) {
-          found.add(p);
+      for (int i = 0; i < occupancy; i++) {
+        if (range.contains(vectors[i])) {
+          found.add(vectors[i]);
         }
       }
       if (divided) {
@@ -109,10 +109,10 @@ class QuadTree {
     noFill();
     rect(boundary.x, boundary.y, boundary.w * 2, boundary.h * 2);
 
-    for ( PVector p : points) {
+    for ( int i = 0; i < occupancy; i++) {
       stroke(255, 0, 0);
       strokeWeight(3);
-      point(p.x, p.y);
+      point(vectors[i].x, vectors[i].y);
     }
 
     if (divided) {
