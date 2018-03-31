@@ -25,7 +25,6 @@ class Drone {
     vel.limit(maxvel);
     pos.add(vel);
     acc.mult(0);
-    edges();
   }
 
   void show() {
