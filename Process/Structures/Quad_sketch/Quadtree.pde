@@ -29,10 +29,7 @@ class QuadTree {
   boolean divided = false;
 
   // Children trees
-  QuadTree NorthEast;
-  QuadTree NorthWest;
-  QuadTree SouthEast;
-  QuadTree SouthWest;
+  QuadTree NorthEast, NorthWest, SouthEast, SouthWest;
 
   QuadTree(Rectangle boundary_, int n) {
     boundary = boundary_;
