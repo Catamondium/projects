@@ -1,7 +1,7 @@
 Hive hive;
 
 void setup() {
-  size(1200, 600);
+  size(800, 600);
   colorMode(HSB, 360);
   Rectangle boundary = new Rectangle(width / 2, height / 2, width / 2, height / 2);
   hive = new Hive(boundary);
@@ -15,7 +15,6 @@ void setup() {
 void draw() {
   background(0);
   fill(50);
-  //ellipse(mouse.x, mouse.y, 24, 24);
   hive.run();
   textAlign(LEFT);
   fill(360);

@@ -110,7 +110,7 @@ class QuadTree {
     rect(boundary.x, boundary.y, boundary.w * 2, boundary.h * 2);
 
     for ( int i = 0; i < occupancy; i++) {
-      stroke(255, 0, 0);
+      stroke(255);
       strokeWeight(3);
       point(vectors[i].x, vectors[i].y);
     }

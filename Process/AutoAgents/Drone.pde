@@ -13,8 +13,8 @@ class Drone {
     hue = color(floor(random(0, 360)), 360, 360);
   }
 
-  void run(QuadTree t, ArrayList<Drone> drones) {
-    hive(t, drones);
+  void run(QuadTree t, ArrayList<Drone> d) {
+    hive(t, d);
     update();
     edges();
     show();
@@ -58,15 +58,15 @@ class Drone {
   }
 
   void hive(QuadTree t, ArrayList<Drone> drones) {
-    PVector target = new PVector(mouseX, mouseY);
-    PVector seekF = seek(target);
-    PVector arriveF = arrive(target);
+    //PVector target = new PVector(mouseX, mouseY);
+    //PVector seekF = seek(target);
+    //PVector arriveF = arrive(target);
     PVector sepF = separate(t, r * 2);
     PVector cohF = cohere(t, r * 4);
     PVector alnF = align(drones, r*4);
 
-    seekF.mult(1);
-    arriveF.mult(1);
+    //seekF.mult(1);
+    //arriveF.mult(1);
     sepF.mult(2);
     cohF.mult(1);
     alnF.mult(1.5);
