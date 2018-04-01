@@ -1,5 +1,5 @@
 class Container {
-  float x, y, w, h;
+  float x, y, w, h, divisions;
   float[] data;
 
   Container(float x_, float y_, float w_, float h_) {
@@ -14,6 +14,7 @@ class Container {
     for (int i = 0; i < data.length; i++) {
       data[i] = random(5, 100);
     }
+    divisions = h / data.length;
   }
 
   void show() {
@@ -22,7 +23,6 @@ class Container {
     translate(x, y);
     colorMode(HSB, h);
     rectMode(CORNER);
-    float divisions = h / data.length;
     for (int i = 0; i < data.length; i++) {
       float len = map(data[i], 0, 100, 0, w);
       float row = map(i, 0, data.length, 0, h);
