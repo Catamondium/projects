@@ -1,4 +1,4 @@
-Snake s;
+Player s;
 int scl = 20;
 PVector food = new PVector(0, 0);
 PFont f;
@@ -7,7 +7,7 @@ char[] SCORENUM = {'S', 'c', 'o', 'r', 'e', ':', '0', '1', '2', '3', '4', '5', '
 void setup() {
   size(600, 600);
   f = createFont("Roboto Regular", 20, false, SCORENUM);
-  s = new Snake();
+  s = new Player();
   pickLocation(food);
   
 }
@@ -16,9 +16,9 @@ void draw() {
   frameRate(10);
   background(0);
   s.run();
-  fill(255, 255, 0);
+  fill(255, 255, 0, 191);
   textFont(f, 20);
-  text("Score: " + s.score, 0, 20);
+  text("Score: " + s.score, 3, 20);
 
   if (s.eat(food)) {
     pickLocation(food);

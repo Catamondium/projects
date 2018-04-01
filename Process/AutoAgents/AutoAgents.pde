@@ -14,11 +14,11 @@ void setup() {
 
 void draw() {
   background(0);
-  fill(50);
   hive.run();
+
   textAlign(LEFT);
-  fill(360);
-  text(("Framerate: " + floor(frameRate) + "\n" + "Units: " + hive.drones.size()), 1, 15);
+  fill(125, 360, 360, 720);
+  text(("Framerate: " + floor(frameRate) + "\n" + "Units: " + hive.drones.size()), 3, 15);
 
   if (mousePressed) {
     for (int i = 0; i < 5; i++) {

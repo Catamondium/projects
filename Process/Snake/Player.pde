@@ -1,4 +1,4 @@
-class Snake {
+class Player {
   PVector coord = new PVector(0, 0);
   PVector vel = new PVector(0, 0);
   int score = 0;
@@ -10,7 +10,7 @@ class Snake {
     s.show();
   }
 
-  Snake() {
+  Player() {
     pickLocation(coord);
   }
 
