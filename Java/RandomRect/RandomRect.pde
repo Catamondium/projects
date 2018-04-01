@@ -1,4 +1,4 @@
-Container[][] squares = new Container[2][4]; // [x][y]
+Container[][] squares = new Container[4][2]; // [cols][rows]
 
 void setup() {
   size(600, 300);
@@ -8,15 +8,16 @@ void draw() {
   background(0);
   frameRate(2);
 
-  for (int x = 0; x < squares.length; x++) {
-    for (int y = 0; y < squares[x].length; y++) {
-      float col = x;
-      float row = y;
+  for (int col = 0; col < squares.length; col++) {
+    for (int row = 0; row < squares[col].length; row++) {
+      float y = row;
+      float x = col;
 
-      col = map(col, 0, squares.length, 0, height);
-      row = map(row, 0, squares[x].length, 0, width);
+      y = map(y, 0, squares.length, 0, width);
+      x = map(x, 0, squares[col].length, 0, height);
 
-      squares[x][y] = new Container(row, col, width / squares[x].length, height / squares.length);
+      squares[col][row] = new Container(x, y, 
+        width / squares.length, height / squares[col].length);
     }
   }
 
