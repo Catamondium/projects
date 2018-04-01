@@ -25,7 +25,7 @@ class Rectangle {
 class QuadTree {
   Rectangle boundary;
   int occupancy = 0;
-  PVector[] vectors;
+  PVector[] points;
   boolean divided = false;
 
   // Children trees
@@ -33,7 +33,7 @@ class QuadTree {
 
   QuadTree(Rectangle boundary_, int n) {
     boundary = boundary_;
-    vectors = new PVector[n];
+    points = new PVector[n];
   }
 
   void subdivide() {
@@ -45,16 +45,16 @@ class QuadTree {
     float new_height = boundary.h / 2;
 
     Rectangle nw = new Rectangle(west, north, new_width, new_height);
-    NorthWest = new QuadTree(nw, vectors.length);
+    NorthWest = new QuadTree(nw, points.length);
 
     Rectangle ne = new Rectangle(east, north, new_width, new_height);
-    NorthEast = new QuadTree(ne, vectors.length);
+    NorthEast = new QuadTree(ne, points.length);
 
     Rectangle sw = new Rectangle(west, south, new_width, new_height);
-    SouthWest = new QuadTree(sw, vectors.length);
+    SouthWest = new QuadTree(sw, points.length);
 
     Rectangle se = new Rectangle(east, south, new_width, new_height);
-    SouthEast = new QuadTree(se, vectors.length);
+    SouthEast = new QuadTree(se, points.length);
 
     divided = true;
   }
@@ -64,8 +64,8 @@ class QuadTree {
       return false;
     }
 
-    if (occupancy < vectors.length) {
-      vectors[occupancy] = new PVector(a.x, a.y);
+    if (occupancy < points.length) {
+      points[occupancy] = new PVector(a.x, a.y);
       occupancy++;
       return true;
     } else {
@@ -88,8 +88,8 @@ class QuadTree {
       return found;
     } else {
       for (int i = 0; i < occupancy; i++) {
-        if (range.contains(vectors[i])) {
-          found.add(vectors[i]);
+        if (range.contains(points[i])) {
+          found.add(points[i]);
         }
       }
       if (divided) {
@@ -102,24 +102,26 @@ class QuadTree {
     }
   }
 
-  void show() {
+  void debug() {
+    pushStyle();
     rectMode(CENTER);
     stroke(255);
     strokeWeight(1);
     noFill();
     rect(boundary.x, boundary.y, boundary.w * 2, boundary.h * 2);
 
-    for ( int i = 0; i < occupancy; i++) {
+    for (int i = 0; i < occupancy; i++) {
       stroke(255);
       strokeWeight(3);
-      point(vectors[i].x, vectors[i].y);
+      point(points[i].x, points[i].y);
     }
 
     if (divided) {
-      NorthWest.show();
-      NorthEast.show();
-      SouthEast.show();
-      SouthWest.show();
+      NorthWest.debug();
+      NorthEast.debug();
+      SouthEast.debug();
+      SouthWest.debug();
     }
+    popStyle();
   }
 }

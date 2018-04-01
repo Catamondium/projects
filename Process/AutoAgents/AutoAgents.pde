@@ -6,7 +6,7 @@ void setup() {
   Rectangle boundary = new Rectangle(width / 2, height / 2, width / 2, height / 2);
   hive = new Hive(boundary);
   // Inital spawn
-  for (int i = 0; i < 300; i++) {
+  for (int i = 0; i < 250; i++) {
     Drone unit = new Drone(random(width), random(height));
     hive.addDrone(unit);
   }
