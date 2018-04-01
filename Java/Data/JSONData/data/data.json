@@ -1,92 +1,17 @@
 {"circles": [
-  {"circle": {
-    "diameter": 100,
-    "pos": {
-      "x": 200,
-      "y": 400
-    },
-    "hue": 300,
-    "label": "Violet"
-  }},
-  {"circle": {
-    "diameter": 50,
-    "pos": {
-      "x": 200,
-      "y": 300
-    },
-    "hue": 100,
-    "label": "Lily"
-  }},
-  {"circle": {
-    "diameter": 97,
-    "pos": {
-      "x": 334,
-      "y": 86
-    },
-    "hue": 335,
-    "label": "New circle"
-  }},
-  {"circle": {
-    "diameter": 65,
-    "pos": {
-      "x": 202,
-      "y": 145
-    },
-    "hue": 110,
-    "label": "New circle"
-  }},
-  {"circle": {
-    "diameter": 70,
-    "pos": {
-      "x": 306,
-      "y": 242
-    },
-    "hue": 55,
-    "label": "New circle"
-  }},
-  {"circle": {
-    "diameter": 96,
-    "pos": {
-      "x": 95,
-      "y": 191
-    },
-    "hue": 169,
-    "label": "New circle"
-  }},
-  {"circle": {
-    "diameter": 88,
-    "pos": {
-      "x": 103,
-      "y": 91
-    },
-    "hue": 160,
-    "label": "New circle"
-  }},
-  {"circle": {
-    "diameter": 21,
-    "pos": {
-      "x": 426,
-      "y": 286
-    },
-    "hue": 258,
-    "label": "New circle"
-  }},
-  {"circle": {
-    "diameter": 89,
-    "pos": {
-      "x": 485,
-      "y": 58
-    },
-    "hue": 318,
-    "label": "New circle"
-  }},
-  {"circle": {
-    "diameter": 76,
-    "pos": {
-      "x": 427,
-      "y": 155
-    },
-    "hue": 329,
-    "label": "New circle"
-  }}
+{"circle" : {
+	"pos": {"x":200, "y":400},
+	"diameter":100,
+	"hue":300,
+	"label":"Violet"}},
+{"circle" : {
+	"pos":{"x":500, "y":200},
+	"diameter":50,
+	"hue":30,
+	"label":"Isaac"}},
+{"circle" : {
+	"pos":{"x":200, "y":300},
+	"diameter":50,
+	"hue":100,
+	"label":"Lily"}}
 ]}

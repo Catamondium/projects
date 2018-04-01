@@ -1,6 +1,6 @@
 class Player {
-  PVector coord = new PVector(0, 0);
-  PVector vel = new PVector(0, 0);
+  PVector coord = new PVector();
+  PVector vel = new PVector();
   int score = 0;
   ArrayList<PVector> tail = new ArrayList<PVector>();
 
@@ -19,7 +19,7 @@ class Player {
       if ( score == tail.size() && !tail.isEmpty()) {
         tail.remove(0);
       }
-      tail.add(new PVector(coord.x, coord.y));
+      tail.add(coord.copy());
     }
 
     vel.mult(scl);

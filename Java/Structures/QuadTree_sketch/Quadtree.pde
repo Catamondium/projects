@@ -65,7 +65,7 @@ class QuadTree {
     }
 
     if (occupancy < points.length) {
-      points[occupancy] = new PVector(a.x, a.y);
+      points[occupancy] = a.copy();
       occupancy++;
       return true;
     } else {

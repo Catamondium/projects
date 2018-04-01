@@ -3,7 +3,7 @@ float beta = 8.0/3.0;
 float rho = 28;
 
 PVector ord = new PVector(1, 1, 1);
-PVector diff = new PVector(0, 0, 0);
+PVector diff = new PVector();
 
 ArrayList<PVector> points = new ArrayList<PVector>();
 void setup() {

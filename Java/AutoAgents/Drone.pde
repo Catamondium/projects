@@ -6,11 +6,11 @@ class Drone {
   Drone(float x_, float y_) {
     pos = new PVector(x_, y_);
     vel = new PVector(random(-2, 2), random(-2, 2));
-    acc = new PVector(0, 0);
+    acc = new PVector();
     r = random(4, 8);
     maxvel = 5;
     maxforce = 0.2;
-    hue = color(floor(random(0, 360)), 360, 360);
+    hue = color(floor(random(360)), 360, 360);
   }
 
   void run(QuadTree t, ArrayList<Drone> d) {
@@ -116,7 +116,7 @@ class Drone {
     ArrayList<PVector> drones = new ArrayList<PVector>();
     t.query(range, drones);
 
-    PVector steer = new PVector(0, 0);
+    PVector steer = new PVector();
     int count = 0;
     for (PVector Opos : drones) {
       float d = PVector.dist(pos, Opos);
@@ -143,7 +143,7 @@ class Drone {
     Rectangle range = new Rectangle(pos.x, pos.y, desiredDist, desiredDist);
     ArrayList<PVector> drones = new ArrayList<PVector>();
     t.query(range, drones);
-    PVector steer = new PVector(0, 0);
+    PVector steer = new PVector();
     int count = 0;
     for (PVector Opos : drones) {
       float d = PVector.dist(pos, Opos);
@@ -161,7 +161,7 @@ class Drone {
 
   // Maintain similar direction to other drones
   PVector align(ArrayList<Drone> drones, float checkdist) {
-    PVector steer = new PVector(0, 0);
+    PVector steer = new PVector();
     int count = 0;
     for (Drone other : drones) {
       float d = PVector.dist(pos, other.pos);
