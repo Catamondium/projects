@@ -2,9 +2,9 @@ class Cell {
   float x, y, w, h, divisions;
   float[] data;
 
-  Cell(float x_, float y_, float w_, float h_) {
-    x = x_;
-    y = y_;
+  Cell(float x_, float y_, float w_, float h_) { // Drawn relative to center
+    x = x_ - (0.5 * w_);
+    y = y_ - (0.5 * h_);
     w = w_;
     h = h_;
   }

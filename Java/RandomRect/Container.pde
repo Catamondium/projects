@@ -13,12 +13,13 @@ class Container {
   void update() {
     for (int col = 0; col < cells.length; col++) {
       translate(x, y);
-      float wCell = w / cells.length;
-      float hCell = h / cells[col].length;
-      float xCell = map(col, 0, cells[col].length, 0, h);
+      float cell_w = w / cells.length;
+      float cell_h = h / cells[col].length;
+      float cell_x = map(col, 0, cells[col].length, 0, h);
       for (int row = 0; row < cells[col].length; row++) {
-        float yCell = map(row, 0, cells.length, 0, w);
-        cells[col][row] = new Cell(xCell, yCell, wCell, hCell);
+        float cell_y = map(row, 0, cells.length, 0, w);
+        translate((0.5 * cell_w), (0.5 * cell_h));
+        cells[col][row] = new Cell(cell_x, cell_y, cell_w, cell_h);
       }
     }
   }
