@@ -2,9 +2,9 @@ class Cell {
   float x, y, w, h, divisions;
   float[] data;
 
-  Cell(float x_, float y_, float w_, float h_) { // Drawn relative to center
-    x = x_ - (0.5 * w_);
-    y = y_ - (0.5 * h_);
+  Cell(float x_, float y_, float w_, float h_) {
+    x = x_;
+    y = y_;
     w = w_;
     h = h_;
   }
@@ -22,7 +22,8 @@ class Cell {
     pushStyle();
     pushMatrix();
 
-    translate(x, y);
+    // Drawn relative to center
+    translate(x - (0.5 * w), y - (0.5 * h));
     colorMode(HSB, h);
     rectMode(CORNER);
     for (int i = 0; i < data.length; i++) {

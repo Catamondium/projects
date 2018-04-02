@@ -2,7 +2,7 @@ Container cont;
 
 void setup() {
   size(600, 600);
-  cont = new Container(300, 300, 300, 400, 1, 1);
+  cont = new Container(0, 0, width, height, 4, 2);
 }
 
 void draw() {
