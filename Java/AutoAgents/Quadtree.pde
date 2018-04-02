@@ -29,7 +29,7 @@ class QuadTree {
   boolean divided = false;
 
   // Children trees
-  QuadTree NorthEast, NorthWest, SouthEast, SouthWest;
+  QuadTree[] children = new QuadTree[4];
 
   QuadTree(Rectangle boundary_, int n) {
     boundary = boundary_;
@@ -44,17 +44,18 @@ class QuadTree {
     float new_width = boundary.w / 2;
     float new_height = boundary.h / 2;
 
-    Rectangle nw = new Rectangle(west, north, new_width, new_height);
-    NorthWest = new QuadTree(nw, points.length);
-
     Rectangle ne = new Rectangle(east, north, new_width, new_height);
-    NorthEast = new QuadTree(ne, points.length);
+    children[0] = new QuadTree(ne, points.length);
 
-    Rectangle sw = new Rectangle(west, south, new_width, new_height);
-    SouthWest = new QuadTree(sw, points.length);
+    Rectangle nw = new Rectangle(west, north, new_width, new_height);
+    children[1] = new QuadTree(nw, points.length);
 
     Rectangle se = new Rectangle(east, south, new_width, new_height);
-    SouthEast = new QuadTree(se, points.length);
+    children[2] = new QuadTree(se, points.length);
+
+
+    Rectangle sw = new Rectangle(west, south, new_width, new_height);
+    children[3] = new QuadTree(sw, points.length);
 
     divided = true;
   }
@@ -72,10 +73,10 @@ class QuadTree {
       if (!divided) {
         subdivide();
       }
-      if (NorthEast.insert(a) ||
-        NorthWest.insert(a) ||
-        SouthEast.insert(a) ||
-        SouthWest.insert(a)) {
+      if (children[0].insert(a) ||
+        children[1].insert(a) ||
+        children[2].insert(a) ||
+        children[3].insert(a)) {
         return true;
       } else {
         return false;
@@ -93,10 +94,10 @@ class QuadTree {
         }
       }
       if (divided) {
-        NorthWest.query(range, found);
-        NorthEast.query(range, found); 
-        SouthWest.query(range, found); 
-        SouthEast.query(range, found);
+        children[0].query(range, found); 
+        children[1].query(range, found);
+        children[2].query(range, found);
+        children[3].query(range, found);
       }
       return found;
     }
@@ -117,10 +118,10 @@ class QuadTree {
     }
 
     if (divided) {
-      NorthWest.debug();
-      NorthEast.debug();
-      SouthEast.debug();
-      SouthWest.debug();
+      children[0].debug();
+      children[1].debug();
+      children[2].debug();
+      children[3].debug();
     }
     popStyle();
   }
