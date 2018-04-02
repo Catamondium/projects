@@ -1,46 +1,37 @@
 class Container {
-  float x, y, w, h, divisions;
-  float[] data;
+  float x, y, w, h;
+  Cell[][] cells;
 
-  Container(float x_, float y_, float w_, float h_) {
+  Container(float x_, float y_, float w_, float h_, int cols_, int rows_) {
     x = x_;
     y = y_;
-
     w = w_;
     h = h_;
+    cells = new Cell[cols_][rows_];
   }
 
   void update() {
-    data = new float[floor(random(10, 100))];
-    for (int i = 0; i < data.length; i++) {
-      data[i] = random(5, 100);
+    for (int col = 0; col < cells.length; col++) {
+      // Drawn relative to center
+      translate(x - (0.5 * w), y - (0.5 * h));
+      float cell_w = w / cells.length;
+      float cell_h = h / cells[col].length;
+      float cell_x = map(col, 0, cells[col].length, 0, h);
+      for (int row = 0; row < cells[col].length; row++) {
+        float cell_y = map(row, 0, cells.length, 0, w);
+        translate((0.5 * cell_w), (0.5 * cell_h));
+        cells[col][row] = new Cell(cell_x, cell_y, cell_w, cell_h);
+        resetMatrix();
+      }
     }
-
-    divisions = h / data.length;
   }
 
   void show() {
-    pushStyle();
-    pushMatrix();
-
-    translate(x, y);
-    colorMode(HSB, h);
-    rectMode(CORNER);
-    for (int i = 0; i < data.length; i++) {
-      float len = map(data[i], 0, 100, 0, w);
-      float row = map(i, 0, data.length, 0, h);
-      color col = color(row, h, h);
-      stroke(col);
-      fill(col);
-      rect(0, row, len, divisions);
+    for (Cell[] col : cells) {
+      for (Cell row : col) {
+        row.update();
+        row.show();
+      }
     }
-
-    colorMode(RGB, 255);
-    noFill();
-    stroke(255);
-    rect(0, 0, w, h);
-
-    popMatrix();
-    popStyle();
   }
 }
