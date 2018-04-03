@@ -45,7 +45,8 @@ class Container {
     rectMode(CENTER);
     noFill();
     colorMode(RGB, 255);
-    stroke(0, 255, 0);
+    strokeWeight(2);
+    stroke(255, 0, 0);
     rect(pos.x, pos.y, w, h);
     popStyle();
   }
