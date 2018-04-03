@@ -12,6 +12,9 @@ void setup() {
 }
 
 void draw() {
+//tessalators[0].tessalate();
+//tessalators[1].tessalate();
+
   background(0);
   frameRate(2);
   for (Tessalator tes : tessalators) {
