@@ -31,6 +31,9 @@ void draw() {
   //    tree.insert(p);
   //  }
   //}
+  
+  //save("output.png");
+  //noLoop();
 }
 
 void quadrat(float x, float y, float dist_) {

@@ -25,6 +25,7 @@ void draw() {
       hive.addDrone(new Drone(mouseX + floor(random(-10, 10)), mouseY + floor(random(-10, 10))));
     }
   }
+
   //saveFrame("output.png");
   //noLoop();
 }
