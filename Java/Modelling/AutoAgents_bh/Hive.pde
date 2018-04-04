@@ -8,14 +8,14 @@ class Hive {
   }
 
   void run() {
-    QuadTree tree = new QuadTree(boundary, 1);
+    QuadTree_bh tree = new QuadTree_bh(boundary);
     for (Drone a : drones) {
       tree.insert(a.pos);
     }
     for (Drone a : drones) {
       a.run(tree, drones);
     }
-    tree.debug(0);
+    tree.debug(1);
   }
 
   void addDrone(Drone a) {

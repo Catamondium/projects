@@ -22,18 +22,17 @@ class Rectangle {
   }
 }
 
-class QuadTree {
+class QuadTree_bh {
   Rectangle boundary;
-  int occupancy = 0;
-  PVector[] bodies;
+  boolean occupied = false;
+  PVector body;
   boolean divided = false;
 
   // Children trees
-  QuadTree[] children = new QuadTree[4];
+  QuadTree_bh[] children = new QuadTree_bh[4];
 
-  QuadTree(Rectangle boundary_, int n) {
+  QuadTree_bh(Rectangle boundary_) {
     boundary = boundary_;
-    bodies = new PVector[n];
   }
 
   void subdivide() {
@@ -45,17 +44,17 @@ class QuadTree {
     float new_height = boundary.h / 2;
 
     Rectangle ne = new Rectangle(east, north, new_width, new_height);
-    children[0] = new QuadTree(ne, bodies.length);
+    children[0] = new QuadTree_bh(ne);
 
     Rectangle nw = new Rectangle(west, north, new_width, new_height);
-    children[1] = new QuadTree(nw, bodies.length);
+    children[1] = new QuadTree_bh(nw);
 
     Rectangle se = new Rectangle(east, south, new_width, new_height);
-    children[2] = new QuadTree(se, bodies.length);
+    children[2] = new QuadTree_bh(se);
 
 
     Rectangle sw = new Rectangle(west, south, new_width, new_height);
-    children[3] = new QuadTree(sw, bodies.length);
+    children[3] = new QuadTree_bh(sw);
 
     divided = true;
   }
@@ -65,9 +64,9 @@ class QuadTree {
       return false;
     }
 
-    if (occupancy < bodies.length) {
-      bodies[occupancy] = a.copy();
-      occupancy++;
+    if (occupied == false) {
+      body = a.copy();
+      occupied = true;
       return true;
     } else {
       if (!divided) {
@@ -88,9 +87,9 @@ class QuadTree {
     if (!boundary.intersects(range)) {
       return found;
     } else {
-      for (int i = 0; i < occupancy; i++) {
-        if (range.contains(bodies[i])) {
-          found.add(bodies[i]);
+      if (occupied) {
+        if (range.contains(body)) {
+          found.add(body);
         }
       }
       if (divided) {
@@ -110,7 +109,7 @@ class QuadTree {
       drawBounds();
       break;
     default:
-      if (occupancy > 0) {
+      if (occupied) {
         drawBounds();
       }
       break;
@@ -126,13 +125,10 @@ class QuadTree {
 
   void drawBounds() {
     pushStyle();
-    if (occupancy > 0) {
+    if (occupied) {
       stroke(255);
       strokeWeight(3);
-      for (int i = 0; i < occupancy; i++)
-      {
-        point(bodies[i].x, bodies[i].y);
-      }
+      point(body.x, body.y);
     }
 
     rectMode(CENTER);

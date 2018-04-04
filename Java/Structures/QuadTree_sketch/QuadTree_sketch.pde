@@ -18,7 +18,7 @@ void draw() {
   }
   background(0);
   frameRate(0.5);
-  tree.debug();
+  tree.debug(0);
 
 
   // Testing

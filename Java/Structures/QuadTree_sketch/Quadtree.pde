@@ -25,7 +25,7 @@ class Rectangle {
 class QuadTree {
   Rectangle boundary;
   int occupancy = 0;
-  PVector[] points;
+  PVector[] bodies;
   boolean divided = false;
 
   // Children trees
@@ -33,7 +33,7 @@ class QuadTree {
 
   QuadTree(Rectangle boundary_, int n) {
     boundary = boundary_;
-    points = new PVector[n];
+    bodies = new PVector[n];
   }
 
   void subdivide() {
@@ -45,17 +45,17 @@ class QuadTree {
     float new_height = boundary.h / 2;
 
     Rectangle ne = new Rectangle(east, north, new_width, new_height);
-    children[0] = new QuadTree(ne, points.length);
+    children[0] = new QuadTree(ne, bodies.length);
 
     Rectangle nw = new Rectangle(west, north, new_width, new_height);
-    children[1] = new QuadTree(nw, points.length);
+    children[1] = new QuadTree(nw, bodies.length);
 
     Rectangle se = new Rectangle(east, south, new_width, new_height);
-    children[2] = new QuadTree(se, points.length);
+    children[2] = new QuadTree(se, bodies.length);
 
 
     Rectangle sw = new Rectangle(west, south, new_width, new_height);
-    children[3] = new QuadTree(sw, points.length);
+    children[3] = new QuadTree(sw, bodies.length);
 
     divided = true;
   }
@@ -65,8 +65,8 @@ class QuadTree {
       return false;
     }
 
-    if (occupancy < points.length) {
-      points[occupancy] = a.copy();
+    if (occupancy < bodies.length) {
+      bodies[occupancy] = a.copy();
       occupancy++;
       return true;
     } else {
@@ -89,8 +89,8 @@ class QuadTree {
       return found;
     } else {
       for (int i = 0; i < occupancy; i++) {
-        if (range.contains(points[i])) {
-          found.add(points[i]);
+        if (range.contains(bodies[i])) {
+          found.add(bodies[i]);
         }
       }
       if (divided) {
@@ -103,26 +103,43 @@ class QuadTree {
     }
   }
 
-  void debug() {
+  void debug(int verbosity) {
+
+    switch(verbosity) {
+    case 1:
+      drawBounds();
+      break;
+    default:
+      if (occupancy > 0) {
+        drawBounds();
+      }
+      break;
+    }
+
+    if (divided) {
+      children[0].debug(verbosity);
+      children[1].debug(verbosity);
+      children[2].debug(verbosity);
+      children[3].debug(verbosity);
+    }
+  }
+
+  void drawBounds() {
     pushStyle();
+    if (occupancy > 0) {
+      stroke(255);
+      strokeWeight(3);
+      for (int i = 0; i < occupancy; i++)
+      {
+        point(bodies[i].x, bodies[i].y);
+      }
+    }
+
     rectMode(CENTER);
     stroke(255);
     strokeWeight(1);
     noFill();
     rect(boundary.x, boundary.y, boundary.w * 2, boundary.h * 2);
-
-    for (int i = 0; i < occupancy; i++) {
-      stroke(255);
-      strokeWeight(3);
-      point(points[i].x, points[i].y);
-    }
-
-    if (divided) {
-      children[0].debug();
-      children[1].debug();
-      children[2].debug();
-      children[3].debug();
-    }
     popStyle();
   }
 }
