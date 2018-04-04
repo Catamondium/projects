@@ -8,8 +8,8 @@ class Drone {
     vel = new PVector(random(-2, 2), random(-2, 2));
     acc = new PVector();
     r = random(4, 8);
-    maxvel = 5;
-    maxforce = 0.2;
+    maxvel = 3.25;
+    maxforce = 0.125;
     hue = color(floor(random(360)), 360, 360);
   }
 

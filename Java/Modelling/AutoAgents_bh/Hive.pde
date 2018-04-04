@@ -15,7 +15,7 @@ class Hive {
     for (Drone a : drones) {
       a.run(tree, drones);
     }
-    tree.debug(1);
+    tree.debug(0);
   }
 
   void addDrone(Drone a) {
