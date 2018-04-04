@@ -8,29 +8,30 @@ void setup() {
   noFill();
   strokeWeight(1);
   boundary = new Rectangle(width / 2, height / 2, width / 2, height / 2);
-}
-
-void draw() {
-  tree = new QuadTree(boundary, 4);
+  tree = new QuadTree(boundary, 1);
+  
   for (int i = 0; i < 600; i++) {
     PVector p = new PVector(random(width), random(height));
     tree.insert(p);
   }
+}
+
+void draw() {
   background(0);
-  frameRate(0.5);
+  //frameRate(0.5);
   tree.debug(1);
 
 
   // Testing
-  for (int i = 0; i < 3; i++) {
-    quadrat(random(width), random(height), random(100));
-  }
-  //if (mousePressed) {
-  //  for (int i = 0; i < 5; i++) {
-  //    PVector p = new PVector(mouseX + random(-5, 5), mouseY + random(-5, 5));
-  //    tree.insert(p);
-  //  }
+  //for (int i = 0; i < 3; i++) {
+  //  quadrat(random(width), random(height), random(100));
   //}
+  if (mousePressed) {
+    for (int i = 0; i < 3; i++) {
+      PVector p = new PVector(mouseX + random(-10, 10), mouseY + random(-10, 10));
+      tree.insert(p);
+    }
+  }
   
   //save("output.png");
   //noLoop();
