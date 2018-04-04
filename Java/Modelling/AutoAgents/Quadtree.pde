@@ -107,11 +107,14 @@ class QuadTree {
 
     switch(verbosity) {
     case 1:
-      drawBounds();
+      drawBounds(false);
+      break;
+    case 2:
+      drawBounds(true);
       break;
     default:
       if (occupancy > 0) {
-        drawBounds();
+        drawBounds(false);
       }
       break;
     }
@@ -124,14 +127,16 @@ class QuadTree {
     }
   }
 
-  void drawBounds() {
+  void drawBounds(boolean drawpoints) {
     pushStyle();
-    if (occupancy > 0) {
-      stroke(255);
-      strokeWeight(3);
-      for (int i = 0; i < occupancy; i++)
-      {
-        point(bodies[i].x, bodies[i].y);
+    if (drawpoints) {
+      if (occupancy > 0) {
+        stroke(255);
+        strokeWeight(3);
+        for (int i = 0; i < occupancy; i++)
+        {
+          point(bodies[i].x, bodies[i].y);
+        }
       }
     }
 

@@ -106,11 +106,14 @@ class QuadTree_bh {
 
     switch(verbosity) {
     case 1:
-      drawBounds();
+      drawBounds(false);
+      break;
+    case 2:
+      drawBounds(true);
       break;
     default:
       if (occupied) {
-        drawBounds();
+        drawBounds(false);
       }
       break;
     }
@@ -123,12 +126,14 @@ class QuadTree_bh {
     }
   }
 
-  void drawBounds() {
+  void drawBounds(Boolean drawpoints) {
     pushStyle();
-    if (occupied) {
-      stroke(255);
-      strokeWeight(3);
-      point(body.x, body.y);
+    if (drawpoints) {
+      if (occupied) {
+        stroke(255);
+        strokeWeight(3);
+        point(body.x, body.y);
+      }
     }
 
     rectMode(CENTER);
