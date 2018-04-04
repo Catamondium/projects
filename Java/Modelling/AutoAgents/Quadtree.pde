@@ -104,12 +104,16 @@ class QuadTree {
   }
 
   void debug(int verbosity) {
-
     switch(verbosity) {
     case 1:
-      drawBounds(false);
+      if (occupancy > 0) {
+        drawBounds(true);
+      }
       break;
     case 2:
+      drawBounds(false);
+      break;
+    case 3:
       drawBounds(true);
       break;
     default:
