@@ -15,27 +15,27 @@ class Rectangle {
     pushStyle();
     rectMode(CORNERS);
     fill(col);
-    stroke(#FF00FF);
-    strokeWeight(2);
+    noStroke();
     rect(x, y, x + w, y + h);
     popStyle();
   }
 
   boolean intersects(Rectangle o) {
-    /* TODO: side intersection
-    Checking if 'o' contains my center.
-    !!! NOT functional for objects with width greater than 2 * grid !!!
-    **/
-    PVector center = new PVector(x + 0.5 * w, y + 0.5 * h);
+    // Works with frog smaller than obsticles, checking the obsticles
+    float top = y;
+    float bottom = y + h;
+    float left = x;
+    float right = x + w;
 
     float Otop = o.y;
     float Obottom = o.y + o.h;
     float Oleft = o.x;
     float Oright = o.x + o.w;
 
-    return (((center.x >= Oleft) &&
-      (center.x <= Oright)) &&
-      ((center.y >= Otop) &&
-      (center.y <= Obottom)));
+    return !(
+      (top <= Obottom) ||
+      (bottom >= Otop) ||
+      (right <= Oleft) ||
+      (left <= Oright));
   }
 }
