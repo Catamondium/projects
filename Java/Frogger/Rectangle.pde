@@ -5,7 +5,7 @@ class Rectangle {
   Rectangle(float x_, float y_, // Constructed relative to center
     float w_, float h_, color col_, boolean centered) {
     if (centered) {
-      x = ((x_ + 1) * grid.x) - 0.5 * grid.x;
+      x = ((x_ + 1) * grid.x) - (0.5 * grid.x);
     } else {
       x = ((x_ + 1) * grid.x) - grid.x;
     }

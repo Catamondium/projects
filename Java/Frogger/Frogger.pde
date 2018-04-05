@@ -1,27 +1,34 @@
+/*TODO:
+ * GAMEPLAY:
+ *  Log ==> sticky intersection, deadly !intersection
+ *  Car ==> deadly intersection
+ **/
+
 Frog frog;
-Obsticle obj;
 PVector grid;
-Lane[] lanes = new Lane[5];
+Lane[] lanes = new Lane[10];
 
 void ResetGame() {
-  frog = new Frog(6);
+  frog = new Frog();
 }
 
 void setup() {
   size(400, 400);
-  grid = new PVector(40, 40); // 10 lanes, 10 tiles long
-  lanes = new Lane[floor(height / grid.y)];
+  noSmooth();
+  grid = new PVector(40, height / lanes.length); // 10 lanes, 10 tiles long
   ResetGame();
-  lanes[0] = new Lane(0, #222222);
-  lanes[1] = new Lane(1, 4, 2, -2, 1, #555555, CAR);
-  lanes[2] = new Lane(2, 4, 2, -2, 1, #555555, CAR);
-  lanes[3] = new Lane(3, 4, 2, -2, 1, #555555, CAR);
-  lanes[4] = new Lane(4, #222222);
-  lanes[5] = new Lane(5, 4, 2, -2, 1, #000033, LOG);
-  lanes[6] = new Lane(6, 4, 2, -2, 1, #000033, LOG);
-  lanes[7] = new Lane(7, 4, 2, -2, 1, #000033, LOG);
-  lanes[8] = new Lane(8, #222222);
-  lanes[9] = new Lane(9, #222222);
+
+  // Create lanes
+  lanes[0] = new Lane(0);
+  lanes[1] = new Lane(1, 4, -2, 0, CAR);
+  lanes[2] = new Lane(2, 4, -2, 2, CAR);
+  lanes[3] = new Lane(3, 4, -2, 0, CAR);
+  lanes[4] = new Lane(4);
+  lanes[5] = new Lane(5, 4, -2, 2, LOG);
+  lanes[6] = new Lane(6, 4, -2, 0, LOG);
+  lanes[7] = new Lane(7, 4, -2, 2, LOG);
+  lanes[8] = new Lane(8);
+  lanes[9] = new Lane(9);
 }
 
 void draw() {
@@ -32,7 +39,7 @@ void draw() {
   }
   frog.update();
   frog.show();
-  //debug();
+  debug();
 }
 
 void keyPressed() {
@@ -52,13 +59,12 @@ void keyPressed() {
   }
 }
 
-// Debugging
 void debug() {
   stroke(255, 255, 255, 0.25 * 255);
   for (float i = 0; i < width; i += grid.x) {
-    line(i, 0, i, height);
+    line(i - 1, 0, i - 1, height);
   }
   for (float i = 0; i < height; i += grid.y) {
-    line(0, i, width, i);
+    line(0, i - 1, width, i - 1);
   }
 }
