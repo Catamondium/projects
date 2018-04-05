@@ -4,15 +4,14 @@ int LOG = 2;
 class Lane extends Rectangle {
   Obsticle[] obsticles;
   int type;
-  float speed;
 
-  Lane(float y_) {
+  Lane(float y_) { // Make safety at y
     super(5, y_, width, grid.y, #222222, false);
     type = SAFETY;
     obsticles = new Obsticle[0];
   }
 
-  Lane(float y_, int num, float spd, float xoff, int type_) {
+  Lane(float y_, int num, float spd, float xoff, int type_) { // Make hostile lanes
     super(5, y_, width, height / lanes.length, #FFFFFF, false);
     if (type_ == CAR) {
       super.col = #555555;
@@ -20,9 +19,9 @@ class Lane extends Rectangle {
       super.col = #000033;
     }
     type = type_;
-    obsticles = new Obsticle[num];
-    speed = spd;
+    obsticles = new Obsticle[num]; // Initalise obsticles array
 
+    // Initalise obsticles
     for (int i = 0; i < obsticles.length; i++) {
       color colO = #FFFFFF;
       if (type_ == CAR) {
@@ -45,6 +44,27 @@ class Lane extends Rectangle {
     show();
     for (Obsticle a : obsticles) {
       a.show();
+    }
+  }
+
+  void check(Frog frog) {
+    if (type == CAR) {
+      for (Obsticle o : obsticles) {
+        if (frog.intersects(o)) {
+          GameOver();
+        }
+      }
+    } else if (type == LOG) {
+      boolean ok = false;
+      for (Obsticle o : obsticles) {
+        if (frog.intersects(o)) {
+          ok = true;
+          frog.attach(o);
+        }
+      }
+      //if (!ok) {
+      //  GameOver();
+      //}
     }
   }
 }

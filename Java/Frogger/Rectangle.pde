@@ -25,7 +25,7 @@ class Rectangle {
   }
 
   boolean intersects(Rectangle o) {
-    // Works with frog smaller than obsticles, checking the obsticles
+    // Works with frog smaller than obsticles
     float top = y - 0.5 * h;
     float bottom = y + 0.5 * h;
     float left = x - 0.5 * w;
@@ -37,9 +37,9 @@ class Rectangle {
     float Oright = o.x + 0.5 * o.w;
 
     return !(
-      (top <= Obottom) ||
-      (bottom >= Otop) ||
-      (right <= Oleft) ||
-      (left <= Oright));
+      (top < Obottom) ||
+      (bottom > Otop) ||
+      (right < Oleft) ||
+      (left < Oright));
   }
 }
