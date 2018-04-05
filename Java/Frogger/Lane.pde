@@ -12,7 +12,7 @@ class Lane extends Rectangle {
  }
  
  Lane(float y_, int num, int spc, float spd, float xoff, color col_, int type_) {
-   super(0, y_, width, grid.y, col_);
+   super(width / 2, y_, width, grid.y, col_);
    type = type_;
    objects = new Obsticle[num];
    

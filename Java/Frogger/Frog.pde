@@ -1,7 +1,7 @@
 class Frog extends Rectangle {
   int lane = 0; // !! unconstrained
   Frog(float x_) {
-    super(x_, 1 + height - grid.y, grid.x - 2, grid.y - 2, #00FF00);
+    super(x_, height + grid.y, grid.x - 5, grid.y - 5, #00FF00);
   }
 
   void dir(float x_, float y_) {
@@ -17,7 +17,7 @@ class Frog extends Rectangle {
 
   void update() {
     // Stay on screen
-    frog.x = constrain(x, 1, width - w - 1);
-    frog.y = constrain(y, 1, height - h - 1);
+    frog.x = constrain(x, w * 0.5, width - 0.5 * w);
+    frog.y = constrain(y, h * 0.5, height - 0.5 * h);
   }
 }
