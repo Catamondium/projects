@@ -1,10 +1,45 @@
+int SAFETY = 0;
+int CAR = 1;
+int LOG = 2;
+class Lane extends Rectangle {
+ Obsticle[] objects;
+ int type;
+ 
+ Lane(float y_, color col_) {
+  super(0, y_, width, grid.y, col_);
+  type = SAFETY;
+  objects = new Obsticle[0];
+ }
+ 
+ Lane(float y_, int num, int spc, float spd, float xoff, color col_, int type_) {
+   super(0, y_, width, grid.y, col_);
+   type = type_;
+   objects = new Obsticle[num];
+   
+   for(int i = 0; i < objects.length; i++) {
+    objects[i] = new Obsticle((xoff + (spc * i) + grid.x), y_, 2 * grid.x, spd, #FF0000);
+   }
+ }
+ 
+ void update() {
+  for(Obsticle a : objects) {
+   a.update(); 
+  }
+ }
+ 
+ void display() {
+   show();
+  for(Obsticle a : objects) {
+   a.show(); 
+  }
+ }
+}
+
+
 /*
 TODO:
-  PRE: type macros
  Create Lane object:
-   pos.x = 0 & w = width & h = grid.y *constants*
    typed constructor:
-     Obstical speed, forward to Obstical !! Keep for frog
      Obstical spacing + offset
      number of Obsticals
    Obstical[]
@@ -13,7 +48,6 @@ TODO:
    Type:
      Log ==> sticky intersection, deadly !intersection
      Car ==> deadly intersection
-   Safety + safety constructor
    
    f(x):
      update()
