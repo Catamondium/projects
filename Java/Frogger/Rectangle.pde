@@ -3,8 +3,12 @@ class Rectangle {
   color col = #000000;
 
   Rectangle(float x_, float y_, // Constructed relative to center
-    float w_, float h_, color col_) {
-    x = ((x_ + 1) * grid.x) - (0.5 * grid.x);
+    float w_, float h_, color col_, boolean centered) {
+    if (centered) {
+      x = ((x_ + 1) * grid.x) - 0.5 * grid.x;
+    } else {
+      x = ((x_ + 1) * grid.x) - grid.x;
+    }
     y = height - ((y_ + 1) * grid.y) + (0.5 * grid.y);
     w = w_;
     h = h_;

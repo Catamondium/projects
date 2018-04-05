@@ -2,34 +2,43 @@ int SAFETY = 0;
 int CAR = 1;
 int LOG = 2;
 class Lane extends Rectangle {
- Obsticle[] objects;
+ Obsticle[] obsticles;
  int type;
+ float speed;
  
  Lane(float y_, color col_) {
-  super(5, y_, width, grid.y, col_);
+  super(5, y_, width, grid.y, col_, false);
   type = SAFETY;
-  objects = new Obsticle[0];
+  obsticles = new Obsticle[0];
  }
  
  Lane(float y_, int num, int spc, float spd, float xoff, color col_, int type_) {
-   super(5, y_, width, grid.y, col_);
+   super(5, y_, width, height / lanes.length, col_, false);
    type = type_;
-   objects = new Obsticle[num];
+   obsticles = new Obsticle[num];
+   speed = spd;
    
-   for(int i = 0; i < objects.length; i++) {
-    objects[i] = new Obsticle(grid.x * (i + spc), y_, 2 * grid.x, spd, #FF0000);
+   for(int i = 0; i < obsticles.length; i++) {
+     color colO = #FFFFFF;
+     if(type_ == CAR) {
+      colO =  #FF0000;
+     }
+     if(type_ == LOG) {
+      colO = #654321; 
+     }
+    obsticles[i] = new Obsticle(grid.x * (i + spc), y_, 2 * grid.x, spd, colO);
    }
  }
  
  void update() {
-  for(Obsticle a : objects) {
+  for(Obsticle a : obsticles) {
    a.update(); 
   }
  }
  
  void display() {
    show();
-  for(Obsticle a : objects) {
+  for(Obsticle a : obsticles) {
    a.show(); 
   }
  }

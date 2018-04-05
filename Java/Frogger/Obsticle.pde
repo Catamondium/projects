@@ -1,7 +1,7 @@
 class Obsticle extends Rectangle {
   float speed;
   Obsticle(float x_, float y_, float w_, float speed_, color col_) {
-    super(x_, y_, w_, grid.y, col_);
+    super(x_, y_, w_, grid.y, col_, true);
     speed = speed_;
   }
 

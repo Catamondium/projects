@@ -1,32 +1,38 @@
 Frog frog;
 Obsticle obj;
 PVector grid;
-Lane[] lanes = new Lane[2];
+Lane[] lanes = new Lane[5];
 
 void ResetGame() {
   frog = new Frog(6);
 }
 
 void setup() {
-  size(550, 550);
-  grid = new PVector(50, 50); // 11 lanes, 11 tiles long
+  size(400, 400);
+  grid = new PVector(40, 40); // 10 lanes, 10 tiles long
+  lanes = new Lane[floor(height / grid.y)];
   ResetGame();
-  obj = new Obsticle(5, 1, 2 * grid.x, -2, #FF0000);
-  lanes[0] = new Lane(0, #001100);
-  lanes[1] = new Lane(1, 4, 2, -2, 1, #110000, CAR);
+  lanes[0] = new Lane(0, #222222);
+  lanes[1] = new Lane(1, 4, 2, -2, 1, #555555, CAR);
+  lanes[2] = new Lane(2, 4, 2, -2, 1, #555555, CAR);
+  lanes[3] = new Lane(3, 4, 2, -2, 1, #555555, CAR);
+  lanes[4] = new Lane(4, #222222);
+  lanes[5] = new Lane(5, 4, 2, -2, 1, #000033, LOG);
+  lanes[6] = new Lane(6, 4, 2, -2, 1, #000033, LOG);
+  lanes[7] = new Lane(7, 4, 2, -2, 1, #000033, LOG);
+  lanes[8] = new Lane(8, #222222);
+  lanes[9] = new Lane(9, #222222);
 }
 
 void draw() {
   background(0);
-  obj.update();
+  for (Lane a : lanes) {
+    a.update();
+    a.display();
+  }
   frog.update();
-  lanes[0].update();
-  lanes[1].update();
-  lanes[0].display();
-  lanes[1].display();
-  obj.show();
   frog.show();
-  debug();
+  //debug();
 }
 
 void keyPressed() {
