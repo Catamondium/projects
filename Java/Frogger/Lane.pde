@@ -6,18 +6,18 @@ class Lane extends Rectangle {
  int type;
  
  Lane(float y_, color col_) {
-  super(0, y_, width, grid.y, col_);
+  super(5, y_, width, grid.y, col_);
   type = SAFETY;
   objects = new Obsticle[0];
  }
  
  Lane(float y_, int num, int spc, float spd, float xoff, color col_, int type_) {
-   super(width / 2, y_, width, grid.y, col_);
+   super(5, y_, width, grid.y, col_);
    type = type_;
    objects = new Obsticle[num];
    
    for(int i = 0; i < objects.length; i++) {
-    objects[i] = new Obsticle((xoff + (spc * i) + grid.x), y_, 2 * grid.x, spd, #FF0000);
+    objects[i] = new Obsticle(grid.x * (i + spc), y_, 2 * grid.x, spd, #FF0000);
    }
  }
  

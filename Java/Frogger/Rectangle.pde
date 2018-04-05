@@ -4,8 +4,8 @@ class Rectangle {
 
   Rectangle(float x_, float y_, // Constructed relative to center
     float w_, float h_, color col_) {
-    x = x_;
-    y = y_;
+    x = ((x_ + 1) * grid.x) - (0.5 * grid.x);
+    y = height - ((y_ + 1) * grid.y) + (0.5 * grid.y);
     w = w_;
     h = h_;
     col = col_;
