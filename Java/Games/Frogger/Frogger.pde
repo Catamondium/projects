@@ -1,5 +1,6 @@
 /*
  * * 0 1 2 3 4 5 6 |
+ * 6               |
  * 5               |
  * 4 Board         | Height
  * 3 Coordinates   |
