@@ -1,62 +1,29 @@
-/*GAMEPLAY:
- * Car ==> deadly intersection
- * Log ==> sticky intersection, deadly !intersection
- *
- *BUG:
- * frog.count resetting at winlane :: GameReset() responsible.
- **/
-
 Frog player;
 PVector grid;
+int numTiles = 10;
 Lane[] lanes = new Lane[10];
 int lives = 3;
-
-void GameOver() { // Win/loss conditionals
-  if (player.myLane() == lanes.length) {
-    println("Win!");
-  } else {
-    lives--;
-    if (lives > 0) {
-      println("You have " + lives + " lives remaining");
-    } else {
-      println("Game over");
-    }
-  }
-  GameReset();
-}
-void GameReset() {
-  player = new Frog(); // Why no respawn?
-  // Create lanes
-  lanes[0] = new Lane(0);
-  lanes[1] = new Lane(1, 4, -2, 0, CAR);
-  lanes[2] = new Lane(2, 4, -2.5, 2, CAR);
-  lanes[3] = new Lane(3, 4, -2, 0, CAR);
-  lanes[4] = new Lane(4);
-  lanes[5] = new Lane(5, 4, 1, 2, LOG);
-  lanes[6] = new Lane(6, 4, 1.5, 0, LOG);
-  lanes[7] = new Lane(7, 4, 1.52, 2, LOG);
-  lanes[8] = new Lane(8);
-  lanes[9] = new Lane(9);
-}
 
 void setup() {
   size(400, 400);
   noSmooth();
-  grid = new PVector(40, height / lanes.length); // 10 lanes, 10 tiles long
+  grid = new PVector(width / numTiles, height / lanes.length); // 10 lanes, 10 tiles long
   GameReset();
 }
 
 void draw() {
   background(0);
-  for (Lane a : lanes) {
-    a.update();
-    a.display();
-  }
   player.update();
-  player.show();
-
-
+  for (Lane a : lanes) {
+    a.run();
+  }
   lanes[player.myLane()].check(player);
+  player.show();
+  textAlign(LEFT);
+  text("Lives: " + lives, 0, 10);
+
+  //save("output.png");
+  //noLoop();
   //debug();
 }
 
@@ -85,4 +52,38 @@ void debug() {
   for (float i = 0; i < height; i += grid.y) {
     line(0, i - 1, width, i - 1);
   }
+}
+
+void GameOver() { // Win/loss conditionals
+  lives--;
+  if (lives > 0) {
+    println(lives + " lives remaining");
+  } else {
+    println("Game over");
+  }
+  GameReset();
+  if (lives < 1) { // Reset whole state after complete loss
+    lives = 3;
+  }
+}
+
+void GameWon() {
+  println("Win!");
+  GameReset();
+}
+
+void GameReset() {
+  player = new Frog();
+  // Create lanes, successful spawn
+  lanes[0] = new Lane(0);
+  lanes[1] = new Lane(1, 4, -2, 0, CAR);
+  lanes[2] = new Lane(2, 4, -2.5, 2, CAR);
+  lanes[3] = new Lane(3, 4, -2, 0, CAR);
+  lanes[4] = new Lane(4);
+  lanes[5] = new Lane(5, 4, 1, 2, LOG);
+  lanes[6] = new Lane(6, 4, 1.5, 0, LOG);
+  lanes[7] = new Lane(7, 4, 1.52, 2, LOG);
+  lanes[8] = new Lane(8);
+  lanes[9] = new Lane(9);
+  lanes[9].col = #003300; // Override winlane colour
 }
