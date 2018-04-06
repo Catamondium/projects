@@ -1,3 +1,15 @@
+/*
+ * * 0 1 2 3 4 5 6 |
+ * 5               |
+ * 4 Board         | Height
+ * 3 Coordinates   |
+ * 2               |
+ * 1               |
+ * 0               |
+ * --------------->V
+ *      Width
+ **/
+
 Frog player;
 PVector grid;
 int numTiles = 10;
@@ -6,7 +18,6 @@ int lives = 3;
 
 void setup() {
   size(400, 400);
-  noSmooth();
   grid = new PVector(width / numTiles, height / lanes.length); // 10 lanes, 10 tiles long
   GameReset();
 }
@@ -20,7 +31,7 @@ void draw() {
   lanes[player.myLane()].check(player);
   player.show();
   textAlign(LEFT);
-  text("Lives: " + lives, 0, 10);
+  text("Lives: " + lives, 2, 12);
 
   //save("output.png");
   //noLoop();
@@ -45,7 +56,7 @@ void keyPressed() {
 }
 
 void debug() {
-  stroke(255, 0, 255, 0.30 * 255);
+  stroke(255, 255, 255, 0.30 * 255);
   for (float i = 0; i < width; i += grid.x) {
     line(i - 1, 0, i - 1, height);
   }
@@ -56,10 +67,18 @@ void debug() {
 
 void GameOver() { // Win/loss conditionals
   lives--;
+  String deathmethod = "";
+  switch(lanes[player.myLane()].type) {
+  case 1:
+    deathmethod += "You got run over, ";
+    break;
+  case 2:
+    deathmethod += "Your drowned, ";
+  }
   if (lives > 0) {
-    println(lives + " lives remaining");
+    println(deathmethod + lives + " lives remaining.");
   } else {
-    println("Game over");
+    println(deathmethod + "Game over");
   }
   GameReset();
   if (lives < 1) { // Reset whole state after complete loss

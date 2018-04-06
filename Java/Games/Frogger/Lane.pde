@@ -52,11 +52,10 @@ class Lane extends Rectangle {
     display();
   }
 
-  void check(Frog frog) { // Dysfunctional
+  void check(Frog frog) {
     if (type == CAR) {
       for (Obsticle o : obsticles) {
-        if (o.intersects(frog)) { // Never intersect?
-          println("Crash");
+        if (o.intersects(frog)) {
           GameOver();
         }
       }
