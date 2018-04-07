@@ -12,4 +12,4 @@ int main (void) {
 	  printf("Number is 0.");
   }
   return 0;
-    };
+ }

@@ -1,12 +1,12 @@
 #include <stdio.h>
 
-int main(void){
+int main(void) {
   int num = 7;
   int y = fibbonacci(num);
   printf("%d\n", y);
 }
 
-int fibonacci(int i){
+int fibonacci(int i) {
   int first = 0;
   int second = 1;
   int result;
