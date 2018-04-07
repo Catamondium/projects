@@ -1,23 +1,15 @@
 #include <stdio.h>
-#include <>
 
-main () {
+int main (void) {
   printf("Integer:\t");
   signed int n;
   scanf("%i", n);
-  switch (n) {
-    
-  case n < 0:
-    printf("Number is negative");
-    break;
-    
-  case n > 0:
-    printf("Number is positive");
-    break;
-    
-  default:
-    printf("Number is 0");
-    break;
-  };
+  if(n < 0) {
+	  printf("Number is negative.");
+  } else if (n > 0) {
+	  printf("Number is positive.");
+  } else {
+	  printf("Number is 0.");
+  }
   return 0;
     };

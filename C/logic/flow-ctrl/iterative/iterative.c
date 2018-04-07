@@ -1,26 +1,30 @@
 #include <stdio.h>
 
-main(){
-  int INPUT;
-  scanf("%d", &INPUT);
-  printf("%d\n", fibonacci(INPUT));
+int main(void){
+  int num = 7;
+  int y = fibbonacci(num);
+  printf("%d\n", y);
 }
-fibonacci(int i){
+
+int fibonacci(int i){
   int first = 0;
   int second = 1;
   int result;
-
-  if (i == 0)
-    {return 0;}
-  if (i == 1)
-    {return 1;}
-
-  else {
-    for (int n = 1; n < i; n++) {
+  
+  switch(i) {
+	  case 0:
+	  result = 0;
+	  break;
+	  case 1:
+	  result = 1;
+	  break;
+	  default:
+	      for (int n = 1; n < i; n++) {
       result = first + second;
       first = second;
       second = result;
     }
-    return result;
+    break;
   }
+  return result;
 }

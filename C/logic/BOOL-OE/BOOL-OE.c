@@ -1,10 +1,7 @@
 #include <stdio.h>
 
 int main() {
-  int n;
-  printf("enter integer: "); //input
-  scanf("%d/n", &n);
-
+  int n = 5;
   if (n % 2 == 0) { //test integer response
     printf("Even\n"); //if true
   }

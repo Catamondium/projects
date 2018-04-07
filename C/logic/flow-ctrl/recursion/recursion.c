@@ -1,9 +1,13 @@
 #include <stdio.h>
 
-main (){
-  int i; //global input
-  scanf("%d", &i);
-  int factorial (int n) { //local input
+int main (){
+  int x = 3;
+  int y = factorial(x);
+  printf("%d\n", y); //output
+  return factorial(i);
+}
+
+int factorial (int n) { //local input
 
     if (n == 0) //test empty product, reduction resolve
       {
@@ -14,7 +18,3 @@ main (){
     }
     return n;
   }
-  
-  printf("%d\n", factorial(i)); //output
-  return factorial(i);
-}
