@@ -1,3 +1,13 @@
+class Pack {
+  PVector body;
+  Drone store;
+
+  Pack(Drone a) {
+    body = a.pos.copy();
+    store = a;
+  }
+}
+
 class Rectangle {
   float x, y, w, h;
   Rectangle(float x_, float y_, float w_, float h_) {
@@ -25,7 +35,7 @@ class Rectangle {
 class QuadTree {
   Rectangle boundary;
   int occupancy = 0;
-  PVector[] bodies;
+  Pack[] bodies;
   boolean divided = false;
 
   // Children trees
@@ -33,7 +43,7 @@ class QuadTree {
 
   QuadTree(Rectangle boundary_, int n) {
     boundary = boundary_;
-    bodies = new PVector[n];
+    bodies = new Pack[n];
   }
 
   void subdivide() {
@@ -60,13 +70,13 @@ class QuadTree {
     divided = true;
   }
 
-  boolean insert(PVector a) {
-    if (!boundary.contains(a)) {
+  boolean insert(Drone a) {
+    if (!boundary.contains(a.pos)) {
       return false;
     }
 
     if (occupancy < bodies.length) {
-      bodies[occupancy] = a.copy();
+      bodies[occupancy] = new Pack(a);
       occupancy++;
       return true;
     } else {
@@ -84,13 +94,13 @@ class QuadTree {
     }
   }
 
-  ArrayList query(Rectangle range, ArrayList<PVector> found) {
+  ArrayList query(Rectangle range, ArrayList<Drone> found) {
     if (!boundary.intersects(range)) {
       return found;
     } else {
       for (int i = 0; i < occupancy; i++) {
-        if (range.contains(bodies[i])) {
-          found.add(bodies[i]);
+        if (range.contains(bodies[i].body)) {
+          found.add(bodies[i].store);
         }
       }
       if (divided) {
@@ -139,7 +149,7 @@ class QuadTree {
         strokeWeight(3);
         for (int i = 0; i < occupancy; i++)
         {
-          point(bodies[i].x, bodies[i].y);
+          point(bodies[i].body.x, bodies[i].body.y);
         }
       }
     }
