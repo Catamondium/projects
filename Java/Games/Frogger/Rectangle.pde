@@ -6,7 +6,7 @@ class Rectangle {
   Rectangle(float x_, float y_, // Constructed relative to center
     float w_, float h_, color col_, boolean centered_) {
     x = (x_ + 1) * grid.x;
-    
+
     x -= (centered_) ? 0.5 * grid.x : grid.x; // Correct between lanes vs characters
 
     y = height - (y_ + 0.5) * grid.y;

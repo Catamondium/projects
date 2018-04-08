@@ -13,8 +13,8 @@ class Drone {
     hue = color(floor(random(360)), 360, 360);
   }
 
-  void run(QuadTree_bh t, ArrayList<Drone> d) {
-    hive(t, d);
+  void run(QuadTree_bh t) {
+    hive(t);
     update();
     edges();
     show();
@@ -57,13 +57,13 @@ class Drone {
     acc.add(force);
   }
 
-  void hive(QuadTree_bh t, ArrayList<Drone> drones) {
+  void hive(QuadTree_bh t) {
     //PVector target = new PVector(mouseX, mouseY);
     //PVector seekF = seek(target);
     //PVector arriveF = arrive(target);
     PVector sepF = separate(t, r * 2);
     PVector cohF = cohere(t, r * 4);
-    PVector alnF = align(drones, r*4);
+    PVector alnF = align(t, r*4);
 
     //seekF.mult(1);
     //arriveF.mult(1);
@@ -113,15 +113,15 @@ class Drone {
   // Keep apart
   PVector separate(QuadTree_bh t, float desiredSep) {
     Rectangle range = new Rectangle(pos.x, pos.y, desiredSep, desiredSep);
-    ArrayList<PVector> drones = new ArrayList<PVector>();
+    ArrayList<Drone> drones = new ArrayList<Drone>();
     t.query(range, drones);
 
     PVector steer = new PVector();
     int count = 0;
-    for (PVector Opos : drones) {
-      float d = PVector.dist(pos, Opos);
+    for (Drone other : drones) {
+      float d = PVector.dist(pos, other.pos);
       if ((d > 0) && (d < desiredSep)) {
-        PVector diff = PVector.sub(pos, Opos);
+        PVector diff = PVector.sub(pos, other.pos);
         diff.normalize();
         diff.div(d);
         steer.add(diff);
@@ -141,14 +141,14 @@ class Drone {
   // Keep together
   PVector cohere(QuadTree_bh t, float desiredDist) {
     Rectangle range = new Rectangle(pos.x, pos.y, desiredDist, desiredDist);
-    ArrayList<PVector> drones = new ArrayList<PVector>();
+    ArrayList<Drone> drones = new ArrayList<Drone>();
     t.query(range, drones);
     PVector steer = new PVector();
     int count = 0;
-    for (PVector Opos : drones) {
-      float d = PVector.dist(pos, Opos);
+    for (Drone other : drones) {
+      float d = PVector.dist(pos, other.pos);
       if ((d > 0) && (d < desiredDist)) {
-        steer.add(Opos);
+        steer.add(other.pos);
         count++;
       }
     }
@@ -160,7 +160,10 @@ class Drone {
   }
 
   // Maintain similar direction to other drones
-  PVector align(ArrayList<Drone> drones, float checkdist) {
+  PVector align(QuadTree_bh t, float checkdist) {
+    ArrayList<Drone> drones = new ArrayList<Drone>();
+    Rectangle range = new Rectangle(pos.x, pos.y, checkdist, checkdist);
+    t.query(range, drones);
     PVector steer = new PVector();
     int count = 0;
     for (Drone other : drones) {

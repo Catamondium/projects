@@ -28,6 +28,8 @@ class QuadTree_bh {
   PVector body;
   boolean divided = false;
 
+  Drone store;
+
   // Children trees
   QuadTree_bh[] children = new QuadTree_bh[4];
 
@@ -59,13 +61,14 @@ class QuadTree_bh {
     divided = true;
   }
 
-  boolean insert(PVector a) {
-    if (!boundary.contains(a)) {
+  boolean insert(Drone a) {
+    if (!boundary.contains(a.pos)) {
       return false;
     }
 
     if (occupied == false) {
-      body = a.copy();
+      body = a.pos.copy();
+      store = a;
       occupied = true;
       return true;
     } else {
@@ -83,13 +86,13 @@ class QuadTree_bh {
     }
   }
 
-  ArrayList query(Rectangle range, ArrayList<PVector> found) {
+  ArrayList query(Rectangle range, ArrayList<Drone> found) {
     if (!boundary.intersects(range)) {
       return found;
     } else {
       if (occupied) {
         if (range.contains(body)) {
-          found.add(body);
+          found.add(store);
         }
       }
       if (divided) {

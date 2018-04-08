@@ -69,9 +69,8 @@ void debug() {
 
 void GameOver() { // Win/loss conditionals
   lives--;
-  int Dtype = lanes[player.myLane()].type;
-  String Dstr = (Dtype == CAR) ? "You got run over, " : "You drowned, ";
-  //Dstr += lives;
+  String Dstr = (lanes[player.myLane()].type == CAR) ?
+    "You got run over, " : "You drowned, ";
   Dstr += (lives > 0) ? lives + " lives remaining." : "Game over.";
   println(Dstr);
   GameReset();
@@ -99,5 +98,5 @@ void GameReset() {
   lanes[7] = new Lane(7, 4, 1.52, 2, LOG);
   lanes[8] = new Lane(8);
   lanes[9] = new Lane(9);
-  lanes[9].col = #003300; // Override winlane colour
+  lanes[lanes.length - 1].col = #003300; // Override winlane colour
 }
