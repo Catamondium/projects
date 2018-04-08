@@ -14,7 +14,7 @@ class Lane extends Rectangle {
   Lane(float y_, int num, float spd, float xoff, int type_) { // Make hostile lanes
     super(5, y_, width, height / lanes.length, #FFFFFF, false);
     type = type_;
-    obsticles = new Obsticle[num]; // Initalise obsticles array
+    obsticles = new Obsticle[num];
     if (type_ == CAR) { // Override color depending on type
       super.col = #555555;
     } else {

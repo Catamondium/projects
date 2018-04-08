@@ -15,7 +15,8 @@ Frog player;
 PVector grid;
 int numTiles = 10;
 Lane[] lanes = new Lane[10];
-int lives = 3;
+int maxLives = 3;
+int lives = maxLives;
 
 void setup() {
   size(400, 400);
@@ -83,18 +84,19 @@ void GameOver() { // Win/loss conditionals
   }
   GameReset();
   if (lives < 1) { // Reset whole state after complete loss
-    lives = 3;
+    lives = maxLives;
   }
 }
 
 void GameWon() {
   println("Win!");
   GameReset();
+  lives = maxLives;
 }
 
 void GameReset() {
   player = new Frog();
-  // Create lanes, successful spawn
+  // Create lanes
   lanes[0] = new Lane(0);
   lanes[1] = new Lane(1, 4, -2, 0, CAR);
   lanes[2] = new Lane(2, 4, -2.5, 2, CAR);
