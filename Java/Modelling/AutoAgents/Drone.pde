@@ -64,7 +64,7 @@ class Drone {
     //PVector arriveF = arrive(target);
     PVector sepF = separate(t, r * 2);
     PVector cohF = cohere(t, r * 4);
-    PVector alnF = align(t, r*4);
+    PVector alnF = align(t, r * 4);
 
     //seekF.mult(1);
     //arriveF.mult(1);

@@ -35,7 +35,7 @@ class Rectangle {
 class QuadTree {
   Rectangle boundary;
   int occupancy = 0;
-  Pack[] bodies;
+  Pack[] data;
   boolean divided = false;
 
   // Children trees
@@ -43,7 +43,7 @@ class QuadTree {
 
   QuadTree(Rectangle boundary_, int n) {
     boundary = boundary_;
-    bodies = new Pack[n];
+    data = new Pack[n];
   }
 
   void subdivide() {
@@ -55,17 +55,17 @@ class QuadTree {
     float new_height = boundary.h / 2;
 
     Rectangle ne = new Rectangle(east, north, new_width, new_height);
-    children[0] = new QuadTree(ne, bodies.length);
+    children[0] = new QuadTree(ne, data.length);
 
     Rectangle nw = new Rectangle(west, north, new_width, new_height);
-    children[1] = new QuadTree(nw, bodies.length);
+    children[1] = new QuadTree(nw, data.length);
 
     Rectangle se = new Rectangle(east, south, new_width, new_height);
-    children[2] = new QuadTree(se, bodies.length);
+    children[2] = new QuadTree(se, data.length);
 
 
     Rectangle sw = new Rectangle(west, south, new_width, new_height);
-    children[3] = new QuadTree(sw, bodies.length);
+    children[3] = new QuadTree(sw, data.length);
 
     divided = true;
   }
@@ -75,8 +75,8 @@ class QuadTree {
       return false;
     }
 
-    if (occupancy < bodies.length) {
-      bodies[occupancy] = new Pack(a);
+    if (occupancy < data.length) {
+      data[occupancy] = new Pack(a);
       occupancy++;
       return true;
     } else {
@@ -99,8 +99,8 @@ class QuadTree {
       return found;
     } else {
       for (int i = 0; i < occupancy; i++) {
-        if (range.contains(bodies[i].body)) {
-          found.add(bodies[i].store);
+        if (range.contains(data[i].body)) {
+          found.add(data[i].store);
         }
       }
       if (divided) {
@@ -149,7 +149,7 @@ class QuadTree {
         strokeWeight(3);
         for (int i = 0; i < occupancy; i++)
         {
-          point(bodies[i].body.x, bodies[i].body.y);
+          point(data[i].body.x, data[i].body.y);
         }
       }
     }

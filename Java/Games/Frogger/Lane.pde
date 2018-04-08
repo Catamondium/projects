@@ -16,11 +16,10 @@ class Lane extends Rectangle {
     type = type_;
     obsticles = new Obsticle[num];
     super.col = (type_ == CAR) ? #555555 : #000033; // Set background from type
+    color colO = (type_ == CAR) ? #FF0000 : #654321; // Set type colour
 
     // Initalise obsticles
     for (int i = 0; i < obsticles.length; i++) {
-      color colO = (type_ == CAR) ? #FF0000 : #654321; // Set type colour
-
       obsticles[i] = new Obsticle(grid.x * i + xoff, y_, 2 * grid.x, spd, colO);
     }
   }

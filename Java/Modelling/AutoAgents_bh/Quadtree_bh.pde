@@ -25,9 +25,9 @@ class Rectangle {
 class QuadTree_bh {
   Rectangle boundary;
   boolean occupied = false;
-  PVector body;
   boolean divided = false;
 
+  PVector body;
   Drone store;
 
   // Children trees

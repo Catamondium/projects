@@ -70,7 +70,7 @@ void debug() {
 void GameOver() { // Win/loss conditionals
   lives--;
   String Dstr = (lanes[player.myLane()].type == CAR) ?
-    "You got run over, " : "You drowned, ";
+    "You were ran over, " : "You drowned, ";
   Dstr += (lives > 0) ? lives + " lives remaining." : "Game over.";
   println(Dstr);
   GameReset();
