@@ -10,7 +10,21 @@
  * --------------->V
  *      Width
  **/
+// Constants
+color LANE_SAFETY = #222222;
+color LANE_CAR = #555555;
+color LANE_LOG = #000066;
+color LANE_WIN = #007F00;
 
+color COL_CAR = #FF0000;
+color COL_LOG = #654321;
+color COL_FROG = #00FF00;
+
+int SAFETY = 0;
+int CAR = 1;
+int LOG = 2;
+
+// Declarations
 Frog player;
 PVector grid;
 int numTiles = 10;
@@ -98,5 +112,5 @@ void GameReset() {
   lanes[7] = new Lane(7, 4, 1.52, 2, LOG);
   lanes[8] = new Lane(8);
   lanes[9] = new Lane(9);
-  lanes[lanes.length - 1].col = #003300; // Override winlane colour
+  lanes[lanes.length - 1].col = LANE_WIN; // Override winlane colour
 }
