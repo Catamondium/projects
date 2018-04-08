@@ -69,19 +69,11 @@ void debug() {
 
 void GameOver() { // Win/loss conditionals
   lives--;
-  String deathmethod = "";
-  switch(lanes[player.myLane()].type) {
-  case 1:
-    deathmethod += "You got run over, ";
-    break;
-  case 2:
-    deathmethod += "Your drowned, ";
-  }
-  if (lives > 0) {
-    println(deathmethod + lives + " lives remaining.");
-  } else {
-    println(deathmethod + "Game over");
-  }
+  int Dtype = lanes[player.myLane()].type;
+  String Dstr = (Dtype == CAR) ? "You got run over, " : "You drowned, ";
+  //Dstr += lives;
+  Dstr += (lives > 0) ? lives + " lives remaining." : "Game over.";
+  println(Dstr);
   GameReset();
   if (lives < 1) { // Reset whole state after complete loss
     lives = maxLives;

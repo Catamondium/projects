@@ -52,13 +52,12 @@ class Player {
     }
   }
 
-
   void death() {
     for (int i = 0; i < tail.size(); i++) {
       PVector other = tail.get(i);
       float d = coord.dist(other);
       if (d < 1) {
-       // println("Starting over");
+        // println("Starting over");
         score = 0;
         tail.clear();
       }

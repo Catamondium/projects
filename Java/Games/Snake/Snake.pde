@@ -9,7 +9,6 @@ void setup() {
   f = createFont("Roboto Regular", 20, false, SCORENUM);
   s = new Player();
   pickLocation(food);
-  
 }
 
 void draw() {
@@ -41,15 +40,12 @@ void keyPressed() {
   case UP:
     s.dir(0, -1);
     break;
-
   case DOWN:
     s.dir(0, 1);
     break;
-
   case LEFT:
     s.dir(-1, 0);
     break;
-
   case RIGHT:
     s.dir(1, 0);
     break;

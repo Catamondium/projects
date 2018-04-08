@@ -15,21 +15,12 @@ class Lane extends Rectangle {
     super(5, y_, width, height / lanes.length, #FFFFFF, false);
     type = type_;
     obsticles = new Obsticle[num];
-    if (type_ == CAR) { // Override color depending on type
-      super.col = #555555;
-    } else {
-      super.col = #000033;
-    }
+    super.col = (type_ == CAR) ? #555555 : #000033; // Set background from type
 
     // Initalise obsticles
     for (int i = 0; i < obsticles.length; i++) {
-      color colO = #FFFFFF;
-      if (type_ == CAR) {
-        colO =  #FF0000;
-      }
-      if (type_ == LOG) {
-        colO = #654321;
-      }
+      color colO = (type_ == CAR) ? #FF0000 : #654321; // Set type colour
+
       obsticles[i] = new Obsticle(grid.x * i + xoff, y_, 2 * grid.x, spd, colO);
     }
   }

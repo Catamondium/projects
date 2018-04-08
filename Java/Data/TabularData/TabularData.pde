@@ -12,11 +12,7 @@ void draw() {
 
   for (Circle entity : circles) {
     float d = dist(entity.x, entity.y, mouseX, mouseY);
-    if (d < 0.5 * entity.diam) {
-      entity.over = true;
-    } else {
-      entity.over = false;
-    }
+    entity.over = (d < 0.5 * entity.diam) ? true : false;
 
     entity.show();
   }
