@@ -11,7 +11,7 @@ void setup() {
 void draw() {
   background(0);
 
-  for (Circle entity : circles) {
+  for (Circle entity : circles) { // Hoverover check
     float d = dist(entity.x, entity.y, mouseX, mouseY);
     entity.over = (d < 0.5 * entity.diam) ? true : false;
 
@@ -19,7 +19,7 @@ void draw() {
   }
 }
 
-void read() {
+void read() { // Harvest data
   data = loadXML("data.xml");
   dataArray = data.getChildren("circle");
   for (int i = 0; i < dataArray.length; i++) {
@@ -43,7 +43,7 @@ void read() {
   }
 }
 
-void write(Circle entity) {
+void write(Circle entity) { // Update data source
   XML newcircle = data.addChild("circle");
   XML position = newcircle.addChild("pos");
 

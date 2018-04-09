@@ -17,15 +17,15 @@ class Player {
   void update() {
     if (score > 0) {
       if ( score == tail.size() && !tail.isEmpty()) {
-        tail.remove(0);
+        tail.remove(0); // Remove last tail, limit length on score
       }
-      tail.add(coord.copy());
+      tail.add(coord.copy()); // Update tail location
     }
 
     vel.mult(scl);
     coord.add(vel);
 
-    coord.x = constrain(coord.x, 0, width - scl);
+    coord.x = constrain(coord.x, 0, width - scl); // Keep on window
     coord.y = constrain(coord.y, 0, height - scl);
   }
 
@@ -57,9 +57,9 @@ class Player {
       PVector other = tail.get(i);
       float d = coord.dist(other);
       if (d < 1) {
-        // println("Starting over");
+        println("Starting over");
         score = 0;
-        tail.clear();
+        tail.clear(); // Kill tail on death
       }
     }
   }

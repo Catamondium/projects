@@ -10,7 +10,7 @@ void setup() {
 void draw() {
   background(0);
 
-  for (Circle entity : circles) {
+  for (Circle entity : circles) { // Hoverover check
     float d = dist(entity.x, entity.y, mouseX, mouseY);
     entity.over = (d < 0.5 * entity.diam) ? true : false;
 
@@ -18,7 +18,7 @@ void draw() {
   }
 }
 
-void read() {
+void read() { // Harvest data
   data = loadTable("data.tsv", "header");
 
   for (int i = 0; i < data.getRowCount(); i++) {
@@ -34,7 +34,7 @@ void read() {
   }
 }
 
-void write(Circle entity) {
+void write(Circle entity) { // Update data source
   TableRow row = data.addRow();
 
   row.setInt("x", entity.x);

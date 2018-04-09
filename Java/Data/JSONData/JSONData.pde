@@ -11,7 +11,7 @@ void setup() {
 void draw() {
   background(0);
 
-  for (Circle entity : circles) {
+  for (Circle entity : circles) { // Activate on hoverover
     float d = dist(entity.x, entity.y, mouseX, mouseY);
     entity.over = (d < 0.5 * entity.diam) ? true : false;
 
@@ -23,7 +23,7 @@ void read() {
   data = loadJSONObject("data.json");
   dataArray = data.getJSONArray("circles");
 
-  for (int i = 0; i < dataArray.size(); i++) {
+  for (int i = 0; i < dataArray.size(); i++) { // Harvest data
     JSONObject r_circle = dataArray.getJSONObject(i).getJSONObject("circle");
 
     int data_x = r_circle.getJSONObject("pos").getInt("x");
@@ -36,7 +36,7 @@ void read() {
   }
 }
 
-void write(Circle entity) {
+void write(Circle entity) { // Update data source
   JSONObject w_circle = new JSONObject();
   JSONObject w_circleA = new JSONObject();
 
