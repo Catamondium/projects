@@ -1,6 +1,6 @@
 S_hrs = input("Start time hours:	")
 S_min = input("Start time minutes:	")
-elapsed = input("Movie length(min):	")
+elapsed = input("Period(min):	")
 S_time = [S_hrs, S_min]
 
 def get_min(t): # Get multiples of minutes
