@@ -24,17 +24,18 @@ int SAFETY = 0;
 int CAR = 1;
 int LOG = 2;
 
+int numTiles = 10;
+int maxLives = 3;
+
 // Declarations
+int lives = maxLives;
+Lane[] lanes = new Lane[10];
 Frog player;
 PVector grid;
-int numTiles = 10;
-Lane[] lanes = new Lane[10];
-int maxLives = 3;
-int lives = maxLives;
 
 void setup() {
   size(400, 400);
-  grid = new PVector(width / numTiles, height / lanes.length); // 10 lanes, 10 tiles long
+  grid = new PVector(width / numTiles, height / lanes.length);
   GameReset();
 }
 
