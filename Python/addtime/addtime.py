@@ -1,7 +1,7 @@
 
-instr = raw_input("Start time:	").split(':', 1)
+instr = raw_input("Start time:	").split(':', 1) # Collect [hrs, min] as string
 elapsed = input("Period(min):	")
-S_time = list(map(int, instr))
+S_time = list(map(int, instr)) # Cast to int
 
 # Undecided about including functions.
 #def get_min(t): # Get multiples of minutes
@@ -22,4 +22,3 @@ E_time = calcE_time(elapsed, S_time)
 outstr = "\nStart time:	{0}:{1}	+{2}min\nEnd time:	{3}:{4}".format(S_time[0], S_time[1], elapsed, E_time[0], E_time[1])
 
 print(outstr)
-
