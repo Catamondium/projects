@@ -1,4 +1,3 @@
-
 instr = raw_input("Start time:	").split(':', 1) # Collect [hrs, min] as string
 elapsed = input("Period(min):	")
 S_time = list(map(int, instr)) # Cast to int
