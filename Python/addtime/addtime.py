@@ -14,7 +14,7 @@ if len(Istr) == 2: # Supplement input
 	elapsed = input("Period(min):	")
 
 else: # Use existing
-	S_time = [Istr[0], Istr[1]]
+	S_time = Istr[:2] # Take 1st 2 elements
 	elapsed = Istr[2]
 
 def calcE_time(t, St = []):
