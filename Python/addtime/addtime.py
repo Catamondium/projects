@@ -1,12 +1,6 @@
-import sys
+Istr = raw_input("Start time:	")
+Istr = Istr.replace(' ', ':').split(':', 2)
 
-# w/ Normal Istr
-if len(sys.argv) == 1:
-	Istr = raw_input("Start time:	") # Collect [hrs, min, [elapsed]] as string
-	Istr = Istr.replace(' ', ':').split(':', 2) # Split into list
-# Else command line str(sys.argv) ==> Istr
-
-#TODO: Prepare command line Istr for following procedures.
 Istr = [int(x) for x in Istr]
 if len(Istr) == 2: # If e.g 3:30
 	S_time = Istr
