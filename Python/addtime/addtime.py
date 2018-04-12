@@ -1,5 +1,12 @@
-Istr = raw_input("Start time:	")
-Istr = Istr.replace(' ', ':').split(':', 2)
+import sys
+
+if len(sys.argv) == 1:
+	Istr = raw_input("Start time:	")
+	Istr = Istr.replace(' ', ':').split(':', 2)
+else:
+	Istr = sys.argv[1].split(':')
+	if len(sys.argv) >= 3:
+		Istr[len(Istr):] = [sys.argv[2]]
 
 Istr = [int(x) for x in Istr]
 if len(Istr) == 2: # If e.g 3:30
@@ -16,10 +23,6 @@ def calcE_time(t, St = []):
 	return [tot // 60, tot % 60]
 
 E_time = calcE_time(elapsed, S_time)
-Ostr = "\nStart time:	{0}:{1}	+{2}min\nEnd time:	{3}:{4}".format(S_time[0], S_time[1], elapsed, E_time[0], E_time[1])
+Ostr = "Start time:	{0}:{1}	+{2}min\nEnd time:	{3}:{4}".format(S_time[0], S_time[1], elapsed, E_time[0], E_time[1])
 
 print(Ostr)
-
-print(str(sys.argv))
-# Command line output test:	./addtime.pyc 3:30 111
-#	['./addtime.pyc', '3:30', '111']
