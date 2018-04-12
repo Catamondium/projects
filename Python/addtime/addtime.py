@@ -9,11 +9,11 @@ else:
 		Istr[len(Istr):] = [sys.argv[2]]
 
 Istr = [int(x) for x in Istr]
-if len(Istr) == 2: # If e.g 3:30
+if len(Istr) == 2: # Supplement input
 	S_time = Istr
 	elapsed = input("Period(min):	")
 
-else: # If e.g 3:30 60
+else: # Use existing
 	S_time = [Istr[0], Istr[1]]
 	elapsed = Istr[2]
 
