@@ -25,9 +25,8 @@ def calcEtime(t, St=[]):
 	return [tot // 60, tot % 60]
 
 Etime = calcEtime(elapse, Stime)
-Ostr_1 = "Start time:	{0:02d}:{1:02d}".format(Stime[0], Stime[1])
-Ostr_2 = "	{0:+}min".format(elapse)
-Ostr_3 = "\nEnd time:	{0:02d}:{1:02d}".format(Etime[0], Etime[1])
-Ostr = Ostr_1 + Ostr_2 + Ostr_3
+Ostr_S = "Start time:	{0:02d}:{1:02d}".format(Stime[0], Stime[1])
+Ostr_E = "End time:	{0:02d}:{1:02d}".format(Etime[0], Etime[1])
+Ostr = "{0}	{1:+}min\n{2}".format(Ostr_S, elapse, Ostr_E)
 
 print(Ostr)
