@@ -1,5 +1,4 @@
 # Python 3.5.2
-
 import sys
 
 if len(sys.argv) == 1:
