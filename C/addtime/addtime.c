@@ -11,10 +11,12 @@ void calcEtime(int St[2], int t, int Et[2]) {
 	} 
 		
 int main(int argc, char *argv[]) {
-	int elapse, Stime[2], Etime[2];
+	int Stime[2], Etime[2];
+	signed int elapse;
 	const char delimiters[] = " :";
 	
 	if(argc < 3) {
+		printf("Error\tmm:hh mins expected.");
 		return 1;
 	} else {
 		elapse = atoi(argv[2]);
