@@ -16,10 +16,11 @@ int main(int argc, char *argv[]) {
 	float Etime[2];
 	calcEtime(Stime, elapse, Etime);
 	
-	char Ostr_1[15];
-	sprintf(Ostr_1, "Start time: %02.0f:%02.0f", Stime[0], Stime[1]);
-	char Ostr_2[15];
-	sprintf(Ostr_2, "End time: %02.0f:%02.0f\n", Etime[0], Etime[1]);
+	//char Ostr_1[15];
+	printf("Start time:\t%02.0f:%02.0f", Stime[0], Stime[1]);
+	printf("\t%+i\n", elapse);
+	//char Ostr_2[15];
+	printf("End time:\t%02.0f:%02.0f\n", Etime[0], Etime[1]);
 	
-	printf("%s %+i\n%s", Ostr_1, elapse, Ostr_2);
+	//printf("%s %+i\n%s", Ostr_1, elapse, Ostr_2);
 	}
