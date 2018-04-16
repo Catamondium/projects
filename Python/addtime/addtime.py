@@ -19,12 +19,12 @@ else:  # Use existing
 	elapse = Istr[2]
 
 
-def calcEtime(St=[], t):
+def calcEtime(t, St=[]):
 	offset = St[0] * 60 + St[1]
 	tot = t + offset
 	return [tot // 60, tot % 60]
 
-Etime = calcEtime(Stime, elapse)
+Etime = calcEtime(elapse, Stime)
 Ostr_S = "Start time:	{0:02d}:{1:02d}".format(Stime[0], Stime[1])
 Ostr_E = "End time:	{0:02d}:{1:02d}".format(Etime[0], Etime[1])
 Ostr = "{0}	{1:+}min\n{2}".format(Ostr_S, elapse, Ostr_E)
