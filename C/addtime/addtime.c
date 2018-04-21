@@ -1,10 +1,9 @@
 #include <math.h>
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
-void calcEtime(int St[2], int t, int Et[2])
-{
+void calcEtime(int St[2], int t, int Et[2]) {
     int offset = St[0] * 60 + St[1];
     int tot = offset + t;
     Et[0] = (int) (floor(tot / 60));
@@ -12,18 +11,14 @@ void calcEtime(int St[2], int t, int Et[2])
     return;
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     int Stime[2], Etime[2];
     signed int elapse;
 
-    if(argc < 3)
-    {
-        printf("Error\tmm:hh mins expected.");
+    if(argc < 3) {
+        printf("Error:\tmm:hh mins expected.\n");
         return 1;
-    }
-    else
-    {
+    } else {
         elapse = atoi(argv[2]);
         // Split and collect start time
         const char delimiters[] = " :";
