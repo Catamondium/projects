@@ -1,0 +1,61 @@
+Tile states?:
+	0: empty
+	1: set
+	2: active (block)
+
+Board:
+	grid(10, 18)
+	spawn(5, 0), randomised
+	Every frame:
+		Check stacked:
+			Lose
+			Win
+			spawn
+		translate tet(0, 1)
+
+Game:
+	Win:
+		Filled rows:
+			1 (50pts)
+			2 (200pts)
+			3 (400pts)
+			4 (800pts)
+		Shift down by filled rows
+	Lose:
+		Column hits top
+
+Interaction:	
+	UP/W:
+		Rotate(clockwise, 0.5PI):
+			Align: (left, top)
+	DOWN/S:
+		drop
+	LEFT/A:
+		translate(-1, 0)
+	RIGHT/D:
+		translate(1, 0)
+
+tetromino:
+	length: 4 tiles
+
+	I:
+		0001111000
+		0000000000
+	O:
+		0000110000
+		0000110000
+	T:
+		0000100000
+		0001110000
+	S:
+		0000110000
+		0001100000
+	Z:
+		0001100000
+		0000110000
+	J:
+		0001000000
+		0001110000
+	L:
+		0000010000
+		0001110000
