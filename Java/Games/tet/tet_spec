@@ -3,8 +3,8 @@ Tile states?:
 	1: set
 	2: active (block)
 
-Board:
-	grid(10, 18)
+Field:
+	grid(10, 20 (+2 spawn buffer))
 	spawn(5, 0), randomised
 	Every frame:
 		Check stacked:
@@ -27,7 +27,7 @@ Game:
 Interaction:	
 	UP/W:
 		Rotate(clockwise, 0.5PI):
-			Align: (left, top)
+			see img for centres
 	DOWN/S:
 		drop
 	LEFT/A:
@@ -38,24 +38,24 @@ Interaction:
 tetromino:
 	length: 4 tiles
 
-	I:
+	I: cyan
 		0001111000
 		0000000000
-	O:
+	O: yellow
 		0000110000
 		0000110000
-	T:
+	T: purple
 		0000100000
 		0001110000
-	S:
+	S: green
 		0000110000
 		0001100000
-	Z:
+	Z: red
 		0001100000
 		0000110000
-	J:
+	J: blue
 		0001000000
 		0001110000
-	L:
+	L: orange
 		0000010000
 		0001110000
