@@ -1,16 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int fibonacci(int n) {
+long int fibonacci(int n) {
     if (n == 0) {
         return 0;
     }
     if (n == 1) {
         return 1;
     } else {
-        int first = 0;
-        int second = 1;
-        int result;
+        long int first = 0;
+        long int second = 1;
+        long int result;
         for (int i = 1; i < n; i++) {
             result = first + second;
             first = second;
@@ -25,6 +25,12 @@ int main(int argc, char *argv[]) {
         printf("Error, integer argument required.\n");
     } else {
         int n = atoi(argv[1]);
-        printf("%d\n", fibonacci(n));
+        for(int i = 0; i < n; ++i) {
+            printf("%ld\t", fibonacci(i));
+            if((i + 1) % 7 == 0 && i != 0) {
+                printf("\n");
+            }
+        }
+        printf("\n");
     }
 }
