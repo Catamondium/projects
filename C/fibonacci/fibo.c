@@ -1,5 +1,6 @@
-#include <stdio.h>
+#include <locale.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 unsigned long long int fibonacci(int n) {
     if (n == 0) {
@@ -21,12 +22,13 @@ unsigned long long int fibonacci(int n) {
 }
 
 int main(int argc, char *argv[]) {
+    setlocale(LC_NUMERIC, "");
     if (argc == 1 || atoi(argv[1]) < 0) {
         printf("Error: Positive argument required.\n");
     } else {
         int n = atoi(argv[1]);
         for(int i = 0; i < n; ++i) {
-            printf("%lld\t", fibonacci(i));
+            printf("%'lld\t", fibonacci(i));
             if((i + 1) % 7 == 0 && i != 0) {
                 printf("\n");
             }
