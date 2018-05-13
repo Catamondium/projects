@@ -16,6 +16,7 @@ echo -e "\tReverse video\t" >> $1
 tput smul >> $1
 echo -ne "\tUnderlined\t" >> $1
 tput rmul >> $1
+echo
 
 : '
 tput blink >> $1
