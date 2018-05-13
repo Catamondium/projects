@@ -1,14 +1,9 @@
 #!/bin/bash
 # GNU bash, version 4.3.48(1)-release (x86_64-pc-linux-gnu)
 
-echo -e "prefix_escape\tlabel/colour\tpostfix_escape" > $1
+echo -e "prefix_escape\tlabel/colour\tpostfix_escape" > $1 # Header
+
 # Misc codes
-#tput setaf 0 >> $1
-#echo -e "\tForeground\t" >> $1
-
-#tput setab 0 >> $1
-#echo -e "\tBackground\t" >> $1
-
 tput rev >> $1
 echo -e "\tReverse video\t" >> $1
 
