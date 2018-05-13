@@ -22,9 +22,9 @@ tput blink >> $1
 echo -e "\n\tBlinking\t" >> $1
 '
 
-
+echo
 tput bold >> $1
-echo -e "\n\tBold\t" >> $1
+echo -e "\tBold\t" >> $1
 
 tput sgr0 >> $1 # Reset attributes
 echo -e "\tReset\t" >> $1
