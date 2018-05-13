@@ -17,9 +17,10 @@ tput smul >> $1
 echo -ne "\tUnderlined\t" >> $1
 tput rmul >> $1
 
-
+: '
 tput blink >> $1
 echo -e "\n\tBlinking\t" >> $1
+'
 
 
 tput bold >> $1
