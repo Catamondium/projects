@@ -2,7 +2,9 @@ prefix_escape	label/colour	postfix_escape
 [30m	Foreground	
 [48;5;255m	Background	
 [7m	Reverse video	
-[4m	Underlined	[24m[1m	Bold	
+[4m	Underlined	[24m[5m
+	Blinking	
+[1m	Bold	
 (B[m	Reset	
 [40m	0	
 [41m	1	
