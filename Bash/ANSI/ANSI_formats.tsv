@@ -1,265 +1,519 @@
 prefix_escape	label/colour	postfix_escape
-[30m	Foreground	
-[48;5;255m	Background	
 [7m	Reverse video	
 [4m	Underlined	[24m
 [5m	Blinking	
 [1m	Bold	
 (B[m	Reset	
-[40m	0	
-[41m	1	
-[42m	2	
-[43m	3	
-[44m	4	
-[45m	5	
-[46m	6	
-[47m	7	
-[100m	8	
-[101m	9	
-[102m	10	
-[103m	11	
-[104m	12	
-[105m	13	
-[106m	14	
-[107m	15	
-[48;5;16m	16	
-[48;5;17m	17	
-[48;5;18m	18	
-[48;5;19m	19	
-[48;5;20m	20	
-[48;5;21m	21	
-[48;5;22m	22	
-[48;5;23m	23	
-[48;5;24m	24	
-[48;5;25m	25	
-[48;5;26m	26	
-[48;5;27m	27	
-[48;5;28m	28	
-[48;5;29m	29	
-[48;5;30m	30	
-[48;5;31m	31	
-[48;5;32m	32	
-[48;5;33m	33	
-[48;5;34m	34	
-[48;5;35m	35	
-[48;5;36m	36	
-[48;5;37m	37	
-[48;5;38m	38	
-[48;5;39m	39	
-[48;5;40m	40	
-[48;5;41m	41	
-[48;5;42m	42	
-[48;5;43m	43	
-[48;5;44m	44	
-[48;5;45m	45	
-[48;5;46m	46	
-[48;5;47m	47	
-[48;5;48m	48	
-[48;5;49m	49	
-[48;5;50m	50	
-[48;5;51m	51	
-[48;5;52m	52	
-[48;5;53m	53	
-[48;5;54m	54	
-[48;5;55m	55	
-[48;5;56m	56	
-[48;5;57m	57	
-[48;5;58m	58	
-[48;5;59m	59	
-[48;5;60m	60	
-[48;5;61m	61	
-[48;5;62m	62	
-[48;5;63m	63	
-[48;5;64m	64	
-[48;5;65m	65	
-[48;5;66m	66	
-[48;5;67m	67	
-[48;5;68m	68	
-[48;5;69m	69	
-[48;5;70m	70	
-[48;5;71m	71	
-[48;5;72m	72	
-[48;5;73m	73	
-[48;5;74m	74	
-[48;5;75m	75	
-[48;5;76m	76	
-[48;5;77m	77	
-[48;5;78m	78	
-[48;5;79m	79	
-[48;5;80m	80	
-[48;5;81m	81	
-[48;5;82m	82	
-[48;5;83m	83	
-[48;5;84m	84	
-[48;5;85m	85	
-[48;5;86m	86	
-[48;5;87m	87	
-[48;5;88m	88	
-[48;5;89m	89	
-[48;5;90m	90	
-[48;5;91m	91	
-[48;5;92m	92	
-[48;5;93m	93	
-[48;5;94m	94	
-[48;5;95m	95	
-[48;5;96m	96	
-[48;5;97m	97	
-[48;5;98m	98	
-[48;5;99m	99	
-[48;5;100m	100	
-[48;5;101m	101	
-[48;5;102m	102	
-[48;5;103m	103	
-[48;5;104m	104	
-[48;5;105m	105	
-[48;5;106m	106	
-[48;5;107m	107	
-[48;5;108m	108	
-[48;5;109m	109	
-[48;5;110m	110	
-[48;5;111m	111	
-[48;5;112m	112	
-[48;5;113m	113	
-[48;5;114m	114	
-[48;5;115m	115	
-[48;5;116m	116	
-[48;5;117m	117	
-[48;5;118m	118	
-[48;5;119m	119	
-[48;5;120m	120	
-[48;5;121m	121	
-[48;5;122m	122	
-[48;5;123m	123	
-[48;5;124m	124	
-[48;5;125m	125	
-[48;5;126m	126	
-[48;5;127m	127	
-[48;5;128m	128	
-[48;5;129m	129	
-[48;5;130m	130	
-[48;5;131m	131	
-[48;5;132m	132	
-[48;5;133m	133	
-[48;5;134m	134	
-[48;5;135m	135	
-[48;5;136m	136	
-[48;5;137m	137	
-[48;5;138m	138	
-[48;5;139m	139	
-[48;5;140m	140	
-[48;5;141m	141	
-[48;5;142m	142	
-[48;5;143m	143	
-[48;5;144m	144	
-[48;5;145m	145	
-[48;5;146m	146	
-[48;5;147m	147	
-[48;5;148m	148	
-[48;5;149m	149	
-[48;5;150m	150	
-[48;5;151m	151	
-[48;5;152m	152	
-[48;5;153m	153	
-[48;5;154m	154	
-[48;5;155m	155	
-[48;5;156m	156	
-[48;5;157m	157	
-[48;5;158m	158	
-[48;5;159m	159	
-[48;5;160m	160	
-[48;5;161m	161	
-[48;5;162m	162	
-[48;5;163m	163	
-[48;5;164m	164	
-[48;5;165m	165	
-[48;5;166m	166	
-[48;5;167m	167	
-[48;5;168m	168	
-[48;5;169m	169	
-[48;5;170m	170	
-[48;5;171m	171	
-[48;5;172m	172	
-[48;5;173m	173	
-[48;5;174m	174	
-[48;5;175m	175	
-[48;5;176m	176	
-[48;5;177m	177	
-[48;5;178m	178	
-[48;5;179m	179	
-[48;5;180m	180	
-[48;5;181m	181	
-[48;5;182m	182	
-[48;5;183m	183	
-[48;5;184m	184	
-[48;5;185m	185	
-[48;5;186m	186	
-[48;5;187m	187	
-[48;5;188m	188	
-[48;5;189m	189	
-[48;5;190m	190	
-[48;5;191m	191	
-[48;5;192m	192	
-[48;5;193m	193	
-[48;5;194m	194	
-[48;5;195m	195	
-[48;5;196m	196	
-[48;5;197m	197	
-[48;5;198m	198	
-[48;5;199m	199	
-[48;5;200m	200	
-[48;5;201m	201	
-[48;5;202m	202	
-[48;5;203m	203	
-[48;5;204m	204	
-[48;5;205m	205	
-[48;5;206m	206	
-[48;5;207m	207	
-[48;5;208m	208	
-[48;5;209m	209	
-[48;5;210m	210	
-[48;5;211m	211	
-[48;5;212m	212	
-[48;5;213m	213	
-[48;5;214m	214	
-[48;5;215m	215	
-[48;5;216m	216	
-[48;5;217m	217	
-[48;5;218m	218	
-[48;5;219m	219	
-[48;5;220m	220	
-[48;5;221m	221	
-[48;5;222m	222	
-[48;5;223m	223	
-[48;5;224m	224	
-[48;5;225m	225	
-[48;5;226m	226	
-[48;5;227m	227	
-[48;5;228m	228	
-[48;5;229m	229	
-[48;5;230m	230	
-[48;5;231m	231	
-[48;5;232m	232	
-[48;5;233m	233	
-[48;5;234m	234	
-[48;5;235m	235	
-[48;5;236m	236	
-[48;5;237m	237	
-[48;5;238m	238	
-[48;5;239m	239	
-[48;5;240m	240	
-[48;5;241m	241	
-[48;5;242m	242	
-[48;5;243m	243	
-[48;5;244m	244	
-[48;5;245m	245	
-[48;5;246m	246	
-[48;5;247m	247	
-[48;5;248m	248	
-[48;5;249m	249	
-[48;5;250m	250	
-[48;5;251m	251	
-[48;5;252m	252	
-[48;5;253m	253	
-[48;5;254m	254	
-[48;5;255m	255	
+[30m	Foreground: 0	
+[31m	Foreground: 1	
+[32m	Foreground: 2	
+[33m	Foreground: 3	
+[34m	Foreground: 4	
+[35m	Foreground: 5	
+[36m	Foreground: 6	
+[37m	Foreground: 7	
+[90m	Foreground: 8	
+[91m	Foreground: 9	
+[92m	Foreground: 10	
+[93m	Foreground: 11	
+[94m	Foreground: 12	
+[95m	Foreground: 13	
+[96m	Foreground: 14	
+[97m	Foreground: 15	
+[38;5;16m	Foreground: 16	
+[38;5;17m	Foreground: 17	
+[38;5;18m	Foreground: 18	
+[38;5;19m	Foreground: 19	
+[38;5;20m	Foreground: 20	
+[38;5;21m	Foreground: 21	
+[38;5;22m	Foreground: 22	
+[38;5;23m	Foreground: 23	
+[38;5;24m	Foreground: 24	
+[38;5;25m	Foreground: 25	
+[38;5;26m	Foreground: 26	
+[38;5;27m	Foreground: 27	
+[38;5;28m	Foreground: 28	
+[38;5;29m	Foreground: 29	
+[38;5;30m	Foreground: 30	
+[38;5;31m	Foreground: 31	
+[38;5;32m	Foreground: 32	
+[38;5;33m	Foreground: 33	
+[38;5;34m	Foreground: 34	
+[38;5;35m	Foreground: 35	
+[38;5;36m	Foreground: 36	
+[38;5;37m	Foreground: 37	
+[38;5;38m	Foreground: 38	
+[38;5;39m	Foreground: 39	
+[38;5;40m	Foreground: 40	
+[38;5;41m	Foreground: 41	
+[38;5;42m	Foreground: 42	
+[38;5;43m	Foreground: 43	
+[38;5;44m	Foreground: 44	
+[38;5;45m	Foreground: 45	
+[38;5;46m	Foreground: 46	
+[38;5;47m	Foreground: 47	
+[38;5;48m	Foreground: 48	
+[38;5;49m	Foreground: 49	
+[38;5;50m	Foreground: 50	
+[38;5;51m	Foreground: 51	
+[38;5;52m	Foreground: 52	
+[38;5;53m	Foreground: 53	
+[38;5;54m	Foreground: 54	
+[38;5;55m	Foreground: 55	
+[38;5;56m	Foreground: 56	
+[38;5;57m	Foreground: 57	
+[38;5;58m	Foreground: 58	
+[38;5;59m	Foreground: 59	
+[38;5;60m	Foreground: 60	
+[38;5;61m	Foreground: 61	
+[38;5;62m	Foreground: 62	
+[38;5;63m	Foreground: 63	
+[38;5;64m	Foreground: 64	
+[38;5;65m	Foreground: 65	
+[38;5;66m	Foreground: 66	
+[38;5;67m	Foreground: 67	
+[38;5;68m	Foreground: 68	
+[38;5;69m	Foreground: 69	
+[38;5;70m	Foreground: 70	
+[38;5;71m	Foreground: 71	
+[38;5;72m	Foreground: 72	
+[38;5;73m	Foreground: 73	
+[38;5;74m	Foreground: 74	
+[38;5;75m	Foreground: 75	
+[38;5;76m	Foreground: 76	
+[38;5;77m	Foreground: 77	
+[38;5;78m	Foreground: 78	
+[38;5;79m	Foreground: 79	
+[38;5;80m	Foreground: 80	
+[38;5;81m	Foreground: 81	
+[38;5;82m	Foreground: 82	
+[38;5;83m	Foreground: 83	
+[38;5;84m	Foreground: 84	
+[38;5;85m	Foreground: 85	
+[38;5;86m	Foreground: 86	
+[38;5;87m	Foreground: 87	
+[38;5;88m	Foreground: 88	
+[38;5;89m	Foreground: 89	
+[38;5;90m	Foreground: 90	
+[38;5;91m	Foreground: 91	
+[38;5;92m	Foreground: 92	
+[38;5;93m	Foreground: 93	
+[38;5;94m	Foreground: 94	
+[38;5;95m	Foreground: 95	
+[38;5;96m	Foreground: 96	
+[38;5;97m	Foreground: 97	
+[38;5;98m	Foreground: 98	
+[38;5;99m	Foreground: 99	
+[38;5;100m	Foreground: 100	
+[38;5;101m	Foreground: 101	
+[38;5;102m	Foreground: 102	
+[38;5;103m	Foreground: 103	
+[38;5;104m	Foreground: 104	
+[38;5;105m	Foreground: 105	
+[38;5;106m	Foreground: 106	
+[38;5;107m	Foreground: 107	
+[38;5;108m	Foreground: 108	
+[38;5;109m	Foreground: 109	
+[38;5;110m	Foreground: 110	
+[38;5;111m	Foreground: 111	
+[38;5;112m	Foreground: 112	
+[38;5;113m	Foreground: 113	
+[38;5;114m	Foreground: 114	
+[38;5;115m	Foreground: 115	
+[38;5;116m	Foreground: 116	
+[38;5;117m	Foreground: 117	
+[38;5;118m	Foreground: 118	
+[38;5;119m	Foreground: 119	
+[38;5;120m	Foreground: 120	
+[38;5;121m	Foreground: 121	
+[38;5;122m	Foreground: 122	
+[38;5;123m	Foreground: 123	
+[38;5;124m	Foreground: 124	
+[38;5;125m	Foreground: 125	
+[38;5;126m	Foreground: 126	
+[38;5;127m	Foreground: 127	
+[38;5;128m	Foreground: 128	
+[38;5;129m	Foreground: 129	
+[38;5;130m	Foreground: 130	
+[38;5;131m	Foreground: 131	
+[38;5;132m	Foreground: 132	
+[38;5;133m	Foreground: 133	
+[38;5;134m	Foreground: 134	
+[38;5;135m	Foreground: 135	
+[38;5;136m	Foreground: 136	
+[38;5;137m	Foreground: 137	
+[38;5;138m	Foreground: 138	
+[38;5;139m	Foreground: 139	
+[38;5;140m	Foreground: 140	
+[38;5;141m	Foreground: 141	
+[38;5;142m	Foreground: 142	
+[38;5;143m	Foreground: 143	
+[38;5;144m	Foreground: 144	
+[38;5;145m	Foreground: 145	
+[38;5;146m	Foreground: 146	
+[38;5;147m	Foreground: 147	
+[38;5;148m	Foreground: 148	
+[38;5;149m	Foreground: 149	
+[38;5;150m	Foreground: 150	
+[38;5;151m	Foreground: 151	
+[38;5;152m	Foreground: 152	
+[38;5;153m	Foreground: 153	
+[38;5;154m	Foreground: 154	
+[38;5;155m	Foreground: 155	
+[38;5;156m	Foreground: 156	
+[38;5;157m	Foreground: 157	
+[38;5;158m	Foreground: 158	
+[38;5;159m	Foreground: 159	
+[38;5;160m	Foreground: 160	
+[38;5;161m	Foreground: 161	
+[38;5;162m	Foreground: 162	
+[38;5;163m	Foreground: 163	
+[38;5;164m	Foreground: 164	
+[38;5;165m	Foreground: 165	
+[38;5;166m	Foreground: 166	
+[38;5;167m	Foreground: 167	
+[38;5;168m	Foreground: 168	
+[38;5;169m	Foreground: 169	
+[38;5;170m	Foreground: 170	
+[38;5;171m	Foreground: 171	
+[38;5;172m	Foreground: 172	
+[38;5;173m	Foreground: 173	
+[38;5;174m	Foreground: 174	
+[38;5;175m	Foreground: 175	
+[38;5;176m	Foreground: 176	
+[38;5;177m	Foreground: 177	
+[38;5;178m	Foreground: 178	
+[38;5;179m	Foreground: 179	
+[38;5;180m	Foreground: 180	
+[38;5;181m	Foreground: 181	
+[38;5;182m	Foreground: 182	
+[38;5;183m	Foreground: 183	
+[38;5;184m	Foreground: 184	
+[38;5;185m	Foreground: 185	
+[38;5;186m	Foreground: 186	
+[38;5;187m	Foreground: 187	
+[38;5;188m	Foreground: 188	
+[38;5;189m	Foreground: 189	
+[38;5;190m	Foreground: 190	
+[38;5;191m	Foreground: 191	
+[38;5;192m	Foreground: 192	
+[38;5;193m	Foreground: 193	
+[38;5;194m	Foreground: 194	
+[38;5;195m	Foreground: 195	
+[38;5;196m	Foreground: 196	
+[38;5;197m	Foreground: 197	
+[38;5;198m	Foreground: 198	
+[38;5;199m	Foreground: 199	
+[38;5;200m	Foreground: 200	
+[38;5;201m	Foreground: 201	
+[38;5;202m	Foreground: 202	
+[38;5;203m	Foreground: 203	
+[38;5;204m	Foreground: 204	
+[38;5;205m	Foreground: 205	
+[38;5;206m	Foreground: 206	
+[38;5;207m	Foreground: 207	
+[38;5;208m	Foreground: 208	
+[38;5;209m	Foreground: 209	
+[38;5;210m	Foreground: 210	
+[38;5;211m	Foreground: 211	
+[38;5;212m	Foreground: 212	
+[38;5;213m	Foreground: 213	
+[38;5;214m	Foreground: 214	
+[38;5;215m	Foreground: 215	
+[38;5;216m	Foreground: 216	
+[38;5;217m	Foreground: 217	
+[38;5;218m	Foreground: 218	
+[38;5;219m	Foreground: 219	
+[38;5;220m	Foreground: 220	
+[38;5;221m	Foreground: 221	
+[38;5;222m	Foreground: 222	
+[38;5;223m	Foreground: 223	
+[38;5;224m	Foreground: 224	
+[38;5;225m	Foreground: 225	
+[38;5;226m	Foreground: 226	
+[38;5;227m	Foreground: 227	
+[38;5;228m	Foreground: 228	
+[38;5;229m	Foreground: 229	
+[38;5;230m	Foreground: 230	
+[38;5;231m	Foreground: 231	
+[38;5;232m	Foreground: 232	
+[38;5;233m	Foreground: 233	
+[38;5;234m	Foreground: 234	
+[38;5;235m	Foreground: 235	
+[38;5;236m	Foreground: 236	
+[38;5;237m	Foreground: 237	
+[38;5;238m	Foreground: 238	
+[38;5;239m	Foreground: 239	
+[38;5;240m	Foreground: 240	
+[38;5;241m	Foreground: 241	
+[38;5;242m	Foreground: 242	
+[38;5;243m	Foreground: 243	
+[38;5;244m	Foreground: 244	
+[38;5;245m	Foreground: 245	
+[38;5;246m	Foreground: 246	
+[38;5;247m	Foreground: 247	
+[38;5;248m	Foreground: 248	
+[38;5;249m	Foreground: 249	
+[38;5;250m	Foreground: 250	
+[38;5;251m	Foreground: 251	
+[38;5;252m	Foreground: 252	
+[38;5;253m	Foreground: 253	
+[38;5;254m	Foreground: 254	
+[38;5;255m	Foreground: 255	
+[40m	Background: 0	
+[41m	Background: 1	
+[42m	Background: 2	
+[43m	Background: 3	
+[44m	Background: 4	
+[45m	Background: 5	
+[46m	Background: 6	
+[47m	Background: 7	
+[100m	Background: 8	
+[101m	Background: 9	
+[102m	Background: 10	
+[103m	Background: 11	
+[104m	Background: 12	
+[105m	Background: 13	
+[106m	Background: 14	
+[107m	Background: 15	
+[48;5;16m	Background: 16	
+[48;5;17m	Background: 17	
+[48;5;18m	Background: 18	
+[48;5;19m	Background: 19	
+[48;5;20m	Background: 20	
+[48;5;21m	Background: 21	
+[48;5;22m	Background: 22	
+[48;5;23m	Background: 23	
+[48;5;24m	Background: 24	
+[48;5;25m	Background: 25	
+[48;5;26m	Background: 26	
+[48;5;27m	Background: 27	
+[48;5;28m	Background: 28	
+[48;5;29m	Background: 29	
+[48;5;30m	Background: 30	
+[48;5;31m	Background: 31	
+[48;5;32m	Background: 32	
+[48;5;33m	Background: 33	
+[48;5;34m	Background: 34	
+[48;5;35m	Background: 35	
+[48;5;36m	Background: 36	
+[48;5;37m	Background: 37	
+[48;5;38m	Background: 38	
+[48;5;39m	Background: 39	
+[48;5;40m	Background: 40	
+[48;5;41m	Background: 41	
+[48;5;42m	Background: 42	
+[48;5;43m	Background: 43	
+[48;5;44m	Background: 44	
+[48;5;45m	Background: 45	
+[48;5;46m	Background: 46	
+[48;5;47m	Background: 47	
+[48;5;48m	Background: 48	
+[48;5;49m	Background: 49	
+[48;5;50m	Background: 50	
+[48;5;51m	Background: 51	
+[48;5;52m	Background: 52	
+[48;5;53m	Background: 53	
+[48;5;54m	Background: 54	
+[48;5;55m	Background: 55	
+[48;5;56m	Background: 56	
+[48;5;57m	Background: 57	
+[48;5;58m	Background: 58	
+[48;5;59m	Background: 59	
+[48;5;60m	Background: 60	
+[48;5;61m	Background: 61	
+[48;5;62m	Background: 62	
+[48;5;63m	Background: 63	
+[48;5;64m	Background: 64	
+[48;5;65m	Background: 65	
+[48;5;66m	Background: 66	
+[48;5;67m	Background: 67	
+[48;5;68m	Background: 68	
+[48;5;69m	Background: 69	
+[48;5;70m	Background: 70	
+[48;5;71m	Background: 71	
+[48;5;72m	Background: 72	
+[48;5;73m	Background: 73	
+[48;5;74m	Background: 74	
+[48;5;75m	Background: 75	
+[48;5;76m	Background: 76	
+[48;5;77m	Background: 77	
+[48;5;78m	Background: 78	
+[48;5;79m	Background: 79	
+[48;5;80m	Background: 80	
+[48;5;81m	Background: 81	
+[48;5;82m	Background: 82	
+[48;5;83m	Background: 83	
+[48;5;84m	Background: 84	
+[48;5;85m	Background: 85	
+[48;5;86m	Background: 86	
+[48;5;87m	Background: 87	
+[48;5;88m	Background: 88	
+[48;5;89m	Background: 89	
+[48;5;90m	Background: 90	
+[48;5;91m	Background: 91	
+[48;5;92m	Background: 92	
+[48;5;93m	Background: 93	
+[48;5;94m	Background: 94	
+[48;5;95m	Background: 95	
+[48;5;96m	Background: 96	
+[48;5;97m	Background: 97	
+[48;5;98m	Background: 98	
+[48;5;99m	Background: 99	
+[48;5;100m	Background: 100	
+[48;5;101m	Background: 101	
+[48;5;102m	Background: 102	
+[48;5;103m	Background: 103	
+[48;5;104m	Background: 104	
+[48;5;105m	Background: 105	
+[48;5;106m	Background: 106	
+[48;5;107m	Background: 107	
+[48;5;108m	Background: 108	
+[48;5;109m	Background: 109	
+[48;5;110m	Background: 110	
+[48;5;111m	Background: 111	
+[48;5;112m	Background: 112	
+[48;5;113m	Background: 113	
+[48;5;114m	Background: 114	
+[48;5;115m	Background: 115	
+[48;5;116m	Background: 116	
+[48;5;117m	Background: 117	
+[48;5;118m	Background: 118	
+[48;5;119m	Background: 119	
+[48;5;120m	Background: 120	
+[48;5;121m	Background: 121	
+[48;5;122m	Background: 122	
+[48;5;123m	Background: 123	
+[48;5;124m	Background: 124	
+[48;5;125m	Background: 125	
+[48;5;126m	Background: 126	
+[48;5;127m	Background: 127	
+[48;5;128m	Background: 128	
+[48;5;129m	Background: 129	
+[48;5;130m	Background: 130	
+[48;5;131m	Background: 131	
+[48;5;132m	Background: 132	
+[48;5;133m	Background: 133	
+[48;5;134m	Background: 134	
+[48;5;135m	Background: 135	
+[48;5;136m	Background: 136	
+[48;5;137m	Background: 137	
+[48;5;138m	Background: 138	
+[48;5;139m	Background: 139	
+[48;5;140m	Background: 140	
+[48;5;141m	Background: 141	
+[48;5;142m	Background: 142	
+[48;5;143m	Background: 143	
+[48;5;144m	Background: 144	
+[48;5;145m	Background: 145	
+[48;5;146m	Background: 146	
+[48;5;147m	Background: 147	
+[48;5;148m	Background: 148	
+[48;5;149m	Background: 149	
+[48;5;150m	Background: 150	
+[48;5;151m	Background: 151	
+[48;5;152m	Background: 152	
+[48;5;153m	Background: 153	
+[48;5;154m	Background: 154	
+[48;5;155m	Background: 155	
+[48;5;156m	Background: 156	
+[48;5;157m	Background: 157	
+[48;5;158m	Background: 158	
+[48;5;159m	Background: 159	
+[48;5;160m	Background: 160	
+[48;5;161m	Background: 161	
+[48;5;162m	Background: 162	
+[48;5;163m	Background: 163	
+[48;5;164m	Background: 164	
+[48;5;165m	Background: 165	
+[48;5;166m	Background: 166	
+[48;5;167m	Background: 167	
+[48;5;168m	Background: 168	
+[48;5;169m	Background: 169	
+[48;5;170m	Background: 170	
+[48;5;171m	Background: 171	
+[48;5;172m	Background: 172	
+[48;5;173m	Background: 173	
+[48;5;174m	Background: 174	
+[48;5;175m	Background: 175	
+[48;5;176m	Background: 176	
+[48;5;177m	Background: 177	
+[48;5;178m	Background: 178	
+[48;5;179m	Background: 179	
+[48;5;180m	Background: 180	
+[48;5;181m	Background: 181	
+[48;5;182m	Background: 182	
+[48;5;183m	Background: 183	
+[48;5;184m	Background: 184	
+[48;5;185m	Background: 185	
+[48;5;186m	Background: 186	
+[48;5;187m	Background: 187	
+[48;5;188m	Background: 188	
+[48;5;189m	Background: 189	
+[48;5;190m	Background: 190	
+[48;5;191m	Background: 191	
+[48;5;192m	Background: 192	
+[48;5;193m	Background: 193	
+[48;5;194m	Background: 194	
+[48;5;195m	Background: 195	
+[48;5;196m	Background: 196	
+[48;5;197m	Background: 197	
+[48;5;198m	Background: 198	
+[48;5;199m	Background: 199	
+[48;5;200m	Background: 200	
+[48;5;201m	Background: 201	
+[48;5;202m	Background: 202	
+[48;5;203m	Background: 203	
+[48;5;204m	Background: 204	
+[48;5;205m	Background: 205	
+[48;5;206m	Background: 206	
+[48;5;207m	Background: 207	
+[48;5;208m	Background: 208	
+[48;5;209m	Background: 209	
+[48;5;210m	Background: 210	
+[48;5;211m	Background: 211	
+[48;5;212m	Background: 212	
+[48;5;213m	Background: 213	
+[48;5;214m	Background: 214	
+[48;5;215m	Background: 215	
+[48;5;216m	Background: 216	
+[48;5;217m	Background: 217	
+[48;5;218m	Background: 218	
+[48;5;219m	Background: 219	
+[48;5;220m	Background: 220	
+[48;5;221m	Background: 221	
+[48;5;222m	Background: 222	
+[48;5;223m	Background: 223	
+[48;5;224m	Background: 224	
+[48;5;225m	Background: 225	
+[48;5;226m	Background: 226	
+[48;5;227m	Background: 227	
+[48;5;228m	Background: 228	
+[48;5;229m	Background: 229	
+[48;5;230m	Background: 230	
+[48;5;231m	Background: 231	
+[48;5;232m	Background: 232	
+[48;5;233m	Background: 233	
+[48;5;234m	Background: 234	
+[48;5;235m	Background: 235	
+[48;5;236m	Background: 236	
+[48;5;237m	Background: 237	
+[48;5;238m	Background: 238	
+[48;5;239m	Background: 239	
+[48;5;240m	Background: 240	
+[48;5;241m	Background: 241	
+[48;5;242m	Background: 242	
+[48;5;243m	Background: 243	
+[48;5;244m	Background: 244	
+[48;5;245m	Background: 245	
+[48;5;246m	Background: 246	
+[48;5;247m	Background: 247	
+[48;5;248m	Background: 248	
+[48;5;249m	Background: 249	
+[48;5;250m	Background: 250	
+[48;5;251m	Background: 251	
+[48;5;252m	Background: 252	
+[48;5;253m	Background: 253	
+[48;5;254m	Background: 254	
+[48;5;255m	Background: 255	
 
