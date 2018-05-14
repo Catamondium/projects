@@ -3,6 +3,11 @@
 
 echo -e "prefix_escape\ttput operation\tpostfix_escape" > $1 # Header
 
+tput smul >> $1 # Underline exception
+echo -ne "\tsmul; rmul\t" >> $1
+tput rmul >> $1
+echo >> $1
+
 declare -a OPs=(rev blink bold sgr0 setaf setab)
 for OP in "${OPs[@]}"; do
 	if [ "$OP" == "setaf" ] || [ "$OP" == "setab" ]; then

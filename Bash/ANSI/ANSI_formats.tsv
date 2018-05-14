@@ -1,4 +1,5 @@
 prefix_escape	tput operation	postfix_escape
+[4m	smul; rmul	[24m
 [7m	rev	
 [5m	blink	
 [1m	bold	
