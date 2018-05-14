@@ -1,35 +1,21 @@
 #!/bin/bash
 # GNU bash, version 4.3.48(1)-release (x86_64-pc-linux-gnu)
 
-echo -e "prefix_escape\tlabel/colour\tpostfix_escape" > $1 # Header
+echo -e "prefix_escape\ttput operation\tpostfix_escape" > $1 # Header
 
-# Misc codes
-tput rev >> $1
-echo -e "\tReverse video\t" >> $1
-
-
-tput smul >> $1
-echo -ne "\tUnderlined\t" >> $1
-tput rmul >> $1
-echo >> $1
-
-tput blink >> $1
-echo -e "\tBlinking\t" >> $1
-
-
-tput bold >> $1
-echo -e "\tBold\t" >> $1
-
-tput sgr0 >> $1 # Reset attributes
-echo -e "\tReset\t" >> $1
-for C in {0..255}; do # Print foreground colour codes
-	tput setaf $C >> $1
-	echo -e "\tForeground: $C\t" >> $1
+declare -a OPs=(rev blink bold sgr0 setaf setab)
+for OP in "${OPs[@]}"; do
+	if [ "$OP" == "setaf" ] || [ "$OP" == "setab" ]; then
+		for C in {0..255}; do # Send colour codes
+			tput $OP $C >> $1
+			echo -e "\t$OP $C\t" >> $1
+		done
+	else # Send misc codes
+		tput $OP >> $1
+		echo -e "\t$OP\t" >> $1
+	fi
 done
-
-for C in {0..255}; do # Print background colour codes
-	tput setab $C >> $1
-	echo -e "\tBackground: $C\t" >> $1
-done
-tput sgr0 # Reset attributes
 echo >> $1 # Final newline
+
+tput sgr0 # Reset attributes
+#cat $1
