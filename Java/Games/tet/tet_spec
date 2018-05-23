@@ -1,7 +1,15 @@
-Tile states?:
+Sources:
+	http://tetris.wikia.com/wiki/Tetris_Guideline
+	https://www.dropbox.com/s/g55gwls0h2muqzn/tetris_guideline_docs_2009.zip
+
+Central datatype:
+	Matrix of tilestates?
+	2D array of tiles?
+	Underlying datatype of linear array?
+
+Tile states:
 	0: empty
-	1: set
-	2: active (block)
+	1: active [block_type]
 
 Field:
 	grid(10, 20 (+2 spawn buffer))
@@ -22,20 +30,20 @@ Game:
 			4 (800pts)
 		Shift down by filled rows
 	Lose:
-		Column hits top
+		Any column hits top+1
 
 Interaction:	
 	UP/W:
 		Rotate(clockwise, 0.5PI):
 			see img for centres
 	DOWN/S:
-		drop
+		Drop
 	LEFT/A:
-		translate(-1, 0)
+		Translate(-1, 0)
 	RIGHT/D:
-		translate(1, 0)
+		Translate(1, 0)
 
-tetromino:
+Tetromino:
 	length: 4 tiles
 
 	I: cyan
