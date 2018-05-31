@@ -1,10 +1,10 @@
 void setup() {
   size(700, 600);
+  background(0);
   colorMode(HSB, 360, 1, 1);
 }
 
 void draw() {
-  //background(0);
   frameRate(2);
   randomQuad(width, height);
 }
@@ -28,5 +28,5 @@ void randomQuad(int w, int h) {
 }
 
 void keyPressed() {
- saveFrame("output.png");
+  saveFrame("output.png");
 }
