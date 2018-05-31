@@ -10,9 +10,21 @@ Central datatype:
 Tile states:
 	0: empty
 	1: active [block_type]
+Tile:
+	Coordinates?
+		no, check exists at coordinates
+	Type
+	orientation?
+Player:
+	Coordinates array
+	Type
+	translate(x, y)
+	rotate(+- or 0-3)
+	edges()
 
 Field:
 	grid(10, 20 (+2 spawn buffer))
+	show(x, y, width, height, Grid)
 	spawn(5, 0), randomised
 	Every frame:
 		Check stacked:

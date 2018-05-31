@@ -26,3 +26,7 @@ void randomPoly(int w, int h, int v) {
 void randomQuad(int w, int h) {
   randomPoly(w, h, 4);
 }
+
+void keyPressed() {
+ saveFrame("output.png");
+}

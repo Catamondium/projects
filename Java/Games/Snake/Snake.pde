@@ -51,3 +51,7 @@ void keyPressed() {
     break;
   }
 }
+
+void mousePressed() {
+  saveFrame("output.png");
+}
