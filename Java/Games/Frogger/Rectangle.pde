@@ -1,19 +1,17 @@
 class Rectangle {
   float x, y, w, h;
   color col;
-  boolean centered;
 
   Rectangle(float x_, float y_, // Constructed relative to center
-    float w_, float h_, color col_, boolean centered_) {
+    float w_, float h_, color col_, boolean centered) {
     x = (x_ + 1) * grid.x;
 
-    x -= (centered_) ? 0.5 * grid.x : grid.x; // Correct between lanes vs characters
+    x -= (centered) ? 0.5 * grid.x : grid.x; // Correct between lanes vs characters
 
     y = height - (y_ + 0.5) * grid.y;
     w = w_;
     h = h_;
     col = col_;
-    centered = centered_;
   }
 
   void show() {
