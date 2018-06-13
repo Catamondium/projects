@@ -3,13 +3,11 @@ Sources:
 	https://www.dropbox.com/s/g55gwls0h2muqzn/tetris_guideline_docs_2009.zip
 
 Central datatype:
-	Matrix of tilestates?
-	2D array of tiles?
-	Underlying datatype of linear array?
+	Matrix w/ Linear array w/ access methods
 
 Tile states:
 	0: empty
-	1: active [block_type]
+	N: active [block_type_N]
 Tile:
 	Coordinates?
 		no, check exists at coordinates
@@ -23,7 +21,7 @@ Player:
 	edges()
 
 Field:
-	grid(10, 20 (+2 spawn buffer))
+	Matrix(10, 20 (+2 spawn buffer))
 	show(x, y, width, height, Grid)
 	spawn(5, 0), randomised
 	Every frame:
