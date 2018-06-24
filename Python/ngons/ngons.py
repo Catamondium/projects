@@ -11,7 +11,7 @@ def tx(n, R):  # x component to beginning vertex of ngonR
 def getlength(n, R):  # Find length of regular ngonR
 	return R * 2 * math.sin(math.pi / n)
 
-def ngon(n, R, t):  # Generate regular ngonR, with turtle t
+def ngon(n, R, t):  # Generate regular ngonR, with Turtle t
 	length = getlength(n, R)
 	for i in range(0, n):
 		t.left(180 - ((1 - (2 / n)) * 180))  # t rotates by exterior angles
@@ -41,8 +41,6 @@ terry.setpos(tx(last_n, r) / 2, ty(last_n, r) / 2)
 terry.write(str_rad)
 terry.home()
 terry.color('red')
-#terry.ht()
-#terry.ht()
 #terry.ht()
 # Screenshot
 canvas = getcanvas()
