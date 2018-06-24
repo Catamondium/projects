@@ -2,21 +2,20 @@ from turtle import *
 import sys
 import math
 
-def ty(n, R): # y component to beginning vertex of ngon-R
+def ty(n, R):  # y component to beginning vertex of ngonR
 	length = getlength(n, R)
 	return - (R**2 - (.5 * length)**2)**.5
-def tx(n, R): # x component to beginning vertex of ngon-R
-	length = getlength(n, R)
-	return .5 * length
+def tx(n, R):  # x component to beginning vertex of ngonR
+    return .5 * getlength(n, R)
 
-def getlength(n, R): # Find length of regular n-gon-R
+def getlength(n, R):  # Find length of regular ngonR
 	return R * 2 * math.sin(math.pi / n)
 
-def ngon(n, R, t): # Generate regular n-gon-R, with turtle t
-	side_length = getlength(n, R)
+def ngon(n, R, t):  # Generate regular ngonR, with turtle t
+	length = getlength(n, R)
 	for i in range(0, n):
-		t.left(180 - ((1 - (2 / n)) * 180)) # t rotates by exterior angles
-		t.forward(side_length)
+		t.left(180 - ((1 - (2 / n)) * 180))  # t rotates by exterior angles
+		t.forward(length)
 		title('ngon: {}'.format(n))
 # Settings
 terry = Turtle()
@@ -36,13 +35,14 @@ for n in range(3, 8):
 	terry.end_fill()
 	last_n = n
 # Draw measured circumradius
-str = 'R = {}'.format(round(terry.distance(0, 0)))
+str_rad = 'R = {}'.format(round(terry.distance(0, 0)))
 terry.color('black')
 terry.setpos(tx(last_n, r) / 2, ty(last_n, r) / 2)
-terry.write(str)
+terry.write(str_rad)
 terry.home()
 terry.color('red')
-terry.dot()
+#terry.ht()
+#terry.ht()
 #terry.ht()
 # Screenshot
 canvas = getcanvas()
