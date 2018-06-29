@@ -3,16 +3,26 @@
 #include <stdio.h>
 #include <string.h>
 
-void calcEtime(int St[2], int t, int Et[2]) {
-    int offset = St[0] * 60 + St[1];
+struct Time {
+    int hrs;
+    int mins;
+};
+
+void calcEtime(struct Time s, int t, struct Time* e_ptr) {
+    struct Time end;
+
+    int offset = s.hrs * 60 + s.mins;
     int tot = offset + t;
-    Et[0] = (int) (floor(tot / 60));
-    Et[1] = (int) (tot % 60);
+
+    end.hrs = (int) (floor(tot / 60));
+    end.mins = (int) (tot % 60);
+
+    *e_ptr = end;
     return;
 }
 
 int main(int argc, char *argv[]) {
-    int Stime[2], Etime[2];
+    struct Time start, end;
     signed int elapse;
 
     if(argc < 3) {
@@ -24,17 +34,17 @@ int main(int argc, char *argv[]) {
         const char delimiters[] = " :";
         char in[60];
         strcpy(in, argv[1]);
-        char * hrs;
-        char * mins;
+        char* hrs;
+        char* mins;
         hrs = strtok(in, delimiters);
         mins = strtok(NULL, delimiters);
-        Stime[0] = atoi(hrs);
-        Stime[1] = atoi(mins);
+        start.hrs = atoi(hrs);
+        start.mins = atoi(mins);
     }
 
-    calcEtime(Stime, elapse, Etime);
+    calcEtime(start, elapse, &end);
 
-    printf("Start time:\t%02i:%02i", Stime[0], Stime[1]);
+    printf("Start time:\t%02i:%02i", start.hrs, start.mins);
     printf("\t%+d\n", elapse);
-    printf("End time:\t%02i:%02i\n", Etime[0], Etime[1]);
+    printf("End time:\t%02i:%02i\n", end.hrs, end.mins);
 }
