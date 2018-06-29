@@ -8,7 +8,7 @@ struct Time {
     int mins;
 };
 
-void calcEtime(struct Time s, int t, struct Time* e_ptr) {
+struct Time calcEtime(struct Time s, int t) {
     struct Time end;
 
     int offset = s.hrs * 60 + s.mins;
@@ -17,8 +17,7 @@ void calcEtime(struct Time s, int t, struct Time* e_ptr) {
     end.hrs = (int) (floor(tot / 60));
     end.mins = (int) (tot % 60);
 
-    *e_ptr = end;
-    return;
+    return end;
 }
 
 int main(int argc, char *argv[]) {
@@ -42,7 +41,7 @@ int main(int argc, char *argv[]) {
         start.mins = atoi(mins);
     }
 
-    calcEtime(start, elapse, &end);
+    end = calcEtime(start, elapse);
 
     printf("Start time:\t%02i:%02i", start.hrs, start.mins);
     printf("\t%+d\n", elapse);
