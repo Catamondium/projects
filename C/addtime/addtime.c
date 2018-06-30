@@ -3,13 +3,13 @@
 #include <stdio.h>
 #include <string.h>
 
-struct Time {
+typedef struct Times {
     int hrs;
     int mins;
-};
+} Time;
 
-struct Time calcEtime(struct Time s, int t) {
-    struct Time ret;
+Time calcEtime(Time s, int t) {
+    Time ret;
 
     int offset = s.hrs * 60 + s.mins;
     int tot = offset + t;
@@ -21,7 +21,7 @@ struct Time calcEtime(struct Time s, int t) {
 }
 
 int main(int argc, char *argv[]) {
-    struct Time start, end;
+    Time start, end;
     signed int elapse;
 
     if(argc < 3) {
