@@ -54,6 +54,7 @@ class Drone {
   }
 
   void applyForce(PVector force) {
+    force.mult(1 / r);
     acc.add(force);
   }
 
