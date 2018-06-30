@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-typedef struct Times {
+typedef struct Time_s {
     int hrs;
     int mins;
 } Time;
@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     } else {
         elapse = atoi(argv[2]);
         // Split and collect start time
-        const char delimiters[] = " :";
+        const char delimiters[] = ":";
         char in[60];
         strcpy(in, argv[1]);
         char* hrs;
