@@ -9,15 +9,15 @@ struct Time {
 };
 
 struct Time calcEtime(struct Time s, int t) {
-    struct Time end;
+    struct Time ret;
 
     int offset = s.hrs * 60 + s.mins;
     int tot = offset + t;
 
-    end.hrs = (int) (floor(tot / 60));
-    end.mins = (int) (tot % 60);
+    ret.hrs = (int) (floor(tot / 60));
+    ret.mins = (int) (tot % 60);
 
-    return end;
+    return ret;
 }
 
 int main(int argc, char *argv[]) {
