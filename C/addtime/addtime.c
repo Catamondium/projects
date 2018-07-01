@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -31,19 +32,19 @@ int main(int argc, char *argv[]) {
         elapse = atoi(argv[2]);
         // Split and collect start time
         const char delimiters[] = ":";
-        char in[60];
-        strcpy(in, argv[1]);
-        char* hrs;
-        char* mins;
-        hrs = strtok(in, delimiters);
-        mins = strtok(NULL, delimiters);
+        char *input = argv[1];
+
+        char *hrs = strtok(input, delimiters);
+        char *mins = strtok(NULL, delimiters);
+
         start.hrs = atoi(hrs);
         start.mins = atoi(mins);
     }
 
     end = calcEtime(start, elapse);
-
-    printf("Start time:\t%02i:%02i", start.hrs, start.mins);
-    printf("\t%+d\n", elapse);
-    printf("End time:\t%02i:%02i\n", end.hrs, end.mins);
+    // Build output string
+    char *out_1, *out_2;
+    asprintf(&out_1, "Start time:\t%02i:%02i", start.hrs, start.mins);
+    asprintf(&out_2, "End time:\t%02i:%02i\n", end.hrs, end.mins);
+    printf("%s\t%+d\n%s", out_1, elapse, out_2);
 }
