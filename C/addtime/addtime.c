@@ -47,4 +47,6 @@ int main(int argc, char *argv[]) {
     asprintf(&out_1, "Start time:\t%02i:%02i", start.hrs, start.mins);
     asprintf(&out_2, "End time:\t%02i:%02i\n", end.hrs, end.mins);
     printf("%s\t%+d\n%s", out_1, elapse, out_2);
+    free(out_1);
+    free(out_2);
 }
