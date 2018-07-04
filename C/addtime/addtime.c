@@ -43,10 +43,10 @@ int main(int argc, char *argv[]) {
 
     end = calcEtime(start, elapse);
     // Build output string
-    char *out_1, *out_2;
-    asprintf(&out_1, "Start time:\t%02i:%02i", start.hrs, start.mins);
-    asprintf(&out_2, "End time:\t%02i:%02i\n", end.hrs, end.mins);
-    printf("%s\t%+d\n%s", out_1, elapse, out_2);
-    free(out_1);
-    free(out_2);
+    char *Ostr_S, *Ostr_E;
+    asprintf(&Ostr_S, "Start time:\t%02i:%02i", start.hrs, start.mins);
+    asprintf(&Ostr_E, "End time:\t%02i:%02i\n", end.hrs, end.mins);
+    printf("%s\t%+d\n%s", Ostr_S, elapse, Ostr_E);
+    free(Ostr_S);
+    free(Ostr_E);
 }
