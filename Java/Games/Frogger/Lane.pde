@@ -44,6 +44,7 @@ class Lane extends Rectangle {
       for (Obsticle o : obsticles) {
         if (o.intersects(frog)) {
           GameOver();
+          break;
         }
       }
     } else if (type == LOG) {
@@ -52,6 +53,7 @@ class Lane extends Rectangle {
         if (o.intersects(frog)) {
           ok = true;
           frog.attach(o);
+          break;
         }
       }
       if (!ok) {

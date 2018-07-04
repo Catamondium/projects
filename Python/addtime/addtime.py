@@ -20,9 +20,9 @@ else:
 		Istr[len(Istr):] = [sys.argv[2]]
 
 Istr = [int(x) for x in Istr]
+
 if len(Istr) == 2:  # Supplement input
 	elapse = eval(input("Period(min):	"))
-
 else:  # Use existing
 	elapse = Istr[2]
 	
