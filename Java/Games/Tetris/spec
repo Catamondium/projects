@@ -5,19 +5,34 @@ Sources:
 Central datatype:
 	Matrix w/ Linear array w/ access methods
 
-Tile states:
-	0: empty
-	N: active [block_type_N]
+Matrix:
+	clearRows()
+	clearRows()
+	translateRows()
+	query()
+	show()
+	commit()
+
 Tile:
-	Coordinates?
-		no, check exists at coordinates
 	Type
 	orientation?
-Player:
+
+Tetrimino(player):
 	Coordinates array
 	Type
 	translate(x, y)
-	rotate(+- or 0-3)
+	drop():
+		translate(lowestOccupied+1)
+	show()
+	check():
+		Collision
+		winRows --> matrix.clearRows()
+	rotate(+- or 0-3):
+		NO-OP: O
+		Block-centred: L, J, Z, S
+			translate origin
+			(x,y) --> (-y, x)
+			restore centre
 	edges()
 
 Field:
@@ -44,7 +59,7 @@ Game:
 
 Interaction:	
 	UP/W:
-		Rotate(clockwise, 0.5PI):
+		Rotate(clockwise, .5PI): // Implement -.5PI later
 			see img for centres
 	DOWN/S:
 		Drop
@@ -55,15 +70,18 @@ Interaction:
 
 Tetromino:
 	length: 4 tiles
-
+	Spawn positions converted into PVectors on construction
+	
 	I: cyan
+		Rotate: Block-centred w/ centre exception, !floating centre: (5.5, -0.5)
 		0001111000
 		0000000000
 		[[4, 0],
-		[5, 0],
-		[6, 0], 
+		[5, 0], //
+		[6, 0], // centre between these and to the bottom in this position
 		[7, 0]]
 	O: yellow
+		Rotate: NO-OP
 		0000110000
 		0000110000
 		[[5, 0],
@@ -73,35 +91,35 @@ Tetromino:
 	T: purple
 		0000100000
 		0001110000
-		[[5, 0],
-		[4, 1],
-		[5, 1],
-		[6, 1]]
+		[[4, 1],
+		[5, 0],
+		[6, 1],
+		[5, 1]] :centre
 	S: green
 		0000110000
 		0001100000
 		[[5, 0],
 		[6, 0],
 		[4, 1],
-		[5, 1]]
+		[5, 1]] :centre
 	Z: red
 		0001100000
 		0000110000
 		[[4, 0],
 		[5, 0],
-		[5, 1],
-		[6, 1]]
-	J: blue
+		[6, 1],
+		[5, 1]] :centre
+	L: orange
 		0001000000
 		0001110000
 		[[4, 0],
 		[4, 1],
-		[5, 1],
-		[6, 1]]
-	L: orange
+		[6, 1],
+		[5, 1]] :centre
+	J: blue
 		0000010000
 		0001110000
 		[[6, 0],
 		[4, 1],
-		[5, 1],
-		[6, 1]]
+		[6, 1],
+		[5, 1]] :centre
