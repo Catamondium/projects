@@ -54,16 +54,16 @@ int[][][] TETS = { // [7][4][2] lengths
   {4, 1}} // Centre
 };
 
-Tet player = new Tet(0);
+Tet player = new Tet(2);
+int scale = 50;
 void setup() {
   size(700, 600);
 }
 
 void draw() {
   background(0);
-  drawgrid(50, width, height);
-  player.show(50);
-  rect(0, 0, 50, 50);
+  drawgrid(scale, width, height);
+  player.show(scale);
 }
 
 void keyPressed() {
@@ -83,7 +83,7 @@ void keyPressed() {
   case 'd':
     player.trans(1, 0);
     break;
-  case 'f':
+  case 'e':
     player.rot();
     break;
   }

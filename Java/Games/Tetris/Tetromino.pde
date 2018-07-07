@@ -11,8 +11,8 @@ class Tet {
   }
 
   void trans(float x, float y) {
-    for (PVector v : coords) {
-      v.add(new PVector(x, y));
+    for (PVector P : coords) {
+      P.add(new PVector(x, y));
     }
   }
 
@@ -23,64 +23,55 @@ class Tet {
   void rot() {
     switch(type) {
     case 0: // between coords[2] & coords[3], but to a side
-      PVector centre = I_centre();
-      block_Centred(centre);
+      centred_rot(I_centre());
       break;
 
     case 1: // NOOP
       break;
 
     default:
-      block_Centred(coords[3]);
+      centred_rot(coords[3]);
       break;
     }
+
     rotation++;
     if (rotation > 3 || rotation < 0)
       rotation = 0;
   }
 
-  void block_Centred(PVector C) {
+  void centred_rot(PVector C) {
     PVector tmpC = C.copy();
-    trans(-C.x, -C.y);
+    trans(-C.x, -C.y); // translate to (0, 0)
 
-    for (int i = 0; i < 4; i++) {
-      float tmp = coords[i].x;
-      coords[i].x = -coords[i].y;
-      coords[i].y = tmp;
+    for (PVector P : coords) { // rotate each point clockwise
+      float tmp = P.x;
+      P.x = -P.y;
+      P.y = tmp;
     }
-    trans(tmpC);
+
+    trans(tmpC); // restore position
   }
 
   PVector I_centre() {
     PVector ret = new PVector();
 
     PVector mean = PVector.add(coords[2], coords[3]);
-    mean.mult(.5); // Gather mean
+    mean.div(2); // Gather mean
 
-    switch(rotation) {
-    case 0:
-      ret.set(mean.x, mean.y + .5);
-      break;
-
-    case 1:
-      ret.set(mean.x - .5, mean.y);
-      break;
-
-    case 2:
-      ret.set(mean.x, mean.y - .5);
-      break;
-
-    case 3:
-      ret.set(mean.x + .5, mean.y);
-      break;
+    float c = (rotation % 3 == 0) ? +.5 : -.5;
+    if (rotation % 2 == 0) {
+      ret.set(mean.x, mean.y + c);
+    } else {
+      ret.set(mean.x + c, mean.y);
     }
+
     return ret;
   }
 
   void show(int scale) {
     fill(T_COLS[type]);
     for (int i = 0; i < 4; i++) {
-      rect(coords[i].x * scale, coords[i].y * scale, 50, 50);
+      rect(coords[i].x * scale, coords[i].y * scale, scale, scale);
     }
   }
 }
