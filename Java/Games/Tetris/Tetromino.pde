@@ -21,9 +21,13 @@ class Tet {
     return t;
   }
 
-  void update(int scale, Matrix m) {
+  boolean update(int scale, Matrix m) {
     //trans(0, 1);
-    check(scale, m);
+    strain(scale);
+    boolean ret = m.query(copy());
+    if (ret)
+      m.commit(copy());
+    return ret;
   }
 
   void trans(float x, float y) {
@@ -36,16 +40,9 @@ class Tet {
     trans(v.x, v.y);
   }
 
-  void check(int scale, Matrix m) {
+  void strain(int scale) {
     boolean left = false;
     boolean right = false;
-
-    if (m.query(copy())) {
-      //m.commit(coords, type, rotation);
-      //println("queried: true");
-      return;
-    }
-
     for (PVector P : coords) {
       if (P.x < origin.x) {
         left = true;
@@ -55,6 +52,7 @@ class Tet {
         break;
       }
     }
+
     if (left)
       trans(1, 0);
     if (right)

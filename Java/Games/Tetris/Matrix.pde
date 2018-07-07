@@ -8,12 +8,14 @@ class Tile {
 }
 
 class Matrix {
-  Tile[] tiles;
+  Tile[] tiles; // NEVER returns null!
+  boolean[] checks;
   int w, h;
   PVector origin, dimentions;
 
   Matrix(int w, int h, PVector origin_, PVector dimentions_) {
-    tiles = new Tile[w * h]; 
+    tiles = new Tile[w * h];
+    checks = new boolean[w * h];
     origin = origin_;
     dimentions = dimentions_;
   }
@@ -34,25 +36,35 @@ class Matrix {
   }
 
   boolean query(Tet t) {
+    boolean ret = false;
     for (PVector P : t.coords) {
       if (fetch(P.x + 1, P.y) != null 
         || P.x == w 
         || P.y == h) {
-        commit(t.coords, t.type, t.rotation);
-        return true;
+        ret = true;
+        break;
       }
     }
-    return false;
+    println(ret);
+    return ret;
   }
 
   Tile fetch(float x, float y) {
-    //println("fetched: " + tiles[(int)x + (int)y * w]);
-    return tiles[(int)x + (int)y * w];
+    if (checks[ord(x, y)]) {
+      return tiles[ord(x, y)];
+    } else { 
+      return null;
+    }
   }
 
-  void commit(PVector[] points, int type, int rotation) {
-    for (PVector P : points) {
-      tiles[(int)P.x + (int)P.y * w] = new Tile(type, rotation);
+  int ord(float x, float y) {
+    return (int)(x + y * w);
+  }
+
+  void commit(Tet t) {
+    for (PVector P : t.coords) {
+      tiles[ord(P.x, P.y)] = new Tile(t.type, t.rotation);
+      checks[ord(P.x, P.y)] = true;
     }
   }
 }
