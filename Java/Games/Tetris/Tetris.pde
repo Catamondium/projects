@@ -54,15 +54,22 @@ int[][][] TETS = { // [7][4][2] lengths
   {4, 1}} // Centre
 };
 
-Tet player = new Tet(2);
-int scale = 50;
+Tet player;
+Matrix playfield;
+int scale = 25;
 void setup() {
   size(700, 600);
+  PVector origin = new PVector(0, 0);
+  PVector dimentions = new PVector(10 * scale, 20 * scale);
+  player = new Tet(2, origin, dimentions);
+  playfield = new Matrix(10, 20, origin, dimentions);
 }
 
 void draw() {
   background(0);
-  drawgrid(scale, width, height);
+  //drawgrid(scale, width, height);
+  player.update(scale, playfield);
+  playfield.show(scale);
   player.show(scale);
 }
 

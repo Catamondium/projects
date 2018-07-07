@@ -2,12 +2,28 @@ class Tet {
   PVector[] coords = new PVector[4];
   int type;
   int rotation = 0;
+  PVector origin, dimentions;
 
-  Tet(int type_) {
+  Tet(int type_, PVector origin_, PVector dimentions_) {
     type = type_;
+    origin = origin_;
+    dimentions = dimentions_;
     for (int i = 0; i < 4; i++) {
       coords[i] = new PVector(TETS[type_][i][0], TETS[type_][i][1]);
     }
+  }
+
+  Tet copy() {
+    Tet t = new Tet(type, origin, dimentions);
+    t.rotation = rotation;
+    t.type = type;
+    t.coords = coords;
+    return t;
+  }
+
+  void update(int scale, Matrix m) {
+    //trans(0, 1);
+    check(scale, m);
   }
 
   void trans(float x, float y) {
@@ -18,6 +34,31 @@ class Tet {
 
   void trans(PVector v) {
     trans(v.x, v.y);
+  }
+
+  void check(int scale, Matrix m) {
+    boolean left = false;
+    boolean right = false;
+
+    if (m.query(copy())) {
+      //m.commit(coords, type, rotation);
+      //println("queried: true");
+      return;
+    }
+
+    for (PVector P : coords) {
+      if (P.x < origin.x) {
+        left = true;
+        break;
+      } else if ((P.x + 1) * scale > dimentions.x + origin.x) {
+        right = true;
+        break;
+      }
+    }
+    if (left)
+      trans(1, 0);
+    if (right)
+      trans(-1, 0);
   }
 
   void rot() {
@@ -71,7 +112,7 @@ class Tet {
   void show(int scale) {
     fill(T_COLS[type]);
     for (int i = 0; i < 4; i++) {
-      rect(coords[i].x * scale, coords[i].y * scale, scale, scale);
+      rect(coords[i].x * scale + origin.x, coords[i].y * scale + origin.y, scale, scale);
     }
   }
 }
