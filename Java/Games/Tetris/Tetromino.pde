@@ -1,5 +1,5 @@
 class Tet {
-  PVector[] coords = new PVector[4];
+  PVector[] blocks = new PVector[4];
   int type;
   int rotation = 0;
   PVector origin, dimentions;
@@ -9,7 +9,7 @@ class Tet {
     origin = origin_;
     dimentions = dimentions_;
     for (int i = 0; i < 4; i++) {
-      coords[i] = new PVector(TETS[type_][i][0], TETS[type_][i][1]);
+      blocks[i] = new PVector(TETS[type_][i][0], TETS[type_][i][1]);
     }
   }
 
@@ -17,7 +17,7 @@ class Tet {
     Tet t = new Tet(type, origin, dimentions);
     t.rotation = rotation;
     t.type = type;
-    t.coords = coords;
+    t.blocks = blocks;
     return t;
   }
 
@@ -31,7 +31,7 @@ class Tet {
   }
 
   void trans(float x, float y) {
-    for (PVector P : coords) {
+    for (PVector P : blocks) {
       P.add(new PVector(x, y));
     }
   }
@@ -43,7 +43,7 @@ class Tet {
   void strain(int scale) {
     boolean left = false;
     boolean right = false;
-    for (PVector P : coords) {
+    for (PVector P : blocks) {
       if (P.x < origin.x) {
         left = true;
         break;
@@ -69,7 +69,7 @@ class Tet {
       break;
 
     default:
-      centred_rot(coords[3]);
+      centred_rot(blocks[3]);
       break;
     }
 
@@ -82,7 +82,7 @@ class Tet {
     PVector tmpC = C.copy();
     trans(-C.x, -C.y); // translate to (0, 0)
 
-    for (PVector P : coords) { // rotate each point clockwise
+    for (PVector P : blocks) { // rotate each point clockwise
       float tmp = P.x;
       P.x = -P.y;
       P.y = tmp;
@@ -94,7 +94,7 @@ class Tet {
   PVector I_centre() {
     PVector ret = new PVector();
 
-    PVector mean = PVector.add(coords[2], coords[3]);
+    PVector mean = PVector.add(blocks[2], blocks[3]);
     mean.div(2); // Gather mean
 
     float c = (rotation % 3 == 0) ? +.5 : -.5;
@@ -110,7 +110,7 @@ class Tet {
   void show(int scale) {
     fill(T_COLS[type]);
     for (int i = 0; i < 4; i++) {
-      rect(coords[i].x * scale + origin.x, coords[i].y * scale + origin.y, scale, scale);
+      rect(blocks[i].x * scale + origin.x, blocks[i].y * scale + origin.y, scale, scale);
     }
   }
 }
