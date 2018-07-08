@@ -1,4 +1,4 @@
-class Tile { //<>//
+class Tile { //<>// //<>//
   boolean exists;
   int type, rotation;
 
@@ -8,9 +8,11 @@ class Tile { //<>//
     exists = true;
   }
   void insert(Tile t) {
-    type = t.type;
-    rotation = t.rotation;
-    exists = true;
+    if (t.exists) {
+      type = t.type;
+      rotation = t.rotation;
+      exists = true;
+    }
   }
 }
 
@@ -93,14 +95,15 @@ class Matrix {
   void CheckRows(PVector[] blocks) {
     FloatList toRemove = new FloatList();
     for (PVector B : blocks) {
-      if (CheckRow(B.y))
+      if (!toRemove.hasValue(B.y) && CheckRow(B.y))
         toRemove.append(B.y);
     }
 
-    if (toRemove.size() != 0) {
+    if (toRemove.size() > 0) {
       ClearRows(toRemove);
-      //MovRows(toRemove);
+      MovRows(toRemove);
     }
+    win(toRemove.size());
   }
 
   boolean CheckRow(float y) {
@@ -119,17 +122,14 @@ class Matrix {
     }
   }
 
-  //void MovRows(FloatList y) { // not yet functional
-  //  float y_min = y.max();
-  //  for (float y_o = y_min; y_o >= 0; y_o--) {
-  //    for (int x = w; x >= 0; x--) {
-  //      if (y_o == h) {
-  //        tiles[ord(x, y_o)].insert(tiles[ord(x, y_o + 1)]);
-  //        tiles[ord(x, y_o)].exists = false;
-  //      }
-  //    }
-  //  }
-  //}
+  void MovRows(FloatList y) {
+    int start = ord(w - 1, y.max() - y.size());
+    int mov_by = y.size() * w;
+    for (int i = start; i > -1; i--) {
+      tiles[i + mov_by].insert(tiles[i]);
+      tiles[i].exists = false;
+    }
+  }
 
   void commit(Tet t) {
     for (PVector P : t.blocks) {

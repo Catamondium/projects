@@ -1,13 +1,8 @@
+/* Ongoing bugs
+*  after being called on bottom row, checkRows() never calls again on bottom row
+*  player is able to move sideways into blocks
+**/
 // Constants
-//int[] TYPES = {
-//  0, // I
-//  1, // O
-//  2, // T
-//  3, // S
-//  4, // Z
-//  5, // L
-//  6}; // J
-
 color[] T_COLS = {
   #00FFFF, 
   #FFFF00, 
@@ -53,6 +48,15 @@ int[][][] TETS = { // [7][4][2] lengths
     {5, -2}, 
   {4, -2}} // Centre
 };
+
+//int[] stats = {
+//  0, // I
+//  1, // O
+//  2, // T
+//  3, // S
+//  4, // Z
+//  5, // L
+//  6}; // J
 
 Tet player;
 Matrix playfield;
@@ -123,4 +127,8 @@ void drawgrid(int scale, int w, int h) {
 void reset() {
   player = new Tet(floor(random(6)));
   playfield = new Matrix(10, 20, origin, dimentions);
+}
+
+void win(int rows) {
+ println("win: " + rows); 
 }
