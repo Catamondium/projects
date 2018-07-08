@@ -1,9 +1,10 @@
-/* Ongoing bugs
- *  Player is able to move sideways into blocks
+/* Ongoing bugs:
+ * * Player is able to move sideways into blocks
  *
  * TODO:
- * Gameplay: scoring system
- * Timings: ticks and check allowances
+ * * Gameplay: 
+ * * * Scoring system
+ * * Timings: ticks and check allowances
  **/
 /* Coordinate system
  * * 0 1 2 3 4 5 ...9
@@ -118,8 +119,16 @@ void keyPressed() {
     break;
 
   case 'e':
-    player.rot();
+    player.rot(1);
     break;
+    
+  case 'q':
+  player.rot(-1);
+  break;
+  
+  case 'f':
+  player.drop(playfield);
+  break;
 
   case 'c':
     saveFrame("output.png");

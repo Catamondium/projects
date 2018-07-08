@@ -38,7 +38,7 @@ class Matrix {
 
     stroke(#FF0000);
     rect(origin.x, origin.y, dimentions.x, dimentions.y);
-    PVector scale = get_scale();
+    PVector scale = calcScale();
 
     stroke(0);
     for (int x = 0; x < w; x++) {
@@ -53,10 +53,11 @@ class Matrix {
     popStyle();
   }
 
-  PVector get_scale() {
+  PVector calcScale() {
     return new PVector(dimentions.x / w, dimentions.y / h);
   }
 
+  // Querying methods
   boolean query(Tet t) {
     boolean ret = false;
 
@@ -67,6 +68,27 @@ class Matrix {
       }
     }
     return ret;
+  }
+
+  boolean query_test(PVector B) {
+    int under_me = ord(B.x, B.y + 1);
+
+    if (under_me < 0) // cover for starting position when translated to (x, -2)
+      return false;
+
+    else if (under_me >= (w * h)) // Short circuit to avoid OutOfBounds error
+      return true;
+
+    else if (tiles[under_me].exists || B.y == h)
+      return true;
+
+    return false;
+  }
+
+  void commit(Tet t) {
+    for (PVector P : t.blocks) {
+      tiles[ord(P.x, P.y)].insert(t.type, t.rotation);
+    }
   }
 
   Tile fetch(float x, float y) {
@@ -86,25 +108,30 @@ class Matrix {
   //  return false;
   //} // WIP
 
-  boolean query_test(PVector B) {
-    int under_me = ord(B.x, B.y + 1);
-
-    if (under_me < 0) // cover for starting position when translated to (x, -2)
-      return false;
-
-    else if (under_me >= (w * h)) // Short circuit to avoid OutOfBounds error
-      return true;
-
-    else if (tiles[under_me].exists || B.y == h)
-      return true;
-
-    return false;
-  }
 
   int ord(float x, float y) {
     return floor((x + (y * w)));
   }
 
+  // Row/column methods
+  float checkCol(PVector[] blocks) { // experimental
+    FloatList ping = new FloatList();
+    float maxY = 0;
+    for (PVector B : blocks) {
+      if (B.y > maxY)
+        maxY = B.y;
+      for (float y = B.y + 1; y < h; y++) {
+        if (fetch(B.x, y).exists) {
+          ping.append(y);
+          break;
+        }
+      }
+    }
+    if (ping.size() > 0)
+      return ping.min() - maxY;
+
+    return (h - 1) - maxY;
+  }
   void CheckRows(PVector[] blocks) {
     FloatList toRemove = new FloatList();
     for (PVector B : blocks) {
@@ -140,12 +167,6 @@ class Matrix {
     for (int i = start; i >= 0; i--) {
       tiles[i + mov_by].insert(tiles[i]);
       tiles[i].exists = false;
-    }
-  }
-
-  void commit(Tet t) {
-    for (PVector P : t.blocks) {
-      tiles[ord(P.x, P.y)].insert(t.type, t.rotation);
     }
   }
 }

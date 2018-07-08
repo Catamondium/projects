@@ -11,6 +11,29 @@ class Tet {
     //trans(0, 3);
   }
 
+  boolean update(Matrix m) { // if true, replace player
+    strain(m);
+    boolean ret = m.query(copy());
+    if (ret) {
+      m.commit(copy());
+      m.CheckRows(blocks);
+    }
+    //trans(0, 1);
+    return ret;
+  }
+
+  void show(Matrix M) {
+    pushStyle();
+    fill(T_COLS[type]);
+    for (int i = 0; i < 4; i++) {
+      if (blocks[i].y >= 0) // Don't show outside bounding box
+        rect(blocks[i].x * M.calcScale().x + M.origin.x, 
+          blocks[i].y * M.calcScale().y + M.origin.y, 
+          M.calcScale().x, M.calcScale().y);
+    }
+    popStyle();
+  }
+
   Tet copy() {
     Tet t = new Tet(type);
     t.rotation = rotation;
@@ -27,29 +50,7 @@ class Tet {
     return false;
   }
 
-  boolean update(Matrix m) { // if true, replace player
-    strain(m);
-    boolean ret = m.query(copy());
-    if (ret) {
-      m.commit(copy());
-      m.CheckRows(blocks);
-    }
-    //trans(0, 1);
-    return ret;
-  }
-
-  void show(Matrix M) {
-    pushStyle();
-    fill(T_COLS[type]);
-    for (int i = 0; i < 4; i++) {
-      if (blocks[i].y >= 0) // Don't show about bounding box
-        rect(blocks[i].x * M.get_scale().x + M.origin.x, 
-          blocks[i].y * M.get_scale().y + M.origin.y, 
-          M.get_scale().x, M.get_scale().y);
-    }
-    popStyle();
-  }
-
+  // Translation & constraint methods
   void trans(float x, float y) {
     for (PVector P : blocks) {
       P.add(new PVector(x, y));
@@ -58,6 +59,10 @@ class Tet {
 
   void trans(PVector v) {
     trans(v.x, v.y);
+  }
+
+  void drop(Matrix m) { // Doesn't function above the Matrix, as expected
+    trans(0, m.checkCol(blocks));
   }
 
   void strain(Matrix m) {
@@ -81,17 +86,17 @@ class Tet {
       trans(-1, 0);
   }
 
-  void rot() {
+  void rot(int dir) {
     switch(type) {
     case 0: // between coords[2] & coords[3], but to a side
-      centred_rot(I_centre());
+      centred_rot(I_centre(), dir);
       break;
 
     case 1: // NOOP
       break;
 
     default:
-      centred_rot(blocks[3]);
+      centred_rot(blocks[3], dir);
       break;
     }
 
@@ -100,14 +105,20 @@ class Tet {
       rotation = 0;
   }
 
-  void centred_rot(PVector C) {
+  void centred_rot(PVector C, int dir) {
     PVector tmpC = C.copy();
     trans(-C.x, -C.y); // translate to (0, 0)
 
     for (PVector P : blocks) { // rotate each point clockwise
-      float tmp = P.x;
-      P.x = -P.y;
-      P.y = tmp;
+      if (dir > 0) {
+        float tmp = P.x;
+        P.x = -P.y;
+        P.y = tmp;
+      } else {
+        float tmp = P.y;
+        P.y = -P.x;
+        P.x = tmp;
+      }
     }
 
     trans(tmpC); // restore position
