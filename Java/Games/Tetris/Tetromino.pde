@@ -21,13 +21,13 @@ class Tet {
     return t;
   }
 
-  void update(int scale, Matrix m) {
-    //trans(0, 1);
+  boolean update(int scale, Matrix m) { // if true, replace player
+    trans(0, 1);
     strain(scale);
     boolean ret = m.query(copy());
-    //if (ret)
-    //  m.commit(copy());
-    //return ret;
+    if (ret)
+      m.commit(copy());
+    return ret;
   }
 
   void trans(float x, float y) {
@@ -108,9 +108,11 @@ class Tet {
   }
 
   void show(int scale) {
+    pushStyle();
     fill(T_COLS[type]);
     for (int i = 0; i < 4; i++) {
       rect(blocks[i].x * scale + origin.x, blocks[i].y * scale + origin.y, scale, scale);
     }
+    popStyle();
   }
 }

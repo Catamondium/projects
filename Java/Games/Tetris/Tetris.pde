@@ -57,20 +57,23 @@ int[][][] TETS = { // [7][4][2] lengths
 Tet player;
 Matrix playfield;
 int scale = 25;
+PVector origin = new PVector(0, 0);
+PVector dimentions = new PVector(10 * scale, 20 * scale);
 void setup() {
   size(700, 600);
-  PVector origin = new PVector(0, 0);
-  PVector dimentions = new PVector(10 * scale, 20 * scale);
-  player = new Tet(2, origin, dimentions);
+  player = new Tet(floor(random(6)), origin, dimentions);
   playfield = new Matrix(10, 20, origin, dimentions);
 }
 
 void draw() {
   background(0);
-  //drawgrid(scale, width, height);
-  player.update(scale, playfield);
+  //frameRate(3);
+  //drawgrid(scale, playfield.w * scale, playfield.h * scale);
+  if (player.update(scale, playfield))
+    player = new Tet(floor(random(6)), origin, dimentions);
   playfield.show(scale);
   player.show(scale);
+  //noLoop();
 }
 
 void keyPressed() {
@@ -90,8 +93,13 @@ void keyPressed() {
   case 'd':
     player.trans(1, 0);
     break;
+
   case 'e':
     player.rot();
+    break;
+
+  case 'c':
+    saveFrame("output.png");
     break;
   }
 }

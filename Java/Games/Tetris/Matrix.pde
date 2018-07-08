@@ -1,9 +1,11 @@
-class Tile {
+class Tile { //<>//
+  boolean exists;
   int type, rotation;
 
-  Tile(int type_, int rotation_) {
+  void insert(int type_, int rotation_) {
     type = type_;
     rotation = rotation_;
+    exists = true;
   }
 }
 
@@ -12,57 +14,69 @@ class Matrix {
   int w, h;
   PVector origin, dimentions;
 
-  Matrix(int w, int h, PVector origin_, PVector dimentions_) {
+  Matrix(int w_, int h_, PVector origin_, PVector dimentions_) {
     origin = origin_;
+    w = w_;
+    h = h_;
     dimentions = dimentions_;
     tiles = new Tile[w * h];
-  }
-
-  void show(int scale) {
-    noFill();
-    stroke(255);
-    rect(origin.x, origin.y, dimentions.x, dimentions.y);
-    for (int x = 0; x < w; x++) {
-      for (int y = 0; y < h; y++) {
-        if (fetch(x, y) != null) {
-          Tile t = fetch(x, y);
-          fill(T_COLS[t.type]);
-          rect(x * scale + origin.x, y * scale + origin.y, scale, scale);
-        }
-      }
+    for (int i = 0; i < tiles.length; i++) {
+      tiles[i] = new Tile();
     }
   }
 
-  boolean query(Tet t) { // Error causer
+  void show(int scale) {
+    pushStyle();
+    noFill();
+
+    stroke(#FF0000);
+    rect(origin.x, origin.y, w * scale, h * scale);
+
+    stroke(0);
+    for (int x = 0; x < w; x++) {
+      for (int y = 0; y < h; y++) {
+        if (fetch(x, y).exists) {
+          Tile t = fetch(x, y);
+          fill(T_COLS[t.type]);
+          rect((x * scale) + origin.x, (y * scale) + origin.y, scale, scale);
+        }
+      }
+    }
+    popStyle();
+  }
+
+  boolean query(Tet t) {
     boolean ret = false;
-    
-    for (PVector P : t.blocks) {
-      if ((fetch(P.x, P.y + 1) != null) // Always false
-        || (P.y >= h)) { /// Always false
-        
-        Boolean booltest_1 = (P.y == h ) ? true : false; // probe start
-        Boolean booltest_2 = (fetch(P.x, P.y + 1) != null) ? true : false; // Gathering FALSE, but this test executed anyway?
-        print("height: " + booltest_1 + "\tpresence: " + booltest_2); // probe end
-        
+
+    for (PVector P : t.blocks) {      
+      if (query_test(P)) {
         ret = true;
         break;
       }
     }
-    println("\treturned: " + ret); // probe extension
-    return ret; // True returned anyway?
+    return ret;
   }
 
   Tile fetch(float x, float y) {
     return tiles[ord(x, y)];
   }
 
+  boolean query_test(PVector B) {
+    if (ord(B.x, B.y + 1) >= (w * h)) { // Short circuit to avoid OutOfBounds error
+      return true;
+    } else if (fetch(B.x, B.y + 1).exists || B.y == h) {
+      return true;
+    }
+    return false;
+  }
+
   int ord(float x, float y) {
-    return (int)(x + y * w);
+    return floor((x + (y * w)));
   }
 
   void commit(Tet t) {
     for (PVector P : t.blocks) {
-      tiles[ord(P.x, P.y)] = new Tile(t.type, t.rotation);
+      tiles[ord(P.x, P.y)].insert(t.type, t.rotation);
     }
   }
 }
