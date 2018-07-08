@@ -36,8 +36,11 @@ class Matrix {
   boolean query(Tet t) { // Error causer
     boolean ret = false;
     for (PVector P : t.blocks) {
-      if (fetch(P.x, P.y) == null 
-        || P.y == h) {
+      if ((tiles[ord(P.x, P.y)] == null) // always TRUE, regardless of == or != or direct access, .equals() results in nullptr exception, causing issues
+        || (P.y >= h)) { /// Always false
+        Boolean booltest_1 = (P.y == h ) ? true : false; // probe start
+        Boolean booltest_2 = (fetch(P.x, P.y) != null) ? true : false;
+        print("height: " + booltest_1 + "\tpresence: " + booltest_2 + "\n"); // probe end
         ret = true;
         break;
       }
