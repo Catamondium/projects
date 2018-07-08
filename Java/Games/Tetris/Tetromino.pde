@@ -2,31 +2,39 @@ class Tet {
   PVector[] blocks = new PVector[4];
   int type;
   int rotation = 0;
-  PVector origin, dimentions;
 
-  Tet(int type_, PVector origin_, PVector dimentions_) {
+  Tet(int type_) {
     type = type_;
-    origin = origin_;
-    dimentions = dimentions_;
     for (int i = 0; i < 4; i++) {
       blocks[i] = new PVector(TETS[type_][i][0], TETS[type_][i][1]);
     }
+    //trans(0, 3);
   }
 
   Tet copy() {
-    Tet t = new Tet(type, origin, dimentions);
+    Tet t = new Tet(type);
     t.rotation = rotation;
     t.type = type;
     t.blocks = blocks;
     return t;
   }
 
-  boolean update(int scale, Matrix m) { // if true, replace player
-    trans(0, 1);
-    strain(scale);
+  boolean above_board() {
+    for (PVector B : blocks) {
+      if (B.y < 0)
+        return true;
+    }
+    return false;
+  }
+
+  boolean update(Matrix m) { // if true, replace player
+    strain(m);
     boolean ret = m.query(copy());
-    if (ret)
+    if (ret) {
       m.commit(copy());
+      m.CheckRows(blocks);
+    }
+    //trans(0, 1);
     return ret;
   }
 
@@ -40,14 +48,14 @@ class Tet {
     trans(v.x, v.y);
   }
 
-  void strain(int scale) {
+  void strain(Matrix m) {
     boolean left = false;
     boolean right = false;
     for (PVector P : blocks) {
-      if (P.x < origin.x) {
+      if (P.x < 0) {
         left = true;
         break;
-      } else if ((P.x + 1) * scale > dimentions.x + origin.x) {
+      } else if (P.x + 1 > m.w) {
         right = true;
         break;
       }
@@ -107,11 +115,13 @@ class Tet {
     return ret;
   }
 
-  void show(int scale) {
+  void show(Matrix m) {
+    PVector scale = m.get_scale();
+    PVector origin = m.origin;
     pushStyle();
     fill(T_COLS[type]);
     for (int i = 0; i < 4; i++) {
-      rect(blocks[i].x * scale + origin.x, blocks[i].y * scale + origin.y, scale, scale);
+      rect(blocks[i].x * scale.x + origin.x, blocks[i].y * scale.y + origin.y, scale.x, scale.y);
     }
     popStyle();
   }

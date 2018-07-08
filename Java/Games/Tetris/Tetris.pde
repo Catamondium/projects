@@ -18,61 +18,67 @@ color[] T_COLS = {
   #0000FF};
 
 int[][][] TETS = { // [7][4][2] lengths
-  {{3, 0}, // I
-    {6, 0}, 
-    {4, 0}, //
-  {5, 0}}, // Centres
+  {{3, -2}, // I
+    {6, -2}, 
+    {4, -2}, //
+  {5, -2}}, // Centres
 
-  {{4, 0}, // O
-    {5, 0}, 
-    {4, 1}, 
-  {5, 1}}, 
+  {{4, -3}, // O
+    {5, -3}, 
+    {4, -2}, 
+  {5, -2}}, 
 
-  {{3, 1}, // T
-    {4, 0}, 
-    {5, 1}, 
-  {4, 1}}, // Centre
+  {{3, -2}, // T
+    {4, -3}, 
+    {5, -2}, 
+  {4, -2}}, // Centre
 
-  {{4, 0}, // S
-    {5, 0}, 
-    {3, 1}, 
-  {4, 1}}, // Centre
+  {{4, -3}, // S
+    {5, -3}, 
+    {3, -2}, 
+  {4, -2}}, // Centre
 
-  {{3, 0}, // Z
-    {4, 0}, 
-    {5, 1}, 
-  {4, 1}}, // Centre
+  {{3, -3}, // Z
+    {4, -3}, 
+    {5, -2}, 
+  {4, -2}}, // Centre
 
-  {{3, 0}, // L
-    {3, 1}, 
-    {5, 1}, 
-  {4, 1}}, // Centre
+  {{3, -3}, // L
+    {3, -2}, 
+    {5, -2}, 
+  {4, -2}}, // Centre
 
-  {{5, 0}, // J
-    {3, 1}, 
-    {5, 1}, 
-  {4, 1}} // Centre
+  {{5, -3}, // J
+    {3, -2}, 
+    {5, -2}, 
+  {4, -2}} // Centre
 };
 
 Tet player;
 Matrix playfield;
 int scale = 25;
 PVector origin = new PVector(0, 0);
-PVector dimentions = new PVector(10 * scale, 20 * scale);
+PVector dimentions;
 void setup() {
   size(700, 600);
-  player = new Tet(floor(random(6)), origin, dimentions);
-  playfield = new Matrix(10, 20, origin, dimentions);
+  dimentions = new PVector(width, height);//200, 400);
+  reset();
 }
 
 void draw() {
   background(0);
   //frameRate(3);
   //drawgrid(scale, playfield.w * scale, playfield.h * scale);
-  if (player.update(scale, playfield))
-    player = new Tet(floor(random(6)), origin, dimentions);
-  playfield.show(scale);
-  player.show(scale);
+
+  if (player.above_board() && playfield.query(player)) {
+    println("Lose");
+    reset();
+  } else if (player.update(playfield)) {
+    player = new Tet(floor(random(6)));
+  }
+
+  playfield.show(dimentions);
+  player.show(playfield);
   //noLoop();
 }
 
@@ -112,4 +118,9 @@ void drawgrid(int scale, int w, int h) {
       rect(x * scale, y * scale, scale, scale);
     }
   }
+}
+
+void reset() {
+  player = new Tet(floor(random(6)));
+  playfield = new Matrix(10, 20, origin, dimentions);
 }

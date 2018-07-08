@@ -7,6 +7,11 @@ class Tile { //<>//
     rotation = rotation_;
     exists = true;
   }
+  void insert(Tile t) {
+    type = t.type;
+    rotation = t.rotation;
+    exists = true;
+  }
 }
 
 class Matrix {
@@ -25,12 +30,13 @@ class Matrix {
     }
   }
 
-  void show(int scale) {
+  void show(PVector dimentions) {
     pushStyle();
     noFill();
 
     stroke(#FF0000);
-    rect(origin.x, origin.y, w * scale, h * scale);
+    rect(origin.x, origin.y, dimentions.x, dimentions.y);
+    PVector scale = get_scale();
 
     stroke(0);
     for (int x = 0; x < w; x++) {
@@ -38,11 +44,15 @@ class Matrix {
         if (fetch(x, y).exists) {
           Tile t = fetch(x, y);
           fill(T_COLS[t.type]);
-          rect((x * scale) + origin.x, (y * scale) + origin.y, scale, scale);
+          rect((x * scale.x) + origin.x, (y * scale.y) + origin.y, scale.x, scale.y);
         }
       }
     }
     popStyle();
+  }
+
+  PVector get_scale() {
+    return new PVector(dimentions.x / w, dimentions.y / h);
   }
 
   boolean query(Tet t) {
@@ -62,17 +72,64 @@ class Matrix {
   }
 
   boolean query_test(PVector B) {
-    if (ord(B.x, B.y + 1) >= (w * h)) { // Short circuit to avoid OutOfBounds error
+    int under_me = ord(B.x, B.y + 1);
+
+    if (under_me < 0) // cover for starting position when translated to (x, -2)
+      return false;
+
+    else if (under_me >= (w * h)) // Short circuit to avoid OutOfBounds error
       return true;
-    } else if (fetch(B.x, B.y + 1).exists || B.y == h) {
+
+    else if (tiles[under_me].exists || B.y == h)
       return true;
-    }
+
     return false;
   }
 
   int ord(float x, float y) {
     return floor((x + (y * w)));
   }
+
+  void CheckRows(PVector[] blocks) {
+    FloatList toRemove = new FloatList();
+    for (PVector B : blocks) {
+      if (CheckRow(B.y))
+        toRemove.append(B.y);
+    }
+
+    if (toRemove.size() != 0) {
+      ClearRows(toRemove);
+      //MovRows(toRemove);
+    }
+  }
+
+  boolean CheckRow(float y) {
+    for (int x = 0; x < w; x++) {
+      if (!fetch(x, y).exists)
+        return false;
+    }
+    return true;
+  }
+
+  void ClearRows(FloatList r) {
+    for (int y = 0; y < r.size(); y++ ) {
+      for (int x = 0; x < w; x++) {
+        tiles[ord(x, r.get(y))].exists = false;
+      }
+    }
+  }
+
+  //void MovRows(FloatList y) { // not yet functional
+  //  float y_min = y.max();
+  //  for (float y_o = y_min; y_o >= 0; y_o--) {
+  //    for (int x = w; x >= 0; x--) {
+  //      if (y_o == h) {
+  //        tiles[ord(x, y_o)].insert(tiles[ord(x, y_o + 1)]);
+  //        tiles[ord(x, y_o)].exists = false;
+  //      }
+  //    }
+  //  }
+  //}
 
   void commit(Tet t) {
     for (PVector P : t.blocks) {
