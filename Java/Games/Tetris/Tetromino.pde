@@ -21,13 +21,13 @@ class Tet {
     return t;
   }
 
-  boolean update(int scale, Matrix m) {
+  void update(int scale, Matrix m) {
     //trans(0, 1);
     strain(scale);
     boolean ret = m.query(copy());
-    if (ret)
-      m.commit(copy());
-    return ret;
+    //if (ret)
+    //  m.commit(copy());
+    //return ret;
   }
 
   void trans(float x, float y) {
