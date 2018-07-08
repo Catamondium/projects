@@ -1,7 +1,19 @@
 /* Ongoing bugs
-*  after being called on bottom row, checkRows() never calls again on bottom row
-*  player is able to move sideways into blocks
-**/
+ *  Player is able to move sideways into blocks
+ *
+ * TODO:
+ * Gameplay: scoring system
+ * Timings: ticks and check allowances
+ **/
+/* Coordinate system
+ * * 0 1 2 3 4 5 ...9
+ * 0                |
+ * 1                | Height: 20
+ * 2                |
+ * ...              V
+ * 19 ------------->*
+ *     Width: 10
+ **/
 // Constants
 color[] T_COLS = {
   #00FFFF, 
@@ -61,11 +73,12 @@ int[][][] TETS = { // [7][4][2] lengths
 Tet player;
 Matrix playfield;
 int scale = 25;
-PVector origin = new PVector(0, 0);
+PVector origin;
 PVector dimentions;
 void setup() {
   size(700, 600);
-  dimentions = new PVector(width, height);//200, 400);
+  origin = new PVector(width / 3, 10);
+  dimentions = new PVector(width / 3, height - 20);//200, 400);
   reset();
 }
 
@@ -130,5 +143,5 @@ void reset() {
 }
 
 void win(int rows) {
- println("win: " + rows); 
+  println("win: " + rows);
 }

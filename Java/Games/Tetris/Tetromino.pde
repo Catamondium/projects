@@ -38,6 +38,18 @@ class Tet {
     return ret;
   }
 
+  void show(Matrix M) {
+    pushStyle();
+    fill(T_COLS[type]);
+    for (int i = 0; i < 4; i++) {
+      if (blocks[i].y >= 0) // Don't show about bounding box
+        rect(blocks[i].x * M.get_scale().x + M.origin.x, 
+          blocks[i].y * M.get_scale().y + M.origin.y, 
+          M.get_scale().x, M.get_scale().y);
+    }
+    popStyle();
+  }
+
   void trans(float x, float y) {
     for (PVector P : blocks) {
       P.add(new PVector(x, y));
@@ -51,11 +63,12 @@ class Tet {
   void strain(Matrix m) {
     boolean left = false;
     boolean right = false;
+
     for (PVector P : blocks) {
-      if (P.x < 0) {
+      if (P.x < 0) { //|| m.Bfetch((P.x - 1), P.y)) {
         left = true;
         break;
-      } else if (P.x + 1 > m.w) {
+      } else if (P.x + 1 > m.w) {// || m.Bfetch((P.x + 1) ,P.y)) {
         right = true;
         break;
       }
@@ -63,6 +76,7 @@ class Tet {
 
     if (left)
       trans(1, 0);
+
     if (right)
       trans(-1, 0);
   }
@@ -113,16 +127,5 @@ class Tet {
     }
 
     return ret;
-  }
-
-  void show(Matrix m) {
-    PVector scale = m.get_scale();
-    PVector origin = m.origin;
-    pushStyle();
-    fill(T_COLS[type]);
-    for (int i = 0; i < 4; i++) {
-      rect(blocks[i].x * scale.x + origin.x, blocks[i].y * scale.y + origin.y, scale.x, scale.y);
-    }
-    popStyle();
   }
 }

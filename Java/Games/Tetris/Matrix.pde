@@ -1,4 +1,4 @@
-class Tile { //<>// //<>//
+class Tile { //<>//
   boolean exists;
   int type, rotation;
 
@@ -73,6 +73,19 @@ class Matrix {
     return tiles[ord(x, y)];
   }
 
+  //boolean Bfetch(float x, float y) { // Boolean fetch(), OutOfBounds safe
+  //  if (ord(x, y) < 0)
+  //    return true;
+
+  //  else if (y > w)
+  //    return true;
+
+  //  else if (fetch(x, y).exists)
+  //    return true;
+
+  //  return false;
+  //} // WIP
+
   boolean query_test(PVector B) {
     int under_me = ord(B.x, B.y + 1);
 
@@ -114,18 +127,17 @@ class Matrix {
     return true;
   }
 
-  void ClearRows(FloatList r) {
-    for (int y = 0; y < r.size(); y++ ) {
-      for (int x = 0; x < w; x++) {
-        tiles[ord(x, r.get(y))].exists = false;
-      }
+  void ClearRows(FloatList y) {
+    for (int i = ord(0, y.min()); i < ord(w, y.max()); i++ ) {
+      tiles[i].exists = false;
     }
   }
 
   void MovRows(FloatList y) {
     int start = ord(w - 1, y.max() - y.size());
     int mov_by = y.size() * w;
-    for (int i = start; i > -1; i--) {
+
+    for (int i = start; i >= 0; i--) {
       tiles[i + mov_by].insert(tiles[i]);
       tiles[i].exists = false;
     }
