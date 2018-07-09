@@ -95,26 +95,12 @@ class Matrix {
     return tiles[ord(x, y)];
   }
 
-  //boolean Bfetch(float x, float y) { // Boolean fetch(), OutOfBounds safe
-  //  if (ord(x, y) < 0)
-  //    return true;
-
-  //  else if (y > w)
-  //    return true;
-
-  //  else if (fetch(x, y).exists)
-  //    return true;
-
-  //  return false;
-  //} // WIP
-
-
   int ord(float x, float y) {
     return floor((x + (y * w)));
   }
 
   // Row/column methods
-  
+
   float dropBy(PVector[] blocks) {
     FloatList lengths = new FloatList();
     for (PVector B : blocks) {
@@ -157,8 +143,10 @@ class Matrix {
   }
 
   void MovRows(FloatList y) {
-    int start = ord(w - 1, y.max() - y.size());
+    int start = ord(w - 1, y.min() - 1); // offset x for 0 index
     int mov_by = y.size() * w;
+    
+    println(y.min(), mov_by);
 
     for (int i = start; i >= 0; i--) {
       tiles[i + mov_by].insert(tiles[i]);

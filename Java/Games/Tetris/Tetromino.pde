@@ -25,11 +25,12 @@ class Tet {
   void show(Matrix M) {
     pushStyle();
     fill(T_COLS[type]);
+    PVector scale = M.calcScale();
     for (int i = 0; i < 4; i++) {
       if (blocks[i].y >= 0) // Don't show outside bounding box
-        rect(blocks[i].x * M.calcScale().x + M.origin.x, 
-          blocks[i].y * M.calcScale().y + M.origin.y, 
-          M.calcScale().x, M.calcScale().y);
+        rect(blocks[i].x * scale.x + M.origin.x, 
+          blocks[i].y * scale.y + M.origin.y, 
+          scale.x, scale.y);
     }
     popStyle();
   }
@@ -70,10 +71,10 @@ class Tet {
     boolean right = false;
 
     for (PVector P : blocks) {
-      if (P.x < 0) { //|| m.Bfetch((P.x - 1), P.y)) {
+      if (P.x < 0) {
         left = true;
         break;
-      } else if (P.x + 1 > m.w) {// || m.Bfetch((P.x + 1) ,P.y)) {
+      } else if (P.x + 1 > m.w) {
         right = true;
         break;
       }
