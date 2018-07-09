@@ -62,7 +62,7 @@ class Tet {
   }
 
   void drop(Matrix m) { // Doesn't function above the Matrix, as expected
-    trans(0, m.checkCol(blocks));
+    trans(0, m.dropBy(blocks));
   }
 
   void strain(Matrix m) {

@@ -114,24 +114,20 @@ class Matrix {
   }
 
   // Row/column methods
-  float checkCol(PVector[] blocks) { // experimental
-    FloatList ping = new FloatList();
-    float maxY = 0;
+  
+  float dropBy(PVector[] blocks) {
+    FloatList lengths = new FloatList();
     for (PVector B : blocks) {
-      if (B.y > maxY)
-        maxY = B.y;
-      for (float y = B.y + 1; y < h; y++) {
-        if (fetch(B.x, y).exists) {
-          ping.append(y);
+      for (int y = h; (y > 0) && (y > B.y); y--) {
+        if (!tiles[ord(B.x, y - 1)].exists) {
+          lengths.append(y - B.y);
           break;
         }
       }
     }
-    if (ping.size() > 0)
-      return ping.min() - maxY;
-
-    return (h - 1) - maxY;
+    return lengths.min() - 1;
   }
+
   void CheckRows(PVector[] blocks) {
     FloatList toRemove = new FloatList();
     for (PVector B : blocks) {
