@@ -1,7 +1,4 @@
-/* Ongoing bugs:
- * * Player is able to move sideways into blocks
- *
- * TODO:
+/*TODO:
  * * Gameplay: 
  * * * Scoring system
  * * Timings: ticks and check allowances
