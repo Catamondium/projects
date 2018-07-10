@@ -86,7 +86,6 @@ void setup() {
 void draw() {
   background(0);
   //frameRate(3);
-  //drawgrid(scale, playfield.w * scale, playfield.h * scale);
 
   if (player.above_board() && playfield.query(player)) {
     println("Lose");
@@ -111,38 +110,28 @@ void keyPressed() {
     break;
 
   case 'a':
-    player.trans(-1, 0);
+    player.trans(-1, 0, false);
     break;
 
   case 'd':
-    player.trans(1, 0);
+    player.trans(1, 0, false);
     break;
 
   case 'e':
     player.rot(1);
     break;
-    
+
   case 'q':
-  player.rot(-1);
-  break;
-  
+    player.rot(-1);
+    break;
+
   case 'f':
-  player.drop(playfield);
-  break;
+    player.drop(playfield);
+    break;
 
   case 'c':
     saveFrame("output.png");
     break;
-  }
-}
-
-void drawgrid(int scale, int w, int h) {
-  noFill();
-  stroke(255);
-  for (int x = 0; x < w; x++) {
-    for (int y = 0; y < h; y++) {
-      rect(x * scale, y * scale, scale, scale);
-    }
   }
 }
 

@@ -2,13 +2,15 @@ class Tet {
   PVector[] blocks = new PVector[4];
   int type;
   int rotation = 0;
+  // Collision locks
+  boolean left_enable = true;
+  boolean right_enable = true;
 
   Tet(int type_) {
     type = type_;
     for (int i = 0; i < 4; i++) {
       blocks[i] = new PVector(TETS[type_][i][0], TETS[type_][i][1]);
     }
-    //trans(0, 3);
   }
 
   boolean update(Matrix m) { // if true, replace player
@@ -51,40 +53,57 @@ class Tet {
     return false;
   }
 
-  // Translation & constraint methods
+  // Transformation & constraint methods
   void trans(float x, float y) {
     for (PVector P : blocks) {
       P.add(new PVector(x, y));
     }
   }
 
-  void trans(PVector v) {
-    trans(v.x, v.y);
+  void trans(float x, float y, boolean noClip) { // Collision checked translation
+    if (!noClip && y == 0) {
+      switch((int)x) {
+      case +1:
+        if (right_enable)
+          trans(x, y);
+        break;
+
+      case -1:
+        if (left_enable)
+          trans(x, y);
+        break;
+      }
+    }
   }
 
   void drop(Matrix m) { // Doesn't function above the Matrix, as expected
     trans(0, m.dropBy(blocks));
   }
 
-  void strain(Matrix m) {
-    boolean left = false;
-    boolean right = false;
+  void strain(Matrix m) { // Experimental, currently equivalent to strain()
+    left_enable = true;
+    right_enable = true;
 
     for (PVector P : blocks) {
-      if (P.x < 0) {
-        left = true;
-        break;
-      } else if (P.x + 1 > m.w) {
-        right = true;
-        break;
+      // Left checks
+      if (P.x == 0) { // Left matrix boundary
+        left_enable = false;
+      }
+
+      if (P.x == m.w - 1) { // Right matrix boundary
+        right_enable = false;
+      }
+
+      if (P.y >= 0) {
+        if (left_enable == true && m.fetch(P.x - 1, P.y).exists) {
+          left_enable = false; // Left-adjacent block
+        }
+
+        if (right_enable == true && m.fetch(P.x + 1, P.y).exists) {
+          right_enable = false; // Right-adjacent block
+        }
       }
     }
-
-    if (left)
-      trans(1, 0);
-
-    if (right)
-      trans(-1, 0);
   }
 
   void rot(int dir) {
@@ -122,7 +141,7 @@ class Tet {
       }
     }
 
-    trans(tmpC); // restore position
+    trans(tmpC.x, tmpC.y); // restore position
   }
 
   PVector I_centre() {

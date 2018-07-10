@@ -1,5 +1,5 @@
 class Tile { //<>//
-  boolean exists;
+  boolean exists = false;
   int type, rotation;
 
   void insert(int type_, int rotation_) {
