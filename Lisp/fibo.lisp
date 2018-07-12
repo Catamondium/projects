@@ -6,12 +6,11 @@
 
 ;; main()
 (princ "Enter lower bound: ")
-(setq i (read))
+(setq low (read))
 
 (princ "Enter upper bound: ")
-(setq in (read))
+(setq high (read))
 
-(loop
-   (format t "Fib: ~T~D~T==>~T~D~%" i (fibonacci i))
-   (setq i (+ i 1))
-   (if (> i in) (return)))
+(do ((i low (+ 1 i))) ; Iterating part
+    ((> i high) i 0)  ; Check part
+  (format t "Fib: ~T~D~T==>~T~D~%" i (fibonacci i))) ; Body
