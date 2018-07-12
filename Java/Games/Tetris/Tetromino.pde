@@ -27,12 +27,11 @@ class Tet {
   void show(Matrix M) {
     pushStyle();
     fill(T_COLS[type]);
-    PVector scale = M.calcScale();
     for (int i = 0; i < 4; i++) {
       if (blocks[i].y >= 0) // Don't show outside bounding box
-        rect(blocks[i].x * scale.x + M.origin.x, 
-          blocks[i].y * scale.y + M.origin.y, 
-          scale.x, scale.y);
+        rect(blocks[i].x * M.scale.x + M.origin.x, 
+          blocks[i].y * M.scale.y + M.origin.y, 
+          M.scale.x, M.scale.y);
     }
     popStyle();
   }
@@ -76,32 +75,27 @@ class Tet {
     }
   }
 
-  void drop(Matrix m) { // Doesn't function above the Matrix, as expected
+  void drop(Matrix m) {
     trans(0, m.dropBy(blocks));
   }
 
-  void strain(Matrix m) { // Experimental, currently equivalent to strain()
+  void strain(Matrix m) {
     left_enable = true;
     right_enable = true;
 
     for (PVector P : blocks) {
-      // Left checks
-      if (P.x == 0) { // Left matrix boundary
+      if (P.x == 0) // Left matrix boundary
         left_enable = false;
-      }
 
-      if (P.x == m.w - 1) { // Right matrix boundary
+      if (P.x == m.w - 1) // Right matrix boundary
         right_enable = false;
-      }
 
-      if (P.y >= 0) {
-        if (left_enable == true && m.fetch(P.x - 1, P.y).exists) {
+      if (P.y >= 0) { // Array safety, insure on board
+        if (left_enable == true && m.fetch(P.x - 1, P.y).exists)
           left_enable = false; // Left-adjacent block
-        }
 
-        if (right_enable == true && m.fetch(P.x + 1, P.y).exists) {
+        if (right_enable == true && m.fetch(P.x + 1, P.y).exists)
           right_enable = false; // Right-adjacent block
-        }
       }
     }
   }
@@ -120,7 +114,7 @@ class Tet {
       break;
     }
 
-    rotation++;
+    rotation += (dir > 0) ? +1 : -1;
     if (rotation > 3 || rotation < 0)
       rotation = 0;
   }

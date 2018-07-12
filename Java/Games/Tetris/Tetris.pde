@@ -76,7 +76,7 @@ PVector dimentions;
 void setup() {
   size(700, 600);
   origin = new PVector(width / 3, 10);
-  dimentions = new PVector(width / 3, height - 20);//200, 400);
+  dimentions = new PVector(width / 3, height - 20);
   reset();
 }
 

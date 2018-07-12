@@ -19,16 +19,20 @@ class Tile { //<>//
 class Matrix {
   Tile[] tiles;
   int w, h;
-  PVector origin, dimentions;
+  PVector origin, dimentions, scale;
 
   Matrix(int w_, int h_, PVector origin_, PVector dimentions_) {
     origin = origin_;
+
     w = w_;
     h = h_;
+
     dimentions = dimentions_;
+    scale = new PVector(dimentions_.x / w_, dimentions_.y / h_);
+
     tiles = new Tile[w * h];
     for (int i = 0; i < tiles.length; i++) {
-      tiles[i] = new Tile();
+      tiles[i] = new Tile(); // Insure !=null elements for .exists check
     }
   }
 
@@ -38,7 +42,6 @@ class Matrix {
 
     stroke(#FF0000);
     rect(origin.x, origin.y, dimentions.x, dimentions.y);
-    PVector scale = calcScale();
 
     stroke(0);
     for (int x = 0; x < w; x++) {
@@ -116,6 +119,7 @@ class Matrix {
 
   void CheckRows(PVector[] blocks) {
     FloatList toRemove = new FloatList();
+
     for (PVector B : blocks) {
       if (!toRemove.hasValue(B.y) && CheckRow(B.y))
         toRemove.append(B.y);
@@ -125,6 +129,7 @@ class Matrix {
       ClearRows(toRemove);
       MovRows(toRemove);
     }
+
     win(toRemove.size());
   }
 
@@ -145,7 +150,7 @@ class Matrix {
   void MovRows(FloatList y) {
     int start = ord(w - 1, y.min() - 1); // offset x for 0 index
     int mov_by = y.size() * w;
-    
+
     println(y.min(), mov_by);
 
     for (int i = start; i >= 0; i--) {
