@@ -14,13 +14,14 @@
  **/
 // Constants
 color[] T_COLS = {
-  #00FFFF, 
-  #FFFF00, 
-  #800080, 
-  #00FF00, 
-  #FF0000, 
-  #FFA500, 
-  #0000FF};
+  #00FFFF, // I
+  #FFFF00, // O
+  #800080, // T
+  #00FF00, // S
+  #FF0000, // Z
+  #FFA500, // L
+  #0000FF   // J
+};
 
 int[][][] TETS = { // [7][4][2] lengths
   {{3, -2}, // I
@@ -62,15 +63,7 @@ int[][][] TETS = { // [7][4][2] lengths
 char[] T_LABELS = new String("IOTSZLJ").toCharArray();
 
 // statistics functions
-int[] T_stats = {
-  0, // I
-  0, // O
-  0, // T
-  0, // S
-  0, // Z
-  0, // L
-  0   // J
-};
+int[] T_stats = {0, 0, 0, 0, 0, 0, 0};
 int score = 0;
 int level = 0;
 int addscore(int rows) {
@@ -111,13 +104,11 @@ void draw() {
   background(0);
   //frameRate(3);
 
-  if (player.above_board() && playfield.query(player)) {
+  if (player.above_board() && playfield.query(player))
     lose();
-    //println("Lose");
-    //reset();
-  } else if (player.update(playfield)) {
+
+  else if (player.update(playfield))
     player = new Tet(floor(random(6)));
-  }
 
   playfield.show(dimentions);
   player.show(playfield);
