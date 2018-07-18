@@ -59,7 +59,7 @@ int[][][] TETS = { // [7][4][2] lengths
   {4, -2}} // Centre
 };
 
-char[] T_labels = new String("IOTSZLJ").toCharArray();
+char[] T_LABELS = new String("IOTSZLJ").toCharArray();
 
 // statistics functions
 int[] T_stats = {
