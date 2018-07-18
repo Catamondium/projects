@@ -133,14 +133,12 @@ class QuadTree {
 
   void drawBounds(boolean drawpoints) {
     pushStyle();
-    if (drawpoints) {
-      if (occupancy > 0) {
-        stroke(255);
-        strokeWeight(3);
-        for (int i = 0; i < occupancy; i++)
-        {
-          point(bodies[i].x, bodies[i].y);
-        }
+    if (drawpoints && occupancy > 0) {
+      stroke(255);
+      strokeWeight(3);
+      for (int i = 0; i < occupancy; i++)
+      {
+        point(bodies[i].x, bodies[i].y);
       }
     }
 

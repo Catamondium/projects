@@ -135,12 +135,10 @@ class QuadTree_bh {
 
   void drawBounds(Boolean drawpoints) {
     pushStyle();
-    if (drawpoints) {
-      if (occupied) {
-        stroke(255);
-        strokeWeight(3);
-        point(body.x, body.y);
-      }
+    if (drawpoints && occupied) {
+      stroke(255);
+      strokeWeight(3);
+      point(body.x, body.y);
     }
 
     rectMode(CENTER);
