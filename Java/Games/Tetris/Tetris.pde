@@ -64,12 +64,12 @@ char[] T_labels = new String("IOTSZLJ").toCharArray();
 // statistics functions
 int[] T_stats = {
   0, // I
-  1, // O
-  2, // T
-  3, // S
-  4, // Z
-  5, // L
-  6   // J
+  0, // O
+  0, // T
+  0, // S
+  0, // Z
+  0, // L
+  0   // J
 };
 int score = 0;
 int level = 0;
