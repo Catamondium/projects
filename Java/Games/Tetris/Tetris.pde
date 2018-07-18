@@ -1,7 +1,9 @@
 /*TODO:
- * * Gameplay: 
- * * * Scoring system
  * * Timings: ticks and check allowances
+ * * Visuals:
+ * * * Display statistics
+ * * * Holding block
+ * * * Next block
  **/
 /* Coordinate system
  * * 0 1 2 3 4 5 ...9
@@ -13,17 +15,8 @@
  *     Width: 10
  **/
 // Constants
-color[] T_COLS = {
-  #00FFFF, // I
-  #FFFF00, // O
-  #800080, // T
-  #00FF00, // S
-  #FF0000, // Z
-  #FFA500, // L
-  #0000FF   // J
-};
 
-int[][][] TETS = { // [7][4][2] lengths
+int[][][] T_ORDS = { // [7][4][2] lengths
   {{3, -2}, // I
     {6, -2}, 
     {4, -2}, //
@@ -60,7 +53,15 @@ int[][][] TETS = { // [7][4][2] lengths
   {4, -2}} // Centre
 };
 
-char[] T_LABELS = new String("IOTSZLJ").toCharArray();
+T_type[] TETS = new T_type[] { // Constants dictionary
+  new T_type('I', #00FFFF, T_ORDS[0]), 
+  new T_type('O', #FFFF00, T_ORDS[1]), 
+  new T_type('T', #800080, T_ORDS[2]), 
+  new T_type('S', #00FF00, T_ORDS[3]), 
+  new T_type('Z', #FF0000, T_ORDS[4]), 
+  new T_type('L', #FFA500, T_ORDS[5]), 
+  new T_type('J', #0000FF, T_ORDS[6])
+};
 
 // statistics functions
 int[] T_stats = {0, 0, 0, 0, 0, 0, 0};
@@ -90,6 +91,8 @@ int addscore(int rows) {
 Tet player;
 Matrix playfield;
 int scale = 25;
+int held = -1; // Default to OutOfBounds index
+boolean hold_enable = true;
 PVector origin;
 PVector dimentions;
 
@@ -108,7 +111,7 @@ void draw() {
     lose();
 
   else if (player.update(playfield))
-    player = new Tet(floor(random(6)));
+    player = new Tet(T_gen());
 
   playfield.show(dimentions);
   player.show(playfield);
@@ -148,11 +151,28 @@ void keyPressed() {
   case 'c':
     saveFrame("output.png");
     break;
+
+  case 'r':
+    hold();
+    break;
+  }
+}
+
+int T_gen() {
+  return floor(random(7));
+}
+
+void hold() { // Swap Player with Held
+  if (hold_enable) {
+    int tmp = (held != -1) ? held : T_gen();
+    held = player.type;
+    player = new Tet(tmp);
+    hold_enable = false;
   }
 }
 
 void reset() {
-  player = new Tet(floor(random(6)));
+  player = new Tet(T_gen());
   playfield = new Matrix(10, 20, origin, dimentions);
 }
 

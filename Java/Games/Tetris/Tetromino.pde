@@ -9,7 +9,7 @@ class Tet {
   Tet(int type_) {
     type = type_;
     for (int i = 0; i < 4; i++) {
-      blocks[i] = new PVector(TETS[type_][i][0], TETS[type_][i][1]);
+      blocks[i] = new PVector(TETS[type_].ords[i][0], TETS[type_].ords[i][1]);
     }
   }
 
@@ -26,7 +26,7 @@ class Tet {
 
   void show(Matrix M) {
     pushStyle();
-    fill(T_COLS[type]);
+    fill(TETS[type].col);
     for (int i = 0; i < 4; i++) {
       if (blocks[i].y >= 0) // Don't show outside bounding box
         rect(blocks[i].x * M.scale.x + M.origin.x, 

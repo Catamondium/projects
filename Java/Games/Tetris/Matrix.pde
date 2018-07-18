@@ -48,7 +48,7 @@ class Matrix {
       for (int y = 0; y < h; y++) {
         if (fetch(x, y).exists) {
           Tile t = fetch(x, y);
-          fill(T_COLS[t.type]);
+          fill(TETS[t.type].col);
           rect((x * scale.x) + origin.x, (y * scale.y) + origin.y, scale.x, scale.y);
         }
       }
@@ -89,6 +89,7 @@ class Matrix {
       tiles[ord(P.x, P.y)].insert(t.type, t.rotation);
     }
     T_stats[t.type]++;
+    hold_enable = true;
   }
 
   Tile fetch(float x, float y) {
