@@ -59,20 +59,47 @@ int[][][] TETS = { // [7][4][2] lengths
   {4, -2}} // Centre
 };
 
-//int[] stats = {
-//  0, // I
-//  1, // O
-//  2, // T
-//  3, // S
-//  4, // Z
-//  5, // L
-//  6}; // J
+char[] T_labels = new String("IOTSZLJ").toCharArray();
 
+// statistics functions
+int[] T_stats = {
+  0, // I
+  1, // O
+  2, // T
+  3, // S
+  4, // Z
+  5, // L
+  6   // J
+};
+int score = 0;
+int level = 0;
+int addscore(int rows) {
+  int x = level + 1;
+  switch(rows) {
+  case 1:
+    return 40 * x;
+
+  case 2:
+    return 100 * x;
+
+  case 3:
+    return 300 * x;
+
+  case 4:
+    return 1200 * x;
+
+  default:
+    return 0;
+  }
+}
+
+// Game
 Tet player;
 Matrix playfield;
 int scale = 25;
 PVector origin;
 PVector dimentions;
+
 void setup() {
   size(700, 600);
   origin = new PVector(width / 3, 10);
@@ -85,8 +112,9 @@ void draw() {
   //frameRate(3);
 
   if (player.above_board() && playfield.query(player)) {
-    println("Lose");
-    reset();
+    lose();
+    //println("Lose");
+    //reset();
   } else if (player.update(playfield)) {
     player = new Tet(floor(random(6)));
   }
@@ -138,5 +166,19 @@ void reset() {
 }
 
 void win(int rows) {
-  println("win: " + rows);
+  if (rows > 0) {
+    println("win: " + rows);
+    score += addscore(rows);
+  }
+}
+
+void lose() {
+  println("Lose");
+  reset();
+  // Hard reset
+  score = 0;
+  level = 0;
+  for (int i = 0; i < T_stats.length; i++) {
+    T_stats[i] = 0;
+  }
 }

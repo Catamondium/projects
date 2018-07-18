@@ -56,10 +56,6 @@ class Matrix {
     popStyle();
   }
 
-  PVector calcScale() {
-    return new PVector(dimentions.x / w, dimentions.y / h);
-  }
-
   // Querying methods
   boolean query(Tet t) {
     boolean ret = false;
@@ -92,6 +88,7 @@ class Matrix {
     for (PVector P : t.blocks) {
       tiles[ord(P.x, P.y)].insert(t.type, t.rotation);
     }
+    T_stats[t.type]++;
   }
 
   Tile fetch(float x, float y) {
