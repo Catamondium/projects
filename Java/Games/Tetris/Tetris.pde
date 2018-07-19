@@ -1,7 +1,7 @@
-/*TODO:
+/* TODO:
  * * Timings: ticks and check allowances
  * * Visuals:
- * * * Display statistics
+ * * * Statistics
  * * * Holding block
  * * * Next block
  **/
@@ -137,11 +137,11 @@ void keyPressed() {
     break;
 
   case 'e':
-    player.rot(1);
+    player.rot(1, playfield);
     break;
 
   case 'q':
-    player.rot(-1);
+    player.rot(-1, playfield);
     break;
 
   case 'f':

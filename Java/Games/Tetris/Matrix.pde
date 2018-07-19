@@ -133,7 +133,7 @@ class Matrix {
 
   boolean CheckRow(float y) {
     for (int x = 0; x < w; x++) {
-      if (!fetch(x, y).exists)
+      if (!tiles[ord(x, y)].exists)
         return false;
     }
     return true;

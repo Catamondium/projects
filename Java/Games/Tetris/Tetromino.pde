@@ -61,17 +61,11 @@ class Tet {
 
   void trans(float x, float y, boolean noClip) { // Collision checked translation
     if (!noClip && y == 0) {
-      switch((int)x) {
-      case +1:
-        if (right_enable)
-          trans(x, y);
-        break;
+      if (right_enable && x == +1)
+        trans(x, y);
 
-      case -1:
-        if (left_enable)
-          trans(x, y);
-        break;
-      }
+      if (left_enable && x == -1)
+        trans(x, y);
     }
   }
 
@@ -91,26 +85,26 @@ class Tet {
         right_enable = false;
 
       if (P.y >= 0) { // Array safety, insure on board
-        if (left_enable == true && m.fetch(P.x - 1, P.y).exists)
+        if (left_enable && m.fetch(P.x - 1, P.y).exists)
           left_enable = false; // Left-adjacent block
 
-        if (right_enable == true && m.fetch(P.x + 1, P.y).exists)
+        if (right_enable && m.fetch(P.x + 1, P.y).exists)
           right_enable = false; // Right-adjacent block
       }
     }
   }
 
-  void rot(int dir) {
+  void rot(int dir, Matrix M) {
     switch(type) {
     case 0: // between coords[2] & coords[3], but to a side
-      centred_rot(I_centre(), dir);
+      centred_rot(I_centre(), dir, M);
       break;
 
     case 1: // NOOP
       break;
 
     default:
-      centred_rot(blocks[3], dir);
+      centred_rot(blocks[3], dir, M);
       break;
     }
 
@@ -119,7 +113,7 @@ class Tet {
       rotation = 0;
   }
 
-  void centred_rot(PVector C, int dir) {
+  void centred_rot(PVector C, int dir, Matrix M) {
     PVector tmpC = C.copy();
     trans(-C.x, -C.y); // translate to (0, 0)
 
@@ -136,6 +130,19 @@ class Tet {
     }
 
     trans(tmpC.x, tmpC.y); // restore position
+
+    // Collision detection
+    FloatList xSet = new FloatList();
+
+    for (PVector P : blocks) {
+      xSet.append(P.x);
+    }
+
+    if (xSet.min() < 0)
+      trans(-xSet.min(), 0);
+
+    if (xSet.max() > M.w - 1)
+      trans((M.w - 1) - xSet.max(), 0);
   }
 
   PVector I_centre() {
@@ -145,11 +152,10 @@ class Tet {
     mean.div(2); // Gather mean
 
     float c = (rotation % 3 == 0) ? +.5 : -.5;
-    if (rotation % 2 == 0) {
+    if (rotation % 2 == 0)
       ret.set(mean.x, mean.y + c);
-    } else {
+    else
       ret.set(mean.x + c, mean.y);
-    }
 
     return ret;
   }
