@@ -9,15 +9,14 @@ class Lane extends Rectangle {
   }
 
   Lane(float y_, int num, float spd, float xoff, int type_) { // Make hostile lanes
-    super(5, y_, width, height / lanes.length, #FFFFFF, false);
+    super(5, y_, width, height / lanes.length, colours[type_].lane, false);
     type = type_;
     obsticles = new Obsticle[num];
-    super.col = colours[type_].lane;//(type_ == CAR) ? LANE_CAR : LANE_LOG; // Set background from type
-    color colO = colours[type_].obj;//(type_ == CAR) ? COL_CAR : COL_LOG; // Set type colour
 
     // Initalise obsticles
     for (int i = 0; i < obsticles.length; i++) {
-      obsticles[i] = new Obsticle(grid.x * i + xoff, y_, 2 * grid.x, spd, colO);
+      obsticles[i] = new Obsticle(grid.x * i + xoff, y_, 
+        2 * grid.x, spd, colours[type_].obj);
     }
   }
 
