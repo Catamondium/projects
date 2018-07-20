@@ -1,7 +1,7 @@
 class Frog extends Rectangle {
   Obsticle attached;
   Frog() {
-    super(0, 0, grid.x - 4, grid.y - 4, colours[FROG].obj, true);
+    super(0, 0, grid.x - 4, grid.y - 4, COLS[FROG].obj, true);
   }
 
   void update() {
