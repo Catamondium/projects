@@ -105,15 +105,18 @@ void win() {
 void reset() {
   player = new Frog();
   // Create lanes
-  lanes[0] = new Lane(0);
-  lanes[1] = new Lane(1, 4, -2, 0, CAR);
-  lanes[2] = new Lane(2, 4, -2.5, 2, CAR);
-  lanes[3] = new Lane(3, 4, -2, 0, CAR);
-  lanes[4] = new Lane(4);
-  lanes[5] = new Lane(5, 4, 1, 2, LOG);
-  lanes[6] = new Lane(6, 4, 1.5, 0, LOG);
-  lanes[7] = new Lane(7, 4, 1.52, 2, LOG);
-  lanes[8] = new Lane(8);
-  lanes[9] = new Lane(9);
+  lanes = new Lane[] {
+    new Lane(0), 
+    new Lane(1, 4, -2, 0, CAR), 
+    new Lane(2, 4, -2.5, 2, CAR), 
+    new Lane(3, 4, -2, 0, CAR), 
+    new Lane(4), 
+    new Lane(5, 4, 1, 2, LOG), 
+    new Lane(6, 4, 1.5, 0, LOG), 
+    new Lane(7, 4, 1.52, 2, LOG), 
+    new Lane(8), 
+    new Lane(9), 
+  };
+  
   lanes[lanes.length - 1].col = COLS[WIN].lane; // Override winlane colour
 }
