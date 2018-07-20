@@ -43,7 +43,7 @@ class Lane extends Rectangle {
     if (type == CAR) {
       for (Obsticle o : obsticles) {
         if (o.intersects(frog)) {
-          GameOver();
+          lose();
           break;
         }
       }
@@ -57,7 +57,7 @@ class Lane extends Rectangle {
         }
       }
       if (!ok) {
-        GameOver();
+        lose();
       }
     }
   }

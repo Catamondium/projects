@@ -14,7 +14,7 @@ class Frog extends Rectangle {
     }
 
     if (myLane() == lanes.length - 1) { // Check win
-      GameWon();
+      win();
     }
   }
 

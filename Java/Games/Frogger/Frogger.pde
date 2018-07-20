@@ -13,18 +13,18 @@
 // Constants
 
 final Pallete[] colours = new Pallete[] { // Colour constants dictionary
-  new Pallete(#222222, #000000), // Safety [0]
-  new Pallete(#555555, #FF0000), // Car [1]
-  new Pallete(#000066, #654321), // Log [2]
-  new Pallete(#000000, #00FF00), // Frog [3]
-  new Pallete(#007F00, #000000) //  Win [4]
+  new Pallete(#555555, #FF0000), // Car
+  new Pallete(#000066, #654321), // Log
+  new Pallete(#007F00, #000000), //  Win
+  new Pallete(#222222, #000000), // Safety
+  new Pallete(#000000, #00FF00), // Frog
 };
 
-final int SAFETY = 0;
-final int CAR = 1;
-final int LOG = 2;
-final int FROG = 3;
-final int WIN = 4;
+final int CAR = 0;
+final int LOG = 1;
+final int WIN = 2;
+final int SAFETY = 3;
+final int FROG = 4;
 
 final int numTiles = 10;
 final int maxLives = 3;
@@ -38,7 +38,7 @@ PVector grid;
 void setup() {
   size(400, 400);
   grid = new PVector(width / numTiles, height / lanes.length);
-  GameReset();
+  reset();
 }
 
 void draw() {
@@ -84,25 +84,25 @@ void debug() {
   }
 }
 
-void GameOver() { // Win/loss conditionals
+void lose() { // Win/loss conditionals
   lives--;
   String Dstr = (lanes[player.myLane()].type == CAR) ?
     "You were ran over, " : "You drowned, ";
   Dstr += (lives > 0) ? lives + " lives remaining." : "game over.";
   println(Dstr);
-  GameReset();
+  reset();
   if (lives < 1) { // Reset whole state after complete loss
     lives = maxLives;
   }
 }
 
-void GameWon() {
+void win() {
   println("Win!");
-  GameReset();
+  reset();
   lives = maxLives;
 }
 
-void GameReset() {
+void reset() {
   player = new Frog();
   // Create lanes
   lanes[0] = new Lane(0);
