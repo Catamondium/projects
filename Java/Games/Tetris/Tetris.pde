@@ -16,7 +16,7 @@
  **/
 // Constants
 
-int[][][] T_ORDS = { // [7][4][2] lengths
+final int[][][] T_ORDS = { // [7][4][2] lengths
   {{3, -2}, // I
     {6, -2}, 
     {4, -2}, //
@@ -53,7 +53,7 @@ int[][][] T_ORDS = { // [7][4][2] lengths
   {4, -2}} // Centre
 };
 
-T_type[] TETS = new T_type[] { // Constants dictionary
+final T_type[] TETS = new T_type[] { // Constants dictionary
   new T_type('I', #00FFFF, T_ORDS[0]), 
   new T_type('O', #FFFF00, T_ORDS[1]), 
   new T_type('T', #800080, T_ORDS[2]), 
@@ -90,7 +90,6 @@ int addscore(int rows) {
 // Game
 Tet player;
 Matrix playfield;
-int scale = 25;
 int held = -1; // Default to OutOfBounds index
 boolean hold_enable = true;
 PVector origin;

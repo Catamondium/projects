@@ -8,9 +8,10 @@ class Tet {
 
   Tet(int type_) {
     type = type_;
-    for (int i = 0; i < 4; i++) {
-      blocks[i] = new PVector(TETS[type_].ords[i][0], TETS[type_].ords[i][1]);
-    }
+    //for (int i = 0; i < 4; i++) {
+    //  blocks[i] = new PVector(TETS[type_].ords[i][0], TETS[type_].ords[i][1]);
+    //}
+    blocks = TETS[type_].ords;
   }
 
   boolean update(Matrix m) { // if true, replace player

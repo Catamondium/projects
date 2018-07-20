@@ -1,4 +1,4 @@
-BinTree tree = new BinTree();
+ BinTree tree = new BinTree();
 
 void setup() {
   size(700, 600);

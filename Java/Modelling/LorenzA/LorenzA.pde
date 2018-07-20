@@ -1,6 +1,6 @@
-float sigma = 10;
-float beta = 8.0/3.0;
-float rho = 28;
+final float sigma = 10;
+final float beta = 8.0/3.0;
+final float rho = 28;
 
 PVector ord = new PVector(1, 1, 1);
 PVector diff = new PVector();
@@ -13,7 +13,7 @@ void setup() {
 
 void draw() {
   background(0);
-  float dt = 0.01;
+  final float dt = 0.01;
   diff.x = sigma * (ord.y - ord.x);
   diff.y = ord.x * (rho - ord.z) - ord.y;
   diff.z = ord.x * ord.y - beta * ord.z;

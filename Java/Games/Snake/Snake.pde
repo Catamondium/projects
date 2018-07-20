@@ -1,7 +1,7 @@
 Player s;
-int scl = 20;
+final int scl = 20;
 PVector food = new PVector();
-PFont f;
+//PFont f;
 
 void setup() {
   size(600, 600);

@@ -11,21 +11,21 @@
  *      Width
  **/
 // Constants
-color LANE_SAFETY = #222222;
-color LANE_CAR = #555555;
-color LANE_LOG = #000066;
-color LANE_WIN = #007F00;
+final color LANE_SAFETY = #222222;
+final color LANE_CAR = #555555;
+final color LANE_LOG = #000066;
+final color LANE_WIN = #007F00;
 
-color COL_CAR = #FF0000;
-color COL_LOG = #654321;
-color COL_FROG = #00FF00;
+final color COL_CAR = #FF0000;
+final color COL_LOG = #654321;
+final color COL_FROG = #00FF00;
 
-int SAFETY = 0;
-int CAR = 1;
-int LOG = 2;
+final int SAFETY = 0;
+final int CAR = 1;
+final int LOG = 2;
 
-int numTiles = 10;
-int maxLives = 3;
+final int numTiles = 10;
+final int maxLives = 3;
 
 // Declarations
 int lives = maxLives;
