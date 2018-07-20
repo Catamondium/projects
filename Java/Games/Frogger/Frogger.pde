@@ -11,18 +11,20 @@
  *      Width
  **/
 // Constants
-final color LANE_SAFETY = #222222;
-final color LANE_CAR = #555555;
-final color LANE_LOG = #000066;
-final color LANE_WIN = #007F00;
 
-final color COL_CAR = #FF0000;
-final color COL_LOG = #654321;
-final color COL_FROG = #00FF00;
+final Pallete[] colours = new Pallete[] { // Colour constants dictionary
+  new Pallete(#222222, #000000), // Safety [0]
+  new Pallete(#555555, #FF0000), // Car [1]
+  new Pallete(#000066, #654321), // Log [2]
+  new Pallete(#000000, #00FF00), // Frog [3]
+  new Pallete(#007F00, #000000) //  Win [4]
+};
 
 final int SAFETY = 0;
 final int CAR = 1;
 final int LOG = 2;
+final int FROG = 3;
+final int WIN = 4;
 
 final int numTiles = 10;
 final int maxLives = 3;
@@ -113,5 +115,5 @@ void GameReset() {
   lanes[7] = new Lane(7, 4, 1.52, 2, LOG);
   lanes[8] = new Lane(8);
   lanes[9] = new Lane(9);
-  lanes[lanes.length - 1].col = LANE_WIN; // Override winlane colour
+  lanes[lanes.length - 1].col = colours[WIN].lane; // Override winlane colour
 }

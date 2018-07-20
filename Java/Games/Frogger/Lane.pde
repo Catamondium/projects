@@ -3,7 +3,7 @@ class Lane extends Rectangle {
   int type;
 
   Lane(float y_) { // Make safety at y
-    super(5, y_, width, grid.y, LANE_SAFETY, false);
+    super(5, y_, width, grid.y, colours[SAFETY].lane, false);
     type = SAFETY;
     obsticles = new Obsticle[0];
   }
@@ -12,8 +12,8 @@ class Lane extends Rectangle {
     super(5, y_, width, height / lanes.length, #FFFFFF, false);
     type = type_;
     obsticles = new Obsticle[num];
-    super.col = (type_ == CAR) ? LANE_CAR : LANE_LOG; // Set background from type
-    color colO = (type_ == CAR) ? COL_CAR : COL_LOG; // Set type colour
+    super.col = colours[type_].lane;//(type_ == CAR) ? LANE_CAR : LANE_LOG; // Set background from type
+    color colO = colours[type_].obj;//(type_ == CAR) ? COL_CAR : COL_LOG; // Set type colour
 
     // Initalise obsticles
     for (int i = 0; i < obsticles.length; i++) {
