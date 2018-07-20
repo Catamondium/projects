@@ -17,7 +17,7 @@ final Pallete[] COLS = new Pallete[] { // Colour constants dictionary
   new Pallete(#000066, #654321), // Log
   new Pallete(#007F00, #000000), //  Win
   new Pallete(#222222, #000000), // Safety
-  new Pallete(#000000, #00FF00), // Frog
+  new Pallete(#000000, #00FF00) // Frog
 };
 
 final int CAR = 0;
@@ -115,8 +115,8 @@ void reset() {
     new Lane(6, 4, 1.5, 0, LOG), 
     new Lane(7, 4, 1.52, 2, LOG), 
     new Lane(8), 
-    new Lane(9), 
+    new Lane(9)
   };
-  
+
   lanes[lanes.length - 1].col = COLS[WIN].lane; // Override winlane colour
 }
