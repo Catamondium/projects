@@ -13,9 +13,9 @@ class Tet {
 
   boolean update(Matrix m) { // if true, replace player
     strain(m);
-    boolean ret = m.query(copy());
+    boolean ret = m.query(clone());
     if (ret) {
-      m.commit(copy());
+      m.commit(clone());
       m.CheckRows(blocks);
     }
     //trans(0, 1);
@@ -34,7 +34,7 @@ class Tet {
     popStyle();
   }
 
-  Tet copy() {
+  Tet clone() {
     Tet t = new Tet(type);
     t.rotation = rotation;
     t.type = type;
