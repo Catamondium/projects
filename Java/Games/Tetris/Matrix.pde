@@ -152,7 +152,8 @@ class Matrix {
     println(y.min(), mov_by);
 
     for (int i = start; i >= 0; i--) {
-      tiles[i + mov_by].insert(tiles[i]);
+      if (i + mov_by < w * h)
+        tiles[i + mov_by].insert(tiles[i]);
       tiles[i].exists = false;
     }
   }

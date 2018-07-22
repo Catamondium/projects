@@ -4,7 +4,13 @@
  * * * Statistics
  * * * Holding block
  * * * Next block
- **/
+ *
+/* BUGS:
+ * * Matrix Types fail to be preserved around time of above error,
+ * . forms column around widest range of set tiles,
+ * . with changing tiles around bottom-left corner of column.
+ * . Also appears That player spawns inside the commit location.
+ *
 /* Coordinate system
  * * 0 1 2 3 4 5 ...9
  * 0                |
@@ -64,7 +70,7 @@ final T_type[] TETS = new T_type[] { // Constants dictionary
 };
 
 // statistics functions
-int[] T_stats = {0, 0, 0, 0, 0, 0, 0};
+int[] T_stats = new int[7];
 int score = 0;
 int level = 0;
 int addscore(int rows) {
@@ -156,6 +162,12 @@ void keyPressed() {
     break;
   }
 }
+
+//int T_gen() { // Exessive calls resulting in flickering next variable
+//  int cur = next;
+//  next = floor(random(7));
+//  return cur;
+//}
 
 int T_gen() {
   return floor(random(7));

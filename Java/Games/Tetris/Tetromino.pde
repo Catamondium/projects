@@ -8,9 +8,6 @@ class Tet {
 
   Tet(int type_) {
     type = type_;
-    //for (int i = 0; i < 4; i++) {
-    //  blocks[i] = new PVector(TETS[type_].ords[i][0], TETS[type_].ords[i][1]);
-    //}
     blocks = TETS[type_].ords;
   }
 
@@ -77,6 +74,14 @@ class Tet {
   void strain(Matrix m) {
     left_enable = true;
     right_enable = true;
+
+    FloatList ySet = new FloatList();
+    for (PVector P : blocks) {
+      ySet.append(P.y);
+    }
+
+    if (ySet.max() >= m.h)
+      trans(0, (m.h - 1)- ySet.max());
 
     for (PVector P : blocks) {
       if (P.x == 0) // Left matrix boundary
