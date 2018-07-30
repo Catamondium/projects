@@ -1,14 +1,14 @@
 #!/usr/bin/awk -f
 # GNU Awk 4.1.3
 
-(/^#([0-9]*)/) { # main, $1=title, $2=copies, $3=price
+(/^#([0-9]*)/) { # Main, $1=title, $2=copies, $3=price
     if (NF == 3) {
 	# Calc sub-tot
 	amount = $2 * $3
 	# Accumulate sub-tot
 	vol[$1] += $2
 	amt[$1] += amount
-	#accumulate tot
+	# Accumulate tot
 	total_vol += $2
 	total_amt += amount
     } else

@@ -2,7 +2,7 @@
 # GNU Awk 4.1.3
 BEGIN { FS = "\n"; RS = "" } # Init, lines are fields, no records
 
-NF >= 3 { # main, at least 3 fields?
+NF >= 3 { # Main, at least 3 fields?
     for (i = 3; i <= NF; ++i) {
 	sv = split($i, order, " ") # split into title,copies,price
 	if (sv == 3) {
