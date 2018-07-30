@@ -22,4 +22,4 @@
 
 (format t "start: ~2,'0D:~2,'0D ~@D~%" (time_c-hrs start)
 	(time_c-mins start) elapse)
-(format t "End ,'0D:~2,'0D~%" (time_c-hrs end) (time_c-mins end))
+(format t "End: ~2,'0D:~2,'0D~%" (time_c-hrs end) (time_c-mins end))
