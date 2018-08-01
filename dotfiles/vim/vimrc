@@ -58,7 +58,4 @@ augroup vimrc
   au BufWinEnter * if &fdm == 'indent' | setlocal foldmethod=manual | endif
 augroup END
 
-
-colorscheme darkblue " set colours
-" pathogen runtime management
-execute pathogen#infect()
+colorscheme dracula " set colours
