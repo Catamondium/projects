@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 
 using namespace std;
 
@@ -22,9 +23,14 @@ unsigned long fibonacci(unsigned int n) {
 }
 
 int main(int argc, char** argv) {
-	cout.imbue(locale(""));
-	for(unsigned int i = 0; i < 10; i++) {
-		cout << fibonacci(i) << endl;
+	if(argc > 1) {
+		cout.imbue(locale(""));
+		for(unsigned int i = 0; i < atoi(argv[1]); i++) {
+			cout << fibonacci(i) << endl;
+		}
+		return 0;
+	} else{
+		cout << "Integer argument required\n";
+		return 1;
 	}
-	return 0;
 }
