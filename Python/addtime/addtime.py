@@ -9,7 +9,7 @@ class Time:
         def __repr__(self):
                 return "{0:02d}:{1:02d}".format(self.hrs, self.mins)
                 
-        def calcEnd(self, t):
+        def __add__(self, t):
                 offset = self.hrs * 60 + self.mins
                 tot = t + offset
                 return Time(tot // 60, tot % 60)
@@ -30,9 +30,8 @@ else:  # Use existing
 	elapse = Istr[2]
 	
 start = Time(Istr[0], Istr[1])
-end = start.calcEnd(elapse)
 
 Ostr_S = "Start time:	{0}".format(start)
-Ostr_E = "End time:	{0}".format(end)
+Ostr_E = "End time:	{0}".format(start + elapse)
 
 print("{0}	{1:+}min\n{2}".format(Ostr_S, elapse, Ostr_E))
