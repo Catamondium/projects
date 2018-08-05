@@ -11,22 +11,18 @@ class ngonR:
         self.y = y # True centre
         self.x = x # True centre
 
-    def update(self):
-        self.len = self.R * 2 * math.sin(math.pi / self.n)
-        self.oy = - (self.R**2 - (.5 * self.len)**2)**.5 + self.y # Begin vertex
-        self.ox = .5 * self.len + self.x # Begin vertex
-
     def draw(self, col_L, col_F):
-        self.update()
+        length = self.R * 2 * math.sin(math.pi / self.n)
         t = Turtle()
         t.color(col_L, col_F)
         t.pu()
-        t.setpos(self.ox, self.oy)
+        t.setpos(.5 * length + self.x,
+                - (self.R**2 - (.5 * length)**2)**.5 + self.y)
         t.begin_fill()
         t.pd()
         for i in range(0, self.n):
             t.left(180 - ((1 - (2 / self.n)) * 180))
-            t.forward(self.len)
+            t.forward(length)
         t.end_fill()
         t.setpos(self.x, self.y)
         t.pu()
