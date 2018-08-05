@@ -11,11 +11,13 @@ class ngonR:
         self.y = y # True centre
         self.x = x # True centre
 
-        self.len = R * 2 * math.sin(math.pi / n)
-        self.oy = - (R**2 - (.5 * self.len)**2)**.5 + y # Begin vertex
-        self.ox = .5 * self.len + x # Begin vertex
+    def update(self):
+        self.len = self.R * 2 * math.sin(math.pi / self.n)
+        self.oy = - (self.R**2 - (.5 * self.len)**2)**.5 + self.y # Begin vertex
+        self.ox = .5 * self.len + self.x # Begin vertex
 
     def draw(self, col_L, col_F):
+        self.update()
         t = Turtle()
         t.color(col_L, col_F)
         t.pu()
@@ -31,6 +33,7 @@ class ngonR:
 
 # Main
 bgcolor("black")
+shapes = []
 for n in range(3, 10):
         shape = ngonR(n, 200, 0, 0)
         shape.draw("red", "purple")
