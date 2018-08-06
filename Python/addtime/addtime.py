@@ -31,7 +31,7 @@ else:  # Use existing
 	
 start = Time(Istr[0], Istr[1])
 
-Ostr_S = "Start time:	{0}".format(start)
-Ostr_E = "End time:	{0}".format(start + elapse)
+Ostr_S = "Start:	{0}".format(start)
+Ostr_E = "End:	{0}".format(start + elapse)
 
 print("{0}	{1:+}min\n{2}".format(Ostr_S, elapse, Ostr_E))
