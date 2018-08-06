@@ -32,18 +32,18 @@ int main(int argc, char *argv[]) {
     if(argc < 3) {
         printf("Error:\tmm:hh mins expected.\n");
         return 1;
-    } else {
-        elapse = atoi(argv[2]);
-        // Split and collect start time
-        const char delimiters[] = ":";
-        char *input = argv[1];
-
-        char *hrs = strtok(input, delimiters);
-        char *mins = strtok(NULL, delimiters);
-
-        start.hrs = atoi(hrs);
-        start.mins = atoi(mins);
     }
+
+    elapse = atoi(argv[2]);
+    // Split and collect start time
+    const char delimiters[] = ":";
+    char *input = argv[1];
+
+    char *hrs = strtok(input, delimiters);
+    char *mins = strtok(NULL, delimiters);
+
+    start.hrs = atoi(hrs);
+    start.mins = atoi(mins);
 
     end = calcEtime(start, elapse);
     // Build output string
