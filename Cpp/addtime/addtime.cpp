@@ -29,16 +29,19 @@ ostream& operator<<(ostream& stream, Time a) {
 }
 
 int main(int argc, char** argv) {
-	if(argc >= 3) {
-		string strT = argv[1];
-		int delimpos = strT.find(':');
-		string str_hrs = strT.substr(0, delimpos);
-		string str_mins = strT.substr(delimpos + 1, strT.length());
-		Time start(stoi(str_hrs), stoi(str_mins));
-		int elapse = atoi(argv[2]);
-
-		cout << "Start:\t" << start << "\t" 
-			<<  showpos << elapse << "\n"
-			<< "End:\t" << start + elapse << endl;
-	}	
+	if(argc < 3) {
+		cout << "Error:\thh:mm mins expected." << endl;
+		return 1;
+	}
+	string strT = argv[1];
+	int delimpos = strT.find(':');
+	string str_hrs = strT.substr(0, delimpos);
+	string str_mins = strT.substr(delimpos + 1, strT.length());
+	Time start(stoi(str_hrs), stoi(str_mins));
+	int elapse = atoi(argv[2]);
+	
+	cout << "Start:\t" << start << "\t"
+		<<  showpos << elapse << "\n"
+		<< "End:\t" << start + elapse << endl;
+	return 0;
 }

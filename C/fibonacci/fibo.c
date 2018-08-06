@@ -26,10 +26,12 @@ int main(int argc, char *argv[]) {
     setlocale(LC_NUMERIC, "");
     if (argc == 1 || atoi(argv[1]) < 0) {
         printf("Error: Positive argument required.\n");
-    } else {
-        int n = atoi(argv[1]);
-        for(int i = 0; i < n; ++i) {
-            printf("%lld\n", fibonacci(i));
-        }
+	return 1;
     }
+
+    int n = atoi(argv[1]);
+    for(int i = 0; i < n; ++i) {
+	    printf("%lld\n", fibonacci(i));
+    }
+    return 0;
 }

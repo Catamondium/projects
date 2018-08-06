@@ -53,4 +53,5 @@ int main(int argc, char *argv[]) {
     printf("%s\t%+d\n%s", Ostr_S, elapse, Ostr_E);
     free(Ostr_S);
     free(Ostr_E);
+    return 0;
 }
