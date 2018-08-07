@@ -1,15 +1,9 @@
-/* TODO:
+/* TODO
  * * Timings: ticks and check allowances
  * * Visuals:
  * * a Statistics
  * * b Holding block
  * * c Next block // Messed by bug 1
- *
-/* BUGS:
- * 1 Matrix Types fail to be preserved around time of above error,
- * . forms column around widest range of set tiles,
- * . with changing tiles around bottom-left corner of column.
- * . Also appears That player spawns inside the commit location.
  *
 /* Coordinate system
  * * 0 1 2 3 4 5 ... 9

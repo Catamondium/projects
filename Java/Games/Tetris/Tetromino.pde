@@ -8,7 +8,9 @@ class Tet {
 
   Tet(int type_) {
     type = type_;
-    blocks = TETS[type_].ords;
+    for(int i = 0; i < 4; i++) {
+    blocks[i] = TETS[type_].ords[i].copy();
+    }
   }
 
   boolean update(Matrix m) { // if true, replace player
