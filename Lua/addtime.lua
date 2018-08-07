@@ -17,11 +17,15 @@ function Time:add (elapse)
 		mins = tot % 60}
 end
 
-getNum = string.gmatch(arg[1], "%d+")
-start = Time:new{
-	hrs = getNum(),
-	mins = getNum()}
-elapse = tonumber(arg[2])
-
-print(string.format("Start:\t%s\t%+d\nEnd:\t%s",
-	start, elapse, start:add(elapse)))
+if #arg == 2 then
+	getNum = string.gmatch(arg[1], "%d+")
+	start = Time:new{
+		hrs = getNum(),
+		mins = getNum()}
+		elapse = tonumber(arg[2])
+		
+		print(string.format("Start:\t%s\t%+d\nEnd:\t%s",
+			start, elapse, start:add(elapse)))
+else
+	print("Error:\tmm:hh mins expected.")
+end
