@@ -90,6 +90,7 @@ int addscore(int rows) {
 // Game
 Tet player;
 Matrix playfield;
+int next = T_gen();
 int held = -1; // Default to OutOfBounds index
 boolean hold_enable = true;
 PVector origin;
@@ -112,8 +113,8 @@ void draw() {
   else if (player.update(playfield))
     player = new Tet(T_gen());
 
-  playfield.show(dimentions);
   player.show(playfield);
+  playfield.show(dimentions);
   //noLoop();
 }
 
@@ -164,7 +165,9 @@ void keyPressed() {
 //}
 
 int T_gen() {
-  return floor(random(7));
+  int current = next;
+  next = floor(random(7));
+  return current;
 }
 
 void hold() { // Swap Player with Held
