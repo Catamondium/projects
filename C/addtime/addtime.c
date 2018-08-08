@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     signed int elapse;
 
     if(argc < 3) {
-        printf("Error:\tmm:hh mins expected.\n");
+        printf("Error:\thh:mm mins expected.\n");
         return 1;
     }
 
