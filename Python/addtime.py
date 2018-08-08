@@ -14,22 +14,18 @@ class Time:
                 tot = t + offset
                 return Time(tot // 60, tot % 60)
 
-if len(sys.argv) == 1:
-	Istr = input("Start time:	")
-	Istr = Istr.replace(' ', ':').split(':', 2)
-else:
-	Istr = sys.argv[1].split(':')
-	if len(sys.argv) >= 3:
-		Istr[len(Istr):] = [sys.argv[2]]
+if len(sys.argv) < 3:
+    print("Error:\thh:mm mins expected")
+    sys.exit(1)
+
+
+Istr = sys.argv[1].split(':')
+Istr[len(Istr):] = [sys.argv[2]]
 
 Istr = [int(x) for x in Istr]
 
-if len(Istr) == 2:  # Supplement input
-	elapse = eval(input("Period(min):	"))
-else:  # Use existing
-	elapse = Istr[2]
-	
 start = Time(Istr[0], Istr[1])
+elapse = Istr[2]
 
 Ostr_S = "Start:	{0}".format(start)
 Ostr_E = "End:	{0}".format(start + elapse)
