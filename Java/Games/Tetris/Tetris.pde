@@ -115,6 +115,7 @@ void draw() {
 
   player.show(playfield);
   playfield.show(dimentions);
+  drawstats(width);
   //noLoop();
 }
 
@@ -182,6 +183,22 @@ void hold() { // Swap Player with Held
 void reset() {
   player = new Tet(T_gen());
   playfield = new Matrix(10, 20, origin, dimentions);
+}
+
+void drawstats(float w) {
+  float left = w / 3 - 5;//180;
+  textAlign(RIGHT);
+  
+  if (held != -1)
+    text("Held: " + TETS[held].label, left, 25);
+    
+  text("Next: " + TETS[next].label, left, 40);
+  
+  for(int i = 0; i < TETS.length; i++) {
+    text(TETS[i].label + ": " + T_stats[i], left, 16 * i + 56);
+  }
+  
+  text("Score: " + score, left, 168);
 }
 
 void win(int rows) {
