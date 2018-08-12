@@ -186,18 +186,19 @@ void reset() {
 }
 
 void drawstats(float w) {
-  float left = w / 3 - 5;//180;
+  float left = w / 3 - 10;//180;
   textAlign(RIGHT);
-  
-  if (held != -1)
-    text("Held: " + TETS[held].label, left, 25);
-    
+
+  String holdstr = "Held: ";
+  holdstr += (held != -1) ? TETS[held].label : ' ';
+  text(holdstr, left, 25);
+
   text("Next: " + TETS[next].label, left, 40);
-  
-  for(int i = 0; i < TETS.length; i++) {
+
+  for (int i = 0; i < TETS.length; i++) {
     text(TETS[i].label + ": " + T_stats[i], left, 16 * i + 56);
   }
-  
+
   text("Score: " + score, left, 168);
 }
 

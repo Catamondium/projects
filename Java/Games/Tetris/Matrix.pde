@@ -1,16 +1,14 @@
 class Tile { //<>//
   boolean exists = false;
-  int type, rotation;
+  int type;
 
-  void insert(int type_, int rotation_) {
+  void insert(int type_) {
     type = type_;
-    rotation = rotation_;
     exists = true;
   }
   void insert(Tile t) {
     if (t.exists) {
       type = t.type;
-      rotation = t.rotation;
       exists = true;
     }
   }
@@ -86,7 +84,7 @@ class Matrix {
 
   void commit(Tet t) {
     for (PVector P : t.blocks) {
-      tiles[ord(P.x, P.y)].insert(t.type, t.rotation);
+      tiles[ord(P.x, P.y)].insert(t.type);
     }
     T_stats[t.type]++;
     hold_enable = true;

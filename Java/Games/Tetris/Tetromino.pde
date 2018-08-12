@@ -8,8 +8,8 @@ class Tet {
 
   Tet(int type_) {
     type = type_;
-    for(int i = 0; i < 4; i++) {
-    blocks[i] = TETS[type_].ords[i].copy();
+    for (int i = 0; i < 4; i++) {
+      blocks[i] = TETS[type_].ords[i].copy();
     }
   }
 
