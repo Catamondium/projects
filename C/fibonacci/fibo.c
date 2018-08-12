@@ -4,9 +4,9 @@
 typedef long long int big_number;
 
 big_number fibonacci(int n) {
-    if (n == 0 || n == 1) {
+    if (n == 0 || n == 1)
         return n;
-    } else {
+    else {
         big_number first = 0;
         big_number second = 1;
         big_number result;
