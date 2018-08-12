@@ -4,21 +4,18 @@
 using namespace std;
 
 unsigned long fibonacci(unsigned int n) {
-	switch(n) {
-		case 0:
-			return 0;
-		case 1:
-			return 1;
-		default:
-			unsigned long first = 0;
-			unsigned long second = 1;
-			unsigned long result;
-			for(unsigned int i = 1; i < n; i++) {
-				result = first + second;
-				first = second;
-				second = result;
-			}
-			return result;
+	if(n == 0 || n == 1)
+		return n;
+	else {
+		unsigned long first = 0;
+		unsigned long second = 1;
+		unsigned long result;
+		for(unsigned int i = 1; i < n; i++) {
+			result = first + second;
+			first = second;
+			second = result;
+		}
+		return result;
 	}
 }
 
