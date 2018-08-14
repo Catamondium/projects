@@ -30,4 +30,4 @@ elapse = Istr[2]
 Ostr_S = "Start:	{0}".format(start)
 Ostr_E = "End:	{0}".format(start + elapse)
 
-print("{0}	{1:+}min\n{2}".format(Ostr_S, elapse, Ostr_E))
+print("{0}\t{1:+}min\n{2}".format(Ostr_S, elapse, Ostr_E))
