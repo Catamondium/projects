@@ -1,7 +1,6 @@
 # Python 3.5.2
 
 from turtle import *
-import sys
 import math
 
 class ngonR:
