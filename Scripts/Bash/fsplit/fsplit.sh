@@ -1,6 +1,5 @@
 #!/bin/bash
 #GNU bash, version 4.3.48(1)-release (x86_64-pc-linux-gnu)
-# Gather files
 path=`readlink -f $1`
 declare -a FILES=($path/*.jpg)
 FILES+=($path/*.jpeg)
@@ -15,7 +14,7 @@ for f in "${FILES[@]}"; do
 
 	# Iterate counts
 	((i++))
-	((i_mod=$i % 5))
+	((i_mod=$i % 10))
 	if [ "$i_mod" == 0 ]; then
 		((d++))
 		mkdir "$path/$d"
