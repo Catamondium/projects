@@ -1,8 +1,7 @@
-#define _GNU_SOURCE
-#include <math.h>
-#include <stdlib.h>
+#define _GNU_SOURCE // asprintf
+#include <math.h> // floor
+#include <stdlib.h> // atoi
 #include <stdio.h>
-#include <string.h>
 
 typedef struct Time_s {
     int hrs;
@@ -34,16 +33,8 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    sscanf(argv[1], "%d:%d", &start.hrs, &start.mins);
     elapse = atoi(argv[2]);
-    // Split and collect start time
-    const char delimiters[] = ":";
-    char *input = argv[1];
-
-    char *hrs = strtok(input, delimiters);
-    char *mins = strtok(NULL, delimiters);
-
-    start.hrs = atoi(hrs);
-    start.mins = atoi(mins);
 
     end = calcEtime(start, elapse);
     // Build output string
