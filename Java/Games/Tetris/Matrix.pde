@@ -1,4 +1,4 @@
-class Tile { //<>//
+class Tile {
   boolean exists = false;
   int type;
 
