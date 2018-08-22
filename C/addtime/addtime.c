@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
     elapse = atoi(argv[2]);
     end = calcEtime(start, elapse);
 
-    printf("Start:\t%02i:%02i\t%+i\nEnd:\t%02i:%02i\n",
+    printf("Start:\t%02d:%02d\t%+d\nEnd:\t%02d:%02d\n",
 		    start.hrs, start.mins, elapse,
 		    end.hrs, end.mins);
     return 0;
