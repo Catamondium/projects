@@ -3,7 +3,7 @@
 #include <stdlib.h> // atoi
 #include <stdio.h>
 
-typedef struct Time_s {
+typedef struct Time {
     int hrs;
     int mins;
 } Time;
@@ -31,14 +31,10 @@ int main(int argc, char *argv[]) {
 
     sscanf(argv[1], "%d:%d", &start.hrs, &start.mins);
     elapse = atoi(argv[2]);
-
     end = calcEtime(start, elapse);
-    // Build output string
-    char *Ostr_S, *Ostr_E;
-    asprintf(&Ostr_S, "Start:\t%02i:%02i", start.hrs, start.mins);
-    asprintf(&Ostr_E, "End:\t%02i:%02i\n", end.hrs, end.mins);
-    printf("%s\t%+d\n%s", Ostr_S, elapse, Ostr_E);
-    free(Ostr_S);
-    free(Ostr_E);
+
+    printf("Start:\t%02i:%02i\t%+i\n\End:\t%02i:%02i\n",
+		    start.hrs, start.mins, elapse,
+		    end.hrs, end.mins);
     return 0;
 }
