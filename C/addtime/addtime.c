@@ -20,10 +20,6 @@ Time calcEtime(Time s, int t) {
     return ret;
 }
 
-int fun(int x) {
-	return x-1;
-}
-
 int main(int argc, char *argv[]) {
     Time start, end;
     signed int elapse;
