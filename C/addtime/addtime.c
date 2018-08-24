@@ -1,14 +1,13 @@
-#define _GNU_SOURCE // asprintf
 #include <math.h> // floor
 #include <stdlib.h> // atoi
 #include <stdio.h>
 
 typedef struct Time {
-    int hrs;
-    int mins;
+    unsigned int hrs;
+    unsigned int mins;
 } Time;
 
-Time calcEtime(Time s, int t) {
+Time doElapse(const Time s, const signed int t) {
     Time ret;
 
     int offset = s.hrs * 60 + s.mins;
@@ -29,11 +28,11 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    sscanf(argv[1], "%d:%d", &start.hrs, &start.mins);
+    sscanf(argv[1], "%u:%u", &start.hrs, &start.mins);
     elapse = atoi(argv[2]);
-    end = calcEtime(start, elapse);
+    end = doElapse(start, elapse);
 
-    printf("Start:\t%02d:%02d\t%+d\nEnd:\t%02d:%02d\n",
+    printf("Start:\t%02u:%02u\t%+d\nEnd:\t%02u:%02u\n",
 		    start.hrs, start.mins, elapse,
 		    end.hrs, end.mins);
     return 0;
