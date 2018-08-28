@@ -1,5 +1,4 @@
 #include <math.h> // floor
-#include <stdlib.h> // atoi
 #include <stdio.h>
 
 typedef struct Time {
@@ -12,15 +11,20 @@ Time doElapse(const Time s, const signed int t) {
 
     int offset = s.hrs * 60 + s.mins;
     int tot = offset + t;
-
-    ret.hrs = (int) (floor(tot / 60));
-    ret.mins = (int) (tot % 60);
+    ret.hrs = floor(tot / 60);
+    ret.mins = tot % 60;
 
     return ret;
 }
 
+void sTime(char* ret, const Time t) {
+	sprintf(ret, "%02d:%02d", t.hrs, t.mins);
+	return;
+}
+
 int main(int argc, char *argv[]) {
     Time start, end;
+    char strStart[20], strEnd[20];
     signed int elapse;
 
     if(argc < 3) {
@@ -29,11 +33,12 @@ int main(int argc, char *argv[]) {
     }
 
     sscanf(argv[1], "%u:%u", &start.hrs, &start.mins);
-    elapse = atoi(argv[2]);
+    sscanf(argv[2], "%d", &elapse);
     end = doElapse(start, elapse);
 
-    printf("Start:\t%02u:%02u\t%+d\nEnd:\t%02u:%02u\n",
-		    start.hrs, start.mins, elapse,
-		    end.hrs, end.mins);
+    sTime(strStart, start);
+    sTime(strEnd, end);
+
+    printf("Start:\t%s\t%+d\nEnd:\t%s\n", strStart, elapse, strEnd);
     return 0;
 }
