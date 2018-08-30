@@ -20,14 +20,14 @@ if len(sys.argv) < 3:
 
 
 Istr = sys.argv[1].split(':')
-Istr[len(Istr):] = [sys.argv[2]]
+Istr.append(sys.argv[2])
 
 Istr = [int(x) for x in Istr]
 
 start = Time(Istr[0], Istr[1])
 elapse = Istr[2]
 
-Ostr_S = "Start:	{0}".format(start)
-Ostr_E = "End:	{0}".format(start + elapse)
+Ostr_S = "Start:\t{0}".format(start)
+Ostr_E = "End:\t{0}".format(start + elapse)
 
-print("{0}\t{1:+}min\n{2}".format(Ostr_S, elapse, Ostr_E))
+print("{0}\t{1:+}\n{2}".format(Ostr_S, elapse, Ostr_E))
