@@ -32,6 +32,7 @@ void lose(Boolean tailDeath) {
 
   pickLocation(food);
   snake.body.clear();
+  snake.vel = new PVector();
   PVector newhead = new PVector();
   pickLocation(newhead);
   snake.body.add(newhead);
