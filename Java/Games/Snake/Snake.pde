@@ -1,52 +1,57 @@
-Player s;
-final int scl = 20;
+Player snake;
+PVector scl;
 PVector food = new PVector();
-//PFont f;
+PVector grid = new PVector(30, 30);
 
 void setup() {
   size(600, 600);
-  //f = createFont("Roboto Regular", 20, false);
-  s = new Player();
+  scl = new PVector(width / grid.x, height / grid.y);
+  snake = new Player();
   pickLocation(food);
 }
 
 void draw() {
-  frameRate(10);
+  frameRate(5);
   background(0);
-  s.run();
+  snake.run();
   fill(255, 255, 0, 191);
-  //textFont(f, 20);
-  text("Score: " + s.score, 3, 20);
-
-  if (s.eat(food)) {
-    pickLocation(food);
-  }
-
-  keyPressed();
+  text("Score: " + score(), 3, 20);
   fill(255, 0, 0);
-  rect(food.x, food.y, scl, scl);
+  rect(food.x*scl.x, food.y*scl.y, scl.x, scl.y);
 }
 
 void pickLocation(PVector entity) {
-  int cols = floor(width/scl);
-  int rows = floor(height/scl);
-  entity.set(floor(random(cols)), floor(random(rows)));
-  entity.mult(scl);
+  entity.set(floor(random(grid.x)), floor(random(grid.y)));
+}
+
+void lose(Boolean tailDeath) {
+  String Dstr = (tailDeath) ? "You ate yourself, " : "You fell off the world, ";
+  Dstr += (score()==0) ? "You scored nothing." : ("Your scored " + score());
+  println("Gameover:\t" + Dstr);
+  
+  snake.body.clear();
+  PVector newhead = new PVector();
+  pickLocation(newhead);
+  snake.body.add(newhead);
+}
+
+int score() {
+  return snake.body.size()-1;
 }
 
 void keyPressed() {
-  switch(keyCode) {
-  case UP:
-    s.dir(0, -1);
+  switch(key) {
+  case 'w':
+    snake.dir(0, -1);
     break;
-  case DOWN:
-    s.dir(0, 1);
+  case 's':
+    snake.dir(0, 1);
     break;
-  case LEFT:
-    s.dir(-1, 0);
+  case 'a':
+    snake.dir(-1, 0);
     break;
-  case RIGHT:
-    s.dir(1, 0);
+  case 'd':
+    snake.dir(1, 0);
     break;
   }
 }

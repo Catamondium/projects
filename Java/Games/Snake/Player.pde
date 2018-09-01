@@ -1,66 +1,80 @@
 class Player {
-  PVector coord = new PVector();
   PVector vel = new PVector();
-  int score = 0;
-  ArrayList<PVector> tail = new ArrayList<PVector>();
+  ArrayList<PVector> body = new ArrayList<PVector>();
 
   void run() {
-    s.death();
-    s.update();
-    s.show();
+    snake.update();
+    snake.grow();
+    snake.death();
+    snake.show();
   }
 
   Player() {
-    pickLocation(coord);
+    PVector head = new PVector();
+    pickLocation(head);
+    body.add(head);
   }
 
   void update() {
-    if (score > 0) {
-      if ( score == tail.size() && !tail.isEmpty()) {
-        tail.remove(0); // Remove last tail, limit length on score
-      }
-      tail.add(coord.copy()); // Update tail location
-    }
+    PVector head = Head().copy();
+    head.add(vel);
 
-    vel.mult(scl);
-    coord.add(vel);
-
-    coord.x = constrain(coord.x, 0, width - scl); // Keep on window
-    coord.y = constrain(coord.y, 0, height - scl);
+    body.remove(0);
+    body.add(head);
   }
 
   void show() {
     fill(255);
-    for (PVector v : tail) {
-      rect(v.x, v.y, scl, scl);
+    for (PVector v : body) {
+      rect(v.x * scl.x, v.y * scl.y, scl.x, scl.y);
     }
     fill(255);
-    rect(coord.x, coord.y, scl, scl);
   }
 
   void dir(int x_, int y_) {
-    vel.set(x_, y_);
+    if ((x_ != -vel.x) || (y_ != -vel.y)) // disable reverse
+      vel.set(x_, y_);
   }
 
-  boolean eat(PVector other) {
-    float d = coord.dist(other);
-    if (d < 1) {
-      score++;
-      return true;
-    } else {
-      return false;
+  void grow() {
+    PVector head = Head();
+    if (head.x == food.x && head.y == food.y) {
+      PVector append = PVector.add(Head(), vel);
+      body.add(append);
+      pickLocation(food);
     }
   }
 
   void death() {
-    for (int i = 0; i < tail.size(); i++) {
-      PVector other = tail.get(i);
-      float d = coord.dist(other);
-      if (d < 1) {
-        println("Starting over");
-        score = 0;
-        tail.clear(); // Kill tail on death
+    PVector head = Head();
+    if (edges()) { // boundary collision
+      lose(false);
+      return;
+    }
+
+    for (int i = 0; i < body.size()-1; i++) {
+      PVector other = body.get(i);
+      // tail collision
+      if ((head.x == other.x) && (head.y == other.y)) {
+        lose(true);
+        return;
       }
     }
+  }
+
+  PVector Head() {
+    return body.get(body.size()-1);
+  }
+
+  Boolean edges() { // collides with boundary
+    PVector head = Head();
+    if (
+      (head.x > grid.x) ||
+      (head.x < 0) ||
+      (head.y > grid.y) ||
+      (head.y < 0)) {
+      return true;
+    }
+    return false;
   }
 }
