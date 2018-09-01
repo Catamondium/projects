@@ -25,14 +25,17 @@ class Player {
 
   void show() {
     fill(255);
-    for (PVector v : body) {
+    for (int i = 0; i < body.size(); i++) {
+      PVector v = body.get(i);
+      float brightness = map(i, 0, body.size(), 30, 100);
+      fill(237,100, brightness);
       rect(v.x * scl.x, v.y * scl.y, scl.x, scl.y);
     }
     fill(255);
   }
 
   void dir(int x_, int y_) {
-    if ((x_ != -vel.x) || (y_ != -vel.y)) // disable reverse
+    if ((x_ != -vel.x) || (y_ != -vel.y) || body.size() == 1) // disable reverse
       vel.set(x_, y_);
   }
 
