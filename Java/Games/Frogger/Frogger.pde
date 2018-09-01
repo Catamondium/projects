@@ -88,10 +88,10 @@ void lose() { // Win/loss conditionals
   lives--;
   String Dstr = (lanes[player.myLane()].type == CAR) ?
     "You were ran over, " : "You drowned, ";
-  Dstr += (lives > 0) ? lives + " lives remaining." : "game over.";
+  Dstr += (lives >= 0) ? (lives + " lives remaining.") : "game over.";
   println(Dstr);
   reset();
-  if (lives < 1) { // Reset whole state after complete loss
+  if (lives < 0) { // Reset whole state after complete loss
     lives = maxLives;
   }
 }
