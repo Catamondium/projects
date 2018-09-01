@@ -27,10 +27,10 @@ class Player {
     fill(255);
     for (int i = 0; i < body.size(); i++) {
       PVector v = body.get(i);
-      float brightness = 100;
+      float hue = 300;
       if (body.size()-1 != 0)
-        brightness = map(i, 0, body.size()-1, 30, 100);
-      fill(237, 100, brightness);
+        hue = map(i, 0, body.size()-1, 273, 300);
+      fill(hue, 100, 100);
       rect(v.x * scl.x, v.y * scl.y, scl.x, scl.y);
     }
     fill(255);
