@@ -15,7 +15,7 @@ void draw() {
   frameRate(15);
   background(0);
   snake.run();
-  fill(255, 255, 0, 191);
+  fill(60, 60, 100, 191);
   text("Score: " + score(), 3, 20);
   fill(#00FF00);
   rect(food.x*scl.x, food.y*scl.y, scl.x, scl.y);
@@ -27,19 +27,15 @@ void pickLocation(PVector entity) {
 
 void lose(Boolean tailDeath) {
   String Dstr = (tailDeath) ? "You ate yourself, " : "You fell off the world, ";
-  Dstr += (score()==0) ? "You scored nothing." : ("Your scored " + score());
+  Dstr += (score()==0) ? "You scored nothing." : ("You scored " + score());
   println("Gameover:\t" + Dstr);
 
   pickLocation(food);
-  snake.body.clear();
-  snake.vel = new PVector();
-  PVector newhead = new PVector();
-  pickLocation(newhead);
-  snake.body.add(newhead);
+  snake = new Player();
 }
 
 int score() {
-  return snake.body.size()-1;
+  return snake.body.size()-4;
 }
 
 void keyPressed() {

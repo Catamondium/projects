@@ -4,32 +4,32 @@ class Player {
 
   void run() {
     snake.update();
-    snake.grow();
     snake.death();
+    snake.grow();
     snake.show();
   }
 
   Player() {
-    PVector head = new PVector();
-    pickLocation(head);
-    body.add(head);
+    for (int i = 0; i < 4; i++) {
+      PVector append = new PVector(10+i, 15);
+      body.add(append);
+    }
   }
 
   void update() {
-    PVector head = Head().copy();
-    head.add(vel);
-
-    body.remove(0);
-    body.add(head);
+    if (vel.x != 0 || vel.y !=0) {
+      PVector head = Head().copy();
+      head.add(vel);
+      body.remove(0);
+      body.add(head);
+    }
   }
 
   void show() {
     fill(255);
     for (int i = 0; i < body.size(); i++) {
       PVector v = body.get(i);
-      float hue = 300;
-      if (body.size()-1 != 0)
-        hue = map(i, 0, body.size()-1, 273, 300);
+      float hue = map(i, 0, body.size()-1, 273, 300);
       fill(hue, 100, 100);
       rect(v.x * scl.x, v.y * scl.y, scl.x, scl.y);
     }
@@ -37,7 +37,7 @@ class Player {
   }
 
   void dir(int x_, int y_) {
-    if ((x_ != -vel.x) || (y_ != -vel.y) || body.size() == 1) // disable reverse
+    if ((x_ != -vel.x) || (y_ != -vel.y)) // disable reverse
       vel.set(x_, y_);
   }
 
