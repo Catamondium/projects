@@ -2,6 +2,13 @@ Player snake;
 PVector scl;
 PVector food = new PVector();
 PVector grid = new PVector(30, 30);
+boolean start;
+
+// snake colouration
+float huetail = 273;
+float huehead = 300;
+
+color foodcol = #00FF00;
 
 void setup() {
   size(600, 600);
@@ -14,11 +21,15 @@ void setup() {
 void draw() {
   frameRate(15);
   background(0);
-  snake.run();
+  
+  snake.update();
+  snake.show();
+  
+  fill(foodcol);
+  rect(food.x*scl.x, food.y*scl.y, scl.x, scl.y);
+
   fill(60, 60, 100, 191);
   text("Score: " + score(), 3, 20);
-  fill(#00FF00);
-  rect(food.x*scl.x, food.y*scl.y, scl.x, scl.y);
 }
 
 void pickLocation(PVector entity) {
@@ -26,8 +37,12 @@ void pickLocation(PVector entity) {
 }
 
 void lose(Boolean tailDeath) {
-  String Dstr = (tailDeath) ? "You ate yourself, " : "You fell off the world, ";
-  Dstr += (score()==0) ? "You scored nothing." : ("You scored " + score());
+  String Dstr = (tailDeath) ?
+    "You ate yourself, " : "You fell off the world, ";
+
+  Dstr += (score() == 0) ?
+    "scoring nothing." : ("scoring " + score());
+
   println("Gameover:\t" + Dstr);
 
   pickLocation(food);
@@ -43,19 +58,19 @@ void keyPressed() {
   case 'w':
     snake.dir(0, -1);
     break;
-    
+
   case 's':
     snake.dir(0, 1);
     break;
-    
+
   case 'a':
     snake.dir(-1, 0);
     break;
-    
+
   case 'd':
     snake.dir(1, 0);
     break;
-    
+
   case 'e':
     saveFrame("output.png");
     break;
