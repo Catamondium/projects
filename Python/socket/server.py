@@ -1,7 +1,7 @@
 import socket
 import math
 
-# very simple server, will need restarting after connection
+# very simple server
 servdata = socket.gethostname(), 5007
 msg = "PI = %s\r\n" % (math.pi)
 
@@ -10,7 +10,7 @@ with socket.socket() as server:
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server.bind(servdata)
     
-    print("Listening@\t%s:%s" % servdata)
+    print("Listening...")
     while True:
         server.listen(1)
         conn, addr = server.accept()
@@ -18,4 +18,3 @@ with socket.socket() as server:
             print("Connected@\t%s:%s" % addr)
             conn.send(msg.encode("ascii"))
             conn.close()
-    server.close()
