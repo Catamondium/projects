@@ -16,5 +16,5 @@ with socket.socket() as server:
         conn, addr = server.accept()
         with conn:
             print("Connected@\t%s:%s" % addr)
-            conn.send(msg.encode("ascii"))
+            conn.send(msg.encode())
             conn.close()
