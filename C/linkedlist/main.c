@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
+const char *BOUNDARY = "\n----------\n";
 int main() {
 	intList list = EMPTYLIST;
 
@@ -11,7 +12,7 @@ int main() {
 		add(&list, i);
 	}
 
-	printf("\nAppend 10:\t%d items\n", length(list));
+	printf("Append 10:\t%d items\n", length(list));
 
 	printf("\nGetting%s", BOUNDARY);
 	for(int i = 0; i < 10; i++) {
@@ -30,6 +31,6 @@ int main() {
 		add(&list, i);
 	}
 
-	delete(&list);
+	destroy(&list);
 	printf("\nDelete:\t%d items remaining\n", length(list));
 }

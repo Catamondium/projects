@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int length(Node *head) {
-	Node *current = head;
+int length(node *head) {
+	node *current = head;
 	int ret = 0;
 	while(current != NULL) {
 		ret++;
@@ -16,51 +16,31 @@ int returnSafe(int ret) {
 	return ret;
 }
 
-int add(Node **headAddr, int x) {
-	Node *newElem = (Node*)malloc(sizeof(Node));
-
+int add(node **headAddr, int x) {
+	node *newElem = (node*)malloc(sizeof(node));
 	if(newElem == NULL) {
-		fprintf(stderr, "Unable to allocate new Node\n");
+		fprintf(stderr, "Unable to allocate new element.");
 		exit(-1);
 	}
-
 	newElem->data = x;
-	newElem->next = NULL;
 
-	
-	if(*headAddr == EMPTYLIST)
-		*headAddr = newElem;
+	node **current = headAddr;
 
-	else { // traverse to last
-		// Clearer 'for' approach
-		for(Node *current = *headAddr;; current = current->next) {
-			if(current->next == NULL) {
-			current->next = newElem;
-			break;
-			}
-		}
-		// Arguably cleaner 'while' approach
-		/*
-		Node *current = *headAddr;
-		while(1) {
-			if(current->next == NULL) {
-				current->next = newElem;
-				printf("Appended to list %p\n", headAddr);
-				break;
-			}
-			current = current->next;
-		}
-		*/
-	}
+	while (*current != NULL)
+		current=&(*current)->next;
+
+	newElem->next = *current;
+	*current = newElem;
+
 	return 0;
 }
 
-int get(Node *head, int index) {
+int get(node *head, int index) {
 	if(head == EMPTYLIST) {
 		fprintf(stderr, "Index OutOfBounds\n");
 		exit(-1);
 	}
-	Node * current = head;
+	node * current = head;
 	for(int i = 0; i < index; i++) {
 		if(current->next == NULL) {
 			fprintf(stderr, "Index OutOfBounds\n");
@@ -72,21 +52,21 @@ int get(Node *head, int index) {
 	return current->data;
 }
 
-int pop(Node **headAddr) {
+int pop(node **headAddr) {
 	int ret;
 
 	if(*headAddr != EMPTYLIST) {
 		ret = returnSafe((*headAddr)->data);
-		Node *tmp = (*headAddr)->next;
+		node *tmp = (*headAddr)->next;
 		free(*headAddr);
 		*headAddr = tmp;
 	}
 	return ret;
 }
 
-int destroy(Node **headAddr) {
-	Node *current = *headAddr;
-	Node *next;
+int destroy(node **headAddr) {
+	node *current = *headAddr;
+	node *next;
 	while(current != NULL) {
 		next = current->next;
 		free(current);

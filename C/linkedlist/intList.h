@@ -1,22 +1,22 @@
 #pragma once
 #define EMPTYLIST NULL
 /* TODO
- * int push(Node **headAddr);
- * int set(Node *head);
- * int insert(Node **headAddr, int index, int x);
+ * int push(node **headAddr);
+ * int set(node *head);
+ * int insert(node **headAddr, int index, int x);
  */
 
-struct Node {
+struct node {
 	int data;
-	struct Node *next;
+	struct node *next;
 };
 
-typedef struct Node Node;
-typedef struct Node *intList;
+typedef struct node node;
+typedef struct node *intList;
 
-int length(Node *head);
+int length(node *head);
 int returnSafe(int ret);
-int add(Node **headAddr, int x);
-int get(Node *head, int index);
-int pop(Node **headAddr);
-int destroy(Node **headAddr);
+int add(node **headAddr, int x);
+int get(node *head, int index);
+int pop(node **headAddr);
+int destroy(node **headAddr);
