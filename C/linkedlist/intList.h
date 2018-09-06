@@ -16,7 +16,7 @@ typedef struct node *intList;
 
 int length(node *head);
 int returnSafe(int ret);
-int add(node **headAddr, int x);
+int insert(node **headAddr, const unsigned int index, const int x);
 int get(node *head, int index);
 int pop(node **headAddr);
 int destroy(node **headAddr);

@@ -9,7 +9,7 @@ int main() {
 	intList list = EMPTYLIST;
 
 	for(int i = 0; i < 10; i++) {
-		add(&list, i);
+		insert(&list, i, i);
 	}
 
 	printf("Append 10:\t%d items\n", length(list));
@@ -28,7 +28,7 @@ int main() {
 	printf("\nemptyList:\t%d items\n", length(list));
 
 	for(int i = 0; i < 10; i++) {
-		add(&list, i);
+		insert(&list, i, i);
 	}
 
 	destroy(&list);

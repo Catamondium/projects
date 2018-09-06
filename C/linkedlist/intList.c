@@ -16,7 +16,7 @@ int returnSafe(int ret) {
 	return ret;
 }
 
-int add(node **headAddr, int x) {
+int insert(node **headAddr, const unsigned int index, const int x) {
 	node *newElem = (node*)malloc(sizeof(node));
 	if(newElem == NULL) {
 		fprintf(stderr, "Unable to allocate new element.");
@@ -25,9 +25,11 @@ int add(node **headAddr, int x) {
 	newElem->data = x;
 
 	node **current = headAddr;
-
-	while (*current != NULL)
+	unsigned int i = 0;
+	while (*current != NULL && i < index) {
 		current=&(*current)->next;
+		i++;
+	}
 
 	newElem->next = *current;
 	*current = newElem;
