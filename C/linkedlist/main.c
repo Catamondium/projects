@@ -25,8 +25,8 @@ int main() {
 		printf("%d:\t%d\n", i, get(list, i));
 	}
 
-	printf("\nPopping%s", BOUNDARY); // only 5 popped?
-	for(int i = 0; length(list) != 0; i++) { // changing alongside us?
+	printf("\nPopping%s", BOUNDARY);
+	for(int i = 0; length(list) != 0; i++) {
 		printf("%d:\t%d\n", i, pop(&list));
 	}
 

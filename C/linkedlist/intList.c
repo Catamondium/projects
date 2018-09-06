@@ -12,7 +12,7 @@ int length(node *head) {
 	return ret;
 }
 
-int returnSafe(int ret) {
+int returnSafe(const int ret) {
 	return ret;
 }
 
@@ -37,7 +37,7 @@ int insert(node **headAddr, const unsigned int index, const int x) {
 	return 0;
 }
 
-int get(node *head, int index) {
+int get(node *head, const int index) {
 	if(head == EMPTYLIST) {
 		fprintf(stderr, "Index OutOfBounds\n");
 		exit(-1);
