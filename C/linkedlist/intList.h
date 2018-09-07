@@ -1,9 +1,11 @@
 #pragma once
 #define EMPTYLIST NULL
 /* TODO
- * int push(node **headAddr, const it x);
+ * int push(node **headAddr, const int x);
  * int set(node *head, const int x);
- * int remove(node **headAddr, const int index);
+ *
+ * int sum(node *head);
+ * int product(node *head);
  */
 
 struct node {
@@ -12,11 +14,13 @@ struct node {
 };
 
 typedef struct node node;
-typedef struct node *intList;
+typedef struct node* intList;
 
 int length(node *head);
-int returnSafe(const int ret);
+
 int insert(node **headAddr, const unsigned int index, const int x);
 int get(node *head, const int index);
+
 int pop(node **headAddr);
+int removeAt(node **headAddr, const int index); // TODO this can't do index=0, currently calling pop
 int destroy(node **headAddr);

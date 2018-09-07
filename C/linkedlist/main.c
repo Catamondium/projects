@@ -17,17 +17,24 @@ int main() {
 
 	insert(&list, 5, 9999);
 
-	printf("Insert@5:\t%d items\n", length(list));
+	assert(get(list, 5) == 9999);
+	assert(length(list) == 11);
+	printf("Insert[5]:\t%d items\n", length(list));
 
 
 	printf("\nGetting%s", BOUNDARY);
 	for(int i = 0; i < length(list); i++) {
-		printf("%d:\t%d\n", i, get(list, i));
+		printf("[%02d]:\t%d\n", i, get(list, i));
 	}
 
-	printf("\nPopping%s", BOUNDARY);
+	printf("\nRemove[5]:\t%d\n", removeAt(&list, 5));
+	assert(get(list, 5)==5);
+	assert(length(list)==10);
+	printf("\nRemoveLast:\t%d\n", removeAt(&list, length(list)-1));
+
+	printf("Popping%s", BOUNDARY);
 	for(int i = 0; length(list) != 0; i++) {
-		printf("%d:\t%d\n", i, pop(&list));
+		printf("[%02d]:\t%d\n", i, pop(&list));
 	}
 
 	printf("\nemptyList:\t%d items\n", length(list));
@@ -36,6 +43,7 @@ int main() {
 		insert(&list, i, i);
 	}
 
+	printf("\nGenerated list, length 10\n");
 	destroy(&list);
-	printf("\nDelete:\t%d items remaining\n", length(list));
+	printf("Destroy:\t%d items remaining\n", length(list));
 }
