@@ -22,5 +22,5 @@ int insert(node **headAddr, const unsigned int index, const int x);
 int get(node *head, const int index);
 
 int pop(node **headAddr);
-int removeAt(node **headAddr, const int index); // TODO this can't do index=0, currently calling pop
+int removeAt(node **headAddr, const int index);
 int destroy(node **headAddr);

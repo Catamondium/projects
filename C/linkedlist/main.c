@@ -44,6 +44,7 @@ int main() {
 	}
 
 	printf("\nGenerated list, length 10\n");
+
 	destroy(&list);
 	printf("Destroy:\t%d items remaining\n", length(list));
 }
