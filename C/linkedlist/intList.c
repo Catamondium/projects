@@ -29,7 +29,7 @@ int sum(node *head) {
 int product(node *head) {
 	int ret = 1;
 	node *current = head;
-	while(current != NULL) {
+	while(current != NULL && ret != 0) {
 		ret *= head->data;
 		current = current->next;
 	}
