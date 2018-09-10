@@ -16,8 +16,27 @@ int length(node *head) {
 	return ret;
 }
 
-int insert(node **headAddr, const unsigned int index, const int x) {
+int sum(node *head) {
+	int ret = 0;
+	node *current = head;
+	while(current != NULL) {
+		ret += current->data;
+		current = current->next;
+	}
+	return ret;
+}
 
+int product(node *head) {
+	int ret = 1;
+	node *current = head;
+	while(current != NULL) {
+		ret *= head->data;
+		current = current->next;
+	}
+	return ret;
+}
+
+int insert(node **headAddr, const unsigned int index, const int x) {
 	node **current = headAddr;
 	unsigned int i = 0;
 	while (*current != NULL && i < index) {

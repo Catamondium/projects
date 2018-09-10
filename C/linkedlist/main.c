@@ -15,6 +15,9 @@ int main() {
 	assert(length(list)==10);
 	printf("Append 10:\t%d items\n", length(list));
 
+	printf("Sum:\t%d\n", sum(list));
+	printf("Product:\t%d\n", product(list));
+
 	insert(&list, 5, 9999);
 
 	assert(get(list, 5) == 9999);
