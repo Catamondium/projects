@@ -97,8 +97,7 @@ int pop(node **headAddr) {
 
 
 int removeAt(node **headAddr, const int index) {
-	if(index == 0)
-		return pop(headAddr);
+	if(index == 0) return pop(headAddr);
 
 	int ret;
 
