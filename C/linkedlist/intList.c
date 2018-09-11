@@ -102,10 +102,10 @@ int removeAt(node **headAddr, const int index) {
 
 	int ret;
 
-	node **current = headAddr;
+	node **linker = headAddr;
 	int i = 0;
-	while(*current != NULL && i < index-1) {
-		current=&(*current)->next;
+	while(*linker != NULL && i < index-1) {
+		linker=&(*linker)->next;
 		i++;
 	}
 
@@ -114,10 +114,10 @@ int removeAt(node **headAddr, const int index) {
 		exit(-1);
 	}
 
-	node *tmp = (*current)->next;
+	node *tmp = (*linker)->next;
 	ret = returnSafe(tmp->data);
 
-	(*current)->next = (*current)->next->next;
+	(*linker)->next = tmp->next;
 	free(tmp);
 
 	return ret;
