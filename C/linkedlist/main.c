@@ -30,8 +30,14 @@ int main() {
 		printf("[%02d]:\t%d\n", i, get(list, i));
 	}
 
+	printf("\nSetting%s", BOUNDARY);
+	for(int i = 0; i < length(list) +1; i++) {
+		int ret = set(list, i, i*20);
+		printf("[%d]:\t%d\t%s\n", i, i*20, (ret)?"fail":"success");
+	}
+
 	printf("\nRemove[5]:\t%d\n", removeAt(&list, 5));
-	assert(get(list, 5)==5);
+	assert(get(list, 5)==6*20);
 	assert(length(list)==10);
 	printf("\nRemoveLast:\t%d\n", removeAt(&list, length(list)-1));
 

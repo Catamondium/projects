@@ -21,6 +21,7 @@ int product(node *head);
 
 int insert(node **headAddr, const unsigned int index, const int x);
 int get(node *head, const int index);
+int set(node *head, const int index, const int x);
 
 int pop(node **headAddr);
 int removeAt(node **headAddr, const int index);

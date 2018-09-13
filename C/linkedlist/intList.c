@@ -133,3 +133,18 @@ int destroy(node **headAddr) {
 	*headAddr = NULL;
 	return 0;
 }
+
+int set(node *head, const int index, const int x) {
+	int i = 0;
+	node *current = head;
+	while(current != NULL && i < index) {
+		current = current->next;
+		i++;
+	}
+
+	if(current == NULL)
+		return 1;
+
+	current->data = x;
+	return 0;
+}
