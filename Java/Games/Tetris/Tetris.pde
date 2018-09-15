@@ -105,7 +105,7 @@ void setup() {
 
 void draw() {
   background(0);
-  //frameRate(3);
+  //frameRate(3); // makes controls very insensitive, or the game cruelly fast
 
   if (player.above_board() && playfield.query(player))
     lose();
@@ -116,17 +116,16 @@ void draw() {
   player.show(playfield);
   playfield.show(dimentions);
   drawstats(width);
-  //noLoop();
 }
 
 void keyPressed() {
   switch(key) {
   case 'w':
-    player.trans(0, -1);
+    hold();
     break;
 
   case 's':
-    player.trans(0, 1);
+    player.drop(playfield);
     break;
 
   case 'a':
@@ -145,25 +144,20 @@ void keyPressed() {
     player.rot(-1, playfield);
     break;
 
-  case 'f':
-    player.drop(playfield);
-    break;
-
   case 'c':
     saveFrame("output.png");
     break;
+  }
 
-  case 'r':
-    hold();
+  switch(keyCode) { // Debugging controls
+  case UP:
+    player.trans(0, -1);
+    break;
+  case DOWN:
+    player.trans(0, 1);
     break;
   }
 }
-
-//int T_gen() { // Exessive calls resulting in flickering next variable
-//  int cur = next;
-//  next = floor(random(7));
-//  return cur;
-//}
 
 int T_gen() {
   int current = next;

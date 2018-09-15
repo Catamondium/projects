@@ -1,19 +1,19 @@
 Player snake;
-PVector scl;
 PVector food = new PVector();
-PVector grid = new PVector(30, 30);
+PVector scl;
+PVector GRID = new PVector(30, 30);
 boolean start;
 
 // snake colouration
-float huetail = 273;
-float huehead = 300;
+float huetail = 273; // purple
+float huehead = 300; // pink
 
 color foodcol = #00FF00;
 
 void setup() {
   size(600, 600);
   colorMode(HSB, 360, 100, 100);
-  scl = new PVector(width / grid.x, height / grid.y);
+  scl = new PVector(width / GRID.x, height / GRID.y);
   snake = new Player();
   pickLocation(food);
 }
@@ -21,10 +21,10 @@ void setup() {
 void draw() {
   frameRate(15);
   background(0);
-  
+
   snake.update();
   snake.show();
-  
+
   fill(foodcol);
   rect(food.x*scl.x, food.y*scl.y, scl.x, scl.y);
 
@@ -33,7 +33,7 @@ void draw() {
 }
 
 void pickLocation(PVector entity) {
-  entity.set(floor(random(grid.x)), floor(random(grid.y)));
+  entity.set(floor(random(GRID.x)), floor(random(GRID.y)));
 }
 
 void lose(Boolean tailDeath) {
@@ -43,7 +43,7 @@ void lose(Boolean tailDeath) {
   Dstr += (score() == 0) ?
     "scoring nothing." : ("scoring " + score());
 
-  println("Gameover:\t" + Dstr);
+  println(Dstr);
 
   pickLocation(food);
   snake = new Player();

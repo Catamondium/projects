@@ -13,14 +13,14 @@ class Tet {
     }
   }
 
-  boolean update(Matrix m) { // if true, replace player
+  boolean update(Matrix m) { // if true, respawn player
     strain(m);
     boolean ret = m.query(clone());
     if (ret) {
       m.commit(clone());
       m.CheckRows(blocks);
     }
-    //trans(0, 1);
+    trans(0, 1);
     return ret;
   }
 

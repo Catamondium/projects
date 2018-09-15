@@ -4,8 +4,8 @@ class Player {
 
   Player() {
     start = true;
-    int x = floor(random(grid.x/2));
-    int y = floor(random(grid.y));
+    int x = floor(random(GRID.x/2));
+    int y = floor(random(GRID.y));
     for (int i = 0; i < 4; i++) {
       PVector append = new PVector(x+i, y);
       body.add(append);
@@ -13,7 +13,7 @@ class Player {
   }
 
   void update() {
-    if (vel.x != 0 || vel.y !=0) {
+    if (vel.x != 0 || vel.y != 0) {
       PVector head = Head().copy();
       head.add(vel);
       body.remove(0);
@@ -34,11 +34,11 @@ class Player {
     fill(255);
   }
 
-  void dir(int x_, int y_) {
-    if (start && x_==-1)
+  void dir(int x, int y) {
+    if (start && x == -1)
       return;
-    else if ((x_ != -vel.x) || (y_ != -vel.y)) { // disable reverse
-      vel.set(x_, y_);
+    else if ((x != -vel.x) || (y != -vel.y)) { // disable reverse
+      vel.set(x, y);
       start = false;
     }
   }
@@ -53,13 +53,13 @@ class Player {
   }
 
   void death() {
-    PVector head = Head();
     if (edges()) { // boundary collision
       lose(false);
       return;
     }
 
-    for (int i = 0; i < body.size()-1; i++) {
+    PVector head = Head();
+    for (int i = 0; i < body.size()-1; i++) { // body collision
       PVector other = body.get(i);
       // tail collision
       if ((head.x == other.x) && (head.y == other.y)) {
@@ -73,15 +73,16 @@ class Player {
     return body.get(body.size()-1);
   }
 
-  Boolean edges() { // collides with boundary
+  Boolean edges() {
     PVector head = Head();
     if (
-      (head.x > grid.x) ||
+      (head.x > GRID.x) ||
       (head.x < 0) ||
-      (head.y > grid.y) ||
+      (head.y > GRID.y) ||
       (head.y < 0)) {
       return true;
     }
+
     return false;
   }
 }
