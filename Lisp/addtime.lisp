@@ -1,12 +1,10 @@
 (defstruct time_c hrs mins)
 
 (defun parse-time (str)
-  (setq index (do ((i 0 (+ i 1)))
-		  ((char= #\: (char str i) ; Split by ':' delimiter
-		(return i) 0))))
+  (setq index (position #\: str))
   (make-time_c
-   :hrs (parse-integer (subseq str 0 (- 1 index)))
-   :mins (parse-integer (subseq str (+ index 2)))))
+   :hrs (parse-integer (subseq str 0 index))
+   :mins (parse-integer (subseq str (+ index 1)))))
 
 (defun calctime (S to_elapse)
   (setq offset (+ (* (time_c-hrs S) 60) (time_c-mins S)))
