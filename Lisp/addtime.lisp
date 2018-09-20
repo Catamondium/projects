@@ -25,7 +25,5 @@
 ; Main
 (setq start (parse-time (pop *args*)))
 (setq elapse (parse-integer (pop *args*)))
-(setq end (calctime start elapse))
 
-(format t "Start: ~S ~@D~%End: ~S~%" start elapse end)
-;(format t "End: ~S~%" end)
+(format t "Start: ~S ~@D~%End: ~S~%" start elapse (calctime start elapse))
