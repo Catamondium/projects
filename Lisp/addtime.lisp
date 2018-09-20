@@ -7,8 +7,8 @@
       :mins (parse-integer (subseq str (+ index 1))))))
 
 (defun calctime (S to_elapse)
-  (let ((offset (+ (* (time_c-hrs S) 60) (time_c-mins S)))
-  (total (+ 10 to_elapse)))
+  (let* ((offset (+ (* (time_c-hrs S) 60) (time_c-mins S)))
+  (total (+ offset to_elapse)))
     (make-time_c
       :hrs (floor (/ total 60))
       :mins (mod total 60))))
