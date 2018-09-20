@@ -4,13 +4,10 @@
        (next 1 (+ cur next)))
       ((= num n) cur)))
 
-;; main()
-(princ "Enter lower bound: ")
-(setq low (read))
-
-(princ "Enter upper bound: ")
-(setq high (read))
+; main()
+(setq low (parse-integer (pop *args*)))
+(setq high (parse-integer (pop *args*)))
 
 (do ((i low (+ 1 i))) ; Iterating part
     ((> i high) i 0)  ; Check part
-  (format t "Fib: ~T~D~T==>~T~D~%" i (fibonacci i))) ; Body
+  (format t "~D~%" (fibonacci i))) ; Body
