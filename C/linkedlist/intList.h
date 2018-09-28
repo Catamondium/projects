@@ -1,10 +1,11 @@
 #pragma once
 #define EMPTYLIST NULL
 /* TODO
- * int push(node **headAddr, const int x);
- * int set(node *head, const int x);
- *
  * fromArray constructor?
+ *
+ * structure-wide arithmetic?
+ * * int map(list, int *func(int));
+ * * int reduce(list, int *func(int, int), int inital);
  */
 
 struct node {
@@ -15,14 +16,21 @@ struct node {
 typedef struct node node;
 typedef struct node* intList;
 
-int length(node *head);
-int sum(node *head);
-int product(node *head);
+// miscellaneous & arithmetic functions
+int length(intList list);
+int sum(intList list);
+int product(intList list);
 
-int insert(node **headAddr, const unsigned int index, const int x);
-int get(node *head, const int index);
-int set(node *head, const int index, const int x);
+// indexed operations
+int insert(intList *list, const unsigned int index, const int x);
+int get(intList list, const int index);
+int set(intList list, const int index, const int x);
+int removeAt(intList *list, const int index);
 
-int pop(node **headAddr);
-int removeAt(node **headAddr, const int index);
-int destroy(node **headAddr);
+// stack operations
+int pop(intList *list);
+// push == insert(list, 0, x)
+
+// constructors/destructors
+int toArray(intList list, int arr[]); // assume correct premade array
+int destroy(intList *list);

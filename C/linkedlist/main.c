@@ -52,8 +52,16 @@ int main() {
 		insert(&list, i, i);
 	}
 
-	printf("\nGenerated list, length 10\n");
+	printf("\nGenerated list, length 11, [0] = 255\n");
+	insert(&list, 0, 255);
+
+	int testArr[length(list)];
+	toArray(list, testArr);
+	printf("Array construction%s", BOUNDARY);
+	for(int i = 0; i < length(list); i++) {
+		printf("Arr[%02d]:\t%d\n", i, testArr[i]);
+	}
 
 	destroy(&list);
-	printf("Destroy:\t%d items remaining\n", length(list));
+	printf("\nDestroy:\t%d items remaining\n", length(list));
 }

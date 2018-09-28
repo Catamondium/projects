@@ -148,3 +148,14 @@ int set(node *head, const int index, const int x) {
 	current->data = x;
 	return 0;
 }
+
+int toArray(node *head, int arr[]) {
+	node *current = head;
+	for(int i = 0; i < length(head); i++) {
+		if(current == NULL)
+			return 1;
+		arr[i] = current->data;
+		current = current->next;
+	}
+	return 0;
+}
