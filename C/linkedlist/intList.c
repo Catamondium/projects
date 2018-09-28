@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 int returnSafe(const int ret) {
+	// exists to convert removed data to new, automatic memory
 	return ret;
 }
 
@@ -64,7 +65,7 @@ int insert(node **headAddr, const unsigned int index, const int x) {
 
 int get(node *head, const int index) {
 	if(head == EMPTYLIST) {
-		fprintf(stderr, "Index OutOfBounds\n");
+		fprintf(stderr, "IndexOutOfBounds\n");
 		exit(-1);
 	}
 	node * current = head;
