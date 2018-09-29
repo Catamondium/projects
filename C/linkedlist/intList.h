@@ -23,13 +23,13 @@ int product(intList list);
 
 // indexed operations
 int insert(intList *list, const unsigned int index, const int x);
-int get(intList list, const int index);
-int set(intList list, const int index, const int x);
-int removeAt(intList *list, const int index);
+int get(intList list, const unsigned int index);
+int set(intList list, const unsigned int index, const int x);
+int removeAt(intList *list, const unsigned int index);
 
 // stack operations
 int pop(intList *list);
-// push == insert(list, 0, x)
+int push(intList *list, const int x);
 
 // constructors/destructors
 int toArray(intList list, int arr[]); // assume correct premade array

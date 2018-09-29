@@ -52,8 +52,8 @@ int main() {
 		insert(&list, i, i);
 	}
 
-	printf("\nGenerated list, length 11, [0] = 255\n");
-	insert(&list, 0, 255);
+	printf("\nGenerated list, length 11, pushed 255\n");
+	push(&list, 255);
 
 	int testArr[length(list)];
 	toArray(list, testArr);

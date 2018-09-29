@@ -63,13 +63,13 @@ int insert(node **headAddr, const unsigned int index, const int x) {
 	return 0;
 }
 
-int get(node *head, const int index) {
+int get(node *head, const unsigned int index) {
 	if(head == EMPTYLIST) {
 		fprintf(stderr, "IndexOutOfBounds\n");
 		exit(-1);
 	}
 	node * current = head;
-	for(int i = 0; i < index; i++) {
+	for(unsigned int i = 0; i < index; i++) {
 		if(current->next == NULL) {
 			fprintf(stderr, "IndexOutOfBounds\n");
 			exit(-1);
@@ -96,14 +96,17 @@ int pop(node **headAddr) {
 	return ret;
 }
 
+int push(node **headAddr, const int x) {
+	return insert(headAddr, 0, x);
+}
 
-int removeAt(node **headAddr, const int index) {
+int removeAt(node **headAddr, const unsigned int index) {
 	if(index == 0) return pop(headAddr);
 
 	int ret;
 
 	node **linker = headAddr;
-	int i = 0;
+	unsigned int i = 0;
 	while(*linker != NULL && i < index-1) {
 		linker=&(*linker)->next;
 		i++;
@@ -135,8 +138,8 @@ int destroy(node **headAddr) {
 	return 0;
 }
 
-int set(node *head, const int index, const int x) {
-	int i = 0;
+int set(node *head, const unsigned int index, const int x) {
+	unsigned int i = 0;
 	node *current = head;
 	while(current != NULL && i < index) {
 		current = current->next;
