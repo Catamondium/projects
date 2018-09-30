@@ -3,6 +3,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <stdbool.h>
+
+int maptest(int x) {
+	return (x > 5)?true:false;
+}
+
+int reducetest(int acc, int x) {
+	return (acc || x)?true:false;
+}
 
 const char *BOUNDARY = "\n----------\n";
 int main() {
@@ -61,6 +70,16 @@ int main() {
 	for(int i = 0; i < length(list); i++) {
 		printf("Arr[%02d]:\t%d\n", i, testArr[i]);
 	}
+
+	printf("\nMap test%s", BOUNDARY);
+	map(list, maptest);
+	for(int i = 0; i < length(list); i++) {
+		int val = get(list, i);
+		printf("[%02d]:\t%d\t%s\n", i, val, (val)?"True":"False");
+	}
+	
+	int red = reduce(list, reducetest, false);
+	printf("RedOR:\t%d\t%s", red, (red)?"True":"False");
 
 	destroy(&list);
 	printf("\nDestroy:\t%d items remaining\n", length(list));

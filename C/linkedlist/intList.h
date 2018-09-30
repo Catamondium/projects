@@ -2,10 +2,6 @@
 #define EMPTYLIST NULL
 /* TODO
  * fromArray constructor?
- *
- * structure-wide arithmetic?
- * * int map(list, int *func(int));
- * * int reduce(list, int *func(int, int), int inital);
  */
 
 struct node {
@@ -15,6 +11,12 @@ struct node {
 
 typedef struct node node;
 typedef struct node* intList;
+
+// reducing function signature
+typedef int (*R_agent)(int/*accumulator*/, int/*current*/);
+
+// mapping function signature
+typedef int (*M_agent)(int/*current*/);
 
 // miscellaneous & arithmetic functions
 int length(intList list);
@@ -30,6 +32,10 @@ int removeAt(intList *list, const unsigned int index);
 // stack operations
 int pop(intList *list);
 int push(intList *list, const int x);
+
+// structure-wide operations
+void map(intList list, M_agent f);
+int reduce(intList list, R_agent f, int init);
 
 // constructors/destructors
 int toArray(intList list, int arr[]); // assume correct premade array

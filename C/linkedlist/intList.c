@@ -126,18 +126,6 @@ int removeAt(node **headAddr, const unsigned int index) {
 	return ret;
 }
 
-int destroy(node **headAddr) {
-	node *current = *headAddr;
-	node *next;
-	while(current != NULL) {
-		next = current->next;
-		free(current);
-		current = next;
-	}
-	*headAddr = NULL;
-	return 0;
-}
-
 int set(node *head, const unsigned int index, const int x) {
 	unsigned int i = 0;
 	node *current = head;
@@ -150,6 +138,36 @@ int set(node *head, const unsigned int index, const int x) {
 		return 1;
 
 	current->data = x;
+	return 0;
+}
+
+int reduce(node *head, R_agent f, int init) {
+	int ret = init;
+	node* current = head;
+	while(current != NULL) {
+		ret = (*f)(init, current->data);
+		current = current->next;
+	}
+	return ret;
+}
+
+void map(node *head, M_agent f) {
+	node *current = head;
+	while(current != NULL) {
+		current->data = (*f)(current->data);
+		current = current->next;
+	}
+}
+
+int destroy(node **headAddr) {
+	node *current = *headAddr;
+	node *next;
+	while(current != NULL) {
+		next = current->next;
+		free(current);
+		current = next;
+	}
+	*headAddr = NULL;
 	return 0;
 }
 
