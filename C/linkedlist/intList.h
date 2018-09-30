@@ -35,7 +35,7 @@ int push(intList *list, const int x);
 
 // structure-wide operations
 void map(intList list, M_agent f);
-int reduce(intList list, R_agent f, int init);
+int reduce(intList list, R_agent f, const int init);
 
 // constructors/destructors
 int toArray(intList list, int arr[]); // assume correct premade array

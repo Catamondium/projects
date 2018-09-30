@@ -5,12 +5,16 @@
 #include <assert.h>
 #include <stdbool.h>
 
-int maptest(int x) {
+int mapfunc(int x) {
 	return (x > 5)?true:false;
 }
 
-int reducetest(int acc, int x) {
+int reduceOR(int acc, int x) {
 	return (acc || x)?true:false;
+}
+
+int reduceAND(int acc, int x) {
+	return (acc && x)?true:false;
 }
 
 const char *BOUNDARY = "\n----------\n";
@@ -48,9 +52,9 @@ int main() {
 	printf("\nRemove[5]:\t%d\n", removeAt(&list, 5));
 	assert(get(list, 5)==6*20);
 	assert(length(list)==10);
-	printf("\nRemoveLast:\t%d\n", removeAt(&list, length(list)-1));
+	printf("RemoveLast:\t%d\n", removeAt(&list, length(list)-1));
 
-	printf("Popping%s", BOUNDARY);
+	printf("\nPopping%s", BOUNDARY);
 	for(int i = 0; length(list) != 0; i++) {
 		printf("[%02d]:\t%d\n", i, pop(&list));
 	}
@@ -61,25 +65,30 @@ int main() {
 		insert(&list, i, i);
 	}
 
-	printf("\nGenerated list, length 11, pushed 255\n");
+	printf("Generated list, length 11, pushed 255\n");
 	push(&list, 255);
 
 	int testArr[length(list)];
 	toArray(list, testArr);
-	printf("Array construction%s", BOUNDARY);
+	printf("\nArray construction%s", BOUNDARY);
 	for(int i = 0; i < length(list); i++) {
 		printf("Arr[%02d]:\t%d\n", i, testArr[i]);
 	}
 
-	printf("\nMap test%s", BOUNDARY);
-	map(list, maptest);
+	printf("\nMapping:\t(x > 5)%s", BOUNDARY);
+	map(list, mapfunc);
 	for(int i = 0; i < length(list); i++) {
 		int val = get(list, i);
-		printf("[%02d]:\t%d\t%s\n", i, val, (val)?"True":"False");
+		printf("[%02d]:\t%d\t%s\n", i, val, (val)?"true":"false");
 	}
 	
-	int red = reduce(list, reducetest, false);
-	printf("RedOR:\t%d\t%s", red, (red)?"True":"False");
+	int red = reduce(list, reduceOR, false);
+	assert(red == true);
+	printf("\nRedOR:\t%d\t%s\n", red, (red)?"true":"false");
+	red = reduce(list, reduceAND, false);
+	assert(red == false);
+	printf("RedAND:\t%d\t%s\n", red, (red)?"true":"false");
+
 
 	destroy(&list);
 	printf("\nDestroy:\t%d items remaining\n", length(list));

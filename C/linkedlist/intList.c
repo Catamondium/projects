@@ -7,6 +7,7 @@ int returnSafe(const int ret) {
 	return ret;
 }
 
+// miscellaneous operations
 int length(node *head) {
 	node *current = head;
 	int ret = 0;
@@ -37,6 +38,28 @@ int product(node *head) {
 	return ret;
 }
 
+// stack operations
+int pop(node **headAddr) {
+	int ret;
+
+	if(*headAddr != EMPTYLIST) {
+		ret = returnSafe((*headAddr)->data);
+		node *tmp = (*headAddr)->next;
+		free(*headAddr);
+		*headAddr = tmp;
+	} else {
+		fprintf(stderr, "Popped from empty list");
+		exit(-1);
+	}
+	
+	return ret;
+}
+
+int push(node **headAddr, const int x) {
+	return insert(headAddr, 0, x);
+}
+
+// indexed operations
 int insert(node **headAddr, const unsigned int index, const int x) {
 	node **current = headAddr;
 	unsigned int i = 0;
@@ -80,24 +103,19 @@ int get(node *head, const unsigned int index) {
 	return current->data;
 }
 
-int pop(node **headAddr) {
-	int ret;
-
-	if(*headAddr != EMPTYLIST) {
-		ret = returnSafe((*headAddr)->data);
-		node *tmp = (*headAddr)->next;
-		free(*headAddr);
-		*headAddr = tmp;
-	} else {
-		fprintf(stderr, "Popped from empty list");
-		exit(-1);
+int set(node *head, const unsigned int index, const int x) {
+	unsigned int i = 0;
+	node *current = head;
+	while(current != NULL && i < index) {
+		current = current->next;
+		i++;
 	}
-	
-	return ret;
-}
 
-int push(node **headAddr, const int x) {
-	return insert(headAddr, 0, x);
+	if(current == NULL)
+		return 1;
+
+	current->data = x;
+	return 0;
 }
 
 int removeAt(node **headAddr, const unsigned int index) {
@@ -126,22 +144,8 @@ int removeAt(node **headAddr, const unsigned int index) {
 	return ret;
 }
 
-int set(node *head, const unsigned int index, const int x) {
-	unsigned int i = 0;
-	node *current = head;
-	while(current != NULL && i < index) {
-		current = current->next;
-		i++;
-	}
-
-	if(current == NULL)
-		return 1;
-
-	current->data = x;
-	return 0;
-}
-
-int reduce(node *head, R_agent f, int init) {
+// structure-wide operations
+int reduce(node *head, R_agent f, const int init) {
 	int ret = init;
 	node* current = head;
 	while(current != NULL) {
@@ -159,6 +163,18 @@ void map(node *head, M_agent f) {
 	}
 }
 
+// constructors/destructors
+int toArray(node *head, int arr[]) {
+	node *current = head;
+	for(int i = 0; i < length(head); i++) {
+		if(current == NULL)
+			return 1;
+		arr[i] = current->data;
+		current = current->next;
+	}
+	return 0;
+}
+
 int destroy(node **headAddr) {
 	node *current = *headAddr;
 	node *next;
@@ -168,16 +184,5 @@ int destroy(node **headAddr) {
 		current = next;
 	}
 	*headAddr = NULL;
-	return 0;
-}
-
-int toArray(node *head, int arr[]) {
-	node *current = head;
-	for(int i = 0; i < length(head); i++) {
-		if(current == NULL)
-			return 1;
-		arr[i] = current->data;
-		current = current->next;
-	}
 	return 0;
 }
