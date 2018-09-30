@@ -145,7 +145,7 @@ int reduce(node *head, R_agent f, int init) {
 	int ret = init;
 	node* current = head;
 	while(current != NULL) {
-		ret = (*f)(init, current->data);
+		ret = (*f)(ret, current->data);
 		current = current->next;
 	}
 	return ret;
