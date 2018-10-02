@@ -24,8 +24,8 @@ int sum(intList list);
 int product(intList list);
 
 // indexed operations
-int insert(intList *list, const unsigned int index, const int x);
-int removeAt(intList *list, const unsigned int index);
+int insert(intList *list, const signed int index, const int x);
+int removeAt(intList *list, const signed int index);
 int get(intList list, const signed int index);
 void set(intList list, const signed int index, const int x);
 

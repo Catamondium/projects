@@ -7,7 +7,8 @@ int returnSafe(const int ret) {
 	return ret;
 }
 
-node * getPointer(node* head, signed int index) {
+// traverse by element
+node * travP1(node* head, signed int index) {
 	index = (index >= 0) ? index : length(head) - index;
 
 	int i = 0;
@@ -23,7 +24,26 @@ node * getPointer(node* head, signed int index) {
 	}
 
 	return current;
-} // Reimplment to return node** ?
+}
+
+// traverse by pointer to next element
+node ** travP2(node **headAddr, signed int index) {
+	index = (index >= 0) ? index : length(*headAddr) - index;
+
+	int i = 0;
+	node **current = headAddr;
+	while (*current != NULL && i < index) {
+		current=&(*current)->next;
+		i++;
+	}
+	
+	if(i != index) {
+		fprintf(stderr, "IndexOutofBounds\n");
+		exit(-1);
+	}
+
+	return current;
+}
 
 // miscellaneous operations
 int length(node *head) {
@@ -78,18 +98,8 @@ int push(node **headAddr, const int x) {
 }
 
 // indexed operations
-int insert(node **headAddr, const unsigned int index, const int x) {
-	node **current = headAddr;
-	unsigned int i = 0;
-	while (*current != NULL && i < index) {
-		current=&(*current)->next;
-		i++;
-	}
-
-	if(i != index) {
-		fprintf(stderr, "IndexOutofBounds\n");
-		exit(-1);
-	}
+int insert(node **headAddr, const signed int index, const int x) {
+	node **current = travP2(headAddr, index);
 
 	node *newElem = (node*)malloc(sizeof(node));
 	if(newElem == NULL) {
@@ -105,29 +115,19 @@ int insert(node **headAddr, const unsigned int index, const int x) {
 }
 
 int get(node *head, const signed int index) {
-	return getPointer(head, index)->data;
+	return travP1(head, index)->data;
 }
 
 void set(node *head, const signed int index, const int x) {
-	getPointer(head, index)->data = x;
+	travP1(head, index)->data = x;
 }
 
-int removeAt(node **headAddr, const unsigned int index) {
+int removeAt(node **headAddr, const signed int index) {
 	if(index == 0) return pop(headAddr);
 
 	int ret;
 
-	node **linker = headAddr;
-	unsigned int i = 0;
-	while(*linker != NULL && i < index-1) {
-		linker=&(*linker)->next;
-		i++;
-	}
-
-	if(i != index-1) {
-		fprintf(stderr, "IndexOutOfBounds\n");
-		exit(-1);
-	}
+	node **linker = travP2(headAddr, index-1);
 
 	node *tmp = (*linker)->next;
 	ret = returnSafe(tmp->data);
