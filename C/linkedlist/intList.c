@@ -7,9 +7,21 @@ int returnSafe(const int ret) {
 	return ret;
 }
 
-// traverse by element
+int stdIndex(node* head, signed int index) {
+	// convert to from-head index form
+	if(index >= 0)
+		return index;
+
+	else if(length(head) == 0)
+		return 0;
+
+	else
+		return length(head) + index;
+}
+
 node * travP1(node* head, signed int index) {
-	index = (index >= 0) ? index : length(head) - index;
+	// traverse by element
+	index = stdIndex(head, index);
 
 	int i = 0;
 	node *current = head;
@@ -26,9 +38,9 @@ node * travP1(node* head, signed int index) {
 	return current;
 }
 
-// traverse by pointer to next element
 node ** travP2(node **headAddr, signed int index) {
-	index = (index >= 0) ? index : length(*headAddr) - index;
+	// traverse by &(*current)->next
+	index = stdIndex(*headAddr, index);
 
 	int i = 0;
 	node **current = headAddr;

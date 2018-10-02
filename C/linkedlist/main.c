@@ -22,7 +22,7 @@ int main() {
 	intList list = EMPTYLIST;
 
 	for(int i = 0; i < 10; i++) {
-		insert(&list, i, i);
+		insert(&list, -1, i);
 	}
 
 	assert(length(list)==10);
