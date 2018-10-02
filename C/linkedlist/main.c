@@ -44,9 +44,9 @@ int main() {
 	}
 
 	printf("\nSetting%s", BOUNDARY);
-	for(int i = 0; i < length(list) +1; i++) {
-		int ret = set(list, i, i*20);
-		printf("[%d]:\t%d\t%s\n", i, i*20, (ret)?"fail":"success");
+	for(int i = 0; i < length(list); i++) {
+		set(list, i, i*20);
+		printf("[%d]:\t%d\n", i, i*20);
 	}
 
 	printf("\nRemove[5]:\t%d\n", removeAt(&list, 5));

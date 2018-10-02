@@ -7,6 +7,24 @@ int returnSafe(const int ret) {
 	return ret;
 }
 
+node * getPointer(node* head, signed int index) {
+	index = (index >= 0) ? index : length(head) - index;
+
+	int i = 0;
+	node *current = head;
+	while(i < index && current != NULL) {
+		current = current->next;
+		i++;
+	}
+
+	if(current == NULL) {
+		fprintf(stderr, "IndexOutofBounds\n");
+		exit(-1);
+	}
+
+	return current;
+} // Reimplment to return node** ?
+
 // miscellaneous operations
 int length(node *head) {
 	node *current = head;
@@ -86,36 +104,12 @@ int insert(node **headAddr, const unsigned int index, const int x) {
 	return 0;
 }
 
-int get(node *head, const unsigned int index) {
-	if(head == EMPTYLIST) {
-		fprintf(stderr, "IndexOutOfBounds\n");
-		exit(-1);
-	}
-	node * current = head;
-	for(unsigned int i = 0; i < index; i++) {
-		if(current->next == NULL) {
-			fprintf(stderr, "IndexOutOfBounds\n");
-			exit(-1);
-		}
-		
-		current = current->next;
-	}
-	return current->data;
+int get(node *head, const signed int index) {
+	return getPointer(head, index)->data;
 }
 
-int set(node *head, const unsigned int index, const int x) {
-	unsigned int i = 0;
-	node *current = head;
-	while(current != NULL && i < index) {
-		current = current->next;
-		i++;
-	}
-
-	if(current == NULL)
-		return 1;
-
-	current->data = x;
-	return 0;
+void set(node *head, const signed int index, const int x) {
+	getPointer(head, index)->data = x;
 }
 
 int removeAt(node **headAddr, const unsigned int index) {

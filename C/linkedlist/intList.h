@@ -25,9 +25,9 @@ int product(intList list);
 
 // indexed operations
 int insert(intList *list, const unsigned int index, const int x);
-int get(intList list, const unsigned int index);
-int set(intList list, const unsigned int index, const int x);
 int removeAt(intList *list, const unsigned int index);
+int get(intList list, const signed int index);
+void set(intList list, const signed int index, const int x);
 
 // stack operations
 int pop(intList *list);
