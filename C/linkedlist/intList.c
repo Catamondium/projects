@@ -65,6 +65,7 @@ node * makenode(const int x) {
 	}
 
 	newElem->data = x;
+	newElem->next = NULL;
 
 	return newElem;
 }
@@ -185,6 +186,51 @@ int toArray(node *head, int arr[]) {
 		current = current->next;
 	}
 	return 0;
+}
+
+node * fromArray(int arr[], const unsigned int arrsize) {
+	node *head = NULL;
+	
+	node **linker = NULL;
+	for(unsigned int i = 0; i < arrsize; i++) {
+		node *newElem = makenode(arr[i]);
+
+		if(i == 0) { // bind heads
+			head = newElem;
+			linker = &head;
+		} else { // bind to tailend
+
+		linker = &(*linker)->next;
+		*linker = newElem;
+		}
+	}
+	return head;
+}
+
+node * copy(node* h_origin) {
+	int init = 1;
+
+	node *h_new = NULL;
+	
+	node **linker = NULL;
+	node *current = h_origin;
+	while(current != NULL) {
+		node *newElem = makenode(current->data);
+
+		if(init) { // bind h_news
+			h_new = newElem;
+			linker = &h_new;
+
+			init = 0;
+		} else { // bind to tailend
+
+		linker = &(*linker)->next;
+		*linker = newElem;
+		}
+
+		current = current->next;
+	}
+	return h_new;
 }
 
 int destroy(node **headAddr) {

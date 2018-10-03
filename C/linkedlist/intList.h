@@ -1,8 +1,5 @@
 #pragma once
 #define EMPTYLIST NULL
-/* TODO
- * fromArray constructor?
- */
 
 struct node {
 	int data;
@@ -38,5 +35,7 @@ void map(intList list, M_agent f);
 int reduce(intList list, R_agent f, const int init);
 
 // constructors/destructors
+intList copy(intList list);
+intList fromArray(int arr[], const unsigned int arrsize);
 int toArray(intList list, int arr[]); // assume correct premade array
 int destroy(intList *list);
