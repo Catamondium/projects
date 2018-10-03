@@ -57,6 +57,18 @@ node ** travP2(node **headAddr, signed int index) {
 	return current;
 }
 
+node * makenode(const int x) {
+	node *newElem = (node*)malloc(sizeof(node));
+	if(newElem == NULL) {
+		fprintf(stderr, "Unable to allocate new element\n");
+		exit(-1);
+	}
+
+	newElem->data = x;
+
+	return newElem;
+}
+
 // miscellaneous operations
 int length(node *head) {
 	node *current = head;
@@ -113,13 +125,7 @@ int push(node **headAddr, const int x) {
 int insert(node **headAddr, const signed int index, const int x) {
 	node **current = travP2(headAddr, index);
 
-	node *newElem = (node*)malloc(sizeof(node));
-	if(newElem == NULL) {
-		fprintf(stderr, "Unable to allocate new element\n");
-		exit(-1);
-	}
-
-	newElem->data = x;
+	node *newElem = makenode(x);
 	newElem->next = *current;
 	*current = newElem;
 
