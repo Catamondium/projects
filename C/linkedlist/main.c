@@ -32,9 +32,10 @@ int main() {
 	}
 
 	assert(length(list)==10);
-	printf("Append 10:\t%d items\n", length(list));
+	printf("Append 10%s", BOUNDARY);
+	printList(list);
 
-	printf("Sum:\t%d\n", sum(list));
+	printf("\nSum:\t%d\n", sum(list));
 	printf("Product:\t%d\n", product(list));
 
 	insert(&list, 5, 9999);

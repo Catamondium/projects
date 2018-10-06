@@ -7,6 +7,14 @@ int returnSafe(const int ret) {
 	return ret;
 }
 
+int add(int a, int b) {
+	return a + b;
+}
+
+int mul(int a, int b) {
+	return a * b;
+}
+
 int stdIndex(node* head, signed int index) {
 	// convert to from-head index form
 	if(index >= 0)
@@ -16,7 +24,8 @@ int stdIndex(node* head, signed int index) {
 		return 0;
 
 	else
-		return length(head) + index;
+		return length(head) + index + 1;
+	// +1 offset for reverse indices
 }
 
 node * travP1(node* head, signed int index) {
@@ -82,23 +91,11 @@ int length(node *head) {
 }
 
 int sum(node *head) {
-	int ret = 0;
-	node *current = head;
-	while(current != NULL) {
-		ret += current->data;
-		current = current->next;
-	}
-	return ret;
+	return reduce(head, add, 0);
 }
 
 int product(node *head) {
-	int ret = 1;
-	node *current = head;
-	while(current != NULL && ret != 0) {
-		ret *= head->data;
-		current = current->next;
-	}
-	return ret;
+	return reduce(head, mul, 1);
 }
 
 // stack operations
