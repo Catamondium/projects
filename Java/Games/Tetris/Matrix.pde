@@ -9,7 +9,7 @@ class Tile {
   void insert(Tile t) {
     if (t.exists) {
       type = t.type;
-      exists = true;
+      exists = true; 
     }
   }
 }
@@ -30,7 +30,7 @@ class Matrix {
 
     tiles = new Tile[w * h];
     for (int i = 0; i < tiles.length; i++) {
-      tiles[i] = new Tile(); // Insure !=null elements for .exists check
+      tiles[i] = new Tile(); // Insure no null elements for .exists check
     }
   }
 
@@ -38,7 +38,7 @@ class Matrix {
     pushStyle();
     noFill();
 
-    stroke(#FF0000);
+    stroke(BORDER);
     rect(origin.x, origin.y, dimentions.x, dimentions.y);
 
     stroke(0);
@@ -83,6 +83,7 @@ class Matrix {
   }
 
   void commit(Tet t) {
+    // Add to matrix
     for (PVector P : t.blocks) {
       tiles[ord(P.x, P.y)].insert(t.type);
     }
@@ -101,6 +102,7 @@ class Matrix {
   // Row/column methods
 
   float dropBy(PVector[] blocks) {
+    // Get vector to drop player by
     FloatList lengths = new FloatList();
     for (PVector B : blocks) {
       for (int y = h; (y > 0) && (y > B.y); y--) {
@@ -123,7 +125,7 @@ class Matrix {
 
     if (toRemove.size() > 0) {
       ClearRows(toRemove);
-      MovRows(toRemove);
+      shiftRows(toRemove);
     }
 
     win(toRemove.size());
@@ -143,7 +145,7 @@ class Matrix {
     }
   }
 
-  void MovRows(FloatList y) {
+  void shiftRows(FloatList y) {
     int start = ord(w - 1, y.min() - 1); // offset x for 0 index
     int mov_by = y.size() * w;
 

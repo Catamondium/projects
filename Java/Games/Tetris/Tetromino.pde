@@ -20,7 +20,9 @@ class Tet {
       m.commit(clone());
       m.CheckRows(blocks);
     }
-    trans(0, 1);
+
+    if (!debug)
+      trans(0, 1);
     return ret;
   }
 
@@ -54,12 +56,14 @@ class Tet {
 
   // Transformation & constraint methods
   void trans(float x, float y) {
+    // Translate by (x, y)
     for (PVector P : blocks) {
       P.add(new PVector(x, y));
     }
   }
 
-  void trans(float x, float y, boolean noClip) { // Collision checked translation
+  void trans(float x, float y, boolean noClip) {
+    // Collision checked trans overload
     if (!noClip && y == 0) {
       if (right_enable && x == +1)
         trans(x, y);
@@ -71,6 +75,30 @@ class Tet {
 
   void drop(Matrix m) {
     trans(0, m.dropBy(blocks));
+  }
+
+  boolean checkbound(PVector P, int w) {
+    // left/right boundary check
+    if (P.x == 0)
+      left_enable = false;
+
+    if (P.x == w - 1)
+      right_enable = false;
+
+    return !(right_enable && left_enable);
+  }
+
+  boolean checkothers(PVector P, Matrix m) {
+    // check for surrounding tiles
+    if (P.y >= 0) { // Array safety, insure on board
+      if (left_enable && m.fetch(P.x - 1, P.y).exists)
+        left_enable = false; // Left-adjacent block
+
+      if (right_enable && m.fetch(P.x + 1, P.y).exists)
+        right_enable = false; // Right-adjacent block
+    }
+
+    return !(right_enable && left_enable);
   }
 
   void strain(Matrix m) {
@@ -86,19 +114,8 @@ class Tet {
       trans(0, (m.h - 1)- ySet.max());
 
     for (PVector P : blocks) {
-      if (P.x == 0) // Left matrix boundary
-        left_enable = false;
-
-      if (P.x == m.w - 1) // Right matrix boundary
-        right_enable = false;
-
-      if (P.y >= 0) { // Array safety, insure on board
-        if (left_enable && m.fetch(P.x - 1, P.y).exists)
-          left_enable = false; // Left-adjacent block
-
-        if (right_enable && m.fetch(P.x + 1, P.y).exists)
-          right_enable = false; // Right-adjacent block
-      }
+      if (checkbound(P, m.w) || checkothers(P, m))
+        break;
     }
   }
 
@@ -122,6 +139,7 @@ class Tet {
   }
 
   void centred_rot(PVector C, int dir, Matrix M) {
+    // Rotate about centre point
     PVector tmpC = C.copy();
     trans(-C.x, -C.y); // translate to (0, 0)
 

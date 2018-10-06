@@ -53,6 +53,7 @@ final int[][][] T_ORDS = { // [7][4][2] lengths
   {4, -2}} // Centre
 };
 
+color BORDER = #FF0000;
 final T_type[] TETS = new T_type[] { // Constants dictionary
   new T_type('I', #00FFFF, T_ORDS[0]), 
   new T_type('O', #FFFF00, T_ORDS[1]), 
@@ -92,7 +93,7 @@ Tet player;
 Matrix playfield;
 int next = T_gen();
 int held = -1; // Default to OutOfBounds index
-boolean hold_enable = true;
+boolean hold_enable = true, debug = true;
 PVector origin;
 PVector dimentions;
 
@@ -105,7 +106,7 @@ void setup() {
 
 void draw() {
   background(0);
-  //frameRate(3); // makes controls very insensitive, or the game cruelly fast
+  //frameRate(5); // makes controls very insensitive, or the game cruelly fast
 
   if (player.above_board() && playfield.query(player))
     lose();
@@ -149,14 +150,15 @@ void keyPressed() {
     break;
   }
 
-  switch(keyCode) { // Debugging controls
-  case UP:
-    player.trans(0, -1);
-    break;
-  case DOWN:
-    player.trans(0, 1);
-    break;
-  }
+  if (debug)
+    switch(keyCode) { // Debugging controls
+    case UP:
+      player.trans(0, -1);
+      break;
+    case DOWN:
+      player.trans(0, 1);
+      break;
+    }
 }
 
 int T_gen() {
