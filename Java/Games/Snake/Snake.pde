@@ -20,16 +20,16 @@ void setup() {
 
 void draw() {
   frameRate(15);
-  background(0);
+    background(0);
 
-  snake.update();
-  snake.show();
+    snake.update();
+    snake.show();
 
-  fill(foodcol);
-  rect(food.x*scl.x, food.y*scl.y, scl.x, scl.y);
+    fill(foodcol);
+    rect(food.x*scl.x, food.y*scl.y, scl.x, scl.y);
 
-  fill(60, 60, 100, 191);
-  text("Score: " + score(), 3, 20);
+    fill(60, 60, 100, 191);
+    text("Score: " + score(), 3, 20);
 }
 
 void pickLocation(PVector entity) {

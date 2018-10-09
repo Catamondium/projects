@@ -1,9 +1,6 @@
 /* TODO
  * * Timings: ticks and check allowances
- * * Visuals:
- * * a Statistics
- * * b Holding block
- * * c Next block // Messed by bug 1
+ * * * meaninful levelling
  *
 /* Coordinate system
  * * 0 1 2 3 4 5 ... 9
@@ -93,7 +90,7 @@ Tet player;
 Matrix playfield;
 int next = T_gen();
 int held = -1; // Default to OutOfBounds index
-boolean hold_enable = true, debug = true;
+boolean hold_enable = true, debug = false;
 PVector origin;
 PVector dimentions;
 
@@ -105,18 +102,21 @@ void setup() {
 }
 
 void draw() {
-  background(0);
-  //frameRate(5); // makes controls very insensitive, or the game cruelly fast
+  // experimental 'tick', effective 10 f/s
+  if (frameCount % 10 == 0) {
+    background(0);
+    //frameRate(5); // makes controls very insensitive, or the game cruelly fast
 
-  if (player.above_board() && playfield.query(player))
-    lose();
+    if (player.above_board() && playfield.query(player))
+      lose();
 
-  else if (player.update(playfield))
-    player = new Tet(T_gen());
+    else if (player.update(playfield))
+      player = new Tet(T_gen());
 
-  player.show(playfield);
-  playfield.show(dimentions);
-  drawstats(width);
+    player.show(playfield);
+    playfield.show(dimentions);
+    drawstats(width);
+  }
 }
 
 void keyPressed() {

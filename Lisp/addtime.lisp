@@ -1,3 +1,6 @@
+(load "~/quicklisp/setup.lisp") ; necessary for quicklisp in CLisp
+(ql:quickload "split-sequence")
+
 (defclass time_c () 
   ((hrs :accessor time-hrs
 	:initarg :hrs
@@ -10,10 +13,10 @@
     (format out "~2,'0D:~2,'0D" (time-hrs obj) (time-mins obj)))
 
 (defun parse-time (str)
-  (let ((index (position #\: str)))
+  (let ((vals (split-sequence:split-sequence #\: str)))
     (make-instance 'time_c
-      :hrs (parse-integer (subseq str 0 index))
-      :mins (parse-integer (subseq str (+ index 1))))))
+      :hrs (parse-integer (pop vals))
+      :mins (parse-integer (pop vals)))))
 
 (defun calctime (S to_elapse)
   (let* ((offset (+ (* (time-hrs S) 60) (time-mins S)))
