@@ -6,6 +6,17 @@ from oauth2client import file, client, tools
 import sys
 import parser
 
+def sig(func):
+    """Print the decorated function's running signature.
+    """
+    name = func.__name__
+    def wrap(*args):
+        argstr = ", ".join(str(arg) for arg in args)
+        result = func(*args)
+        print("%s(%s):\t%s" % (name, argstr, result))
+        return result
+    return wrap
+
 if len(sys.argv) < 3:
     if len(sys.argv) == 1:
         print("Descriptor file needed.")
@@ -25,20 +36,57 @@ if not creds or creds.invalid:
     creds = tools.run_flow(flow, store)
 service = build('calendar', 'v3', http=creds.authorize(Http()))
 
+#### USAGE ####
+def getCal(name):
+    cals = service.calendarList().list(showHidden=True).execute()
+    for entry in cals['items']:
+        if entry['summary'] == name:
+            return entry['id']
 
-#### USAGE #### Extracted from Google quickstart example
-# enumerate calendar id's
-print("Calendars:")
-cals = service.calendarList().list().execute()
-for entry in cals['items']:
-    print("\t%s" % entry['summary'])
+def recurring(cal, data):
+    """Get recurring instances."""
+    events = set()
+    for start, end in data:
+        response = service.events().list(
+                calendarId=cal,
+                timeMin=start, timeMax=end).execute()
+        for event in response['items']:
+            try:
+                event['recurrence']
+                events.add(event['id'])
+            except KeyError:
+                break
+    return events
 
-#for start, end in data: # Gettest events in range
-#    events_result = service.events().list(calendarId="primary",
-#            timeMin=start, timeMax=end).execute()
-#    events = events_result.get('items', [])
-#    if not events:
-#        print('No upcoming events found.')
-#    for event in events:
-#        sEvent = event['start'].get('dateTime', event['start'].get('date'))
-#        print(sEvent, event['summary'])
+def expand(cal, recurring, data):
+    """Expand recurrences to ranged instances"""
+    events = set()
+    for recur in recurring:
+        for start, end in data:
+            response = service.events().instances(
+                    timeMin=start, timeMax=end,
+                    calendarId=cal, eventId=recur).execute()
+            for event in response['items']:
+                events.add(event['id'])
+    return events
+
+def getEvents(cal, data):
+    return expand(cal, recurring(cal, data), data)
+
+def delEvents(calID, events):
+    num = 0
+    for event in events:
+        service.events().delete(calendarId=calID, eventId=event).execute()
+        num += 1
+    return num
+
+if len(sys.argv) < 3: # enumerate calendar id's
+    print("Calendars:")
+    cals = service.calendarList().list(showHidden=True).execute()
+    for entry in cals['items']:
+        print("\t%s" % entry['summary'])
+else: # delete
+    calID = getCal(sys.argv[2])
+    expanded = getEvents(calID, data)
+    deletions = delEvents(calID, expanded)
+    print("%d Events deleted from '%s'" % (deletions, sys.argv[2]))

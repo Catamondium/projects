@@ -4,17 +4,6 @@ from collections import namedtuple
 
 Holiday = namedtuple("Holiday", ["start", "end"])
 
-def sig(func):
-    """Print the decorated function's running signature.
-    """
-    name = func.__name__
-    def wrap(*args):
-        argstr = ", ".join(str(arg) for arg in args)
-        result = func(*args)
-        print("%s(%s):\t%s" % (name, argstr, result))
-        return result
-    return wrap
-
 def printData(data):
     """Clean repr of Holiday tuple."""
     strings = []
