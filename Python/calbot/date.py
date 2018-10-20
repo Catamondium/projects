@@ -18,8 +18,8 @@ def sig(func):
 def printDates():
     strings = []
     for start, end in data:
-        strings.append("(%s)" % (", ".join((str(start), str(end)))))
-    print(",\n".join(strings))
+        strings.append("(%s)" % ", ".join((str(start), str(end))))
+    print("[%s]" % ",\n".join(strings))
 
 def Gtime(event):
     """Convert date() object into Google calendar api UTC-ISO timestamp
@@ -33,7 +33,7 @@ def tparse(string):
     return dt.date(triplet[2], triplet[1], triplet[0])
 
 # main()
-with open("data", "r") as f: # Parse ranges
+with open("holidays", "r") as f: # Parse ranges
     for pair in f.read().split("\n"):
         dates = pair.split(' ')
         if dates[0] == '':
