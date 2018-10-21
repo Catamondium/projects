@@ -4,7 +4,7 @@ from googleapiclient.discovery import build
 from httplib2 import Http
 from oauth2client import file, client, tools
 import sys
-import parser
+from parser import parse
 
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly",
         "https://www.googleapis.com/auth/calendar.events"]
@@ -35,6 +35,8 @@ def getCal(service, name):
     for entry in cals['items']:
         if entry['summary'] == name:
             return entry['id']
+    print("Calendar not found")
+    sys.exit(1)
 
 def printCals(service):
     """Enumerate available calendars."""
@@ -92,7 +94,7 @@ if __name__ == "__main__":
         print("Final arg should be calendar.")
         printCals(service)
     else: # Run deletions
-        data = parser.parse(sys.argv[1])
+        data = parse(sys.argv[1])
         calID = getCal(service, sys.argv[2])
         expanded = getEvents(service, calID, data)
         delEvents(service, calID, expanded)
