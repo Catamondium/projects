@@ -5,21 +5,25 @@ from httplib2 import Http
 from oauth2client import file, client, tools
 import sys
 from parser import parse
+import logging
+
+logging.basicConfig(filename="main.log", filemode="w+")
 
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly",
         "https://www.googleapis.com/auth/calendar.events"]
 
-def sig(func):
-    """Print the decorated function's running signature.
-    """
+def exemptHandler(func):
     name = func.__name__
-    def wrap(*args):
-        argstr = ", ".join(str(arg) for arg in args)
-        result = func(*args)
-        print("%s(%s):\t%s" % (name, argstr, result))
+    def deco(*args):
+        try:
+            result = func(*args)
+        except Exception as e:
+            logger.exception("%s:\t" % name)
+            sys.exit(1)
         return result
-    return wrap
+    return deco
 
+@exemptHandler
 def connect():
     """Connect calendar API."""
     store = file.Storage('token.json')
@@ -27,8 +31,10 @@ def connect():
     if not creds or creds.invalid:
         flow = client.flow_from_clientsecrets('credentials.json', SCOPES)
         creds = tools.run_flow(flow, store) # fails
+    logging.debug("Connection success")
     return build('calendar', 'v3', http=creds.authorize(Http()))
 
+@exemptHandler
 def getCal(service, name):
     """Get calendar ID by name."""
     cals = service.calendarList().list(showHidden=True).execute()
@@ -38,6 +44,7 @@ def getCal(service, name):
     print("Calendar not found")
     sys.exit(1)
 
+@exemptHandler
 def printCals(service):
     """Enumerate available calendars."""
     print("Calendars:")
@@ -45,6 +52,7 @@ def printCals(service):
     for entry in cals['items']:
         print("\t%s" % entry['summary'])
 
+@exemptHandler
 def is_recurring(event):
     """True if recurring event, else False or error.
     """
@@ -54,6 +62,7 @@ def is_recurring(event):
     except KeyError:
         return False
 
+@exemptHandler
 def expand(service, cal, event, holiday):
     """Expand recurring events to instances in data.
     """
@@ -66,6 +75,7 @@ def expand(service, cal, event, holiday):
         events.add(r['id'])
     return events
 
+@exemptHandler
 def getEvents(service, cal, data):
     """Get recurring instances."""
     events = set()
@@ -78,6 +88,7 @@ def getEvents(service, cal, data):
                 events |= expand(service, cal, event['id'], (start, end))
     return events
 
+@exemptHandler
 def delEvents(service, cal, events):
     """Delete events and return number of deletions
     """
