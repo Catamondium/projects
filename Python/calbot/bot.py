@@ -21,6 +21,7 @@ def sig(func):
     return wrap
 
 def connect():
+    """Connect calendar API."""
     store = file.Storage('token.json')
     creds = store.get()
     if not creds or creds.invalid:
@@ -28,37 +29,42 @@ def connect():
         creds = tools.run_flow(flow, store) # fails
     return build('calendar', 'v3', http=creds.authorize(Http()))
 
-def getCal(name, service):
+def getCal(service, name):
+    """Get calendar ID by name."""
     cals = service.calendarList().list(showHidden=True).execute()
     for entry in cals['items']:
         if entry['summary'] == name:
             return entry['id']
 
 def printCals(service):
+    """Enumerate available calendars."""
     print("Calendars:")
     cals = service.calendarList().list(showHidden=True).execute()
     for entry in cals['items']:
         print("\t%s" % entry['summary'])
 
 def is_recurring(event):
+    """True if recurring event, else False or error.
+    """
     try:
         event['recurrence']
         return True
     except KeyError:
         return False
 
-def expand(cal, event, data, service):
-    """Expand recurrences to ranged instances"""
+def expand(service, cal, event, holiday):
+    """Expand recurring events to instances in data.
+    """
     events = set()
-    for start, end in data:
-        response = service.events().instances(
-                timeMin=start, timeMax=end,
-                calendarId=cal, eventId=event).execute()
-        for r in response['items']:
-            events.add(r['id'])
+    start, end = holiday
+    response = service.events().instances(
+            timeMin=start, timeMax=end,
+            calendarId=cal, eventId=event).execute()
+    for r in response['items']:
+        events.add(r['id'])
     return events
 
-def getEvents(cal, data, service):
+def getEvents(service, cal, data):
     """Get recurring instances."""
     events = set()
     for start, end in data:
@@ -67,16 +73,17 @@ def getEvents(cal, data, service):
                 timeMin=start, timeMax=end).execute()
         for event in response['items']:
             if is_recurring(event):
-                events |= expand(cal, event['id'], data, service)
+                events |= expand(service, cal, event['id'], (start, end))
     return events
 
-def delEvents(cal, events, service):
-    """Delete events and return number of deletions"""
+def delEvents(service, cal, events):
+    """Delete events and return number of deletions
+    """
     for event in events:
         service.events().delete(calendarId=cal, eventId=event).execute()
     return len(events)
 
-def main():
+if __name__ == "__main__":
     service = connect()
     if len(sys.argv) < 3:
         if len(sys.argv) == 1:
@@ -86,10 +93,7 @@ def main():
         printCals(service)
     else: # Run deletions
         data = parser.parse(sys.argv[1])
-        calID = getCal(sys.argv[2], service)
-        expanded = getEvents(calID, data, service)
-        deletions = delEvents(calID, expanded, service)
-        print("%d Events deleted from '%s'" % (deletions, sys.argv[2]))
-
-if __name__ == "__main__":
-    main()
+        calID = getCal(service, sys.argv[2])
+        expanded = getEvents(service, calID, data)
+        delEvents(service, calID, expanded)
+        print("%d Events deleted from '%s'" % (len(expanded), sys.argv[2]))
