@@ -1,10 +1,13 @@
+#!./venv/bin/python
 from __future__ import print_function
-import datetime
 from googleapiclient.discovery import build
 from httplib2 import Http
 from oauth2client import file, client, tools
 import sys
 import parser
+
+SCOPES = ["https://www.googleapis.com/auth/calendar.readonly",
+        "https://www.googleapis.com/auth/calendar.events"]
 
 def sig(func):
     """Print the decorated function's running signature.
@@ -17,33 +20,45 @@ def sig(func):
         return result
     return wrap
 
-if len(sys.argv) < 3:
-    if len(sys.argv) == 1:
-        print("Descriptor file needed.")
-        sys.exit(1)
-    print("Final arg should be calendar.")
+def connect():
+    store = file.Storage('token.json')
+    creds = store.get()
+    if not creds or creds.invalid:
+        flow = client.flow_from_clientsecrets('credentials.json', SCOPES)
+        creds = tools.run_flow(flow, store) # fails
+    return build('calendar', 'v3', http=creds.authorize(Http()))
 
-data = parser.parse(sys.argv[1])
-
-#### OAUTH ####
-# If modifying these scopes, delete the file token.json.
-SCOPES = ["https://www.googleapis.com/auth/calendar.readonly",
-        "https://www.googleapis.com/auth/calendar.events"]
-store = file.Storage('token.json')
-creds = store.get()
-if not creds or creds.invalid:
-    flow = client.flow_from_clientsecrets('credentials.json', SCOPES)
-    creds = tools.run_flow(flow, store)
-service = build('calendar', 'v3', http=creds.authorize(Http()))
-
-#### USAGE ####
-def getCal(name):
+def getCal(name, service):
     cals = service.calendarList().list(showHidden=True).execute()
     for entry in cals['items']:
         if entry['summary'] == name:
             return entry['id']
 
-def recurring(cal, data):
+def printCals(service):
+    print("Calendars:")
+    cals = service.calendarList().list(showHidden=True).execute()
+    for entry in cals['items']:
+        print("\t%s" % entry['summary'])
+
+def is_recurring(event):
+    try:
+        event['recurrence']
+        return True
+    except KeyError:
+        return False
+
+def expand(cal, event, data, service):
+    """Expand recurrences to ranged instances"""
+    events = set()
+    for start, end in data:
+        response = service.events().instances(
+                timeMin=start, timeMax=end,
+                calendarId=cal, eventId=event).execute()
+        for r in response['items']:
+            events.add(r['id'])
+    return events
+
+def getEvents(cal, data, service):
     """Get recurring instances."""
     events = set()
     for start, end in data:
@@ -51,42 +66,30 @@ def recurring(cal, data):
                 calendarId=cal,
                 timeMin=start, timeMax=end).execute()
         for event in response['items']:
-            try:
-                event['recurrence']
-                events.add(event['id'])
-            except KeyError:
-                break
+            if is_recurring(event):
+                events |= expand(cal, event['id'], data, service)
     return events
 
-def expand(cal, recurring, data):
-    """Expand recurrences to ranged instances"""
-    events = set()
-    for recur in recurring:
-        for start, end in data:
-            response = service.events().instances(
-                    timeMin=start, timeMax=end,
-                    calendarId=cal, eventId=recur).execute()
-            for event in response['items']:
-                events.add(event['id'])
-    return events
-
-def getEvents(cal, data):
-    return expand(cal, recurring(cal, data), data)
-
-def delEvents(calID, events):
-    num = 0
+def delEvents(cal, events, service):
+    """Delete events and return number of deletions"""
     for event in events:
-        service.events().delete(calendarId=calID, eventId=event).execute()
-        num += 1
-    return num
+        service.events().delete(calendarId=cal, eventId=event).execute()
+    return len(events)
 
-if len(sys.argv) < 3: # enumerate calendar id's
-    print("Calendars:")
-    cals = service.calendarList().list(showHidden=True).execute()
-    for entry in cals['items']:
-        print("\t%s" % entry['summary'])
-else: # delete
-    calID = getCal(sys.argv[2])
-    expanded = getEvents(calID, data)
-    deletions = delEvents(calID, expanded)
-    print("%d Events deleted from '%s'" % (deletions, sys.argv[2]))
+def main():
+    service = connect()
+    if len(sys.argv) < 3:
+        if len(sys.argv) == 1:
+            print("Descriptor file needed.")
+            sys.exit(1)
+        print("Final arg should be calendar.")
+        printCals(service)
+    else: # Run deletions
+        data = parser.parse(sys.argv[1])
+        calID = getCal(sys.argv[2], service)
+        expanded = getEvents(calID, data, service)
+        deletions = delEvents(calID, expanded, service)
+        print("%d Events deleted from '%s'" % (deletions, sys.argv[2]))
+
+if __name__ == "__main__":
+    main()

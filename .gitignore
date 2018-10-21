@@ -6,6 +6,7 @@
 *.ko
 *.obj
 *.elf
+*__pycache__*
 
 # Linker output
 *.ilk
