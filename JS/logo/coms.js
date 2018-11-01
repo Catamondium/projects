@@ -65,7 +65,11 @@ const commands = {
 function eval(tokens) {
 	while(tokens.length != 0) {
 		let com = tokens.shift();
+		if (commands[com]) {
 		tokens = commands[com](tokens);
+		} else {
+			console.error(`Bad command(logo): ${com}`);
+		}
 	}
 }
 
