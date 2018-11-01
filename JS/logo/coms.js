@@ -43,7 +43,7 @@ const commands = {
 		return toks;
 	},
 	
-	'repeat': toks => {
+	'do': toks => {
 		let iters = parseInt(toks.shift());
 		let end = ket(toks); 
 		let block = toks.slice(1, end);
@@ -55,7 +55,7 @@ const commands = {
 		return toks.slice(end+1);;
 	},
 
-	'reset': toks => {
+	'rst': toks => {
 		turtle.show = true;
 		turtle.pen = true;
 		return toks;

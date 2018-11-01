@@ -38,6 +38,6 @@ class Turtle {
  * pen up/down             pu pd
  * left/right rotation     lt rt
  * hide/show turtle        ht st
- * repeat int [ expr ]
- * reset
+ * repeat                  do int [ expr ]
+ * rst                     reset
  */
