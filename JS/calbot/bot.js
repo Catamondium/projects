@@ -1,6 +1,7 @@
 const fs = require('fs');
 const readline = require('readline');
-const {google} = require('googleapis');
+const {google} = require('googleapis'); // {} cast to object
+const parse = require('./parser.js').parse;
 
 // If modifying these scopes, delete token.json.
 const SCOPES = [
@@ -12,7 +13,7 @@ const TOKEN_PATH = 'token.json';
 fs.readFile('credentials.json', (err, content) => {
 	if (err) return console.log('Error loading client secret file:', err);
   // Authorize a client with credentials, then call the Google Calendar API.
-	authorize(JSON.parse(content), listEvents);
+	authorize(JSON.parse(content), main);
 });
 
 /**
@@ -69,7 +70,7 @@ function getAccessToken(oAuth2Client, callback) {
  * Lists the next 10 events on the user's primary calendar.
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-function listEvents(auth) {
+function main(auth) {
 	const calendar = google.calendar({version: 'v3', auth});
 	calendar.events.list({
 		calendarId: 'primary',

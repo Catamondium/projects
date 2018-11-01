@@ -1,39 +1,24 @@
-const readFile = require('fs').readFile;
-const path = 'test';
+const readFileSync = require('fs').readFileSync;
 
-function gdate(ukdate) {
+exports.gdate = function(ukdate) {
 	// DD/MM/YYYY parser
 	let segs = ukdate.split('/');
 	segs = segs.map(n => parseInt(n));
 	return new Date(segs[2], segs[1]-1, segs[0]).toISOString();
 }
 
-/* push fails, objects form successfully.
- * suspected scoping issue
- * splice appending fails to
- * using a Set has same effect
- */
-function parse(file) {
+exports.parse = function(file) {
 	let ret = new Array();
-	let outervar = 25; // XXX scopetest
-	readFile(file, 'utf8', (err, data) => {
-		if (err) throw err;
-		let pairs = data.split('\n');
-		pairs.forEach((pair) => {
-			if (pair != '') {
-				let dates = pair.split(' ');
-				ret.push({
-					start: gdate(dates[0]),
-					end: gdate(dates[1])
-				});
-				console.log(outervar); // Works?
-				ret.push('objpush'); // XXX fail
-			}
-		})
-		ret.push('lamda'); // XXX fail
+	data = readFileSync(file).toString();
+	let pairs = data.split('\n');
+	pairs.forEach((pair) => {
+		if (pair != '') {
+			let dates = pair.split(' ');
+			ret.push({
+				start: exports.gdate(dates[0]),
+				end: exports.gdate(dates[1])
+			});
+		}
 	})
-	ret.push('declscope'); // XXX success
 	return ret;
 }
-
-console.log(parse(path));
