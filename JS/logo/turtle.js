@@ -2,9 +2,9 @@ class Turtle {
 	constructor(x, y, theta, col) {
 		translate(x, y);
 		rotate(theta);
+		this.col = color(col);
 		this.pen = true;
 		this.show = true;
-		this.col = color(col);
 	}
 
 	forward(len) {

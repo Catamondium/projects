@@ -14,8 +14,9 @@ let turtle;
 function setup() {
 	createCanvas(200, 200);
 	angleMode(DEGREES);
-	turtle = new Turtle(100, 100, 0, '#FF0000');
+	turtle = new Turtle(100, 100, -90, '#00FF00');
 	editor = select('#code');
+	editor.input(run);
 	run();
 }
 

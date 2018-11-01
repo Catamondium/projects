@@ -45,14 +45,14 @@ const commands = {
 	
 	'repeat': toks => {
 		let iters = parseInt(toks.shift());
-		let end = toks.indexOf('}')
-		let interior = toks.slice(1, end);
+		let end = ket(toks); 
+		let block = toks.slice(1, end);
 
 		for (let i = 0; i < iters; i++) {
-			eval(interior.slice());
+			eval(block.slice());
 		}
 
-		return toks.slice(end + 1);
+		return toks.slice(end+1);;
 	},
 
 	'reset': toks => {
@@ -66,5 +66,20 @@ function eval(tokens) {
 	while(tokens.length != 0) {
 		let com = tokens.shift();
 		tokens = commands[com](tokens);
+	}
+}
+
+function ket(toks) {
+	let depth = 0;
+
+	for(let i = 0; i < toks.length; i++) {
+		if (toks[i] == '{') {
+			depth++;
+		} else if (toks[i] == '}') {
+			depth--;
+			if (depth == 0) {
+				return i;
+			}
+		}
 	}
 }
