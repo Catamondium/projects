@@ -3,6 +3,8 @@ const readline = require('readline');
 const {google} = require('googleapis'); // {} cast to object
 const parse = require('./parser.js').parse;
 
+const data = parse('test');
+
 // If modifying these scopes, delete token.json.
 const SCOPES = [
 "https://www.googleapis.com/auth/calendar.readonly",
@@ -66,29 +68,51 @@ function getAccessToken(oAuth2Client, callback) {
 	});
 }
 
-/**
- * Lists the next 10 events on the user's primary calendar.
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
+function printCals(api) {
+	console.log("Calendars:");
+	api.calendarList.list({showHidden : true},
+		(err, cals) => {
+			sums = cals.data.items.map(x => x = x.summary)
+			sums.forEach(item => {
+				console.log(`\t${item}`);
+			});
+		}
+	);
+}
+
+function simplify(item) {
+	item = {sum: item.summary,
+		rec: item.reccuring,
+		id: item.id};
+	return item;
+}
+
+function getCal(api, name, callback) {
+	api.calendarList.list({showHidden : true},
+		(err, cals) => {
+			if (err) throw err;
+			data = cals.data.items.map(x => x = simplify(x));
+			let ret;
+			
+			data.some(item => {
+				if (item.sum == name) {
+					ret = item.id;
+					return true
+				}});
+			
+			if (!ret) {
+				console.log("Calendar not found.");
+				printCals(api);
+				process.exit(1);
+			} else
+				callback(api, ret);
+		}
+	);
+}
+
 function main(auth) {
 	const calendar = google.calendar({version: 'v3', auth});
-	calendar.events.list({
-		calendarId: 'primary',
-		timeMin: (new Date()).toISOString(),
-		maxResults: 10,
-		singleEvents: true,
-		orderBy: 'startTime',
-	}, (err, res) => {
-		if (err) return console.log('The API returned an error: ' + err);
-		const events = res.data.items;
-		if (events.length) {
-			console.log('Upcoming 10 events:');
-			events.map((event, i) => {
-				const start = event.start.dateTime || event.start.date;
-				console.log(`${start} - ${event.summary}`);
-			});
-		} else {
-			console.log('No upcoming events found.');
-		}
-	});
+	let calID;
+	getCal(calendar, 'College', getEvents);
+	console.log(calID);
 }
