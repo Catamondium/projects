@@ -72,9 +72,9 @@ function getAccessToken(oAuth2Client, callback) {
 
 function logCals(api) {
 	api.calendarList.list({showHidden : true},
-		(err, cals) => {
+		(err, cals) => { // Never called
 			if (err) throw err;
-			sums = cals.data.items.map(x => x = x.summary)
+			sums = cals.data.items.map(x => x = x.summary);
 			console.log("Calendars:");
 			sums.forEach(item => {
 				console.log(`\t${item}`);
