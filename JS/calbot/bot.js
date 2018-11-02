@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis'); // {} cast to object
@@ -68,11 +70,12 @@ function getAccessToken(oAuth2Client, callback) {
 	});
 }
 
-function printCals(api) {
-	console.log("Calendars:");
+function logCals(api) {
 	api.calendarList.list({showHidden : true},
 		(err, cals) => {
+			if (err) throw err;
 			sums = cals.data.items.map(x => x = x.summary)
+			console.log("Calendars:");
 			sums.forEach(item => {
 				console.log(`\t${item}`);
 			});
@@ -81,38 +84,86 @@ function printCals(api) {
 }
 
 function simplify(item) {
-	item = {sum: item.summary,
-		rec: item.reccuring,
+	ret = {sum: item.summary,
+		rec: item.recurrence,
 		id: item.id};
-	return item;
+	return ret;
 }
 
-function getCal(api, name, callback) {
+function delEvents(api, name, data) {
 	api.calendarList.list({showHidden : true},
 		(err, cals) => {
 			if (err) throw err;
-			data = cals.data.items.map(x => x = simplify(x));
-			let ret;
+			calIDs = cals.data.items.map(x => x = simplify(x));
+			let cal;
 			
-			data.some(item => {
+			calIDs.some(item => {
 				if (item.sum == name) {
-					ret = item.id;
+					cal = item.id;
 					return true
 				}});
 			
-			if (!ret) {
+			if (!cal) {
 				console.log("Calendar not found.");
-				printCals(api);
+				logCals(api);
 				process.exit(1);
 			} else
-				callback(api, ret);
+				getEvents(api, cal, data);
 		}
 	);
 }
 
+function getEvents(api, cal, data) {
+	data.forEach(hol => {
+		api.events.list({
+			calendarId: cal,
+			timeMin: hol.start,
+			timeMax: hol.end},
+			(err, events) => {
+				if (err) throw err;
+				eventIDs =  new Set(events.data.items.map(
+					x => x = simplify(x)));
+				eventIDs.forEach(ev => {
+					if (ev.rec) {
+						expand(api, cal, ev, hol)
+					}
+				})}
+		)})
+}
+
+function expand(api, cal, ev, hol) {
+	api.events.instances({
+		calendarId: cal,
+		eventId: ev.id,
+		timeMin: hol.start,
+		timeMax: hol.end},
+		(err, events) => {
+			if (err) throw err;
+			eventIDs = events.data.items.map(
+				x => x = x.id);
+			del(api, cal, eventIDs);
+		});
+}
+
+function del(api, cal, events) {
+	events.forEach(ev => {
+		api.events.delete({
+			calendarId: cal,
+			eventId: ev});
+	});
+}
+
 function main(auth) {
 	const calendar = google.calendar({version: 'v3', auth});
-	let calID;
-	getCal(calendar, 'College', getEvents);
-	console.log(calID);
+	let args = process.argv.slice(2);
+	if (args.length == 0) {
+		console.log("Usage: ./bot.js spec calendar");
+		process.exit(1);
+	} else if (args.length == 1) {
+		logCals(calendar);
+		process.exit(1);
+	}  else {
+		let dat = parse(args[0]);
+		delEvents(calendar, args[1], dat);
+	}
 }

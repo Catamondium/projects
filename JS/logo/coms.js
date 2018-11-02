@@ -68,7 +68,9 @@ function eval(tokens) {
 		if (commands[com]) {
 		tokens = commands[com](tokens);
 		} else {
-			console.error(`Bad command(logo): ${com}`);
+			let err = `Bad command(logo): ${com}`;
+			createDiv(err);
+			console.error(err);
 		}
 	}
 }
