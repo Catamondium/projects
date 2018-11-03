@@ -1,15 +1,16 @@
 class Turtle {
-	constructor(x, y, theta, col) {
+	constructor(x, y, theta, tcol, strk) {
 		translate(x, y);
 		rotate(theta);
-		this.col = color(col);
+		this.col = color(tcol);
+		this.lin = color(strk);
 		this.pen = true;
 		this.show = true;
 	}
 
 	forward(len) {
 		if(this.pen) {
-			stroke(255);
+			stroke(this.lin);
 			strokeWeight(2);
 			line(0, 0, len, 0);
 		}
@@ -23,7 +24,6 @@ class Turtle {
 	render() {
 		if (this.show) {
 			push()
-			stroke(this.col);
 			noStroke();
 			fill(this.col);
 			triangle(0, -10, 0, 10, 5, 0);

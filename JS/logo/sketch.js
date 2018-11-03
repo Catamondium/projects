@@ -9,21 +9,28 @@ let turtle;
  * hide/show turtle        ht st
  * repeat int { expr }
  * reset
- *
- * TODO
- * * colour input
- * * * turtle
- * * * stroke
  */
 
 function setup() {
+	angleMode(DEGREES);
+
 	win = createCanvas(200, 200);
 	select('#window').child(win);
-	angleMode(DEGREES);
-	turtle = new Turtle(100, 100, -90, '#00FF00');
 	editor = select('#code');
+	lcol = select('#lcol')
+	tcol = select('#tcol');
+
+	lcol.input(spawn);
+	tcol.input(spawn);
 	editor.input(run);
+
+	spawn()
 	run();
+}
+
+function spawn() {
+	turtle = new Turtle(100, 100, -90, tcol.value(), lcol.value());
+	run()
 }
 
 function run() {
