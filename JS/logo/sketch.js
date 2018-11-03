@@ -9,10 +9,16 @@ let turtle;
  * hide/show turtle        ht st
  * repeat int { expr }
  * reset
+ *
+ * TODO
+ * * colour input
+ * * * turtle
+ * * * stroke
  */
 
 function setup() {
-	createCanvas(200, 200);
+	win = createCanvas(200, 200);
+	select('#window').child(win);
 	angleMode(DEGREES);
 	turtle = new Turtle(100, 100, -90, '#00FF00');
 	editor = select('#code');

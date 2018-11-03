@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<link rel="stylesheet" type="text/css"
+			 href="style.css">
 		<meta charset="UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,6 +16,9 @@
 	</head>
 	
 	<body>
+		<div id="window"></div>
 		<textarea id="code" cols="40" rows="5">do 10 { fd 30 rt 36 }</textarea>
+		<button onclick="clearErrs()">Clear</button>
+		<div id="errors"></div>
 	</body>
 </html>

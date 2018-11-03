@@ -69,9 +69,16 @@ function eval(tokens) {
 		tokens = commands[com](tokens);
 		} else {
 			let err = `Bad command(logo): ${com}`;
-			createDiv(err);
+			select('#errors').child(createDiv(err));
 			console.error(err);
 		}
+	}
+}
+
+function clearErrs() {
+	let errDivs = select('#errors').elt.children;
+	for (let i = errDivs.length-1; i >= 0; i--) {
+		errDivs[i].remove()
 	}
 }
 
