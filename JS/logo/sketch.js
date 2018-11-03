@@ -37,7 +37,8 @@ function run() {
 	push();
 	background(0);
 	let code = editor.value();
-	let tokens = code.split(' ');
+	let tokens = code.toLowerCase().split(/\s+/);
+	console.log(tokens);
 	eval(tokens);
 	turtle.render();
 	pop();
