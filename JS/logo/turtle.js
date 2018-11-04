@@ -31,13 +31,3 @@ class Turtle {
 		}
 	}
 }
-
-/* Logo commands
- * -----------------
- * forward/backward        fd bk
- * pen up/down             pu pd
- * left/right rotation     lt rt
- * hide/show turtle        ht st
- * repeat                  do int [ expr ]
- * rst                     reset
- */
