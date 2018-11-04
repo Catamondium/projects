@@ -5,8 +5,6 @@ const readline = require('readline');
 const {google} = require('googleapis'); // {} cast to object
 const parse = require('./parser.js').parse;
 
-const data = parse('test');
-
 // If modifying these scopes, delete token.json.
 const SCOPES = [
 "https://www.googleapis.com/auth/calendar.readonly",
