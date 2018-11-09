@@ -14,7 +14,7 @@ let turtle;
 function setup() {
 	angleMode(DEGREES);
 
-	win = createCanvas(200, 200);
+	win = createCanvas(300, 300);
 	select('#window').child(win);
 	editor = select('#code');
 	lcol = select('#lcol')
@@ -29,7 +29,7 @@ function setup() {
 }
 
 function spawn() {
-	turtle = new Turtle(100, 100, -90, tcol.value(), lcol.value());
+	turtle = new Turtle(150, 150, -90, tcol.value(), lcol.value());
 	run()
 }
 

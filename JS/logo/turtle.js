@@ -12,9 +12,9 @@ class Turtle {
 		if(this.pen) {
 			stroke(this.lin);
 			strokeWeight(2);
-			line(0, 0, len, 0);
+			line(0, 0, len*1.5, 0);
 		}
-		translate(len, 0);
+		translate(len*1.5, 0);
 	}
 
 	right(theta) {
