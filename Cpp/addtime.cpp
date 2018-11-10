@@ -3,7 +3,6 @@
 #include <iomanip> // setw, setfill
 #include <math.h> // floor
 
-// compile with "g++ -std=c++17"
 using namespace std;
 
 class Time {
@@ -23,8 +22,12 @@ Time operator+(const Time lhs, const int rhs) {
 }		
 
 ostream& operator<<(ostream& stream, Time a) {
-	stream << noshowpos << setfill('0') << setw(2) << a.hrs << ':' 
-		<< setw(2) << a.mins;
+	char buf[6];
+	sprintf(buf, "%02d:%02d", a.hrs, a.mins);
+	stream << buf; // c-style format solution
+
+	//stream << noshowpos << setfill('0') << setw(2) << a.hrs << ':' 
+	//	<< setw(2) << a.mins; // c++ format solution
 	return stream;
 }
 
