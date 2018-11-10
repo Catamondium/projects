@@ -23,7 +23,7 @@ int reduceAND(int acc, int x) {
 	return (acc && x)?true:false;
 }
 
-const char *BOUNDARY = "\n----------\n";
+const char *BOUNDARY = "\n===================\n";
 int main() {
 	intList list = EMPTYLIST;
 

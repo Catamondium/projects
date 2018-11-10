@@ -53,7 +53,7 @@ node ** travP2(node **headAddr, signed int index) {
 
 	int i = 0;
 	node **current = headAddr;
-	while (*current != NULL && i < index) {
+	while (i < index && *current != NULL) {
 		current=&(*current)->next;
 		i++;
 	}
