@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <stdbool.h>
+#define BOUNDARY "\n===================\n"
 
 void printList(intList list) {
 	for(int i = 0; i < length(list); i++) {
@@ -23,7 +24,10 @@ int reduceAND(int acc, int x) {
 	return (acc && x)?true:false;
 }
 
-const char *BOUNDARY = "\n===================\n";
+void section(char* str) {
+	printf("%s%s", str, BOUNDARY);
+}
+
 int main() {
 	intList list = EMPTYLIST;
 
@@ -32,7 +36,7 @@ int main() {
 	}
 
 	assert(length(list)==10);
-	printf("Append 10%s", BOUNDARY);
+	section("Append 10");
 	printList(list);
 
 	printf("\nSum:\t%d\n", sum(list));
@@ -45,10 +49,10 @@ int main() {
 	printf("Insert[5]:\t%d items\n", length(list));
 
 
-	printf("\ngetting%s", BOUNDARY);
+	section("\nGetting");
 	printList(list);
 
-	printf("\nsetting%s", BOUNDARY);
+	section("\nSetting");
 	for(int i = 0; i < length(list); i++) {
 		set(list, i, i*20);
 		printf("[%d]:\t%d\n", i, i*20);
@@ -59,7 +63,7 @@ int main() {
 	assert(length(list)==10);
 	printf("removelast:\t%d\n", removeAt(&list, length(list)-1));
 
-	printf("\npopping%s", BOUNDARY);
+	section("\nPopping");
 	for(int i = 0; length(list) != 0; i++) {
 		printf("[%02d]:\t%d\n", i, pop(&list));
 	}
@@ -75,20 +79,20 @@ int main() {
 
 	int testarr[length(list)];
 	toArray(list, testarr);
-	printf("\narray construction%s", BOUNDARY);
+	section("\nArray construction");
 	for(int i = 0; i < length(list); i++) {
 		printf("arr[%02d]:\t%d\n", i, testarr[i]);
 	}
 
 	intList fromArr = fromArray(testarr, length(list));
-	printf("\nfromArray construction%s", BOUNDARY);
+	section("\nFromArray construction");
 	printList(fromArr);
 
-	printf("\ncopy construction%s", BOUNDARY);
+	section("\nCopy construction");
 	intList clone = copy(fromArr);
 	printList(clone);
 
-	printf("\nMapping:\t(x > 5)%s", BOUNDARY);
+	section("\nMapping:\t(x > 5)");
 	map(list, mapfunc);
 	for(int i = 0; i < length(list); i++) {
 		int val = get(list, i);
