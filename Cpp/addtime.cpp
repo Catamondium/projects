@@ -9,10 +9,7 @@ class Time {
 	public:
 		int hrs;
 		int mins;
-		Time(int hrs_, int mins_) {
-			hrs = hrs_;
-			mins = mins_;
-		}
+		Time(int h, int m): hrs(h), mins(m) {}
 };
 
 Time operator+(const Time lhs, const int rhs) {
