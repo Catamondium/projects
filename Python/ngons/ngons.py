@@ -12,19 +12,19 @@ class ngonR:
 
     def draw(self, col_L, col_F):
         length = self.R * 2 * math.sin(math.pi / self.n)
-        t = Turtle()
-        t.color(col_L, col_F)
-        t.pu()
-        t.setpos(.5 * length + self.x,
+        Terry = Turtle()
+        Terry.color(col_L, col_F)
+        Terry.pu()
+        Terry.setpos(.5 * length + self.x,
                 - (self.R**2 - (.5 * length)**2)**.5 + self.y)
-        t.begin_fill()
-        t.pd()
+        Terry.begin_fill()
+        Terry.pd()
         for i in range(0, self.n):
-            t.left(180 - ((1 - (2 / self.n)) * 180))
-            t.forward(length)
-        t.end_fill()
-        t.setpos(self.x, self.y)
-        t.pu()
+            Terry.left(180 - ((1 - (2 / self.n)) * 180))
+            Terry.forward(length)
+        Terry.end_fill()
+        Terry.setpos(self.x, self.y)
+        Terry.pu()
 
 # Main
 bgcolor("black")
