@@ -1,5 +1,7 @@
-#include <math.h> // floor
 #include <stdio.h>
+#include <math.h> // floor
+#include <unistd.h> // getopt, atoi
+#include <stdlib.h> // exit
 
 typedef struct Time {
     unsigned int hrs;
@@ -22,23 +24,44 @@ void sTime(char* ret, const Time t) {
 	return;
 }
 
-int main(int argc, char *argv[]) {
+void usage() {
+        printf("Error:\thh:mm mins expected.\n");
+	printf("Options:\t-v verbose\n");
+	exit(1);
+}
+
+int main(int argc, char **argv) {
     Time start, end;
     char strStart[20], strEnd[20];
     signed int elapse;
+    int c;
+    int verbose = 1; // default to human readable
 
-    if(argc < 3) {
-        printf("Error:\thh:mm mins expected.\n");
-        return 1;
+    while((c = getopt(argc, argv, "v")) != -1) {
+	    switch(c) { // avoids gcc moaning about type issue
+		    case 'v':
+			    verbose = 0;
+			    break;
+		    default:
+			    usage();
+			    break;
+	    }
     }
 
-    sscanf(argv[1], "%u:%u", &start.hrs, &start.mins);
-    sscanf(argv[2], "%d", &elapse);
+    if(argc < 3) {
+	    usage();
+    }
+
+    sscanf(argv[optind++], "%u:%u", &start.hrs, &start.mins);
+    elapse = atoi(argv[optind]);
     end = doElapse(start, elapse);
 
-    sTime(strStart, start);
-    sTime(strEnd, end);
-
-    printf("Start:\t%s\t%+d\nEnd:\t%s\n", strStart, elapse, strEnd);
+    if(verbose) {
+	    sTime(strStart, start);
+	    sTime(strEnd, end);
+	    printf("Start:\t%s\t%+d\nEnd:\t%s\n",
+			    strStart, elapse, strEnd);
+    } else
+	    printf("%d %d\n", end.hrs, end.mins);
     return 0;
 }
