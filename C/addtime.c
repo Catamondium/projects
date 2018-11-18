@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h> // floor
-#include <unistd.h> // getopt, atoi
-#include <stdlib.h> // exit
+#include <unistd.h> // getopt
+#include <stdlib.h> // exit, atoi
 
 typedef struct Time {
     unsigned int hrs;
