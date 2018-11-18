@@ -62,6 +62,6 @@ int main(int argc, char **argv) {
 	    printf("Start:\t%s\t%+d\nEnd:\t%s\n",
 			    strStart, elapse, strEnd);
     } else
-	    printf("%d %d\n", end.hrs, end.mins);
+	    printf("%d:%d\n", end.hrs, end.mins);
     return 0;
 }
