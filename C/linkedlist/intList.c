@@ -15,7 +15,7 @@ int mul(int a, int b) {
 	return a * b;
 }
 
-int stdIndex(node* head, signed int index) {
+int stdIndex(node *head, signed int index) {
 	// convert to from-head index form
 	if(index >= 0)
 		return index;
@@ -28,7 +28,7 @@ int stdIndex(node* head, signed int index) {
 	// +1 offset for reverse indices
 }
 
-node * travP1(node* head, signed int index) {
+node * travP1(node *head, signed int index) {
 	// traverse by element
 	index = stdIndex(head, index);
 
@@ -157,7 +157,7 @@ int removeAt(node **headAddr, const signed int index) {
 // structure-wide operations
 int reduce(node *head, R_agent f, const int init) {
 	int ret = init;
-	node* current = head;
+	node *current = head;
 	while(current != NULL) {
 		ret = (*f)(ret, current->data);
 		current = current->next;
@@ -204,7 +204,7 @@ node * fromArray(int arr[], const unsigned int arrsize) {
 	return head;
 }
 
-node * copy(node* h_origin) {
+node * copy(node *h_origin) {
 	int init = 1;
 
 	node *h_new = NULL;

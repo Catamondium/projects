@@ -19,7 +19,7 @@ Time doElapse(const Time s, const signed int t) {
     return ret;
 }
 
-void sTime(char* ret, const Time t) {
+void sTime(char *ret, const Time t) {
 	sprintf(ret, "%02d:%02d", t.hrs, t.mins);
 }
 

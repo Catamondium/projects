@@ -24,7 +24,7 @@ int reduceAND(int acc, int x) {
 	return (acc && x)?true:false;
 }
 
-void section(char* str) {
+void section(char *str) {
 	printf("%s%s", str, BOUNDARY);
 }
 

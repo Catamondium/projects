@@ -19,7 +19,7 @@ unsigned long fibonacci(unsigned int n) {
 	}
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 	if(argc > 1) {
 		cout.imbue(locale(""));
 		for(unsigned int i = 0; i < atoi(argv[1]); i++) {

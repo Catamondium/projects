@@ -28,7 +28,7 @@ ostream& operator<<(ostream& stream, Time a) {
 	return stream;
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 	if(argc < 3) {
 		cout << "Error:\thh:mm mins expected." << endl;
 		return 1;
