@@ -24,7 +24,7 @@ void sTime(char *ret, const Time t) {
 }
 
 void usage(const char *prog) {
-	printf("Usage: %s [-vh] hh:mm mins_elapse\n", prog);
+	printf("Usage: %s [-qh] hh:mm mins_elapse\n", prog);
 	printf("Options:\n\t-q quietly output end time\n");
 	printf("\t-h print this message and exit\n");
 	exit(1);
