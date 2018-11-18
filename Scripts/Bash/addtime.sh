@@ -17,16 +17,16 @@ function elapse() {
 
 function usage() {
 	printf "Usage: $0 [-vh] hh:mm mins_elapse\n"
-	printf "Options:\n\t-v disable verbosity\n"
+	printf "Options:\n\t-q quietly output end time\n"
 	printf "\t-h print this message and exit\n"
 	exit 1
 }
 
-v=true
-while getopts "vh" c; do
+quiet=false
+while getopts "qh" c; do
 	case "${c}" in
-		v)
-			v=false
+		q)
+			quiet=true
 			;;
 		h | *)
 			usage
@@ -43,7 +43,7 @@ s_hrs=${1%:*} # Delete from ':' onwards
 s_mins=${1#*:} # Delete from ':' backwards
 e_time=$(elapse $s_hrs $s_mins $2)
 
-if $v ; then
+if ! $quiet ; then
 	s_time=$(sTime $s_hrs $s_mins)
 	printf "Start:\t%s\t%+d\nEnd:\t%s\n" $s_time $2 $e_time
 else

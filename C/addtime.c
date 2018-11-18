@@ -25,7 +25,7 @@ void sTime(char *ret, const Time t) {
 
 void usage(const char *prog) {
 	printf("Usage: %s [-vh] hh:mm mins_elapse\n", prog);
-	printf("Options:\n\t-v disable verbosity\n");
+	printf("Options:\n\t-q quietly output end time\n");
 	printf("\t-h print this message and exit\n");
 	exit(1);
 }
@@ -35,12 +35,12 @@ int main(int argc, char **argv) {
     char strStart[20], strEnd[20];
     signed int elapse;
     int c;
-    int verbose = 1; // default to human readable
+    int quiet = 0; // default to human readable
 
-    while((c = getopt(argc, argv, "vh")) != -1) {
+    while((c = getopt(argc, argv, "qh")) != -1) {
 	    switch(c) { // avoids gcc moaning about type issue
-		    case 'v':
-			    verbose = 0;
+		    case 'q':
+			    quiet = 1;
 			    break;
 		    default:
 			    usage(argv[0]);
@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
     elapse = atoi(argv[optind]);
     end = doElapse(start, elapse);
 
-    if(verbose) {
+    if(!quiet) {
 	    sTime(strStart, start);
 	    sTime(strEnd, end);
 	    printf("Start:\t%s\t%+d\nEnd:\t%s\n",
