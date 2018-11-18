@@ -21,12 +21,11 @@ Time doElapse(const Time s, const signed int t) {
 
 void sTime(char* ret, const Time t) {
 	sprintf(ret, "%02d:%02d", t.hrs, t.mins);
-	return;
 }
 
-void usage() {
-        printf("Error:\thh:mm mins expected.\n");
-	printf("Options:\t-v verbose\n");
+void usage(char *prog) {
+	printf("Usage: %s [-v] hh:mm mins_elapse\n", prog);
+	printf("Options: -v disable verbosity\n");
 	exit(1);
 }
 
@@ -43,13 +42,13 @@ int main(int argc, char **argv) {
 			    verbose = 0;
 			    break;
 		    default:
-			    usage();
+			    usage(argv[0]);
 			    break;
 	    }
     }
 
     if(argc < 3) {
-	    usage();
+	    usage(argv[0]);
     }
 
     sscanf(argv[optind++], "%u:%u", &start.hrs, &start.mins);
