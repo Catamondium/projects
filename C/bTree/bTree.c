@@ -1,15 +1,8 @@
+#include "bTree.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
-#include <time.h>
-#define ITEMS 15
-#define RANGE 50
 
-typedef struct node {
-	int data;
-	struct node *lesser;
-	struct node *greater;
-} node;
+// NODE section
 
 node * newNode(int i) {
 	node *newElem = (node*)malloc(sizeof(node));
@@ -29,11 +22,13 @@ node * newNode(int i) {
 void add(node **n, int i) {
 	if(*n == NULL)
 		*n = newNode(i);
+
 	else if((*n)->data < i) {
 		if((*n)->lesser == NULL)
 			(*n)->lesser = newNode(i);
 		else
 			add(&((*n)->lesser), i);
+
 	} else {
 		if((*n)->greater == NULL)
 			(*n)->greater = newNode(i);
@@ -53,16 +48,6 @@ void rm(node *n) {
 	}
 }
 
-void pvisit(node *n) {
-	if(n->lesser != NULL)
-		pvisit(n->lesser);
-
-	printf("%d\n", n->data);
-
-	if(n->greater != NULL)
-		pvisit(n->greater);
-}
-
 void visit(node *n, int *arr, int *index) {
 	if(n->lesser != NULL)
 		visit(n->lesser, arr, index);
@@ -74,10 +59,17 @@ void visit(node *n, int *arr, int *index) {
 		visit(n->greater, arr, index);
 }
 
-typedef struct bTree {
-	node *root;
-	int size;
-} bTree;
+void pvisit(node *n) {
+	if(n->lesser != NULL)
+		pvisit(n->lesser);
+
+	printf("%d\n", n->data);
+
+	if(n->greater != NULL)
+		pvisit(n->greater);
+}
+
+// TREE section
 
 bTree newTree() {
 	bTree ret;
@@ -96,32 +88,14 @@ void destroy(bTree *tree) {
 	tree->size = 0;
 }
 
-void tprint(bTree tree) {
-	if(tree.root != NULL)
-		pvisit(tree.root);
-}
-
 void sort(bTree tree, int *arr) {
 	int i = 0;
 	if(tree.root != NULL)
 		visit(tree.root, arr, &i);
 }
 
-int main() {
-	srand(time(NULL));
-	bTree tree = newTree();
-
-	for(int i = 0; i < ITEMS; i++)
-		insert(&tree, rand() % RANGE);
-
-	assert(tree.size == ITEMS);
-
-	tprint(tree);
-
-	int sorted[tree.size];
-	sort(tree, sorted);
-	for(int i = 0; i < tree.size; i++)
-		printf("tree[%02d]:\t%d\n", i, sorted[i]);
-
-	destroy(&tree);
+void tprint(bTree tree) {
+	if(tree.root != NULL)
+		pvisit(tree.root);
 }
+
