@@ -2,25 +2,35 @@
 #include <math.h> // floor
 #include <unistd.h> // getopt
 #include <stdlib.h> // exit, atoi
+#include <string.h> // strstr
 
 typedef struct Time {
     unsigned int hrs;
     unsigned int mins;
 } Time;
 
+void sTime(char *ret, const Time t) {
+	sprintf(ret, "%02d:%02d", t.hrs, t.mins);
+}
+
+Time pTime(const char *str) {
+	Time ret;
+	sscanf(str, "%u:%u", &ret.hrs, &ret.mins);
+	return ret;
+}
+
+int getMins(Time t) {
+	return (t.hrs * 60) + t.mins;
+}
+
 Time doElapse(const Time s, const signed int t) {
     Time ret;
 
-    int offset = s.hrs * 60 + s.mins;
-    int tot = offset + t;
+    int tot = getMins(s) + t;
     ret.hrs = floor(tot / 60);
     ret.mins = tot % 60;
 
     return ret;
-}
-
-void sTime(char *ret, const Time t) {
-	sprintf(ret, "%02d:%02d", t.hrs, t.mins);
 }
 
 void usage(const char *prog) {
@@ -52,8 +62,11 @@ int main(int argc, char **argv) {
 	    usage(argv[0]);
     }
 
-    sscanf(argv[optind++], "%u:%u", &start.hrs, &start.mins);
-    elapse = atoi(argv[optind]);
+    start = pTime(argv[optind++]);
+
+    elapse = strstr(argv[optind], ":") != NULL ?
+	    getMins(pTime(argv[optind])) : atoi(argv[optind]);
+
     end = doElapse(start, elapse);
 
     if(!quiet) {

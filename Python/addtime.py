@@ -10,24 +10,31 @@ class Time:
                 return "{0:02d}:{1:02d}".format(self.hrs, self.mins)
                 
         def __add__(self, t):
-                offset = self.hrs * 60 + self.mins
-                tot = t + offset
+                tot = t + abs(self);
                 return Time(tot // 60, tot % 60)
 
-if len(sys.argv) < 3:
-    print("Error:\thh:mm mins expected")
-    sys.exit(1)
+        def __abs__(self):
+                return (self.hrs * 60) + self.mins
+
+def pTime(string):
+    Istr = sys.argv[1].split(':')
+    parts = [int(x) for x in Istr]
+    return Time(parts[0], parts[1])
 
 
-Istr = sys.argv[1].split(':')
-Istr.append(sys.argv[2])
+if __name__ == "__main__":
+    if len(sys.argv) < 3:
+        print("Error:\thh:mm mins expected")
+        sys.exit(1)
 
-Istr = [int(x) for x in Istr]
+    start = pTime(sys.argv[1])
 
-start = Time(Istr[0], Istr[1])
-elapse = Istr[2]
+    if ":" in sys.argv[2]:
+        elapse = abs(pTime(sys.argv[2]))
+    else:
+        elapse = int(sys.argv[2])
 
-Ostr_S = "Start:\t{0}".format(start)
-Ostr_E = "End:\t{0}".format(start + elapse)
+    Ostr_S = "Start:\t{0}".format(start)
+    Ostr_E = "End:\t{0}".format(start + elapse)
 
-print("{0}\t{1:+}\n{2}".format(Ostr_S, elapse, Ostr_E))
+    print("{0}\t{1:+}\n{2}".format(Ostr_S, elapse, Ostr_E))

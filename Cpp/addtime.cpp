@@ -10,11 +10,24 @@ class Time {
 		int hrs;
 		int mins;
 		Time(int h, int m): hrs(h), mins(m) {}
+		int abs() const;
+		friend Time pTime(string in);
 };
 
+int Time::abs() const {
+	// Get total minutes represented
+	return (hrs * 60) + mins;
+}
+
+Time pTime(string in) {
+	int delimpos = in.find(':');
+	string str_hrs = in.substr(0, delimpos);
+	string str_mins = in.substr(delimpos + 1, in.length());
+	return Time(stoi(str_hrs), stoi(str_mins));
+}
+
 Time operator+(const Time lhs, const int rhs) {
-	int offset = lhs.hrs * 60 + lhs.mins;
-	int tot = rhs + offset;
+	int tot = lhs.abs() + rhs;
 	return Time(floor(tot / 60), tot % 60);
 }		
 
@@ -33,12 +46,10 @@ int main(int argc, char **argv) {
 		cout << "Error:\thh:mm mins expected." << endl;
 		return 1;
 	}
-	string strT = argv[1];
-	int delimpos = strT.find(':');
-	string str_hrs = strT.substr(0, delimpos);
-	string str_mins = strT.substr(delimpos + 1, strT.length());
-	Time start(stoi(str_hrs), stoi(str_mins));
-	int elapse = atoi(argv[2]);
+
+	Time start = pTime(argv[1]);
+	int elapse = (string(argv[2]).find(':') != string::npos) ?
+		pTime(argv[2]).abs() : atoi(argv[2]);
 	
 	cout << "Start:\t" << start << "\t"
 		<<  showpos << elapse << "\n"

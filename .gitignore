@@ -56,6 +56,10 @@ dkms.conf
 *~*
 *.swp
 
+# Java bytecode
+*.class
+*.jar
+
 # Client secrets
 credentials.json
 token.json
