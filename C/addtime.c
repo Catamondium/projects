@@ -35,6 +35,7 @@ Time doElapse(const Time s, const signed int t) {
 
 void usage(const char *prog) {
 	printf("Usage: %s [-qh] hh:mm mins_elapse\n", prog);
+	printf("Note: if mins_elapse is negative, precede it with '--'\n");
 	printf("Options:\n\t-q quietly output end time\n");
 	printf("\t-h print this message and exit\n");
 	exit(1);
@@ -44,9 +45,9 @@ int main(int argc, char **argv) {
     Time start, end;
     char strStart[20], strEnd[20];
     signed int elapse;
-    int c;
     int quiet = 0; // default to human readable
 
+    int c;
     while((c = getopt(argc, argv, "qh")) != -1) {
 	    switch(c) { // avoids gcc moaning about type issue
 		    case 'q':
