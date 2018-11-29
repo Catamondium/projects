@@ -9,6 +9,7 @@
     <property name="title" translatable="yes">Addtime</property>
     <property name="resizable">False</property>
     <signal name="destroy" handler="destroy" swapped="no"/>
+    <signal name="key-press-event" handler="keypress" swapped="no"/>
     <child>
       <placeholder/>
     </child>

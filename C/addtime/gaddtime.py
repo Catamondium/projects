@@ -39,6 +39,11 @@ def destroy(*args):
     Gtk.main_quit()
     sys.exit();
 
+@register("keypress")
+def keypress(window, event):
+    if event.keyval == 65307: # esc
+        destroy()
+
 @register("validate")
 def validate(*args):
     s_text = start.get_text()
