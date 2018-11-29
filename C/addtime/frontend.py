@@ -23,6 +23,15 @@ def register(handler):
         return func
     return decorator
 
+@register("mvFocus")
+def mvFocus(*args):
+    elapse_entry = builder.get_object("elapse_entry");
+    elapse_entry.grab_focus()
+
+@register("clickBtn")
+def clickBtn(*args):
+    btn.clicked()
+
 @register("destroy")
 def destroy(*args):
     Gtk.main_quit()
@@ -46,7 +55,7 @@ def validate(*args):
 def eval(*args):
     s_text = start.get_text()
     e_text = elapse.get_text()
-    output = subprocess.run(["addtime", "-q", s_text, e_text], stdout=subprocess.PIPE)
+    output = subprocess.run(["addtime", "-q", "--", s_text, e_text], stdout=subprocess.PIPE)
     
     raw = output.stdout.decode('utf-8')
     raw = raw[0:-1]
