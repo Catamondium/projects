@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import socket
 
 clidata = socket.gethostname(), 5007
