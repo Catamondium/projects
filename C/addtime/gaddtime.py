@@ -44,13 +44,10 @@ def validate(*args):
     s_text = start.get_text()
     e_text = elapse.get_text()
 
-    if not any([x == y for x in s_text for y in valids]):
-        disableButton()
-        return
-
-    if not any([x == y for x in e_text for y in valids]):
-        disableButton()
-        return
+    if not any([x == y for x in s_text for y in valids]) \
+            or not any([x == y for x in e_text for y in valids]):
+                disableButton()
+                return
     enableButton()
 
 @register("eval")
