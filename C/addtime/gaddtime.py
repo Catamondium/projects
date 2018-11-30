@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 
 import sys
+import re
 import subprocess
 import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
-valids = "0123456789+-:"
+VALIDS = "0123456789+-:"
 
 # gtk preable
 builder = Gtk.Builder()
@@ -44,16 +45,18 @@ def keypress(window, event):
     if event.keyval == 65307: # esc
         destroy()
 
+def validText(text):
+    if not text:
+        return False
+    else:
+        return re.match("^[0-9:\+\-]+$", text)
+
 @register("validate")
 def validate(*args):
     s_text = start.get_text()
     e_text = elapse.get_text()
 
-    if not any([x == y for x in s_text for y in valids]) \
-            or not any([x == y for x in e_text for y in valids]):
-                disableButton()
-                return
-    enableButton()
+    enableButton(bool(validText(s_text) and validText(e_text)))
 
 @register("eval")
 def eval(*args):
@@ -65,13 +68,14 @@ def eval(*args):
     raw = raw[0:-1]
     result.set_text(raw)
 
-def disableButton():
-    btn.set_sensitive(False)
-    btn.set_relief(Gtk.ReliefStyle.HALF)
-
-def enableButton():
-    btn.set_sensitive(True)
-    btn.set_relief(Gtk.ReliefStyle.NORMAL)
+def enableButton(truth):
+    print(truth)
+    btn.set_sensitive(truth)
+    if truth:
+        relief = Gtk.ReliefStyle.NORMAL 
+    else:
+        relief = Gtk.ReliefStyle.HALF
+    btn.set_relief(relief)
 
 # Further postable
 builder.connect_signals(handlers)
