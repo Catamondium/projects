@@ -10,7 +10,7 @@ unsigned long fibonacci(unsigned int n) {
 		unsigned long first = 0;
 		unsigned long second = 1;
 		unsigned long result;
-		for(unsigned int i = 1; i < n; i++) {
+		for(unsigned int i = 1; i < n; ++i) {
 			result = first + second;
 			first = second;
 			second = result;
@@ -22,7 +22,7 @@ unsigned long fibonacci(unsigned int n) {
 int main(int argc, char **argv) {
 	if(argc > 1) {
 		cout.imbue(locale(""));
-		for(unsigned int i = 0; i < atoi(argv[1]); i++) {
+		for(unsigned int i = 0; i < atoi(argv[1]); ++i) {
 			cout << fibonacci(i) << endl;
 		}
 		return 0;
