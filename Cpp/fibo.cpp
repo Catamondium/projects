@@ -1,8 +1,6 @@
 #include <iostream>
 #include <cstdlib>
 
-using namespace std;
-
 unsigned long fibonacci(unsigned int n) {
 	if(n == 0 || n == 1)
 		return n;
@@ -21,13 +19,13 @@ unsigned long fibonacci(unsigned int n) {
 
 int main(int argc, char **argv) {
 	if(argc > 1) {
-		cout.imbue(locale(""));
+			std::cout.imbue(std::locale(""));
 		for(unsigned int i = 0; i < atoi(argv[1]); ++i) {
-			cout << fibonacci(i) << endl;
+				std::cout << fibonacci(i) << std::endl;
 		}
 		return 0;
 	} else{
-		cout << "Integer argument required\n";
+			std::cout << "Integer argument required\n";
 		return 1;
 	}
 }
