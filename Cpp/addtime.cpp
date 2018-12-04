@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
 
     int c;
     while((c = getopt(argc, argv, "qh")) != -1) {
-	    switch(c) { // avoids gcc moaning about type issue
+	    switch(c) {
 		    case 'q':
 			    quiet = true;
 			    break;

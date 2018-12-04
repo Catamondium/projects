@@ -1,13 +1,3 @@
-class Body {
- Drone data;
- PVector pos;
- 
- Body(Drone D) {
-  data = D;
-  pos = D.pos;
- }
-}
-
 class Rectangle {
   float x, y, w, h;
   Rectangle(float x_, float y_, float w_, float h_) {
@@ -33,6 +23,16 @@ class Rectangle {
 }
 
 class QuadTree {
+  class Body {
+    Drone data;
+    PVector pos;
+
+    Body(Drone D) {
+      data = D;
+      pos = D.pos;
+    }
+  }
+  
   Rectangle boundary;
   int occupancy = 0;
   Body[] bodies;

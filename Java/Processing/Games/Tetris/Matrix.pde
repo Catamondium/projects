@@ -1,20 +1,19 @@
-class Tile {
-  boolean exists = false;
-  int type;
+class Matrix {
+  class Tile {
+    boolean exists = false;
+    int type;
 
-  void insert(int type_) {
-    type = type_;
-    exists = true;
-  }
-  void insert(Tile t) {
-    if (t.exists) {
-      type = t.type;
-      exists = true; 
+    void insert(int type_) {
+      type = type_;
+      exists = true;
+    }
+    void insert(Tile t) {
+      if (t.exists) {
+        type = t.type;
+        exists = true;
+      }
     }
   }
-}
-
-class Matrix {
   Tile[] tiles;
   int w, h;
   PVector origin, dimentions, scale;
