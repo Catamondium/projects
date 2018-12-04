@@ -2,7 +2,6 @@
 #include <iostream> // showpos/noshowpos
 #include <iomanip> // setw, setfill
 #include <unistd.h> // getopt
-#include <cstdio> // printf
 #include <math.h> // floor
 
 class Time {
@@ -33,11 +32,11 @@ Time operator+(const Time lhs, const int rhs) {
 
 void usage(const char *prog) {
 		std::cout <<
-				"Usage: " << prog << " [-qh] hh:mm mins_elapse\n" <<
-				"Note: if mins_elapse is negative, precede it with '--'\n" <<
-				"Options:\n\t-q quietly output end time\n" <<
+				"Usage: " << prog << " [-qh] hh:mm mins_elapse\n"
+				"Note: if mins_elapse is negative, precede it with '--'\n"
+				"Options:\n\t-q quietly output end time\n"
 				"\t-h print this message and exit" << std::endl;
-	exit(1);
+		std::exit(1);
 }
 
 std::ostream& operator<<(std::ostream& stream, Time a) {
