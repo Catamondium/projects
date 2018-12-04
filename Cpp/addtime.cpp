@@ -4,8 +4,7 @@
 #include <unistd.h> // getopt
 #include <math.h> // floor
 
-class Time {
-	public:
+struct Time {
 		int hrs;
 		int mins;
 		Time(int h, int m): hrs(h), mins(m) {}
