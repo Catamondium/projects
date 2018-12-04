@@ -1,6 +1,8 @@
 #include <string>
 #include <iostream> // showpos/noshowpos
 #include <iomanip> // setw, setfill
+#include <unistd.h> // getopt
+#include <cstdio> // printf
 #include <math.h> // floor
 
 class Time {
@@ -29,6 +31,15 @@ Time operator+(const Time lhs, const int rhs) {
 	return Time(floor(tot / 60), tot % 60);
 }		
 
+void usage(const char *prog) {
+		std::cout <<
+				"Usage: " << prog << " [-qh] hh:mm mins_elapse\n" <<
+				"Note: if mins_elapse is negative, precede it with '--'\n" <<
+				"Options:\n\t-q quietly output end time\n" <<
+				"\t-h print this message and exit" << std::endl;
+	exit(1);
+}
+
 std::ostream& operator<<(std::ostream& stream, Time a) {
 	char buf[1000];
 	sprintf(buf, "%02d:%02d", a.hrs, a.mins);
@@ -40,17 +51,35 @@ std::ostream& operator<<(std::ostream& stream, Time a) {
 }
 
 int main(int argc, char **argv) {
+    bool quiet = false; // default to human readable
+
+    int c;
+    while((c = getopt(argc, argv, "qh")) != -1) {
+	    switch(c) { // avoids gcc moaning about type issue
+		    case 'q':
+			    quiet = true;
+			    break;
+		    default:
+			    usage(argv[0]);
+			    break;
+	    }
+    }
+
 	if(argc < 3) {
-			std::cout << "Error:\thh:mm mins expected." << std::endl;
-		return 1;
+			usage(argv[0]);
 	}
 
-	Time start = pTime(argv[1]);
-	int elapse = (std::string(argv[2]).find(':') != std::string::npos) ?
-		pTime(argv[2]).abs() : atoi(argv[2]);
+	Time start = pTime(argv[optind++]);
+	int elapse = (std::string(argv[optind]).find(':') != std::string::npos) ?
+		pTime(argv[optind]).abs() : atoi(argv[optind]);
 	
-	std::cout << "Start:\t" << start << "\t"
-		<<  std::showpos << elapse << "\n"
-		<< "End:\t" << start + elapse << std::endl;
+	Time end = start + elapse;
+	if(!quiet) {
+			std::cout << "Start:\t" << start << "\t"
+				<<  std::showpos << elapse << "\n"
+				<< "End:\t" << end << std::endl;
+	} else
+			std::cout << end << std::endl;
+
 	return 0;
 }

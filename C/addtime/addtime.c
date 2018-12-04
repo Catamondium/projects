@@ -77,5 +77,6 @@ int main(int argc, char **argv) {
 			    strStart, elapse, strEnd);
     } else
 	    printf("%02d:%02d\n", end.hrs, end.mins);
+
     return 0;
 }
