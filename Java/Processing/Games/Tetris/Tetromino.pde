@@ -64,10 +64,10 @@ class Tet {
 
   void trans(float x, float y, boolean noClip) {
     // Collision checked trans overload
-      if ((!noClip && y == 0)
+    if ((!noClip && y == 0)
       && ((right_enable && x == +1)
       || (left_enable && x == -1)))
-        trans(x, y);
+      trans(x, y);
   }
 
   void drop(Matrix m) {
@@ -76,11 +76,8 @@ class Tet {
 
   boolean checkbound(PVector P, int w) {
     // left/right boundary check
-    if (P.x == 0)
-      left_enable = false;
-
-    if (P.x == w - 1)
-      right_enable = false;
+    if (P.x == 0) left_enable = false;
+    if (P.x == w - 1) right_enable = false;
 
     return !(right_enable && left_enable);
   }

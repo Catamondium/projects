@@ -14,6 +14,7 @@ class Matrix {
       }
     }
   }
+  
   Tile[] tiles;
   int w, h;
   PVector origin, dimentions, scale;

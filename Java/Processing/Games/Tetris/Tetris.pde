@@ -110,8 +110,7 @@ void draw() {
     if (player.above_board() && playfield.query(player))
       lose();
 
-    else if (player.update(playfield))
-      player = new Tet(T_gen());
+    else if (player.update(playfield)) player = new Tet(T_gen());
 
     player.show(playfield);
     playfield.show(dimentions);
