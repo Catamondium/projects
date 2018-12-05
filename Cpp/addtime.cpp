@@ -44,7 +44,7 @@ std::ostream& operator<<(std::ostream& stream, Time a) {
 	stream << buf; // c-style format solution
 		
 	//stream << std::noshowpos << std::setfill('0') << std::setw(2) << a.hrs << ':' 
-	//		<< std::setw(2) << a.mins; // c++ format solution
+	//	<< std::setw(2) << a.mins; // c++ format solution
 
 	return stream;
 }
