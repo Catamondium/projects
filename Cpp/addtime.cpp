@@ -31,10 +31,10 @@ Time operator+(const Time lhs, const int rhs) {
 
 void usage(const char *prog) {
 	std::cout <<
-			"Usage: " << prog << " [-qh] hh:mm mins_elapse\n"
-			"Note: if mins_elapse is negative, precede it with '--'\n"
-			"Options:\n\t-q quietly output end time\n"
-			"\t-h print this message and exit" << std::endl;
+		"Usage: " << prog << " [-qh] hh:mm mins_elapse\n"
+		"Note: if mins_elapse is negative, precede it with '--'\n"
+		"Options:\n\t-q quietly output end time\n"
+		"\t-h print this message and exit" << std::endl;
 	std::exit(1);
 }
 
@@ -54,14 +54,14 @@ int main(int argc, char **argv) {
 		
 	int c;
 	while((c = getopt(argc, argv, "qh")) != -1) {
-			switch(c) {
-					case 'q':
-							quiet = true;
-							break;
-					default:
-							usage(argv[0]);
-							break;
-			}
+		switch(c) {
+			case 'q':
+				quiet = true;
+				break;
+			default:
+				usage(argv[0]);
+				break;
+		}
 	}
 		
 	if(argc < 3) usage(argv[0]);
@@ -72,11 +72,11 @@ int main(int argc, char **argv) {
 		
 	Time end = start + elapse;
 	if(!quiet) {
-			std::cout << "Start:\t" << start << "\t"
-					<<  std::showpos << elapse <<
-					"\nEnd:\t" << end << std::endl;
+		std::cout << "Start:\t" << start << "\t"
+			<<  std::showpos << elapse <<
+			"\nEnd:\t" << end << std::endl;
 	} else
-			std::cout << end << std::endl;
+		std::cout << end << std::endl;
 		
 	return 0;
 }
