@@ -5,11 +5,11 @@
 #include <math.h> // floor
 
 struct Time {
-		int hrs;
-		int mins;
-		Time(int h, int m): hrs(h), mins(m) {}
-		int abs() const;
-		friend Time pTime(std::string in);
+	int hrs;
+	int mins;
+	Time(int h, int m): hrs(h), mins(m) {}
+	int abs() const;
+	friend Time pTime(std::string in);
 };
 
 int Time::abs() const {
@@ -30,27 +30,28 @@ Time operator+(const Time lhs, const int rhs) {
 }		
 
 void usage(const char *prog) {
-		std::cout <<
-				"Usage: " << prog << " [-qh] hh:mm mins_elapse\n"
-				"Note: if mins_elapse is negative, precede it with '--'\n"
-				"Options:\n\t-q quietly output end time\n"
-				"\t-h print this message and exit" << std::endl;
-		std::exit(1);
+	std::cout <<
+			"Usage: " << prog << " [-qh] hh:mm mins_elapse\n"
+			"Note: if mins_elapse is negative, precede it with '--'\n"
+			"Options:\n\t-q quietly output end time\n"
+			"\t-h print this message and exit" << std::endl;
+	std::exit(1);
 }
 
 std::ostream& operator<<(std::ostream& stream, Time a) {
 	char buf[1000];
 	sprintf(buf, "%02d:%02d", a.hrs, a.mins);
 	stream << buf; // c-style format solution
-
+		
 	//stream << std::noshowpos << std::setfill('0') << std::setw(2) << a.hrs << ':' 
 	//		<< std::setw(2) << a.mins; // c++ format solution
+
 	return stream;
 }
 
 int main(int argc, char **argv) {
-    bool quiet = false; // default to human readable
-	
+	bool quiet = false; // default to human readable
+		
 	int c;
 	while((c = getopt(argc, argv, "qh")) != -1) {
 			switch(c) {
@@ -62,20 +63,20 @@ int main(int argc, char **argv) {
 							break;
 			}
 	}
-
+		
 	if(argc < 3) usage(argv[0]);
-
+		
 	Time start = pTime(argv[optind++]);
 	int elapse = (std::string(argv[optind]).find(':') != std::string::npos) ?
 		pTime(argv[optind]).abs() : atoi(argv[optind]);
-	
+		
 	Time end = start + elapse;
 	if(!quiet) {
 			std::cout << "Start:\t" << start << "\t"
-				<<  std::showpos << elapse <<
-				"\nEnd:\t" << end << std::endl;
+					<<  std::showpos << elapse <<
+					"\nEnd:\t" << end << std::endl;
 	} else
 			std::cout << end << std::endl;
-
+		
 	return 0;
 }
