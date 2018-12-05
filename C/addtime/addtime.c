@@ -59,9 +59,7 @@ int main(int argc, char **argv) {
 	    }
     }
 
-    if(argc < 3) {
-	    usage(argv[0]);
-    }
+    if(argc < 3) usage(argv[0]);
 
     start = pTime(argv[optind++]);
 

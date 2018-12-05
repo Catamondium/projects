@@ -50,22 +50,20 @@ std::ostream& operator<<(std::ostream& stream, Time a) {
 
 int main(int argc, char **argv) {
     bool quiet = false; // default to human readable
-
-    int c;
-    while((c = getopt(argc, argv, "qh")) != -1) {
-	    switch(c) {
-		    case 'q':
-			    quiet = true;
-			    break;
-		    default:
-			    usage(argv[0]);
-			    break;
-	    }
-    }
-
-	if(argc < 3) {
-			usage(argv[0]);
+	
+	int c;
+	while((c = getopt(argc, argv, "qh")) != -1) {
+			switch(c) {
+					case 'q':
+							quiet = true;
+							break;
+					default:
+							usage(argv[0]);
+							break;
+			}
 	}
+
+	if(argc < 3) usage(argv[0]);
 
 	Time start = pTime(argv[optind++]);
 	int elapse = (std::string(argv[optind]).find(':') != std::string::npos) ?
@@ -74,8 +72,8 @@ int main(int argc, char **argv) {
 	Time end = start + elapse;
 	if(!quiet) {
 			std::cout << "Start:\t" << start << "\t"
-				<<  std::showpos << elapse << "\n"
-				<< "End:\t" << end << std::endl;
+				<<  std::showpos << elapse <<
+				"\nEnd:\t" << end << std::endl;
 	} else
 			std::cout << end << std::endl;
 
