@@ -17,15 +17,16 @@ int mul(int a, int b) {
 
 int stdIndex(node *head, signed int index) {
 	// convert to from-head index form
+	
+	unsigned int len = length(head);
 	if(index >= 0)
 		return index;
 
-	else if(length(head) == 0)
+	else if(len == 0)
 		return 0;
 
 	else
-		return length(head) + index + 1;
-	// +1 offset for reverse indices
+		return len-1; // append for all -ve indices
 }
 
 node * travP1(node *head, signed int index) {
@@ -80,7 +81,7 @@ node * makenode(const int x) {
 }
 
 // miscellaneous operations
-int length(node *head) {
+unsigned int length(node *head) {
 	node *current = head;
 	int ret = 0;
 	while(current != NULL) {
@@ -176,7 +177,7 @@ void map(node *head, M_agent f) {
 // constructors/destructors
 int toArray(node *head, int arr[]) {
 	node *current = head;
-	for(int i = 0; i < length(head); i++) {
+	for(unsigned int i = 0; i < length(head); i++) {
 		if(current == NULL)
 			return 1;
 		arr[i] = current->data;

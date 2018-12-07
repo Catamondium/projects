@@ -16,7 +16,7 @@ typedef int (*R_agent)(int/*accumulator*/, int/*current*/);
 typedef int (*M_agent)(int/*current*/);
 
 // miscellaneous & arithmetic functions
-int length(intList list);
+unsigned int length(intList list);
 int sum(intList list);
 int product(intList list);
 
