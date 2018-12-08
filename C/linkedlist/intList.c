@@ -67,7 +67,7 @@ node ** travP2(node **headAddr, signed int index) {
 	return current;
 }
 
-node * makenode(const int x) {
+node * makeNode(const int x) {
 	node *newElem = (node*)malloc(sizeof(node));
 	if(newElem == NULL) {
 		fprintf(stderr, "Unable to allocate new element\n");
@@ -124,7 +124,7 @@ int push(node **headAddr, const int x) {
 int insert(node **headAddr, const signed int index, const int x) {
 	node **current = travP2(headAddr, index);
 
-	node *newElem = makenode(x);
+	node *newElem = makeNode(x);
 	newElem->next = *current;
 	*current = newElem;
 
@@ -191,7 +191,7 @@ node * fromArray(int arr[], const unsigned int arrsize) {
 	
 	node **linker = NULL;
 	for(unsigned int i = 0; i < arrsize; i++) {
-		node *newElem = makenode(arr[i]);
+		node *newElem = makeNode(arr[i]);
 
 		if(i == 0) { // bind heads
 			head = newElem;
@@ -213,7 +213,7 @@ node * copy(node *h_origin) {
 	node **linker = NULL;
 	node *current = h_origin;
 	while(current != NULL) {
-		node *newElem = makenode(current->data);
+		node *newElem = makeNode(current->data);
 
 		if(init) { // bind h_news
 			h_new = newElem;
