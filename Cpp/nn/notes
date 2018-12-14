@@ -1,0 +1,7 @@
+%Note
+Get Note unmarshalling functioning.
+%Due 25/12/2018
+%message
+Get nn capable of unmarshalling this file,
+current system idea involves using an automata to parse line by line.
+Given the possibly massive size of these arbitrary text fields, it's probably preferable to loading the whole file and splitting by delimiters.
