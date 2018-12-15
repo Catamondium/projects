@@ -1,12 +1,18 @@
 #include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <ctime>
-#include <algorithm> // transform, lamda?
-#include <cctype> // tolower??
-#include <locale> // tolower, isspace
+#include <fstream> //  PARSE     ifstream
+#include <ctime> //    NOTE      tm time_t
+#include <algorithm> //PARSE     transform, find_if
+#include <cctype> //   PARSE     tolower              ??
+#include <locale> //   PARSE     tolower, isspace     ??
+#include <utility> //  PARSE     pair
 
+/* TODO
+ * extract parsing stuff into lib
+ * extract Note into lib
+ * implement argv IO
+ * implement interactive IO
+ * notification system
+ */
 
 class Note {
 	std::string heading;
@@ -58,14 +64,14 @@ Keyword fEnum(std::string s) {
 	}
 }
 
-Keyword getkwd(std::string line, bool eof) {
+std::pair<Keyword, int> getkwd(std::string line) {
 	std::size_t fPos;
-	if(eof || line.substr(0, 2) == "##")
-		return EOE;
+	if(line.substr(0, 2) == "##")
+		return std::pair<Keyword, int>(EOE, -1);
 	else if ((fPos = line.find(":")) != std::string::npos)
-		return fEnum(line.substr(0, fPos));
+		return std::pair<Keyword, int>(fEnum(line.substr(0, fPos)), fPos+1);
 	
-	return MSG;
+	return std::pair<Keyword, int>(MSG, -1);
 }
 ///////
 int main(int argc, char** argv) {
@@ -74,14 +80,15 @@ int main(int argc, char** argv) {
 	std::ifstream file("notes");
 	size_t n = 0;
 	while(std::getline(file, line)) {
-		switch(getkwd(line, file.eof())) {
+		std::pair<Keyword, int> v = getkwd(line);
+		switch(v.first) {
 			case HEADING: {
-				std::string value = trim(line.substr(8));
+				std::string value = trim(line.substr(v.second));
 				std::cout << "Head:\t" << value << std::endl;
 						  }
 				break;
 			case DUE: {
-				std::string sDue = trim(line.substr(4));
+				std::string sDue = trim(line.substr(v.second));
 				std::cout << "Due:\t" <<  sDue << std::endl;
 					  }
 				break;
