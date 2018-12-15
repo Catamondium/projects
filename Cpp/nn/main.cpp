@@ -1,6 +1,9 @@
 #include <iostream>
+#include <optional> // BOTH      optional
+
+#include <ctime> //    NOTE      tm, time_t
+
 #include <fstream> //  PARSE     ifstream
-#include <ctime> //    NOTE      tm time_t
 #include <algorithm> //PARSE     transform, find_if
 #include <cctype> //   PARSE     tolower              ??
 #include <locale> //   PARSE     tolower, isspace     ??
@@ -16,16 +19,22 @@
 
 class Note {
 	std::string heading;
-	std::tm *dueTime;
-	std::string msg;
+	std::optional<std::tm*> dueTime;
+	std::optional<std::string> msg;
 
 	public:
-	Note(std::string heading, std::tm *dueTime, std::string msg):
-		heading(heading), dueTime(dueTime), msg(msg) {}
+	Note(
+			std::string heading,
+			std::optional<std::tm*> dueTime={},
+			std::optional<std::string> msg={}):
+		heading(heading) {
+			dueTime = dueTime;
+			msg = msg;
+		}
 
 	std::string getHeading() { return heading; }
-	std::string getMsg() { return msg; }
-	std::tm* getDue() { return dueTime; }
+	std::optional<std::tm*> getDue() { return dueTime; }
+	std::optional<std::string> getMsg() { return msg; }
 };
 
 std::tm* tm_today() {
