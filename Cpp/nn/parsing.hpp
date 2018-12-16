@@ -4,5 +4,5 @@
 
 namespace parsing {
 	std::string trim(std::string);
-	std::vector<Note::Note> parse(std::string);
+	std::vector<Note> parse(std::string);
 }

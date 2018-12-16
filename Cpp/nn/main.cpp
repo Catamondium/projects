@@ -13,5 +13,15 @@
  */
 
 int main(int argc, char **argv) {
-	parsing::parse("notes");
+	if(argc < 2) {
+		std::cout << "notes file required" << std::endl;
+		std::exit(1);
+	}
+
+	std::vector<Note> notes = parsing::parse(argv[1]);
+
+	for(auto note : notes) {
+		std::cout << "Heading:\t" << note.getHeading() << std::endl;
+		std::cout << "\"" << parsing::trim(note.getMsg().value()) << "\"" << std::endl;
+	}
 }

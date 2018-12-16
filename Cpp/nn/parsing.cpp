@@ -50,8 +50,8 @@ namespace parsing {
 		return std::pair<Keyword, int>(MSG, -1);
 	}
 
-	std::vector<Note::Note> parse(std::string fname) {
-		std::vector<Note::Note> notes;
+	std::vector<Note> parse(std::string fname) {
+		std::vector<Note> notes;
 
 		std::string line;
 		std::ifstream file(fname);
@@ -71,21 +71,22 @@ namespace parsing {
 				//	break;
 				case EOE:
 					if(head)
-						notes.push_back(Note::Note(head.value(), msg));
+						notes.push_back(Note(head.value(), msg));
 					head.reset();
 					msg.reset();
 					break;
 				default:
 					line += "\n";
 					if(msg)
-						msg.value() += line;
+						msg = msg.value() + line;
 					else
 						msg = line;
+					break;
 			}
 		}
 
 		if(head)
-			notes.push_back(Note::Note(head.value(), msg));
+			notes.push_back(Note(head.value(), msg));
 
 		return notes;
 	}
