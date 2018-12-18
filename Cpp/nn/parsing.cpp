@@ -1,15 +1,18 @@
 #include <vector>
+#include <map>
 #include <optional>
 #include <fstream>   // ifstream
 #include <algorithm> // transform, find_if
 #include <cctype>    // tolower              ??
 #include <locale>    // tolower, isspace     ??
 #include <utility>   // pair
+#include <chrono>    // timepoint
 #include <iostream>
 #include "note.hpp"
 
+
 namespace parsing {
-	enum Keyword { HEADING,/* DUE,*/ EOE, MSG};
+	enum Keyword { HEADING, /*EVENT,*/ EOE, BODY};
 
 	std::string trim(std::string s) {
 		s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) {
@@ -30,13 +33,11 @@ namespace parsing {
 		if(s == "heading")
 			return HEADING;
 
-		//else if(s == "due")
-		//	return DUE;
+		//else if(s == "event")
+		//	return EVENT;
 
-		else {
-			std::cerr << "ERROR: bad field name\n" << std::endl;
-			std::exit(1);
-		}
+		else
+			return BODY;
 	}
 
 	std::pair<Keyword, int> getkwd(std::string line) {
@@ -47,8 +48,13 @@ namespace parsing {
 		else if ((fPos = line.find(":")) != std::string::npos)
 			return std::pair<Keyword, int>(fEnum(line.substr(0, fPos)), fPos+1);
 		
-		return std::pair<Keyword, int>(MSG, -1);
+		return std::pair<Keyword, int>(BODY, -1);
 	}
+
+	/*makeEvent(std::string value) {
+
+		return std::chrono::system_clock::now();
+	}*/
 
 	std::vector<Note> parse(std::string fname) {
 		std::vector<Note> notes;
@@ -57,36 +63,35 @@ namespace parsing {
 		std::ifstream file(fname);
 
 		std::optional<std::string> head;
-		std::optional<std::string> msg;
+		std::optional<std::string> body;
+		//std::optional<Note::time_point> event;
 		while(std::getline(file, line)) {
 			std::pair<Keyword, int> v = getkwd(line);
 			switch(v.first) {
 				case HEADING:
 					head = trim(line.substr(v.second));
 					break;
-				//case DUE: {
-				//	std::string sDue = trim(line.substr(v.second));
-				//	std::cout << "Due:\t" <<  sDue << std::endl;
-				//		  }
+				//case EVENT:
+				//	event = makeEvent(trim(line.substr(v.second)));
 				//	break;
 				case EOE:
 					if(head)
-						notes.push_back(Note(head.value(), msg));
+						notes.push_back(Note(head.value(), body/*, event*/));
 					head.reset();
-					msg.reset();
+					body.reset();
 					break;
 				default:
 					line += "\n";
-					if(msg)
-						msg = msg.value() + line;
+					if(body)
+						body = body.value() + line;
 					else
-						msg = line;
+						body = line;
 					break;
 			}
 		}
 
 		if(head)
-			notes.push_back(Note(head.value(), msg));
+			notes.push_back(Note(head.value(), body/*, event*/));
 
 		return notes;
 	}

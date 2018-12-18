@@ -5,6 +5,7 @@
 #include <pwd.h> // working directory stuff
 #include "parsing.hpp"
 #include "note.hpp"
+#define  DATAFILE "/.notes"
 
 /* TODO
  * Decide on DueTime implementation
@@ -24,16 +25,16 @@ std::string getHome() {
 }
 
 int main(int argc, char **argv) {
-	std::cout << getHome() + "/.notes" << std::endl;
+	std::cout << getHome() + DATAFILE << std::endl;
 	/*if(argc < 2) {
 		std::cout << "notes file required" << std::endl;
 		std::exit(1);
 	}*/
 
-	std::vector<Note> notes = parsing::parse(getHome()+"/.notes");//argv[1]);
+	std::vector<Note> notes = parsing::parse(getHome() + DATAFILE);//argv[1]);
 
 	for(auto note : notes) {
 		std::cout << "Heading:\t" << note.getHeading() << std::endl;
-		std::cout << "\"" << parsing::trim(note.getMsg().value()) << "\"" << std::endl;
+		std::cout << "\"" << parsing::trim(note.getBody().value()) << "\"" << std::endl;
 	}
 }
