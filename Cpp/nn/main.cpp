@@ -24,7 +24,7 @@ std::string getHome() {
 	return std::string(homedir);
 }
 
-int main(int argc, char **argv) {
+int main(/*int argc, char **argv*/) {
 	std::cout << getHome() + DATAFILE << std::endl;
 	/*if(argc < 2) {
 		std::cout << "notes file required" << std::endl;

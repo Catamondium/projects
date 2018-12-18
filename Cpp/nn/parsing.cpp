@@ -8,11 +8,12 @@
 #include <utility>   // pair
 #include <chrono>    // timepoint
 #include <iostream>
+#include <sstream>
 #include "note.hpp"
 
 
 namespace parsing {
-	enum Keyword { HEADING, /*EVENT,*/ EOE, BODY};
+	enum Keyword { HEADING, EVENT, EOE, BODY};
 
 	std::string trim(std::string s) {
 		s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) {
@@ -33,8 +34,8 @@ namespace parsing {
 		if(s == "heading")
 			return HEADING;
 
-		//else if(s == "event")
-		//	return EVENT;
+		else if(s == "event")
+			return EVENT;
 
 		else
 			return BODY;
@@ -51,7 +52,20 @@ namespace parsing {
 		return std::pair<Keyword, int>(BODY, -1);
 	}
 
-	//Note::time_point makeEvent(std::string value) {
+	//dateResolve() {
+	//}
+
+	//std::optional<time_point> makeEvent(std::string value) {
+	//	time_point baseDate;
+	//	// duration type?
+	//
+	//	std::stringstream ss;
+	//	ss.str(value);
+	//	std::string thing;
+	//	while(ss >> thing)
+	//		dateResolve(/*thing*/); std::cout << "mkEvent:\t" << thing << std::endl;
+	//
+	//	return {};
 	//}
 
 	std::vector<Note> parse(std::string fname) {
@@ -62,7 +76,7 @@ namespace parsing {
 
 		std::optional<std::string> head;
 		std::optional<std::string> body;
-		//std::optional<Note::time_point> event;
+		std::optional<time_point> event;
 		while(std::getline(file, line)) {
 			std::pair<Keyword, int> v = getkwd(line);
 			switch(v.first) {

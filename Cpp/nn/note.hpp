@@ -2,8 +2,8 @@
 #include <optional>
 #include <chrono> // time_point
 
+typedef std::chrono::system_clock::time_point time_point;
 class Note {
-	public typedef std::chrono::system_clock::time_point time_point;
 	std::string heading;
 	std::optional<std::string> body;
 	//std::optional<time_point> event;
