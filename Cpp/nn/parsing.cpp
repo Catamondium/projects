@@ -51,10 +51,8 @@ namespace parsing {
 		return std::pair<Keyword, int>(BODY, -1);
 	}
 
-	/*makeEvent(std::string value) {
-
-		return std::chrono::system_clock::now();
-	}*/
+	//Note::time_point makeEvent(std::string value) {
+	//}
 
 	std::vector<Note> parse(std::string fname) {
 		std::vector<Note> notes;
