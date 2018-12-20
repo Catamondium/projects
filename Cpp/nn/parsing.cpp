@@ -8,9 +8,9 @@
 #include <utility>   // pair
 #include <chrono>    // timepoint
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include "note.hpp"
-
 
 namespace parsing {
 	enum Keyword { HEADING, EVENT, EOE, BODY};
@@ -51,22 +51,41 @@ namespace parsing {
 		
 		return std::pair<Keyword, int>(BODY, -1);
 	}
+	
+	note_duration dateResolve(std::string source) {
+		std::chrono::system_clock::time_point ret;
+		std::tm tm = {};
+		std::stringstream ss(source);
 
-	//dateResolve() {
-	//}
+		size_t fPos;
+		if((fPos = source.find('/')) != std::string::npos) {
+			ss >> std::get_time(&tm, "%d/%m/%Y");
+			ret = std::chrono::system_clock::from_time_t(std::mktime(&tm));
+		}
+		else if ((fPos = source.find(':')) != std::string::npos) {
+			ss >> std::get_time(&tm, "%H:%M");
+			ret = std::chrono::system_clock::from_time_t(std::mktime(&tm));
+				}
+		else {
+			std::cerr << "Malformed time" << std::endl;
+			exit(1);
+		}
 
-	//std::optional<time_point> makeEvent(std::string value) {
-	//	time_point baseDate;
-	//	// duration type?
-	//
-	//	std::stringstream ss;
-	//	ss.str(value);
-	//	std::string thing;
-	//	while(ss >> thing)
-	//		dateResolve(/*thing*/); std::cout << "mkEvent:\t" << thing << std::endl;
-	//
-	//	return {};
-	//}
+		return std::chrono::duration_cast<note_duration>(ret.time_since_epoch());
+	}
+
+	note_time makeEvent(std::string value) {
+		note_time baseDate; // epoch default construction
+	
+		std::stringstream ss;
+		ss.str(value);
+		std::string thing;
+		while(ss >> thing) {
+			baseDate += dateResolve(thing);
+		}
+		
+		return baseDate;
+	}
 
 	std::vector<Note> parse(std::string fname) {
 		std::vector<Note> notes;
@@ -76,19 +95,19 @@ namespace parsing {
 
 		std::optional<std::string> head;
 		std::optional<std::string> body;
-		std::optional<time_point> event;
+		std::optional<note_time> event;
 		while(std::getline(file, line)) {
 			std::pair<Keyword, int> v = getkwd(line);
 			switch(v.first) {
 				case HEADING:
 					head = trim(line.substr(v.second));
 					break;
-				//case EVENT:
-				//	event = makeEvent(trim(line.substr(v.second)));
-				//	break;
+				case EVENT:
+					event = makeEvent(trim(line.substr(v.second)));
+					break;
 				case EOE:
 					if(head)
-						notes.push_back(Note(head.value(), body/*, event*/));
+						notes.push_back(Note(head.value(), body, event));
 					head.reset();
 					body.reset();
 					break;
@@ -103,7 +122,7 @@ namespace parsing {
 		}
 
 		if(head)
-			notes.push_back(Note(head.value(), body/*, event*/));
+			notes.push_back(Note(head.value(), body, event));
 
 		return notes;
 	}
