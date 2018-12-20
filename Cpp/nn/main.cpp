@@ -35,6 +35,10 @@ int main(/*int argc, char **argv*/) {
 
 	for(auto note : notes) {
 		std::cout << "Heading:\t" << note.getHeading() << std::endl;
-		std::cout << "\"" << parsing::trim(note.getBody().value()) << "\"" << std::endl;
+		if(note.printEvent())
+			std::cout << "Event:\t\t" << note.printEvent().value() << std::endl;
+		if(note.getBody())
+			std::cout << "\"" << parsing::trim(note.getBody().value()) << "\"" << std::endl;
+		std::cout << std::endl;
 	}
 }

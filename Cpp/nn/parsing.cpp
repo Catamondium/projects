@@ -1,16 +1,18 @@
+// types/containers
 #include <vector>
-#include <map>
 #include <optional>
+#include <utility>   // pair
+#include <chrono>    // timepoint
+#include "note.hpp"
+// streams
 #include <fstream>   // ifstream
+#include <iostream>
+#include <iomanip>   // get_time
+#include <sstream>
+// functional/locale
 #include <algorithm> // transform, find_if
 #include <cctype>    // tolower              ??
 #include <locale>    // tolower, isspace     ??
-#include <utility>   // pair
-#include <chrono>    // timepoint
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include "note.hpp"
 
 namespace parsing {
 	enum Keyword { HEADING, EVENT, EOE, BODY};
@@ -46,14 +48,14 @@ namespace parsing {
 		if(line.substr(0, 2) == "##")
 			return std::pair<Keyword, int>(EOE, -1);
 
-		else if ((fPos = line.find(":")) != std::string::npos)
+		else if ((fPos = line.find(':')) != std::string::npos)
 			return std::pair<Keyword, int>(fEnum(line.substr(0, fPos)), fPos+1);
 		
 		return std::pair<Keyword, int>(BODY, -1);
 	}
 	
-	note_duration dateResolve(std::string source) { // ** Unconfirmed functionality ** //
-		std::chrono::system_clock::time_point ret;
+	auto dateResolve(std::string source) { // ** Unconfirmed functionality ** //
+		note_time ret;
 		std::tm tm = {};
 		std::stringstream ss(source);
 
@@ -63,7 +65,8 @@ namespace parsing {
 			ret = std::chrono::system_clock::from_time_t(std::mktime(&tm));
 		}
 		else if ((fPos = source.find(':')) != std::string::npos) {
-			ss >> std::get_time(&tm, "%H:%M");
+			std::string s = ss.str();
+			ss >> std::get_time(&tm, "%R");
 			ret = std::chrono::system_clock::from_time_t(std::mktime(&tm));
 				}
 		else {
@@ -71,7 +74,7 @@ namespace parsing {
 			exit(1);
 		}
 
-		return std::chrono::duration_cast<note_duration>(ret.time_since_epoch());
+		return ret.time_since_epoch();
 	}
 
 	note_time makeEvent(std::string value) {
