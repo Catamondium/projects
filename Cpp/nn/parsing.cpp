@@ -106,7 +106,7 @@ namespace parsing {
 					head = trim(line.substr(v.second));
 					break;
 				case EVENT:
-					event = makeEvent(trim(line.substr(v.second)));
+					//event = makeEvent(trim(line.substr(v.second)));
 					break;
 				case EOE:
 					if(head)
