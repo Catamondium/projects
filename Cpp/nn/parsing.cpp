@@ -54,7 +54,7 @@ namespace parsing {
 		return std::pair<Keyword, int>(BODY, -1);
 	}
 	
-	auto dateResolve(std::string source) { // ** Unconfirmed functionality ** //
+	auto dateResolve(std::string source) {
 		note_time ret;
 		std::tm tm = {};
 		std::stringstream ss(source);
