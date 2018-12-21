@@ -80,8 +80,11 @@ namespace parsing {
 		std::stringstream ss;
 		ss.str(value);
 		std::string thing;
+
+		int i;
 		while(ss >> thing) {
-			baseDate += dateResolve(thing);
+			baseDate += dateResolve(thing); // I think we're adding epochs together when there are >1 values
+			i++;
 		}
 		
 		return baseDate;
