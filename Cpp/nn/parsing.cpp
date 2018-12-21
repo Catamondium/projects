@@ -59,17 +59,14 @@ namespace parsing {
 		std::tm tm = {};
 		std::stringstream ss(source);
 
-		size_t fPos;
-		if((fPos = source.find('/')) != std::string::npos) {
+		if(source.find('/') != std::string::npos) {
 			ss >> std::get_time(&tm, "%d/%m/%Y");
 			ret = std::chrono::system_clock::from_time_t(std::mktime(&tm));
 		}
-		else if ((fPos = source.find(':')) != std::string::npos) {
-			std::string s = ss.str();
+		else if (source.find(':') != std::string::npos) {
 			ss >> std::get_time(&tm, "%R");
 			ret = std::chrono::system_clock::from_time_t(std::mktime(&tm));
-				}
-		else {
+		} else {
 			std::cerr << "Malformed time" << std::endl;
 			exit(1);
 		}
