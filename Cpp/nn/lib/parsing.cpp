@@ -56,22 +56,6 @@ namespace notelib {
 		return std::pair<Keyword, int>(BODY, -1);
 	}
 	
-	/*auto dateResolve(std::string source) {
-		note_time ret;
-		std::tm tm = {};
-		std::stringstream ss(source);
-
-		if(source.find('/') != std::string::npos) {
-			ss >> std::get_time(&tm, "%d/%m/%Y");
-			ret = std::chrono::system_clock::from_time_t(std::mktime(&tm));
-		} else {
-			std::cerr << "Malformed time" << std::endl;
-			exit(1);
-		}
-
-		return ret.time_since_epoch();
-	}*/
-
 	note_time makeEvent(std::string value) {
 		note_time ret;
 		std::tm tm = {};
@@ -133,7 +117,7 @@ namespace notelib {
 		file.open(fname, std::ofstream::trunc);
 
 		for(auto it = notes.begin(); it != notes.end(); ++it) {
-			file << it->marshal();
+			file << it->unmarshal();
 			if(it != notes.end()) file << "##\n";
 		}
 		file << std::flush;

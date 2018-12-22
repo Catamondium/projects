@@ -14,7 +14,7 @@ std::optional<std::string> Note::printEvent() {
 	return ss.str();
 }
 
-std::string Note::marshal() {
+std::string Note::unmarshal() {
 	std::stringstream ss;
 
 	ss << "Heading:\t" << heading << std::endl;
