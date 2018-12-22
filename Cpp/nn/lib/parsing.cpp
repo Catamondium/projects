@@ -14,7 +14,9 @@
 #include <cctype>    // tolower              ??
 #include <locale>    // tolower, isspace     ??
 
-namespace parsing {
+
+
+namespace notelib {
 	enum Keyword { HEADING, EVENT, EOE, BODY};
 
 	std::string trim(std::string s) {
@@ -54,7 +56,7 @@ namespace parsing {
 		return std::pair<Keyword, int>(BODY, -1);
 	}
 	
-	auto dateResolve(std::string source) {
+	/*auto dateResolve(std::string source) {
 		note_time ret;
 		std::tm tm = {};
 		std::stringstream ss(source);
@@ -62,32 +64,28 @@ namespace parsing {
 		if(source.find('/') != std::string::npos) {
 			ss >> std::get_time(&tm, "%d/%m/%Y");
 			ret = std::chrono::system_clock::from_time_t(std::mktime(&tm));
-		}
-		else if (source.find(':') != std::string::npos) {
-			ss >> std::get_time(&tm, "%R");
-			ret = std::chrono::system_clock::from_time_t(std::mktime(&tm));
 		} else {
 			std::cerr << "Malformed time" << std::endl;
 			exit(1);
 		}
 
 		return ret.time_since_epoch();
-	}
+	}*/
 
 	note_time makeEvent(std::string value) {
-		note_time baseDate; // epoch default construction
-	
-		std::stringstream ss;
-		ss.str(value);
-		std::string thing;
+		note_time ret;
+		std::tm tm = {};
+		std::stringstream ss(value);
 
-		int i;
-		while(ss >> thing) {
-			baseDate += dateResolve(thing); // I think we're adding epochs together when there are >1 values
-			i++;
+		if(value.find('/') != std::string::npos) {
+			ss >> std::get_time(&tm, "%d/%m/%Y");
+			ret = std::chrono::system_clock::from_time_t(std::mktime(&tm));
+		} else {
+			std::cerr << "Malformed time" << std::endl;
+			exit(1);
 		}
-		
-		return baseDate;
+
+		return ret;
 	}
 
 	std::vector<Note> parse(std::string fname) {
@@ -106,7 +104,7 @@ namespace parsing {
 					head = trim(line.substr(v.second));
 					break;
 				case EVENT:
-					//event = makeEvent(trim(line.substr(v.second)));
+					event = makeEvent(trim(line.substr(v.second)));
 					break;
 				case EOE:
 					if(head)
@@ -128,5 +126,16 @@ namespace parsing {
 			notes.push_back(Note(head.value(), body, event));
 
 		return notes;
+	}
+
+	void unmarshAll(std::vector<Note> notes, std::string fname) {
+		std::ofstream file;
+		file.open(fname, std::ofstream::trunc);
+
+		for(auto it = notes.begin(); it != notes.end(); ++it) {
+			file << it->marshal();
+			if(it != notes.end()) file << "##\n";
+		}
+		file << std::flush;
 	}
 }

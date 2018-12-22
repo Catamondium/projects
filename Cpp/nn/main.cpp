@@ -3,17 +3,14 @@
 #include <unistd.h> // *nix api
 #include <sys/types.h> // *nix types
 #include <pwd.h> // working directory stuff
-#include "parsing.hpp"
-#include "note.hpp"
+#include "lib/parsing.hpp"
+#include "lib/note.hpp"
 #define  DATAFILE "/.notes"
 
 /* TODO
- * Decide on DueTime implementation
- * * Implement looped parsing for the field
  * IO
  * * implement argv IO
  * * implement interactive IO
- * Notification system
  */
 
 std::string getHome() {
@@ -25,20 +22,13 @@ std::string getHome() {
 }
 
 int main(/*int argc, char **argv*/) {
-	std::cout << getHome() + DATAFILE << std::endl;
-	/*if(argc < 2) {
-		std::cout << "notes file required" << std::endl;
-		std::exit(1);
+	std::cout << "Unmarshalling:\t" <<  getHome() + DATAFILE << std::endl;
+
+	std::vector<Note> notes = notelib::parse(getHome() + DATAFILE);
+
+	std::cout << "Marshalling:\t" << "marsh_notes" << std::endl;
+	notelib::unmarshAll(notes, "marsh_notes");
+	/*for(auto note : notes) {
+		std::cout << note.marshal() << std::endl;
 	}*/
-
-	std::vector<Note> notes = parsing::parse(getHome() + DATAFILE);//argv[1]);
-
-	for(auto note : notes) {
-		std::cout << "Heading:\t" << note.getHeading() << std::endl;
-		if(note.printEvent())
-			std::cout << "Event:\t\t" << note.printEvent().value() << std::endl;
-		if(note.getBody())
-			std::cout << "\"" << parsing::trim(note.getBody().value()) << "\"" << std::endl;
-		std::cout << std::endl;
-	}
 }

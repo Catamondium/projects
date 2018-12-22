@@ -10,6 +10,18 @@ std::optional<std::string> Note::printEvent() {
 
 	struct std::tm *tm = std::gmtime(&tt);
 	std::stringstream ss;
-	ss << std::put_time(tm, "%d/%m/%Y %R");
+	ss << std::put_time(tm, "%d/%m/%Y");
+	return ss.str();
+}
+
+std::string Note::marshal() {
+	std::stringstream ss;
+
+	ss << "Heading:\t" << heading << std::endl;
+	if(event)
+		ss << "Event:\t" << this->printEvent().value() << std::endl;
+	if(body)
+		ss << body.value();
+
 	return ss.str();
 }

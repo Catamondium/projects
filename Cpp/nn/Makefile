@@ -1,7 +1,7 @@
 a.out : main.cpp \
-	parsing.cpp parsing.hpp \
-	note.cpp note.hpp \
+	lib/parsing.cpp lib/parsing.hpp \
+	lib/note.cpp lib/note.hpp \
 	~/.notes
 	g++ -std=c++17 -Wall -Wextra -pedantic \
-		parsing.cpp main.cpp note.cpp
+		lib/parsing.cpp main.cpp lib/note.cpp
 	./a.out

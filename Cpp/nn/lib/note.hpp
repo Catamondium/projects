@@ -19,4 +19,5 @@ class Note {
 	std::optional<std::string> getBody() { return body; }
 	std::optional<note_time> getEvent() { return event; }
 	std::optional<std::string> printEvent();
+	std::string marshal();
 };
