@@ -19,20 +19,28 @@
 namespace notelib {
 	enum Keyword { HEADING, EVENT, EOE, BODY};
 
-	std::string trim(std::string s) {
+	std::string ltrim(std::string &s) {
 		s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) {
 					return !std::isspace(ch);
-					})); // trim left
+					}));
+		return s;
+	}
 
+	std::string rtrim(std::string &s) {
 		s.erase(std::find_if(s.rbegin(), s.rend(), [](int ch) {
 					return !std::isspace(ch);
-					}).base(), s.end()); // trim right
+					}).base(), s.end());
+		return s;
+	}
 
+	std::string trim(std::string &s) {
+		ltrim(s);
+		rtrim(s);
 		return s;
 	}
 
 	Keyword fEnum(std::string s) {
-		s = trim(s);
+		rtrim(s);
 		std::transform(s.begin(), s.end(), s.begin(), ::tolower);
 		
 		if(s == "heading")
@@ -83,12 +91,15 @@ namespace notelib {
 		std::optional<note_time> event;
 		while(std::getline(file, line)) {
 			std::pair<Keyword, int> v = getkwd(line);
+			trim(line);
 			switch(v.first) {
 				case HEADING:
-					head = trim(line.substr(v.second));
+					line = line.substr(v.second);
+					head = ltrim(line);
 					break;
 				case EVENT:
-					event = makeEvent(trim(line.substr(v.second)));
+					line = line.substr(v.second);
+					event = makeEvent(ltrim(line));
 					break;
 				case EOE:
 					if(head)
@@ -98,10 +109,11 @@ namespace notelib {
 					break;
 				default:
 					line += "\n";
-					if(body)
+					body = (!body) ? line : body.value() + line;
+					/*if(body)
 						body = body.value() + line;
 					else
-						body = line;
+						body = line;*/
 					break;
 			}
 		}
