@@ -28,7 +28,4 @@ int main(/*int argc, char **argv*/) {
 
 	std::cout << "Marshalling:\t" << "marsh_notes" << std::endl;
 	notelib::unmarshAll(notes, "marsh_notes");
-	/*for(auto note : notes) {
-		std::cout << note.marshal() << std::endl;
-	}*/
 }

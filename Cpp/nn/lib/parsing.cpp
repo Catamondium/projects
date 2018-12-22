@@ -117,9 +117,7 @@ namespace notelib {
 		file.open(fname, std::ofstream::trunc);
 
 		for(auto it = notes.begin(); it != notes.end(); ++it) {
-			file << it->unmarshal();
-			if(it != notes.end()) file << "##\n";
+			file << it->unmarshal() << "##" << std::endl;
 		}
-		file << std::flush;
 	}
 }
