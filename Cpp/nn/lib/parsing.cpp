@@ -17,7 +17,7 @@
 
 
 namespace notelib {
-	enum Keyword { HEADING, EVENT, EOE, BODY};
+	enum Keyword { HEADING, EVENT, EOE, BODY };
 
 	std::string ltrim(std::string &s) {
 		s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) {
