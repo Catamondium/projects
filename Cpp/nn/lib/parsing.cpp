@@ -129,7 +129,7 @@ namespace notelib {
 		file.open(fname, std::ofstream::trunc);
 
 		for(Note note : notes) {
-			file << note.unmarshal() << "##" << std::endl;
+			file << note.unmarshal() << std::endl;
 		}
 	}
 }

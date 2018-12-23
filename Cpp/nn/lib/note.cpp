@@ -19,9 +19,10 @@ std::string Note::unmarshal() {
 
 	ss << "Heading:\t" << heading << std::endl;
 	if(event)
-		ss << "Event:\t" << this->printEvent().value() << std::endl;
+		ss << "Event:\t" << printEvent().value() << std::endl;
 	if(body)
 		ss << body.value();
 
+	ss << "##";
 	return ss.str();
 }
