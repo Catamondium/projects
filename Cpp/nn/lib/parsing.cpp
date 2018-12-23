@@ -109,11 +109,7 @@ namespace notelib {
 					break;
 				default:
 					line += "\n";
-					body = (!body) ? line : body.value() + line;
-					/*if(body)
-						body = body.value() + line;
-					else
-						body = line;*/
+					body = (body) ? body.value() + line : line;
 					break;
 			}
 		}
