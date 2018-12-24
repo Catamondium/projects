@@ -56,12 +56,12 @@ namespace notelib {
 	std::pair<Keyword, int> getkwd(std::string line) {
 		size_t fPos;
 		if(line.substr(0, 2) == "##")
-			return std::pair<Keyword, int>(EOE, -1);
+			return std::make_pair(EOE, -1);
 
 		else if ((fPos = line.find(':')) != std::string::npos)
-			return std::pair<Keyword, int>(fEnum(line.substr(0, fPos)), fPos+1);
+			return std::make_pair(fEnum(line.substr(0, fPos)), fPos+1);
 		
-		return std::pair<Keyword, int>(BODY, -1);
+		return std::make_pair(BODY, -1);
 	}
 	
 	note_time makeEvent(std::string value) {
