@@ -106,6 +106,7 @@ namespace notelib {
 						notes.push_back(Note(head.value(), body, event));
 					head.reset();
 					body.reset();
+					event.reset();
 					break;
 				default:
 					line += "\n";

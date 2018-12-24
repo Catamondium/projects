@@ -9,8 +9,8 @@
 
 /* TODO
  * IO
- * * implement argv IO
- * * implement interactive IO
+ * * argv IO
+ * * interactive IO
  */
 
 std::string getHome() {
