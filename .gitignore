@@ -52,6 +52,9 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
+# Qt build folders
+build-*-Debug
+
 # Temporary files
 *~*
 *.swp
