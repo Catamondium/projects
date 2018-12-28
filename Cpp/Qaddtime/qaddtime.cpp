@@ -13,7 +13,7 @@ Qaddtime::~Qaddtime()
     delete ui;
 }
 
-void Qaddtime::on_runButton_clicked()
+void Qaddtime::on_elapse_editingFinished()
 {
     QTime start = ui->timeEdit->time();
     int elapse = ui->elapse->value();
@@ -28,4 +28,9 @@ void Qaddtime::on_runButton_clicked()
             .arg(hrs, 2, '0').arg(mins, 2, '0');
 
     ui->result->setText(result);
+}
+
+void Qaddtime::on_timeEdit_editingFinished()
+{
+    Qaddtime::on_elapse_editingFinished();
 }

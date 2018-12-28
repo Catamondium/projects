@@ -18,7 +18,9 @@ public:
     ~Qaddtime();
 
 private slots:
-    void on_runButton_clicked();
+    void on_elapse_editingFinished();
+
+    void on_timeEdit_editingFinished();
 
 private:
     Ui::Qaddtime *ui;
