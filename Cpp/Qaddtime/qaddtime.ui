@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>209</width>
+    <width>178</width>
     <height>81</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
     <rect>
      <x>9</x>
      <y>9</y>
-     <width>191</width>
+     <width>161</width>
      <height>61</height>
     </rect>
    </property>
@@ -38,11 +38,17 @@
       <property name="cursor">
        <cursorShape>IBeamCursor</cursorShape>
       </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="minimum">
+       <number>-300</number>
+      </property>
       <property name="maximum">
        <number>300</number>
       </property>
-      <property name="singleStep">
-       <number>30</number>
+      <property name="value">
+       <number>0</number>
       </property>
      </widget>
     </item>
@@ -57,6 +63,9 @@
      <widget class="QTimeEdit" name="timeEdit">
       <property name="cursor">
        <cursorShape>IBeamCursor</cursorShape>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
       </property>
      </widget>
     </item>
