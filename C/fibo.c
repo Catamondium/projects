@@ -3,7 +3,8 @@
 #include <stdio.h>
 typedef long long int big_number;
 
-big_number fibonacci(int n) {
+big_number fibonacci(int n)
+{
     if (n == 0 || n == 1) return n;
 
     else {
@@ -19,7 +20,8 @@ big_number fibonacci(int n) {
     }
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     setlocale(LC_NUMERIC, "");
     if (argc == 1 || atoi(argv[1]) < 0) {
         printf("Error: Positive argument required.\n");

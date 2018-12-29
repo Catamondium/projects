@@ -1,7 +1,8 @@
 #include <iostream>
 #include <cstdlib>
 
-unsigned long fibonacci(unsigned int n) {
+unsigned long fibonacci(unsigned int n)
+{
 	if(n == 0 || n == 1)
 		return n;
 	else {
@@ -17,7 +18,8 @@ unsigned long fibonacci(unsigned int n) {
 	}
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 	if(argc > 1) {
 			std::cout.imbue(std::locale(""));
 		for(unsigned int i = 0; i < atoi(argv[1]); ++i) {

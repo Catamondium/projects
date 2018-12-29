@@ -7,7 +7,8 @@
 #define ITEMS 15
 #define RANGE 50
 
-int main() {
+int main()
+{
 	srand(time(NULL));
 	bTree tree = newTree();
 

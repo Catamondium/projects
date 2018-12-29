@@ -19,27 +19,31 @@
 namespace notelib {
 	enum Keyword { HEADING, EVENT, EOE, BODY };
 
-	std::string ltrim(std::string &s) {
+	std::string ltrim(std::string &s)
+	{
 		s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) {
 					return !std::isspace(ch);
 					}));
 		return s;
 	}
 
-	std::string rtrim(std::string &s) {
+	std::string rtrim(std::string &s)
+	{
 		s.erase(std::find_if(s.rbegin(), s.rend(), [](int ch) {
 					return !std::isspace(ch);
 					}).base(), s.end());
 		return s;
 	}
 
-	std::string trim(std::string &s) {
+	std::string trim(std::string &s)
+	{
 		ltrim(s);
 		rtrim(s);
 		return s;
 	}
 
-	Keyword fEnum(std::string s) {
+	Keyword fEnum(std::string s)
+	{
 		rtrim(s);
 		std::transform(s.begin(), s.end(), s.begin(), ::tolower);
 		
@@ -53,7 +57,8 @@ namespace notelib {
 			return BODY;
 	}
 
-	std::pair<Keyword, int> getkwd(std::string line) {
+	std::pair<Keyword, int> getkwd(std::string line)
+	{
 		size_t fPos;
 		if(line.substr(0, 2) == "##")
 			return std::make_pair(EOE, -1);
@@ -64,7 +69,8 @@ namespace notelib {
 		return std::make_pair(BODY, -1);
 	}
 	
-	note_time makeEvent(std::string value) {
+	note_time makeEvent(std::string value)
+	{
 		note_time ret;
 		std::tm tm = {};
 		std::stringstream ss(value);
@@ -80,7 +86,8 @@ namespace notelib {
 		return ret;
 	}
 
-	std::vector<Note> parse(std::string fname) {
+	std::vector<Note> parse(std::string fname)
+	{
 		std::vector<Note> notes;
 
 		std::string line;
@@ -121,7 +128,8 @@ namespace notelib {
 		return notes;
 	}
 
-	void unmarshAll(std::vector<Note> notes, std::string fname) {
+	void unmarshAll(std::vector<Note> notes, std::string fname)
+	{
 		std::ofstream file;
 		file.open(fname, std::ofstream::trunc);
 

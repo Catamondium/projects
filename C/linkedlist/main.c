@@ -6,29 +6,35 @@
 #include <stdbool.h>
 #define BOUNDARY "\n===================\n"
 
-void printList(intList list) {
+void printList(intList list)
+{
 	for(unsigned int i = 0; i < length(list); i++) {
 		printf("[%02d]:\t%d\n", i, get(list, i));
 	}
 }
 
-int mapfunc(int x) {
+int mapfunc(int x)
+{
 	return (x > 5)?true:false;
 }
 
-int reduceOR(int acc, int x) {
+int reduceOR(int acc, int x)
+{
 	return (acc || x)?true:false;
 }
 
-int reduceAND(int acc, int x) {
+int reduceAND(int acc, int x)
+{
 	return (acc && x)?true:false;
 }
 
-void section(char *str) {
+void section(char *str)
+{
 	printf("%s%s", str, BOUNDARY);
 }
 
-int main() {
+int main()
+{
 	intList list = EMPTYLIST;
 
 	for(int i = 0; i < 10; i++) {

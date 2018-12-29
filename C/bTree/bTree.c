@@ -4,7 +4,8 @@
 
 // NODE section
 
-node * newNode(int i) {
+node * newNode(int i)
+{
 	node *newElem = (node*)malloc(sizeof(node));
 
 	if(newElem == NULL) {
@@ -19,7 +20,8 @@ node * newNode(int i) {
 	return newElem;
 }
 
-void add(node **n, int i) {
+void add(node **n, int i)
+{
 	if(*n == NULL)
 		*n = newNode(i);
 
@@ -37,7 +39,8 @@ void add(node **n, int i) {
 	}
 }
 
-void rm(node *n) {
+void rm(node *n)
+{
 	if(n != NULL) {
 		if(n->lesser != NULL)
 			rm(n->lesser);
@@ -48,7 +51,8 @@ void rm(node *n) {
 	}
 }
 
-void visit(node *n, int *arr, int *index) {
+void visit(node *n, int *arr, int *index)
+{
 	if(n->lesser != NULL)
 		visit(n->lesser, arr, index);
 
@@ -59,7 +63,8 @@ void visit(node *n, int *arr, int *index) {
 		visit(n->greater, arr, index);
 }
 
-void pvisit(node *n) {
+void pvisit(node *n)
+{
 	if(n->lesser != NULL)
 		pvisit(n->lesser);
 
@@ -71,30 +76,35 @@ void pvisit(node *n) {
 
 // TREE section
 
-bTree newTree() {
+bTree newTree()
+{
 	bTree ret;
 	ret.root = NULL;
 	ret.size = 0;
 	return ret;
 }
 
-void insert(bTree *tree, int i) {
+void insert(bTree *tree, int i)
+{
 	add(&(tree->root), i);
 	tree->size = tree->size + 1;
 }
 
-void destroy(bTree *tree) {
+void destroy(bTree *tree)
+{
 	rm(tree->root);
 	tree->size = 0;
 }
 
-void sort(bTree tree, int *arr) {
+void sort(bTree tree, int *arr)
+{
 	int i = 0;
 	if(tree.root != NULL)
 		visit(tree.root, arr, &i);
 }
 
-void tprint(bTree tree) {
+void tprint(bTree tree)
+{
 	if(tree.root != NULL)
 		pvisit(tree.root);
 }

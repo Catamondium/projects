@@ -9,21 +9,25 @@ typedef struct Time {
     unsigned int mins;
 } Time;
 
-void sTime(char *ret, const Time t) {
+void sTime(char *ret, const Time t)
+{
 	sprintf(ret, "%02d:%02d", t.hrs, t.mins);
 }
 
-Time pTime(const char *str) {
+Time pTime(const char *str)
+{
 	Time ret;
 	sscanf(str, "%u:%u", &ret.hrs, &ret.mins);
 	return ret;
 }
 
-int getMins(Time t) {
+int getMins(Time t)
+{
 	return (t.hrs * 60) + t.mins;
 }
 
-Time doElapse(const Time s, const signed int t) {
+Time doElapse(const Time s, const signed int t)
+{
     Time ret;
 
     int tot = getMins(s) + t;
@@ -33,7 +37,8 @@ Time doElapse(const Time s, const signed int t) {
     return ret;
 }
 
-void usage(const char *prog) {
+void usage(const char *prog)
+{
 	printf(
 			"Usage: %s [-qh] hh:mm mins_elapse\n"
 			"Note: if mins_elapse is negative, precede it with '--'\n"
@@ -42,7 +47,8 @@ void usage(const char *prog) {
 	exit(1);
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
     Time start, end;
     char strStart[20], strEnd[20];
     signed int elapse;

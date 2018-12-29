@@ -13,7 +13,8 @@
  * * interactive IO
  */
 
-std::string getHome() {
+std::string getHome()
+{
 	char *homedir;
 	if((homedir = getenv("HOME")) == NULL)
 		homedir = getpwuid(getuid())->pw_dir;
@@ -21,7 +22,8 @@ std::string getHome() {
 	return std::string(homedir);
 }
 
-int main(/*int argc, char **argv*/) {
+int main(/*int argc, char **argv*/)
+{
 	std::cout << "Unmarshalling:\t" <<  getHome() + DATAFILE << std::endl;
 
 	std::vector<Note> notes = notelib::parse(getHome() + DATAFILE);

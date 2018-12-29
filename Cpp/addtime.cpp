@@ -12,24 +12,28 @@ struct Time {
 	friend Time pTime(std::string in);
 };
 
-int Time::abs() const {
+int Time::abs() const
+{
 	// Get total minutes represented
 	return (hrs * 60) + mins;
 }
 
-Time pTime(std::string in) {
+Time pTime(std::string in)
+{
 	int delimpos = in.find(':');
 	std::string str_hrs = in.substr(0, delimpos);
 	std::string str_mins = in.substr(delimpos + 1, in.length());
 	return Time(stoi(str_hrs), stoi(str_mins));
 }
 
-Time operator+(const Time lhs, const int rhs) {
+Time operator+(const Time lhs, const int rhs)
+{
 	int tot = lhs.abs() + rhs;
 	return Time(floor(tot / 60), tot % 60);
 }		
 
-void usage(const char *prog) {
+void usage(const char *prog)
+{
 	std::cout <<
 		"Usage: " << prog << " [-qh] hh:mm mins_elapse\n"
 		"Note: if mins_elapse is negative, precede it with '--'\n"
@@ -38,7 +42,8 @@ void usage(const char *prog) {
 	std::exit(1);
 }
 
-std::ostream& operator<<(std::ostream& stream, Time a) {
+std::ostream& operator<<(std::ostream& stream, Time a)
+{
 	char buf[1000];
 	sprintf(buf, "%02d:%02d", a.hrs, a.mins);
 	stream << buf; // c-style format solution
@@ -49,7 +54,8 @@ std::ostream& operator<<(std::ostream& stream, Time a) {
 	return stream;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 	bool quiet = false; // default to human readable
 		
 	int c;

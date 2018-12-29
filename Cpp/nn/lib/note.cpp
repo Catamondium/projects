@@ -4,7 +4,8 @@
 #include <sstream>
 #include <iomanip>
 
-std::optional<std::string> Note::printEvent() {
+std::optional<std::string> Note::printEvent()
+{
 	if(!event) return {};
 	std::time_t tt = std::chrono::system_clock::to_time_t(event.value());
 
@@ -14,7 +15,8 @@ std::optional<std::string> Note::printEvent() {
 	return ss.str();
 }
 
-std::string Note::unmarshal() {
+std::string Note::unmarshal()
+{
 	std::stringstream ss;
 
 	ss << "Heading:\t" << heading << std::endl;
