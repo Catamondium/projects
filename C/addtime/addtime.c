@@ -29,7 +29,8 @@ int getMins(Time t)
 Time doElapse(const Time s, const signed int t)
 {
     int tot = getMins(s) + t;
-    return (Time){floor(tot / 60), tot % 60};
+    return (Time) {
+    floor(tot / 60), tot % 60};
 }
 
 void usage(const char *prog)
@@ -60,7 +61,8 @@ int main(int argc, char **argv)
 	}
     }
 
-    if (argc < 3) usage(argv[0]);
+    if (argc < 3)
+	usage(argv[0]);
 
     start = pTime(argv[optind++]);
     elapse = strstr(argv[optind], ":") != NULL ?
