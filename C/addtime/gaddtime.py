@@ -61,6 +61,7 @@ def mvFocus(*args):
 
 @register("clickBtn")
 def clickBtn(*args):
+    validate()
     btn.clicked()
 
 @register("eval")

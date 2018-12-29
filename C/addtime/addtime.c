@@ -34,10 +34,11 @@ Time doElapse(const Time s, const signed int t) {
 }
 
 void usage(const char *prog) {
-	printf("Usage: %s [-qh] hh:mm mins_elapse\n", prog);
-	printf("Note: if mins_elapse is negative, precede it with '--'\n");
-	printf("Options:\n\t-q quietly output end time\n");
-	printf("\t-h print this message and exit\n");
+	printf(
+			"Usage: %s [-qh] hh:mm mins_elapse\n"
+			"Note: if mins_elapse is negative, precede it with '--'\n"
+			"Options:\n\t-q quietly output end time\n"
+			"\t-h print this message and exit\n", prog);
 	exit(1);
 }
 
