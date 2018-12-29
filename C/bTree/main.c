@@ -9,22 +9,22 @@
 
 int main()
 {
-	srand(time(NULL));
-	bTree tree = newTree();
+    srand(time(NULL));
+    bTree tree = newTree();
 
-	for(int i = 0; i < ITEMS; i++)
-		insert(&tree, rand() % RANGE);
+    for (int i = 0; i < ITEMS; i++)
+	insert(&tree, rand() % RANGE);
 
-	assert(tree.size == ITEMS);
+    assert(tree.size == ITEMS);
 
-	printf("Tree print\n");
-	tprint(tree);
+    printf("Tree print\n");
+    tprint(tree);
 
-	printf("Array sort\n");
-	int sorted[tree.size];
-	sort(tree, sorted);
-	for(int i = 0; i < tree.size; i++)
-		printf("tree[%02d]:\t%d\n", i, sorted[i]);
+    printf("Array sort\n");
+    int sorted[tree.size];
+    sort(tree, sorted);
+    for (int i = 0; i < tree.size; i++)
+	printf("tree[%02d]:\t%d\n", i, sorted[i]);
 
-	destroy(&tree);
+    destroy(&tree);
 }

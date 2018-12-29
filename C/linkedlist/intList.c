@@ -4,263 +4,264 @@
 
 int returnSafe(const int ret)
 {
-	// exists to convert removed data to new, automatic memory
-	return ret;
+    // exists to convert removed data to new, automatic memory
+    return ret;
 }
 
 int add(int a, int b)
 {
-	return a + b;
+    return a + b;
 }
 
 int mul(int a, int b)
 {
-	return a * b;
+    return a * b;
 }
 
-int stdIndex(node *head, signed int index)
+int stdIndex(node * head, signed int index)
 {
-	// convert to from-head index form
-	
-	unsigned int len = length(head);
-	if(index >= 0)
-		return index;
+    // convert to from-head index form
 
-	else if(len == 0)
-		return 0;
+    unsigned int len = length(head);
+    if (index >= 0)
+	return index;
 
-	else
-		return len-1; // append for all -ve indices
+    else if (len == 0)
+	return 0;
+
+    else
+	return len - 1;		// append for all -ve indices
 }
 
-node * travP1(node *head, signed int index)
+node *travP1(node * head, signed int index)
 {
-	// traverse by element
-	index = stdIndex(head, index);
+    // traverse by element
+    index = stdIndex(head, index);
 
-	int i = 0;
-	node *current = head;
-	while(i < index && current != NULL) {
-		current = current->next;
-		i++;
-	}
+    int i = 0;
+    node *current = head;
+    while (i < index && current != NULL) {
+	current = current->next;
+	i++;
+    }
 
-	if(current == NULL) {
-		fprintf(stderr, "IndexOutofBounds\n");
-		exit(-1);
-	}
+    if (current == NULL) {
+	fprintf(stderr, "IndexOutofBounds\n");
+	exit(-1);
+    }
 
-	return current;
+    return current;
 }
 
-node ** travP2(node **headAddr, signed int index)
+node **travP2(node ** headAddr, signed int index)
 {
-	// traverse by &(*current)->next
-	index = stdIndex(*headAddr, index);
+    // traverse by &(*current)->next
+    index = stdIndex(*headAddr, index);
 
-	int i = 0;
-	node **current = headAddr;
-	while (i < index && *current != NULL) {
-		current=&(*current)->next;
-		i++;
-	}
-	
-	if(i != index) {
-		fprintf(stderr, "IndexOutofBounds\n");
-		exit(-1);
-	}
+    int i = 0;
+    node **current = headAddr;
+    while (i < index && *current != NULL) {
+	current = (&(*current)->next);
+	i++;
+    }
 
-	return current;
+    if (i != index) {
+	fprintf(stderr, "IndexOutofBounds\n");
+	exit(-1);
+    }
+
+    return current;
 }
 
-node * makeNode(const int x)
+node *makeNode(const int x)
 {
-	node *newElem = (node*)malloc(sizeof(node));
-	if(newElem == NULL) {
-		fprintf(stderr, "Unable to allocate new element\n");
-		exit(-1);
-	}
+    node *newElem = (node *) malloc(sizeof(node));
+    if (newElem == NULL) {
+	fprintf(stderr, "Unable to allocate new element\n");
+	exit(-1);
+    }
 
-	newElem->data = x;
-	newElem->next = NULL;
+    newElem->data = x;
+    newElem->next = NULL;
 
-	return newElem;
+    return newElem;
 }
 
 // miscellaneous operations
-unsigned int length(node *head)
+unsigned int length(node * head)
 {
-	node *current = head;
-	int ret = 0;
-	while(current != NULL) {
-		ret++;
-		current = current->next;
-	}
-	return ret;
+    node *current = head;
+    int ret = 0;
+    while (current != NULL) {
+	ret++;
+	current = current->next;
+    }
+    return ret;
 }
 
-int sum(node *head)
+int sum(node * head)
 {
-	return reduce(head, add, 0);
+    return reduce(head, add, 0);
 }
 
-int product(node *head)
+int product(node * head)
 {
-	return reduce(head, mul, 1);
+    return reduce(head, mul, 1);
 }
 
 // stack operations
-int pop(node **headAddr)
+int pop(node ** headAddr)
 {
-	int ret;
+    int ret;
 
-	if(*headAddr != EMPTYLIST) {
-		ret = returnSafe((*headAddr)->data);
-		node *tmp = (*headAddr)->next;
-		free(*headAddr);
-		*headAddr = tmp;
-	} else {
-		fprintf(stderr, "Popped from empty list");
-		exit(-1);
-	}
-	
-	return ret;
+    if (*headAddr != EMPTYLIST) {
+	ret = returnSafe((*headAddr)->data);
+	node *tmp = (*headAddr)->next;
+	free(*headAddr);
+	*headAddr = tmp;
+    } else {
+	fprintf(stderr, "Popped from empty list");
+	exit(-1);
+    }
+
+    return ret;
 }
 
-int push(node **headAddr, const int x)
+int push(node ** headAddr, const int x)
 {
-	return insert(headAddr, 0, x);
+    return insert(headAddr, 0, x);
 }
 
 // indexed operations
-int insert(node **headAddr, const signed int index, const int x)
+int insert(node ** headAddr, const signed int index, const int x)
 {
-	node **current = travP2(headAddr, index);
+    node **current = travP2(headAddr, index);
 
-	node *newElem = makeNode(x);
-	newElem->next = *current;
-	*current = newElem;
+    node *newElem = makeNode(x);
+    newElem->next = *current;
+    *current = newElem;
 
-	return 0;
+    return 0;
 }
 
-int get(node *head, const signed int index)
+int get(node * head, const signed int index)
 {
-	return travP1(head, index)->data;
+    return travP1(head, index)->data;
 }
 
-void set(node *head, const signed int index, const int x)
+void set(node * head, const signed int index, const int x)
 {
-	travP1(head, index)->data = x;
+    travP1(head, index)->data = x;
 }
 
-int removeAt(node **headAddr, const signed int index)
+int removeAt(node ** headAddr, const signed int index)
 {
-	if(index == 0) return pop(headAddr);
+    if (index == 0)
+	return pop(headAddr);
 
-	int ret;
+    int ret;
 
-	node **linker = travP2(headAddr, index-1);
+    node **linker = travP2(headAddr, index - 1);
 
-	node *tmp = (*linker)->next;
-	ret = returnSafe(tmp->data);
+    node *tmp = (*linker)->next;
+    ret = returnSafe(tmp->data);
 
-	(*linker)->next = tmp->next;
-	free(tmp);
+    (*linker)->next = tmp->next;
+    free(tmp);
 
-	return ret;
+    return ret;
 }
 
 // structure-wide operations
-int reduce(node *head, R_agent f, const int init)
+int reduce(node * head, R_agent f, const int init)
 {
-	int ret = init;
-	node *current = head;
-	while(current != NULL) {
-		ret = (*f)(ret, current->data);
-		current = current->next;
-	}
-	return ret;
+    int ret = init;
+    node *current = head;
+    while (current != NULL) {
+	ret = (*f) (ret, current->data);
+	current = current->next;
+    }
+    return ret;
 }
 
-void map(node *head, M_agent f)
+void map(node * head, M_agent f)
 {
-	node *current = head;
-	while(current != NULL) {
-		current->data = (*f)(current->data);
-		current = current->next;
-	}
+    node *current = head;
+    while (current != NULL) {
+	current->data = (*f) (current->data);
+	current = current->next;
+    }
 }
 
 // constructors/destructors
-int toArray(node *head, int arr[])
+int toArray(node * head, int arr[])
 {
-	node *current = head;
-	for(unsigned int i = 0; i < length(head); i++) {
-		if(current == NULL)
-			return 1;
-		arr[i] = current->data;
-		current = current->next;
-	}
-	return 0;
+    node *current = head;
+    for (unsigned int i = 0; i < length(head); i++) {
+	if (current == NULL)
+	    return 1;
+	arr[i] = current->data;
+	current = current->next;
+    }
+    return 0;
 }
 
-node * fromArray(int arr[], const unsigned int arrsize)
+node *fromArray(int arr[], const unsigned int arrsize)
 {
-	node *head = NULL;
-	
-	node **linker = NULL;
-	for(unsigned int i = 0; i < arrsize; i++) {
-		node *newElem = makeNode(arr[i]);
+    node *head = NULL;
 
-		if(i == 0) { // bind heads
-			head = newElem;
-			linker = &head;
-		} else { // bind to tailend
+    node **linker = NULL;
+    for (unsigned int i = 0; i < arrsize; i++) {
+	node *newElem = makeNode(arr[i]);
 
-		linker = &(*linker)->next;
-		*linker = newElem;
-		}
+	if (i == 0) {		// bind heads
+	    head = newElem;
+	    linker = &head;
+	} else {		// bind to tailend
+
+	    linker = &(*linker)->next;
+	    *linker = newElem;
 	}
-	return head;
+    }
+    return head;
 }
 
-node * copy(node *h_origin)
+node *copy(node * h_origin)
 {
-	int init = 1;
+    int init = 1;
 
-	node *h_new = NULL;
-	
-	node **linker = NULL;
-	node *current = h_origin;
-	while(current != NULL) {
-		node *newElem = makeNode(current->data);
+    node *h_new = NULL;
 
-		if(init) { // bind h_news
-			h_new = newElem;
-			linker = &h_new;
+    node **linker = NULL;
+    node *current = h_origin;
+    while (current != NULL) {
+	node *newElem = makeNode(current->data);
 
-			init = 0;
-		} else { // bind to tailend
+	if (init) {		// bind h_news
+	    h_new = newElem;
+	    linker = &h_new;
 
-		linker = &(*linker)->next;
-		*linker = newElem;
-		}
+	    init = 0;
+	} else {		// bind to tailend
 
-		current = current->next;
+	    linker = &(*linker)->next;
+	    *linker = newElem;
 	}
-	return h_new;
+
+	current = current->next;
+    }
+    return h_new;
 }
 
-int destroy(node **headAddr)
+int destroy(node ** headAddr)
 {
-	node *current = *headAddr;
-	node *next;
-	while(current != NULL) {
-		next = current->next;
-		free(current);
-		current = next;
-	}
-	*headAddr = NULL;
-	return 0;
+    node *current = *headAddr;
+    node *next;
+    while (current != NULL) {
+	next = current->next;
+	free(current);
+	current = next;
+    }
+    *headAddr = NULL;
+    return 0;
 }
