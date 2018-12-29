@@ -67,9 +67,9 @@ int main(int argc, char **argv)
 				break;
 		}
 	}
-		
+	
 	if(argc < 3) usage(argv[0]);
-		
+	
 	Time start = pTime(argv[optind++]);
 	int elapse = (std::string(argv[optind]).find(':') != std::string::npos) ?
 		pTime(argv[optind]).abs() : atoi(argv[optind]);
@@ -81,6 +81,4 @@ int main(int argc, char **argv)
 			"\nEnd:\t" << end << std::endl;
 	} else
 		std::cout << end << std::endl;
-		
-	return 0;
 }
