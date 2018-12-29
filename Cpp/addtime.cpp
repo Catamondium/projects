@@ -9,12 +9,10 @@ struct Time {
 	int mins;
 	Time(int h, int m): hrs(h), mins(m) {}
 	int abs() const;
-	friend Time pTime(std::string in);
 };
 
 int Time::abs() const
 {
-	// Get total minutes represented
 	return (hrs * 60) + mins;
 }
 

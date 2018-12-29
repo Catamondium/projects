@@ -28,13 +28,8 @@ int getMins(Time t)
 
 Time doElapse(const Time s, const signed int t)
 {
-    Time ret;
-
     int tot = getMins(s) + t;
-    ret.hrs = floor(tot / 60);
-    ret.mins = tot % 60;
-
-    return ret;
+    return (Time){floor(tot / 60), tot % 60};
 }
 
 void usage(const char *prog)
@@ -65,8 +60,7 @@ int main(int argc, char **argv)
 	}
     }
 
-    if (argc < 3)
-	usage(argv[0]);
+    if (argc < 3) usage(argv[0]);
 
     start = pTime(argv[optind++]);
 
@@ -74,7 +68,6 @@ int main(int argc, char **argv)
 	getMins(pTime(argv[optind])) : atoi(argv[optind]);
 
     end = doElapse(start, elapse);
-
     if (!quiet) {
 	sTime(strStart, start);
 	sTime(strEnd, end);
