@@ -29,8 +29,7 @@ int getMins(Time t)
 Time doElapse(const Time s, const signed int t)
 {
     int tot = getMins(s) + t;
-    return (Time) {
-    floor(tot / 60), tot % 60};
+    return (Time) {floor(tot / 60), tot % 60};
 }
 
 void usage(const char *prog)
