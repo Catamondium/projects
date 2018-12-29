@@ -28,13 +28,8 @@ int getMins(Time t)
 
 Time doElapse(const Time s, const signed int t)
 {
-    Time ret;
-
     int tot = getMins(s) + t;
-    ret.hrs = floor(tot / 60);
-    ret.mins = tot % 60;
-
-    return ret;
+    return (Time){floor(tot / 60), tot % 60};
 }
 
 void usage(const char *prog)
@@ -51,11 +46,11 @@ int main(int argc, char **argv)
     Time start, end;
     char strStart[20], strEnd[20];
     signed int elapse;
-    int quiet = 0;		// default to human readable
+    int quiet = 0;
 
     int c;
     while ((c = getopt(argc, argv, "qh")) != -1) {
-	switch (c) {		// avoids gcc moaning about type issue
+	switch (c) {
 	case 'q':
 	    quiet = 1;
 	    break;
@@ -65,16 +60,13 @@ int main(int argc, char **argv)
 	}
     }
 
-    if (argc < 3)
-	usage(argv[0]);
+    if (argc < 3) usage(argv[0]);
 
     start = pTime(argv[optind++]);
-
     elapse = strstr(argv[optind], ":") != NULL ?
 	getMins(pTime(argv[optind])) : atoi(argv[optind]);
 
     end = doElapse(start, elapse);
-
     if (!quiet) {
 	sTime(strStart, start);
 	sTime(strEnd, end);

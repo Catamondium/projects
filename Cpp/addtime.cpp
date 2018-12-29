@@ -9,7 +9,6 @@ struct Time {
 	int mins;
 	Time(int h, int m): hrs(h), mins(m) {}
 	int abs() const;
-	friend Time pTime(std::string in);
 };
 
 int Time::abs() const
@@ -49,14 +48,14 @@ std::ostream& operator<<(std::ostream& stream, Time a)
 	stream << buf; // c-style format solution
 		
 	//stream << std::noshowpos << std::setfill('0') << std::setw(2) << a.hrs << ':' 
-	//	<< std::setw(2) << a.mins; // c++ format solution
+	//	<< std::setw(2) << a.mins; // C++ format solution
 
 	return stream;
 }
 
 int main(int argc, char **argv)
 {
-	bool quiet = false; // default to human readable
+	bool quiet = false;
 		
 	int c;
 	while((c = getopt(argc, argv, "qh")) != -1) {
