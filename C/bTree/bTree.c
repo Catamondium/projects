@@ -78,10 +78,7 @@ void pvisit(node * n)
 
 bTree newTree()
 {
-    bTree ret;
-    ret.root = NULL;
-    ret.size = 0;
-    return ret;
+    return (bTree){.root = NULL, .size = 0};
 }
 
 void insert(bTree * tree, int i)
