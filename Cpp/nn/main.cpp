@@ -10,17 +10,12 @@
 /* TODO
  * IO
  * * argv IO
- * * * command note: how ID? In file/vector order??
+ * * * COM how ID? In file/vector order??
  * * * list, add, remove, edit
- * * * command params? ID, [option collect?]
+ * * * COM params? ID, [option collect?]
  * * interactive IO
  * * * Traverse by ID, parse com by letter
  * * callable COM struct?
- *
- * Interactive file optimisation
- * * add, just append, may as well follow immediately
- * * edit, fully marshal on prog termination
- * * remove, ""
  */
 
 std::string getHome()
