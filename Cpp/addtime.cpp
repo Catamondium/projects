@@ -30,7 +30,7 @@ Time operator+(const Time lhs, const int rhs)
 	return Time(floor(tot / 60), tot % 60);
 }		
 
-void usage(const char *prog)
+void usage(const std::string prog)
 {
 	std::cout <<
 		"Usage: " << prog << " [-qh] hh:mm mins_elapse\n"
