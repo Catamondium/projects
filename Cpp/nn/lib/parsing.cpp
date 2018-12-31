@@ -5,14 +5,13 @@
 #include <chrono>    // timepoint
 #include "note.hpp"
 // streams
-#include <fstream>   // ifstream
 #include <iostream>
 #include <iomanip>   // get_time
+#include <fstream>
 #include <sstream>
 // functional/locale
 #include <algorithm> // transform, find_if
-#include <cctype>    // tolower              ??
-#include <locale>    // tolower, isspace     ??
+#include <locale>    // tolower, isspace
 
 
 
