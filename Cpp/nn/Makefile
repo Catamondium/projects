@@ -4,4 +4,3 @@ a.out : main.cpp \
 	~/.notes
 	g++ -std=c++17 -Wall -Wextra -pedantic \
 		lib/parsing.cpp main.cpp lib/note.cpp
-	./a.out

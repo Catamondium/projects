@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <algorithm> // any_of
+#include <cctype> // tolower
 #include <unistd.h> // *nix api
 #include <sys/types.h> // *nix types
 #include <pwd.h> // working directory stuff
@@ -16,7 +18,14 @@
  * * callable COM struct?
  */
 
-enum Com {LIST, ADD, REMOVE, EDIT};
+enum Com : char
+{
+	LIST   = 'l',
+	ADD    = 'a',
+	REMOVE = 'r',
+	EDIT   = 'e'
+};
+const std::string comlist = "lare";
 
 const std::string  DATAFILE = "/.notes";
 
@@ -54,17 +63,21 @@ int main(int argc, char **argv)
 				holder = optarg;
 				event = notelib::makeEvent(notelib::trim(holder));
 				break;
+			case 'i':
+				interactive = true;
+				break;
 		}
 	}
 
 	if(!interactive) { // if interactive, ignore opts
-		if(head) { // all notes require header
-			std::cout << head.value() << std::endl;
-			if(body)
-				std::cout << body.value() << std::endl;
-			if(event)
-				std::cout << "Event parsed" << std::endl;
-		} // else noop
+		if(head && optind < argc) { // all notes require header
+			Com command;
+			char c = std::tolower(argv[optind][0]);
+			if(std::any_of(comlist.begin(), comlist.end(), [&c](auto o){return c == o;}))
+				command = static_cast<Com>(c);
+			//... run command
+		} // else invalid
 	} else
 			std::cout << "interactive" << std::endl;
+
 }
