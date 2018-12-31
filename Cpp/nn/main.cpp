@@ -25,8 +25,7 @@ enum Com : char
 	REMOVE = 'r',
 	EDIT   = 'e'
 };
-const std::string comlist = "lare";
-
+const std::string COMS = "lare";
 const std::string  DATAFILE = "/.notes";
 
 std::string getHome()
@@ -73,11 +72,10 @@ int main(int argc, char **argv)
 		if(head && optind < argc) { // all notes require header
 			Com command;
 			char c = std::tolower(argv[optind][0]);
-			if(std::any_of(comlist.begin(), comlist.end(), [&c](auto o){return c == o;}))
+			if(std::any_of(COMS.begin(), COMS.end(), [&c](auto o){return c == o;}))
 				command = static_cast<Com>(c);
 			//... run command
 		} // else invalid
 	} else
 			std::cout << "interactive" << std::endl;
-
 }
