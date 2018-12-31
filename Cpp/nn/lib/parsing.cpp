@@ -17,7 +17,7 @@
 
 
 namespace notelib {
-	enum Keyword { HEADING, EVENT, EOE, BODY };
+	enum struct Keyword { HEADING, EVENT, EOE, BODY };
 
 	std::string ltrim(std::string &s)
 	{
@@ -48,25 +48,25 @@ namespace notelib {
 		std::transform(s.begin(), s.end(), s.begin(), ::tolower);
 		
 		if(s == "heading")
-			return HEADING;
+			return Keyword::HEADING;
 
 		else if(s == "event")
-			return EVENT;
+			return Keyword::EVENT;
 
 		else
-			return BODY;
+			return Keyword::BODY;
 	}
 
 	std::pair<Keyword, int> getkwd(std::string line)
 	{
 		size_t fPos;
 		if(line.substr(0, 2) == "##")
-			return std::make_pair(EOE, -1);
+			return std::make_pair(Keyword::EOE, -1);
 
 		else if ((fPos = line.find(':')) != std::string::npos)
 			return std::make_pair(fEnum(line.substr(0, fPos)), fPos+1);
 		
-		return std::make_pair(BODY, -1);
+		return std::make_pair(Keyword::BODY, -1);
 	}
 	
 	note_time makeEvent(std::string value)
@@ -100,15 +100,15 @@ namespace notelib {
 			std::pair<Keyword, int> v = getkwd(line);
 			trim(line);
 			switch(v.first) {
-				case HEADING:
+				case Keyword::HEADING:
 					line = line.substr(v.second);
 					head = ltrim(line);
 					break;
-				case EVENT:
+				case Keyword::EVENT:
 					line = line.substr(v.second);
 					event = makeEvent(ltrim(line));
 					break;
-				case EOE:
+				case Keyword::EOE:
 					if(head)
 						notes.push_back(Note(head.value(), body, event));
 					head.reset();
