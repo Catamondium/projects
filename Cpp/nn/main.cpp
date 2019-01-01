@@ -74,15 +74,12 @@ int main(int argc, char **argv)
 		}
 	}
 
-	if(!interactive) { // if interactive, ignore opts
-		if(head && optind < argc) { // all notes require header
-			Com command;
-			char c = std::tolower(argv[optind][0]);
-			if(std::any_of(COMS.cbegin(), COMS.cend(), [&c](auto o){return c == o;})) {
-				command = static_cast<Com>(c);
-				//... run command
-			} else
-				usage(argv[0]);
+	if(!interactive && head && optind < argc) { // if interactive, ignore opts
+		Com command;
+		char c = std::tolower(argv[optind][0]);
+		if(std::any_of(COMS.cbegin(), COMS.cend(), [&c](auto o){return c == o;})) {
+			command = static_cast<Com>(c);
+			//... run command
 		} else
 			usage(argv[0]);
 	} else
