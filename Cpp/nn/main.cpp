@@ -28,6 +28,10 @@ enum Com : char
 const std::string COMS = "lare";
 const std::string  DATAFILE = "/.notes";
 
+void usage(std::string prog) {
+	exit(1);
+}
+
 std::string getHome()
 {
 	char *homedir;
@@ -65,6 +69,8 @@ int main(int argc, char **argv)
 			case 'i':
 				interactive = true;
 				break;
+			default:
+				usage(argv[0]);
 		}
 	}
 
@@ -72,10 +78,13 @@ int main(int argc, char **argv)
 		if(head && optind < argc) { // all notes require header
 			Com command;
 			char c = std::tolower(argv[optind][0]);
-			if(std::any_of(COMS.cbegin(), COMS.cend(), [&c](auto o){return c == o;}))
+			if(std::any_of(COMS.cbegin(), COMS.cend(), [&c](auto o){return c == o;})) {
 				command = static_cast<Com>(c);
-			//... run command
-		} // else invalid
+				//... run command
+			} else
+				usage(argv[0]);
+		} else
+			usage(argv[0]);
 	} else
 			std::cout << "interactive" << std::endl;
 }
