@@ -50,7 +50,7 @@ std::ostream& operator<<(std::ostream& stream, Com c)
 	return stream;
 }
 
-void execute(Com target, std::string fname, std::optional<Note> note, std::optional<unsigned int> index)
+bool/*hasError*/ execute(Com target, std::string fname, std::optional<Note> note, std::optional<unsigned int> index)
 {
 	std::cout << target << std::endl;
 	std::ofstream file(fname, std::ios_base::app);
@@ -65,20 +65,28 @@ void execute(Com target, std::string fname, std::optional<Note> note, std::optio
 		case ADD:
 			if(note)
 				file << note.value().unmarshal() << std::endl;
+			else
+				return true;
 			break;
 		case REMOVE:
 			notes = notelib::parse(fname);
 			if(index && index.value() < notes.size())
 				notes.erase(notes.begin() + index.value());
+			else
+				return true;
 			notelib::unmarshAll(notes, fname);
 			break;
 		case EDIT:
 			notes = notelib::parse(fname);
 			if(note && index && index.value() < notes.size())
 				notes[index.value()] = note.value();
+			else
+				return true;
 			notelib::unmarshAll(notes, fname);
 			break;
 	}
+
+	return false;
 }
 
 void usage(std::string prog) {
@@ -145,7 +153,8 @@ int main(int argc, char **argv)
 			if(head)
 				note = Note(head.value(), body, event);
 			
-			execute(target, file, note, index);
+			if(execute(target, file, note, index))
+				usage(argv[0]);
 		} else
 			usage(argv[0]);
 	} else
