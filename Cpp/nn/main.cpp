@@ -18,7 +18,10 @@
  * * callable COM struct?
  */
 
+const std::string  DATAFILE = "/.notes";
 typedef std::optional<std::string> optstring;
+const std::string COMS = "lare";
+
 enum Com : char
 {
 	LIST   = 'l',
@@ -26,8 +29,30 @@ enum Com : char
 	REMOVE = 'r',
 	EDIT   = 'e'
 };
-const std::string COMS = "lare";
-const std::string  DATAFILE = "/.notes";
+
+// convenience overload
+std::ostream& operator<<(std::ostream& stream, Com c)
+{
+	switch(c) {
+		case 'l':
+			stream << "LS";
+			break;
+		case 'a':
+			stream << "ADD";
+			break;
+		case 'r':
+			stream << "RM";
+			break;
+		case 'e':
+			stream << "EDIT";
+	}
+	return stream;
+}
+
+void execute(Com target, std::optional<Note> note, std::string fname)
+{
+	std::cout << target << std::endl;
+}
 
 void usage(std::string prog) {
 	exit(1);
@@ -84,7 +109,8 @@ int main(int argc, char **argv)
 			Com target = static_cast<Com>(c);
 			if(head)
 				note = Note(head.value(), body, event);
-			//execute(target, note, file);
+			
+			execute(target, note, file);
 		} else
 			usage(argv[0]);
 	} else
