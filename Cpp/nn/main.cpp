@@ -83,5 +83,5 @@ int main(int argc, char **argv)
 		} else
 			usage(argv[0]);
 	} else
-			std::cout << "interactive" << std::endl;
+		std::cout << "interactive" << std::endl;
 }
