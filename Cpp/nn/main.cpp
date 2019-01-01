@@ -35,16 +35,16 @@ enum Com : char
 std::ostream& operator<<(std::ostream& stream, Com c)
 {
 	switch(c) {
-		case 'l':
+		case LIST:
 			stream << "LIST";
 			break;
-		case 'a':
+		case ADD:
 			stream << "ADD";
 			break;
-		case 'r':
+		case REMOVE:
 			stream << "REMOVE";
 			break;
-		case 'e':
+		case EDIT:
 			stream << "EDIT";
 	}
 	return stream;
