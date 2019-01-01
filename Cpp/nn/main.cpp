@@ -18,6 +18,7 @@
  * * callable COM struct?
  */
 
+typedef std::optional<std::string> optstring;
 enum Com : char
 {
 	LIST   = 'l',
@@ -43,8 +44,10 @@ std::string getHome()
 
 int main(int argc, char **argv)
 {
-	std::optional<std::string> head;
-	std::optional<std::string> body;
+	std::string file = getHome() + DATAFILE;
+
+	optstring head;
+	optstring body;
 	std::optional<note_time> event;
 
 	bool interactive = true; // prompt user by default
@@ -75,11 +78,11 @@ int main(int argc, char **argv)
 	}
 
 	if(!interactive && head && optind < argc) { // if interactive, ignore opts
-		Com command;
+		Com target;
 		char c = std::tolower(argv[optind][0]);
 		if(std::any_of(COMS.cbegin(), COMS.cend(), [&c](auto o){return c == o;})) {
-			command = static_cast<Com>(c);
-			//... run command
+			target = static_cast<Com>(c);
+			//... run target
 		} else
 			usage(argv[0]);
 	} else
