@@ -77,12 +77,14 @@ int main(int argc, char **argv)
 		}
 	}
 
-	if(!interactive && head && optind < argc) { // if interactive, ignore opts
-		Com target;
+	if(!interactive && optind < argc) { // if interactive, ignore opts
 		char c = std::tolower(argv[optind][0]);
 		if(std::any_of(COMS.cbegin(), COMS.cend(), [&c](auto o){return c == o;})) {
-			target = static_cast<Com>(c);
-			//... run target
+			std::optional<Note> note;
+			Com target = static_cast<Com>(c);
+			if(head)
+				note = Note(head.value(), body, event);
+			//execute(target, note, file);
 		} else
 			usage(argv[0]);
 	} else
