@@ -108,8 +108,12 @@ namespace notelib {
 					event = makeEvent(ltrim(line));
 					break;
 				case Keyword::EOE:
-					if(head)
-						notes.push_back(Note(head.value(), body, event));
+					if(head) {
+						if(body)
+							notes.push_back(Note(head.value(), rtrim(body.value()), event));
+						else
+							notes.push_back(Note(head.value(), body, event));
+					}
 					head.reset();
 					body.reset();
 					event.reset();
@@ -121,8 +125,12 @@ namespace notelib {
 			}
 		}
 
-		if(head)
-			notes.push_back(Note(head.value(), body, event));
+		if(head) {
+			if(body)
+				notes.push_back(Note(head.value(), rtrim(body.value()), event));
+			else
+				notes.push_back(Note(head.value(), body, event));
+		}
 
 		return notes;
 	}

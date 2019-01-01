@@ -23,7 +23,7 @@ std::string Note::unmarshal()
 	if(event)
 		ss << "Event:\t" << printEvent().value() << std::endl;
 	if(body)
-		ss << body.value();
+		ss << body.value() << std::endl;
 
 	ss << "##";
 	return ss.str();
