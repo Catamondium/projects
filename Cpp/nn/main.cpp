@@ -10,13 +10,9 @@
 #include "lib/note.hpp"
 
 /* TODO
- * IO
- * * argv IO
- * * * COM how ID? In file/vector order??
- * * * list, add, remove, edit
- * * user IO
- * * * Traverse by ID, parse com by letter
- * * callable COM struct?
+ * user IO
+ * * Traverse by ID, parse com by letter
+ * callable COM struct?
  */
 
 const std::string  DATAFILE = "/.notes";
