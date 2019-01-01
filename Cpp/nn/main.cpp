@@ -13,6 +13,12 @@
  * user IO
  * * Traverse by ID, parse com by letter
  * callable COM struct?
+ *
+ * Debugging / clarity
+ * * find a substitute for 'i' to get index
+ * * Com keyed function pointers
+ * * * additional boilerplate, but less wasteful on declarations
+ * * Find way to integrate argv dispatch with 'user'IO
  */
 
 const std::string  DATAFILE = "/.notes";
