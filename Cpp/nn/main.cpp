@@ -43,16 +43,16 @@ enum Com : char
 //### COM argv functors
 // Ignore related 'unused parameter' warnings
 // Modifying signatures will void dispatch ###
-bool com_ls(std::string fname, std::optional<Note> note, std::optional<int> index)
+bool com_ls(std::string fname, std::optional<Note>, std::optional<int>)
 {
 	std::vector<Note> notes = notelib::parse(fname);
-	for(auto i = 0; i < notes.size(); i++) {
+	for(auto i = 0; i < notes.size(); ++i) {
 		std::cout << "[" << i << "] " << notes[i].unmarshal() << std::endl;
 	}
 	return false;
 }
 
-bool com_add(std::string fname, std::optional<Note> note, std::optional<int> index)
+bool com_add(std::string fname, std::optional<Note> note, std::optional<int>)
 {
 	std::ofstream file(fname, std::ios_base::app);
 	if(note)
@@ -62,7 +62,7 @@ bool com_add(std::string fname, std::optional<Note> note, std::optional<int> ind
 	return false;
 }
 
-bool com_rm(std::string fname, std::optional<Note> note, std::optional<int> index)
+bool com_rm(std::string fname, std::optional<Note>, std::optional<int> index)
 {
 	std::vector<Note> notes = notelib::parse(fname);
 	if(index && index.value() < notes.size())
@@ -112,7 +112,8 @@ std::ostream& operator<<(std::ostream& stream, Com c)
 	return stream;
 }
 
-void usage(std::string prog) {
+void usage(std::string prog)
+{
 	exit(1);
 }
 
