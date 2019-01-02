@@ -1,13 +1,17 @@
-#include <iostream>
 #include <vector>
 #include <unordered_map>
+
 #include <algorithm>   // any_of
 #include <functional>  // std::function
 #include <cctype>      // tolower
+
 #include <unistd.h>    // *nix api
 #include <sys/types.h> // *nix types
-#include <fstream>
 #include <pwd.h>       // working directory stuff
+
+#include <iostream>
+#include <fstream>
+
 #include "lib/parsing.hpp"
 #include "lib/note.hpp"
 
@@ -16,9 +20,13 @@
  * * Traverse by ID, parse com by letter
  * callable COM struct?
  *
+ * breakout COM into lib?
+ *
  * Debugging / clarity
  * * find a substitute for 'i' to get index
  * * Find way to integrate argv dispatch with 'user'IO
+ *
+ * Cleanup com functors?
  */
 
 const std::string  DATAFILE = "/.notes";
@@ -33,7 +41,10 @@ enum Com : char
 	EDIT   = 'e'
 };
 
-bool com_ls(std::string fname, std::optional<Note> note, std::optional<unsigned int> index)
+//### COM argv functors
+// Ignore related 'unused parameter' warnings
+// Modifying signatures will void dispatch ###
+bool com_ls(std::string fname, std::optional<Note> note, std::optional<int> index)
 {
 	std::vector<Note> notes = notelib::parse(fname);
 	for(auto i = 0; i < notes.size(); i++) {
@@ -41,7 +52,8 @@ bool com_ls(std::string fname, std::optional<Note> note, std::optional<unsigned 
 	}
 	return false;
 }
-bool com_add(std::string fname, std::optional<Note> note, std::optional<unsigned int> index)
+
+bool com_add(std::string fname, std::optional<Note> note, std::optional<int> index)
 {
 	std::ofstream file(fname, std::ios_base::app);
 	if(note)
@@ -50,7 +62,8 @@ bool com_add(std::string fname, std::optional<Note> note, std::optional<unsigned
 		return true;
 	return false;
 }
-bool com_rm(std::string fname, std::optional<Note> note, std::optional<unsigned int> index)
+
+bool com_rm(std::string fname, std::optional<Note> note, std::optional<int> index)
 {
 	std::vector<Note> notes = notelib::parse(fname);
 	if(index && index.value() < notes.size())
@@ -60,7 +73,8 @@ bool com_rm(std::string fname, std::optional<Note> note, std::optional<unsigned 
 	notelib::unmarshAll(notes, fname);
 	return false;
 }
-bool com_edit(std::string fname, std::optional<Note> note, std::optional<unsigned int> index)
+
+bool com_edit(std::string fname, std::optional<Note> note, std::optional<int> index)
 {
 	std::vector<Note> notes = notelib::parse(fname);
 	if(note && index && index.value() < notes.size())
@@ -70,8 +84,9 @@ bool com_edit(std::string fname, std::optional<Note> note, std::optional<unsigne
 	notelib::unmarshAll(notes, fname);
 	return false;
 }
+//###
 
-typedef std::function<bool/*HasError*/(std::string, std::optional<Note>, std::optional<unsigned int>)> com_functor;
+typedef std::function<bool/*HasError*/(std::string, std::optional<Note>, std::optional<int>)> com_functor;
 std::unordered_map<Com, com_functor> dispatch
 {
 	{LIST, com_ls},
@@ -118,7 +133,7 @@ int main(int argc, char **argv)
 	optstring head;
 	optstring body;
 	std::optional<note_time> event;
-	std::optional<unsigned int> index;
+	std::optional<int> index;
 
 	bool user = false; // prompt user by default
 
