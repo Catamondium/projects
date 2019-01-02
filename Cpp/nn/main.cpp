@@ -30,7 +30,6 @@
  */
 
 const std::string  DATAFILE = "/.notes";
-using optstring = std::optional<std::string>;
 const std::string COMS = "lare";
 
 enum Com : char
@@ -130,8 +129,8 @@ int main(int argc, char **argv)
 {
 	std::string file = getHome() + DATAFILE;
 
-	optstring head;
-	optstring body;
+	std::optional<std::string> head;
+	std::optional<std::string> body;
 	std::optional<note_time> event;
 	std::optional<int> index;
 
