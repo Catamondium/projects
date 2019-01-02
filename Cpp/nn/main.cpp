@@ -1,11 +1,13 @@
 #include <iostream>
 #include <vector>
-#include <algorithm> // any_of
-#include <cctype> // tolower
-#include <unistd.h> // *nix api
+#include <unordered_map>
+#include <algorithm>   // any_of
+#include <functional>  // std::function
+#include <cctype>      // tolower
+#include <unistd.h>    // *nix api
 #include <sys/types.h> // *nix types
 #include <fstream>
-#include <pwd.h> // working directory stuff
+#include <pwd.h>       // working directory stuff
 #include "lib/parsing.hpp"
 #include "lib/note.hpp"
 
@@ -16,8 +18,6 @@
  *
  * Debugging / clarity
  * * find a substitute for 'i' to get index
- * * Com keyed function pointers
- * * * additional boilerplate, but less wasteful on declarations
  * * Find way to integrate argv dispatch with 'user'IO
  */
 
@@ -33,7 +33,53 @@ enum Com : char
 	EDIT   = 'e'
 };
 
-// convenience overload
+bool com_ls(std::string fname, std::optional<Note> note, std::optional<unsigned int> index)
+{
+	std::vector<Note> notes = notelib::parse(fname);
+	for(auto i = 0; i < notes.size(); i++) {
+		std::cout << "[" << i << "] " << notes[i].unmarshal() << std::endl;
+	}
+	return false;
+}
+bool com_add(std::string fname, std::optional<Note> note, std::optional<unsigned int> index)
+{
+	std::ofstream file(fname, std::ios_base::app);
+	if(note)
+		file << note.value().unmarshal() << std::endl;
+	else
+		return true;
+	return false;
+}
+bool com_rm(std::string fname, std::optional<Note> note, std::optional<unsigned int> index)
+{
+	std::vector<Note> notes = notelib::parse(fname);
+	if(index && index.value() < notes.size())
+		notes.erase(notes.begin() + index.value());
+	else
+		return true;
+	notelib::unmarshAll(notes, fname);
+	return false;
+}
+bool com_edit(std::string fname, std::optional<Note> note, std::optional<unsigned int> index)
+{
+	std::vector<Note> notes = notelib::parse(fname);
+	if(note && index && index.value() < notes.size())
+		notes[index.value()] = note.value();
+	else
+		return true;
+	notelib::unmarshAll(notes, fname);
+	return false;
+}
+
+typedef std::function<bool/*HasError*/(std::string, std::optional<Note>, std::optional<unsigned int>)> com_functor;
+std::unordered_map<Com, com_functor> dispatch
+{
+	{LIST, com_ls},
+	{ADD, com_add},
+	{REMOVE, com_rm},
+	{EDIT, com_edit}
+};
+
 std::ostream& operator<<(std::ostream& stream, Com c)
 {
 	switch(c) {
@@ -50,45 +96,6 @@ std::ostream& operator<<(std::ostream& stream, Com c)
 			stream << "EDIT";
 	}
 	return stream;
-}
-
-bool/*hasError*/ execute(Com target, std::string fname, std::optional<Note> note, std::optional<unsigned int> index)
-{
-	std::cout << target << std::endl;
-	std::ofstream file(fname, std::ios_base::app);
-	std::vector<Note> notes;
-	switch(target) {
-		case LIST:
-			notes = notelib::parse(fname);
-			for(auto i = 0; i < notes.size(); i++) {
-				std::cout << "[" << i << "] " << notes[i].unmarshal() << std::endl;
-			}
-			break;
-		case ADD:
-			if(note)
-				file << note.value().unmarshal() << std::endl;
-			else
-				return true;
-			break;
-		case REMOVE:
-			notes = notelib::parse(fname);
-			if(index && index.value() < notes.size())
-				notes.erase(notes.begin() + index.value());
-			else
-				return true;
-			notelib::unmarshAll(notes, fname);
-			break;
-		case EDIT:
-			notes = notelib::parse(fname);
-			if(note && index && index.value() < notes.size())
-				notes[index.value()] = note.value();
-			else
-				return true;
-			notelib::unmarshAll(notes, fname);
-			break;
-	}
-
-	return false;
 }
 
 void usage(std::string prog) {
@@ -155,7 +162,8 @@ int main(int argc, char **argv)
 			if(head)
 				note = Note(head.value(), body, event);
 			
-			if(execute(target, file, note, index))
+			std::cout << target << std::endl;
+			if(dispatch[target](file, note, index))
 				usage(argv[0]);
 		} else
 			usage(argv[0]);
