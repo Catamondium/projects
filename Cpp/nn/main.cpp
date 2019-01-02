@@ -30,7 +30,7 @@
  */
 
 const std::string  DATAFILE = "/.notes";
-typedef std::optional<std::string> optstring;
+using optstring = std::optional<std::string>;
 const std::string COMS = "lare";
 
 enum Com : char
@@ -86,7 +86,7 @@ bool com_edit(std::string fname, std::optional<Note> note, std::optional<int> in
 }
 //###
 
-typedef std::function<bool/*HasError*/(std::string, std::optional<Note>, std::optional<int>)> com_functor;
+using com_functor = std::function<bool/*HasError*/(std::string, std::optional<Note>, std::optional<int>)>;
 std::unordered_map<Com, com_functor> dispatch
 {
 	{LIST, com_ls},

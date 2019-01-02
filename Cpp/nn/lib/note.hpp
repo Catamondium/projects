@@ -2,7 +2,7 @@
 #include <optional>
 #include <chrono> // timepoint
 
-typedef std::chrono::system_clock::time_point note_time;
+using note_time = std::chrono::system_clock::time_point;
 struct Note {
 	std::string heading;
 	std::optional<std::string> body;
