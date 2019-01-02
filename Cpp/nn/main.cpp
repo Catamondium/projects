@@ -89,10 +89,10 @@ bool com_edit(std::string fname, std::optional<Note> note, std::optional<int> in
 using com_functor = std::function<bool/*HasError*/(std::string, std::optional<Note>, std::optional<int>)>;
 std::unordered_map<Com, com_functor> dispatch
 {
-	{LIST, com_ls},
-	{ADD, com_add},
+	{LIST,   com_ls},
+	{ADD,    com_add},
 	{REMOVE, com_rm},
-	{EDIT, com_edit}
+	{EDIT,   com_edit}
 };
 
 std::ostream& operator<<(std::ostream& stream, Com c)
