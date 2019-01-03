@@ -135,7 +135,7 @@ int main(int argc, char **argv)
 	std::optional<note_time> event;
 	std::optional<int> index;
 
-	bool user = false; // prompt user by default
+	bool user = false;
 
 	int c;
 	while((c = getopt(argc, argv, "ui:h:b:e:")) != -1) {
@@ -169,7 +169,7 @@ int main(int argc, char **argv)
 		}
 	}
 
-	if(!user && optind < argc) { // if user, ignore opts
+	if(!user && optind < argc) {
 		char c = std::tolower(argv[optind][0]);
 		if(std::any_of(COMS.cbegin(), COMS.cend(), [&c](auto o){return c == o;})) {
 			std::optional<Note> note;
