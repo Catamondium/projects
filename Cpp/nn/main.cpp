@@ -1,3 +1,5 @@
+#include <assert.h>
+
 #include <vector>
 #include <unordered_map>
 
@@ -8,6 +10,8 @@
 #include <unistd.h>    // *nix api
 #include <sys/types.h> // *nix types
 #include <pwd.h>       // working directory stuff
+#include <stdlib.h>    // realpath
+#include <limits.h>
 
 #include <iostream>
 #include <fstream>
@@ -29,7 +33,7 @@
  * Cleanup com functors?
  */
 
-const std::string  DATAFILE = "/.notes";
+const std::string DATAFILE = "/.notes";
 const std::string COMS = "lare";
 
 enum Com : char
@@ -138,7 +142,7 @@ int main(int argc, char **argv)
 	bool user = false;
 
 	int c;
-	while((c = getopt(argc, argv, "ui:h:b:e:")) != -1) {
+	while((c = getopt(argc, argv, "ui:h:b:e:f:")) != -1) {
 		std::string holder;
 		switch(c) {
 			case 'h':
@@ -160,10 +164,19 @@ int main(int argc, char **argv)
 			case 'i':
 				index = std::stoi(optarg);
 				break;
-			/*case 'f': // Doesn't work with relative paths
-				std::cout << "File:\t" << optarg << std::endl;
-				file = optarg;
-				break;*/
+			case 'f': { // Doesn't work with relative paths
+						  std::cout << "File:\t" << optarg << std::endl;
+						  char *path = optarg;
+						  char *temp = realpath(path, NULL); // Returns NULL, probably issue with optarg
+						  if(temp != NULL)
+							  file = std::string(temp);
+						  else {
+							  std::cerr << "Path resolution error" << std::endl;
+							  exit(1);
+						  }
+						  free(temp);
+					  }
+				break;
 			default:
 				usage(argv[0]);
 		}
