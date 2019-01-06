@@ -1,8 +1,8 @@
 #!/bin/bash
 path=$(readlink -f $1)
-SIZE=$2
+size=$2
 
-: ${SIZE:=10}     # default bucket size 10
+: ${size:=10}     # default bucket size 10
 : ${path:=$(pwd)} # default to current working dir
 
 declare -a files=($path/*.jpg)
@@ -13,15 +13,15 @@ if [ "${#files[@]}" == 0 ]; then
 	exit 0
 fi
 
-((div=${#files[@]} / $SIZE))
+((div=${#files[@]} / $size))
 div=${div%.*}
 ((width=$(log $div) + 1))
 
 i=0
 for f in "${files[@]}"; do
-	((i_mod=$i % $SIZE))
+	((i_mod=$i % $size))
 	if [ "$i_mod" == 0 ]; then
-		((d=$i / $SIZE))
+		((d=$i / $size))
 		d=${d%.*}
 		dir=$(printf "%s/%0*d" "$path" "$width" "$d")
 		mkdir "$dir"
