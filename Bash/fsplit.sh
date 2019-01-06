@@ -7,7 +7,7 @@ files+=($path/*.png)
 SIZE=10
 
 if [ "${#files[@]}" == 0 ]; then
-	exit
+	exit 0
 fi
 
 i=1
