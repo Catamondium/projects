@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <math.h>   // log10, floor
 #include <stdlib.h> // atoi
-#include <ctype.h>    // isdigit
+#include <ctype.h>  // isdigit
 
 void err()
 {
 	fprintf(stderr, "integer operand > 0 needed.\n");
 	exit(1);
 }
+
 int main(int argc, char **argv)
 {
 	if(argc < 2) err();
