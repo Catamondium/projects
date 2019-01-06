@@ -12,9 +12,8 @@ fi
 
 ((div=${#files[@]} / $SIZE))
 div=${div%.*}
-
 ((width=$(log $div) + 1))
-echo $width
+
 i=0
 for f in "${files[@]}"; do
 	((i_mod=$i % $SIZE))
@@ -22,12 +21,11 @@ for f in "${files[@]}"; do
 		((d=$i / $SIZE))
 		d=${d%.*}
 		dir=$(printf "%s/%0*d" "$path" "$width" "$d")
-		echo $dir
 		mkdir "$dir"
+
+		echo $dir
 	fi
 
-	# Sort input file
 	mv "$f" "$dir"
-
 	((i++))
 done
