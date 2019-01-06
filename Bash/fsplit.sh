@@ -6,18 +6,26 @@ files+=($path/*.jpeg)
 files+=($path/*.png)
 SIZE=10
 
+if [ "${#files[@]}" == 0 ]; then
+	exit
+fi
+
 i=1
 d=1
-mkdir "$path/$d"
+((width=$(log ${#files[@]}) + 1))
+dir=$(printf "%s/%0*d\n" "$path" "$width" "$d")
+mkdir "$dir"
 for f in "${files[@]}"; do
 	# Sort input files
-	 mv "$f" "$path/$d"
+	mv "$f" "$dir"
 
 	# Iterate counts
 	((i++))
 	((i_mod=$i % $SIZE))
 	if [ "$i_mod" == 0 ]; then
 		((d++))
-		mkdir "$path/$d"
+		dir=$(printf "%s/%0*d\n" "$path" "$width" "$d")
+		echo $dir
+		mkdir "$dir"
 	fi
 done

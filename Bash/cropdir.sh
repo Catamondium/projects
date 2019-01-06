@@ -5,5 +5,5 @@ printf "Cropdir:\t%s\n" "$1"
 
 files="$1/*"
 gimp $files
-mv $files ".."
-rm -di $1
+mv $files "$1/.."
+rm -d $1
