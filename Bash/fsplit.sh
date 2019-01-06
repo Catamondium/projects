@@ -1,10 +1,12 @@
 #!/bin/bash
-#GNU bash, version 4.3.48(1)-release (x86_64-pc-linux-gnu)
+SIZE=$2
+: ${SIZE:=10} # default bucket size 10
+
 path=$(readlink -f $1)
+: ${path:=$(pwd)} # default to current working dir
 declare -a files=($path/*.jpg)
 files+=($path/*.jpeg)
 files+=($path/*.png)
-SIZE=10
 
 if [ "${#files[@]}" == 0 ]; then
 	exit 0
