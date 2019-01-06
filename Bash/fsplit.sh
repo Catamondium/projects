@@ -1,9 +1,10 @@
 #!/bin/bash
-SIZE=$2
-: ${SIZE:=10} # default bucket size 10
-
 path=$(readlink -f $1)
+SIZE=$2
+
+: ${SIZE:=10}     # default bucket size 10
 : ${path:=$(pwd)} # default to current working dir
+
 declare -a files=($path/*.jpg)
 files+=($path/*.jpeg)
 files+=($path/*.png)
