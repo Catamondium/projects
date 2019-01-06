@@ -1,17 +1,14 @@
-#include <assert.h>
-
 #include <vector>
 #include <unordered_map>
 
 #include <algorithm>   // any_of
 #include <functional>  // std::function
 #include <cctype>      // tolower
+//#include <experimental/filesystem>
 
 #include <unistd.h>    // *nix api
 #include <sys/types.h> // *nix types
 #include <pwd.h>       // working directory stuff
-#include <stdlib.h>    // realpath
-#include <limits.h>
 
 #include <iostream>
 #include <fstream>
@@ -35,6 +32,7 @@
 
 const std::string DATAFILE = "/.notes";
 const std::string COMS = "lare";
+//namespace fs = std::experimental::filesystem::v1;
 
 enum Com : char
 {
@@ -164,19 +162,12 @@ int main(int argc, char **argv)
 			case 'i':
 				index = std::stoi(optarg);
 				break;
-			case 'f': { // Doesn't work with relative paths
-						  std::cout << "File:\t" << optarg << std::endl;
-						  char *path = optarg;
-						  char *temp = realpath(path, NULL); // Returns NULL, probably issue with optarg
-						  if(temp != NULL)
-							  file = std::string(temp);
-						  else {
-							  std::cerr << "Path resolution error" << std::endl;
-							  exit(1);
-						  }
-						  free(temp);
-					  }
-				break;
+			//case 'f': // Doesn't work with relative paths
+			//	std::cout << "File:\t" << optarg << std::endl;
+			//	break;
+			/*	A lot of pathname expansions require preexisting files,
+			 *	may ignore problem for now
+			 */
 			default:
 				usage(argv[0]);
 		}
