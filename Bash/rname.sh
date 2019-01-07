@@ -63,7 +63,6 @@ while getopts "vhfir" c; do
 	esac
 done
 
-
 path=$(readlink -f $1 2> /dev/null) # suppressed readlink warnings
 : ${path:=$(pwd)}                   # default to current working dir
 
