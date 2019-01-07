@@ -11,7 +11,7 @@ function rename() { # (path, recurse, dry, verbose)
 	for f in "${files[@]}"; do
 		if [[ -f "$f" ]]; then
 			local dest=$(printf "%s/%s-%0*d.%s" "$1" "${1##/*/}" "$width" "$i" "${f#*.}")
-			if $3 || $4; then echo "$f" "->" "$dest"; fi
+			if $4; then echo "$f" "->" "$dest"; fi
 			# Suppress 'x to x' error 
 			if ! $3; then mv "$f" "$dest" 2> /dev/null; fi
 			((i++))
@@ -28,12 +28,31 @@ function verify() { # (path)
 	return $([[ $REPLY =~ ^[Yy]$ ]])
 }
 
+function usage() {
+	printf "Batch renamer following DIR-#.ext pattern.\n"
+	printf "# is an integer zfilled to width log10 of " 
+	printf "the number of files to mv recursing directories\n"
+	printf "Usage:\t$0 -[vhfir] [target]\n"
+	printf "Options:\n"
+	printf "\t-d Dry run, verbosely\n"
+	printf "\t-v Verbose\n"
+	printf "\t-r Rename recursively\n"
+	printf "\t-f Don't ask for approval\n"
+	printf "\t-i Require approval\n"
+	printf "\t-h Show this usage\n"
+	exit 1
+}
+
 verbose=false
 force=false
 recurse=false
 dry=false
-while getopts "vhfdir" c; do
+while getopts "dvhfir" c; do
 	case "${c}" in
+		d)
+			dry=true
+			verbose=true
+			;;
 		v)
 			verbose=true
 			;;
@@ -43,24 +62,11 @@ while getopts "vhfdir" c; do
 		f)
 			force=true
 			;;
-		d)
-			dry=true;
-			;;
 		i)
 			force=false
 			;;
 		h | *)
-			printf "Batch renamer following DIR-#.ext pattern.\n"
-			printf "# is an integer zfilled to width log10 of " 
-			printf "the number of files to mv recursing directories\n"
-			printf "Usage:\t$0 -[vhfir] [target]\n"
-			printf "Options:\n\t-v Verbose\n"
-			printf "\t-h Show this usage\n"
-			printf "\t-r Rename recursively\n"
-			printf "\t-f Don't ask for approval\n"
-			printf "\t-d Dry run, verbosely\n"
-			printf "\t-i Require approval\n"
-			exit 1
+			usage
 			;;
 	esac
 done
