@@ -2,6 +2,7 @@
 : '
 Batch renamer following DIR/#.ext pattern,
 where # is integer zfilled to width log10 of the number of files to mv
+not recursing directories
 '
 
 verbose=false
@@ -11,7 +12,7 @@ while getopts "vh" c; do
 			verbose=true
 			;;
 		h | *)
-			echo "Usage: $0 [target]"
+			echo "Usage: $0 -[vh] [target]"
 			echo "Options: -v verbose -h show this usage"
 			exit 1
 			;;
