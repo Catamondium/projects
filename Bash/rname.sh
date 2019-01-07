@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function rename() { # (path, recurse, verbose)
+function rename() { # (path, recurse, dry, verbose)
 	declare -a files=($1/*)
 	if [ "${#files[@]}" == 0 ]; then
 		exit 0
@@ -10,16 +10,13 @@ function rename() { # (path, recurse, verbose)
 	local i=0
 	for f in "${files[@]}"; do
 		if [[ -f "$f" ]]; then
-			local pname=${1##/*/}
-			local ext=${f#*.}
-			local dest=$(printf "%s/%s-%0*d.%s" "$1" "$pname" "$width" "$i" "$ext")
-			if $3; then
-				echo $f "->" $dest
-			fi
-			mv "$f" "$dest" 2> /dev/null # Suppress 'x to x' error
+			local dest=$(printf "%s/%s-%0*d.%s" "$1" "${1##/*/}" "$width" "$i" "${f#*.}")
+			if $3 || $4; then echo "$f" "->" "$dest"; fi
+			# Suppress 'x to x' error 
+			if ! $3; then mv "$f" "$dest" 2> /dev/null; fi
 			((i++))
 		elif [[ $2 && -d "$f" ]]; then
-			rename "$f" $2 $3
+			rename "$f" $2 $3 $4
 		fi
 	done
 }
@@ -34,7 +31,8 @@ function verify() { # (path)
 verbose=false
 force=false
 recurse=false
-while getopts "vhfir" c; do
+dry=false
+while getopts "vhfdir" c; do
 	case "${c}" in
 		v)
 			verbose=true
@@ -44,6 +42,9 @@ while getopts "vhfir" c; do
 			;;
 		f)
 			force=true
+			;;
+		d)
+			dry=true;
 			;;
 		i)
 			force=false
@@ -57,6 +58,7 @@ while getopts "vhfir" c; do
 			printf "\t-h Show this usage\n"
 			printf "\t-r Rename recursively\n"
 			printf "\t-f Don't ask for approval\n"
+			printf "\t-d Dry run, verbosely\n"
 			printf "\t-i Require approval\n"
 			exit 1
 			;;
@@ -66,6 +68,6 @@ done
 path=$(readlink -f $1 2> /dev/null) # suppressed readlink warnings
 : ${path:=$(pwd)}                   # default to current working dir
 
-if $force || verify $path; then
-	rename $path $recurse $verbose
+if $dry || $force || verify $path; then
+	rename $path $recurse $dry $verbose
 fi
