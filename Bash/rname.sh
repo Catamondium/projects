@@ -1,6 +1,7 @@
 #!/bin/bash
 
-function rename() { # (path, recurse, dry, verbose)
+function rename() # (path, recurse, dry, verbose)
+{ 
 	declare -a files=($1/*)
 	if [ "${#files[@]}" == 0 ]; then
 		exit 0
@@ -21,14 +22,16 @@ function rename() { # (path, recurse, dry, verbose)
 	done
 }
 
-function verify() { # (path)
+function verify() # (path)
+{ 
 	echo "About to rename inside:" ${1##/*/}
 	read -p "Are you sure? " -n 1 -r
 	echo
 	return $([[ $REPLY =~ ^[Yy]$ ]])
 }
 
-function usage() {
+function usage()
+{
 	printf "Batch renamer following DIR-#.ext pattern.\n"
 	printf "# is an integer zfilled to width log10 of " 
 	printf "the number of files to mv recursing directories\n"

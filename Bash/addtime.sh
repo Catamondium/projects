@@ -1,10 +1,12 @@
 #!/bin/bash
 
-function sTime() {
+function sTime()
+{
 	echo $(printf "%02d:%02d" $1 $2)
 }
 
-function elapse() {
+function elapse()
+{
 	# calculate total minutes
 	local offset=$(($1 * 60 + $2))
 	local tot=$((offset + $3))
@@ -15,7 +17,8 @@ function elapse() {
 	echo $(sTime $hrs $mins)
 }
 
-function usage() {
+function usage()
+{
 	printf "Usage: $0 [-qh] hh:mm mins_elapse\n"
 	printf "Options:\n\t-q quietly output end time\n"
 	printf "\t-h print this message and exit\n"
