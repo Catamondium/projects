@@ -1,9 +1,4 @@
 #!/bin/bash
-: '
-Batch renamer following DIR-#.ext pattern,
-where # is integer zfilled to width log10 of the number of files to mv
-not recursing directories
-'
 
 function rename() { # (path, recurse, verbose)
 	declare -a files=($1/*)
@@ -30,10 +25,10 @@ function rename() { # (path, recurse, verbose)
 }
 
 function verify() { # (path)
-echo "About to rename inside:" ${1##/*/}
-read -p "Are you sure? " -n 1 -r
-echo
-return $([[ $REPLY =~ ^[Yy]$ ]])
+	echo "About to rename inside:" ${1##/*/}
+	read -p "Are you sure? " -n 1 -r
+	echo
+	return $([[ $REPLY =~ ^[Yy]$ ]])
 }
 
 verbose=false
@@ -54,7 +49,10 @@ while getopts "vhfir" c; do
 			force=false
 			;;
 		h | *)
-			printf "Usage: $0 -[vhfir] [target]\n"
+			printf "Batch renamer following DIR-#.ext pattern.\n"
+			printf "# is an integer zfilled to width log10 of " 
+			printf "the number of files to mv recursing directories\n"
+			printf "Usage:\t$0 -[vhfir] [target]\n"
 			printf "Options:\n\t-v Verbose\n"
 			printf "\t-h Show this usage\n"
 			printf "\t-r Rename recursively\n"
@@ -65,10 +63,9 @@ while getopts "vhfir" c; do
 	esac
 done
 
-# suppressed readlink warnings
-path=$(readlink -f $1 2> /dev/null)
 
-: ${path:=$(pwd)} # default to current working dir
+path=$(readlink -f $1 2> /dev/null) # suppressed readlink warnings
+: ${path:=$(pwd)}                   # default to current working dir
 
 if $force || verify $path; then
 	rename $path $recurse $verbose
