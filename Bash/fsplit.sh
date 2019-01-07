@@ -5,7 +5,8 @@ size=$2
 : ${size:=10}     # default bucket size 10
 : ${path:=$(pwd)} # default to current working dir
 
-declare -a files=($path/*.jpg)
+declare -a files
+files+=($path/*.jpg)
 files+=($path/*.jpeg)
 files+=($path/*.png)
 
