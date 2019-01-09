@@ -12,7 +12,7 @@ std::optional<std::string> Note::printEvent()
 
 	struct std::tm *tm = std::gmtime(&tt);
 	std::stringstream ss;
-	ss << std::put_time(tm, "%d/%m/%Y");
+	ss << std::put_time(tm, "%d/%m/%Y %R");
 	return ss.str();
 }
 
