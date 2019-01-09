@@ -87,7 +87,7 @@ namespace notelib {
 		std::stringstream ss(str);
 
 		std::time_t baseptr = systime::to_time_t(base);
-		std::tm *civil_base = std::gmtime(&baseptr); // gm vs local?
+		std::tm *civil_base = std::gmtime(&baseptr);
 		// Ready for substitution
 		
 		if(str.find('/') != std::string::npos) {
@@ -97,13 +97,11 @@ namespace notelib {
 			civil_base->tm_mon = tmp.tm_mon;
 			civil_base->tm_year = tmp.tm_year;
 		} else if(str.find(':' != std::string::npos)) {
+			// Getting through, but waaay off, could be a normalisation thing
 			std::tm tmp = {};
 			ss >> std::get_time(&tmp, "%R");
 			civil_base->tm_hour = tmp.tm_hour;
 			civil_base->tm_min = tmp.tm_min;
-			// Always 1:00 w/ localtime? DST?
-			// Always 0:00 w/ gmtime?
-			// Is the extraction clobbering them to default?
 		} else {
 			std::cerr << "Malformed time" << std::endl;
 			exit(1);
@@ -113,7 +111,7 @@ namespace notelib {
 		std::time_t retptr = std::mktime(civil_base);
 		note_time ret_absT = systime::from_time_t(retptr);
 
-		std::cout << "parseSeg: " << printEvent(parseSeg(str, ret_absT)) << std::endl;
+		std::cout << "parseSeg: " << printEvent(ret_absT) << std::endl;
 		return ret_absT;
 	}
 	
@@ -123,7 +121,11 @@ namespace notelib {
 		std::tm tm = {};
 		std::stringstream ss(value);
 
-		//parseSeg(value, ret)
+		/*std::stringstream test(value);
+		std::string passin;
+		while(test >> passin)
+			parseSeg(passin, ret);*/
+
 		if(value.find('/') != std::string::npos) {
 			ss >> std::get_time(&tm, "%d/%m/%Y");
 			ret = systime::from_time_t(std::mktime(&tm));
