@@ -81,9 +81,7 @@ namespace notelib {
 			exit(1);
 		}
 
-		std::time_t retptr = std::mktime(&tmp);
-		note_time ret_absT = systime::from_time_t(retptr);
-		return ret_absT;
+		return systime::from_time_t(std::mktime(&tmp));
 	}
 
 	std::vector<Note> parse(std::string fname)
