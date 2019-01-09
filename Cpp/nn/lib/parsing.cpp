@@ -61,12 +61,12 @@ namespace notelib {
 	{
 		size_t fPos;
 		if(line.substr(0, 2) == "##")
-			return std::make_pair(Keyword::EOE, -1);
+			return {Keyword::EOE, -1};
 
 		else if ((fPos = line.find(':')) != std::string::npos)
-			return std::make_pair(fEnum(line.substr(0, fPos)), fPos+1);
+			return {fEnum(line.substr(0, fPos)), fPos+1};
 		
-		return std::make_pair(Keyword::BODY, -1);
+		return {Keyword::BODY, -1};
 	}
 
 	note_time makeEvent(std::string value)
@@ -95,15 +95,15 @@ namespace notelib {
 		std::optional<std::string> body;
 		std::optional<note_time> event;
 		while(std::getline(file, line)) {
-			std::pair<Keyword, int> v = getkwd(line);
+			auto [field, pos] = getkwd(line);
 			trim(line);
-			switch(v.first) {
+			switch(field) {
 				case Keyword::HEADING:
-					line = line.substr(v.second);
+					line = line.substr(pos);
 					head = ltrim(line);
 					break;
 				case Keyword::EVENT:
-					line = line.substr(v.second);
+					line = line.substr(pos);
 					event = makeEvent(ltrim(line));
 					break;
 				case Keyword::EOE:
