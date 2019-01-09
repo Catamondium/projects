@@ -69,24 +69,6 @@ namespace notelib {
 		return std::make_pair(Keyword::BODY, -1);
 	}
 
-	note_time parseSeg(std::string str)
-	{
-		std::stringstream ss(str);
-		std::tm tmp = {};
-
-		if(str.find('/') != std::string::npos) {
-			ss >> std::get_time(&tmp, "%d/%m/%Y %H:M");
-		} else {
-			std::cerr << "Malformed time" << std::endl;
-			exit(1);
-		}
-
-		std::time_t retptr = std::mktime(&tmp);
-		note_time ret_absT = systime::from_time_t(retptr);
-
-		return ret_absT;
-	}
-	
 	note_time makeEvent(std::string value)
 	{
 		std::stringstream ss(value);

@@ -45,16 +45,16 @@ enum Com : char
 //### COM argv functors
 // Ignore related 'unused parameter' warnings
 // Modifying signatures will void dispatch ###
-bool com_ls(std::string fname, std::optional<Note>, std::optional<int>)
+bool com_ls(std::string fname, std::optional<Note>, std::optional<unsigned int>)
 {
 	std::vector<Note> notes = notelib::parse(fname);
-	for(auto i = 0; i < notes.size(); ++i) {
+	for(unsigned int i = 0; i < notes.size(); ++i) {
 		std::cout << "[" << i << "] " << notes[i].unmarshal() << std::endl;
 	}
 	return false;
 }
 
-bool com_add(std::string fname, std::optional<Note> note, std::optional<int>)
+bool com_add(std::string fname, std::optional<Note> note, std::optional<unsigned int>)
 {
 	std::ofstream file(fname, std::ios_base::app);
 	if(note)
@@ -64,7 +64,7 @@ bool com_add(std::string fname, std::optional<Note> note, std::optional<int>)
 	return false;
 }
 
-bool com_rm(std::string fname, std::optional<Note>, std::optional<int> index)
+bool com_rm(std::string fname, std::optional<Note>, std::optional<unsigned int> index)
 {
 	std::vector<Note> notes = notelib::parse(fname);
 	if(index && index.value() < notes.size())
@@ -75,7 +75,7 @@ bool com_rm(std::string fname, std::optional<Note>, std::optional<int> index)
 	return false;
 }
 
-bool com_edit(std::string fname, std::optional<Note> note, std::optional<int> index)
+bool com_edit(std::string fname, std::optional<Note> note, std::optional<unsigned int> index)
 {
 	std::vector<Note> notes = notelib::parse(fname);
 	if(note && index && index.value() < notes.size())
@@ -87,7 +87,7 @@ bool com_edit(std::string fname, std::optional<Note> note, std::optional<int> in
 }
 //###
 
-using com_functor = std::function<bool/*HasError*/(std::string, std::optional<Note>, std::optional<int>)>;
+using com_functor = std::function<bool/*HasError*/(std::string, std::optional<Note>, std::optional<unsigned int>)>;
 std::unordered_map<Com, com_functor> dispatch
 {
 	{LIST,   com_ls},
@@ -135,7 +135,7 @@ int main(int argc, char **argv)
 	std::optional<std::string> head;
 	std::optional<std::string> body;
 	std::optional<note_time> event;
-	std::optional<int> index;
+	std::optional<unsigned int> index;
 
 	bool user = false;
 
