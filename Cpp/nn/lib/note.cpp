@@ -4,10 +4,11 @@
 #include <sstream>
 #include <iomanip>
 
+using systime = std::chrono::system_clock;
 std::optional<std::string> Note::printEvent()
 {
 	if(!event) return {};
-	std::time_t tt = std::chrono::system_clock::to_time_t(event.value());
+	std::time_t tt = systime::to_time_t(event.value());
 
 	struct std::tm *tm = std::gmtime(&tt);
 	std::stringstream ss;

@@ -1,5 +1,5 @@
 Heading:	Get Note unmarshalling functioning.
-Event:	25/12/2018 12:00
+Event:	25/12/2018
 Get nn capable of unmarshalling this file,
 current system idea involves using an automata to parse line by line.
 Given the possibly massive size of these arbitrary text fields, it's probably preferable to loading the whole file and splitting by delimiters.
@@ -7,6 +7,6 @@ Given the possibly massive size of these arbitrary text fields, it's probably pr
 Heading:	edit
 ##
 Heading:	Addition
-Event:	12/12/2019 1:30
+Event:	12/12/2019
 Adding
 ##

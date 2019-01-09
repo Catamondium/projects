@@ -3,6 +3,7 @@
 #include <optional>
 #include <utility>   // pair
 #include <chrono>    // timepoint
+#include <ctime>     // time_t, tm, localtime
 #include "note.hpp"
 // streams
 #include <iostream>
@@ -13,7 +14,16 @@
 #include <algorithm> // transform, find_if
 #include <locale>    // tolower, isspace
 
+using systime = std::chrono::system_clock;
+std::string printEvent(note_time source) // debugging func
+{
+	std::time_t tt = systime::to_time_t(source);
 
+	struct std::tm *tm = std::gmtime(&tt);
+	std::stringstream ss;
+	ss << std::put_time(tm, "%d/%m/%Y %R");
+	return ss.str();
+}
 
 namespace notelib {
 	enum struct Keyword { HEADING, EVENT, EOE, BODY };
@@ -67,6 +77,45 @@ namespace notelib {
 		
 		return std::make_pair(Keyword::BODY, -1);
 	}
+
+	note_time parseSeg(std::string str, note_time base)
+	{
+		// Base plan: break into calendar time,
+		// substitute as appropriate
+		// Reform into absolute time
+
+		std::stringstream ss(str);
+
+		std::time_t baseptr = systime::to_time_t(base);
+		std::tm *civil_base = std::gmtime(&baseptr); // gm vs local?
+		// Ready for substitution
+		
+		if(str.find('/') != std::string::npos) {
+			std::tm tmp = {};
+			ss >> std::get_time(&tmp, "%d/%m/%Y");
+			civil_base->tm_mday = tmp.tm_mday;
+			civil_base->tm_mon = tmp.tm_mon;
+			civil_base->tm_year = tmp.tm_year;
+		} else if(str.find(':' != std::string::npos)) {
+			std::tm tmp = {};
+			ss >> std::get_time(&tmp, "%R");
+			civil_base->tm_hour = tmp.tm_hour;
+			civil_base->tm_min = tmp.tm_min;
+			// Always 1:00 w/ localtime? DST?
+			// Always 0:00 w/ gmtime?
+			// Is the extraction clobbering them to default?
+		} else {
+			std::cerr << "Malformed time" << std::endl;
+			exit(1);
+		}
+
+		// Ready for reconstitution
+		std::time_t retptr = std::mktime(civil_base);
+		note_time ret_absT = systime::from_time_t(retptr);
+
+		std::cout << "parseSeg: " << printEvent(parseSeg(str, ret_absT)) << std::endl;
+		return ret_absT;
+	}
 	
 	note_time makeEvent(std::string value)
 	{
@@ -74,9 +123,10 @@ namespace notelib {
 		std::tm tm = {};
 		std::stringstream ss(value);
 
+		//parseSeg(value, ret)
 		if(value.find('/') != std::string::npos) {
 			ss >> std::get_time(&tm, "%d/%m/%Y");
-			ret = std::chrono::system_clock::from_time_t(std::mktime(&tm));
+			ret = systime::from_time_t(std::mktime(&tm));
 		} else {
 			std::cerr << "Malformed time" << std::endl;
 			exit(1);
