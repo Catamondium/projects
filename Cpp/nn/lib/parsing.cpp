@@ -69,7 +69,7 @@ namespace notelib {
 		return {Keyword::BODY, -1};
 	}
 
-	note_time makeEvent(std::string value)
+	std::optional<note_time> makeEvent(std::string value)
 	{
 		std::stringstream ss(value);
 		std::tm tmp = {};
@@ -77,8 +77,7 @@ namespace notelib {
 		if(value.find('/') != std::string::npos) {
 			ss >> std::get_time(&tmp, "%d/%m/%Y %R");
 		} else {
-			std::cerr << "Malformed time" << std::endl;
-			exit(1);
+			return {};
 		}
 
 		return systime::from_time_t(std::mktime(&tmp));

@@ -7,6 +7,6 @@ namespace notelib {
 	std::string rtrim(std::string&);
 	std::string trim(std::string&);
 	std::vector<Note> parse(std::string);
-	note_time makeEvent(std::string value);
+	std::optional<note_time> makeEvent(std::string value);
 	void unmarshAll(std::vector<Note>&, std::string);
 }

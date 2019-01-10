@@ -4,8 +4,11 @@ Get nn capable of unmarshalling this file,
 current system involves parsing line by line.
 Given the possibly massive size of these arbitrary text fields, it's probably preferable to loading the whole file and splitting by delimiters.
 ##
-Heading:	edit
-##
+Heading:	edit_int
+Event:	31/12/1899 00:00
+est, 3 line body 12/12/2019 01:30
+test
+end##
 Heading:	Addition
 Event:	12/12/2019 01:30
 Adding

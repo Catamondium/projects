@@ -126,32 +126,37 @@ unsigned int i_index(unsigned int size)
 	return index;
 }
 
-/*Note i_note()
+Note i_note()
 {
 	std::string head;
 	std::cout << "Heading: ";
+	std::cin.ignore();
 	std::getline(std::cin, head);
-	trim(head);
+	notelib::trim(head);
 
 	std::string strdate;
 	std::cout << "Event: ";
+	std::cin.ignore();
 	std::getline(std::cin, strdate);
-	trim(strdate);
-	Note_time event = notelib::makeEvent(strdate); // error handling issue
+	notelib::trim(strdate);
+	std::optional<note_time> event = notelib::makeEvent(strdate);
 
 	std::string body = ""; 
 	std::string cur;
 	std::cout << "Body: finalise with \"##\"" << std::endl;
+	std::cin.ignore();
 	do {
 		std::getline(std::cin, cur);
-		trim(cur);
+		notelib::trim(cur);
 		body += cur + '\n';
 	} while(cur.substr(0, 2) != "##"); // stop reading on EOE
-	body.erase(std::find_if(body.rbegin(), body.rend(),
-				(auto ch){ch == '\n'})); // remove EOE line
 
-	// Compile Note w/ optionals
-}*/
+	notelib::trim(body);
+	body.erase(std::find_if(body.rbegin(), body.rend(),
+				[](char ch){return ch == '\n';}).base()-1, body.end()); // remove EOE line
+
+	return Note(head, body, event);
+}
 
 void i_list(std::vector<Note> &notes)
 {
@@ -237,7 +242,7 @@ int main(int argc, char **argv)
 		std::vector<Note> notes = notelib::parse(file);
 		i_list(notes);
 		std::cout << "Actions: Add, Remove, Edit" << std::endl;
-		const std::string i_COMS = COMS.substr(1); // listing already made
+		const std::string i_COMS = COMS.substr(1);
 		char action;
 		do {
 			std::cout << "Select action: ";
@@ -252,12 +257,11 @@ int main(int argc, char **argv)
 			unsigned int index = i_index(notes.size());
 			if(command == REMOVE)
 				notes.erase(notes.begin() + index);
-			/*else {
+			else
 				notes[index] = i_note();
-			}*/
-		} /*else
-			notes.push_back(i_note());*/
-		//notelib::unmarshAll(notes, file);
+		} else
+			notes.push_back(i_note());
+		notelib::unmarshAll(notes, file);
 		std::cout << std::endl; //spacing
 		i_list(notes);
 
