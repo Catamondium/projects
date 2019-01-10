@@ -17,7 +17,7 @@
 #include "lib/note.hpp"
 
 /* TODO
- * user IO
+ * interactive IO
  * * Traverse by ID, parse com by letter
  * callable COM struct?
  *
@@ -25,7 +25,7 @@
  *
  * Debugging / clarity
  * * find a substitute for 'i' to get index
- * * Find way to integrate argv dispatch with 'user'IO
+ * * Find way to integrate argv dispatch with 'interactive'IO
  *
  * Cleanup com functors?
  */
@@ -114,6 +114,17 @@ std::ostream& operator<<(std::ostream& stream, Com c)
 	return stream;
 }
 
+unsigned int i_index(unsigned int size)
+{
+	unsigned int index;
+	do {
+		std::cout << "Select N: ";
+		std::cin >> index;
+	} while(index >= size);
+
+	return index;
+}
+
 void usage(std::string prog)
 {
 	exit(1);
@@ -137,14 +148,14 @@ int main(int argc, char **argv)
 	std::optional<note_time> event;
 	std::optional<unsigned int> index;
 
-	bool user = false;
+	bool interactive = false;
 
 	int c;
 	while((c = getopt(argc, argv, "ui:h:b:e:f:")) != -1) {
 		std::string holder;
 		switch(c) {
 			case 'h':
-				user = false;
+				interactive = false;
 				holder = optarg;
 				head = notelib::trim(holder);
 				break;
@@ -156,10 +167,10 @@ int main(int argc, char **argv)
 				holder = optarg;
 				event = notelib::makeEvent(notelib::trim(holder));
 				break;
-			case 'u':
-				user = true;
+			case 'u': // make use i
+				interactive = true;
 				break;
-			case 'i':
+			case 'i': // replace with something intuitive, 'element'?
 				index = std::stoi(optarg);
 				break;
 			//case 'f': // Doesn't work with relative paths
@@ -173,10 +184,10 @@ int main(int argc, char **argv)
 		}
 	}
 
-	if(!user && optind < argc) {
+	std::optional<Note> note;
+	if(!interactive && optind < argc) {
 		char c = std::tolower(argv[optind][0]);
 		if(std::any_of(COMS.cbegin(), COMS.cend(), [&c](auto o){return c == o;})) {
-			std::optional<Note> note;
 			Com target = static_cast<Com>(c);
 			if(head)
 				note = Note(head.value(), body, event);
@@ -186,6 +197,30 @@ int main(int argc, char **argv)
 				usage(argv[0]);
 		} else
 			usage(argv[0]);
-	} else
-		std::cout << "user" << std::endl;
+	} else {
+		std::vector<Note> notes = notelib::parse(file);
+		std::cout << "[N] interactive" << std::endl;
+		for(unsigned int i = 0; i < notes.size(); ++i) {
+			std::cout << "[" << i << "] " << notes[i].unmarshal() << std::endl;
+		}
+
+		std::cout << "Actions: Add, Remove, Edit" << std::endl;
+		const std::string iCOMS = COMS.substr(1); // listing already made
+		char action;
+		do {
+			std::cout << "Select action: ";
+			std::cin >> action;
+			action = std::tolower(action);
+		} while (std::none_of(iCOMS.cbegin(), iCOMS.cend(),
+					[&action](auto o){return action == o;}));
+		Com command = static_cast<Com>(action);
+		std::cout << command << std::endl;
+
+
+		/* Interactive TODO
+		 * switch/dispatch COM
+		 * * Maybe read in note, for Adding and Editing
+		 * * Read in index for Removing and Editing
+		*/
+	}
 }
