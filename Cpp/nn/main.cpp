@@ -138,14 +138,14 @@ unsigned int i_index(unsigned int size)
 	trim(head);
 
 	std::string strdate;
-	std::cout << "Event ";
+	std::cout << "Event: ";
 	std::getline(std::cin, strdate);
 	trim(strdate);
 	Note_time event = notelib::makeEvent(strdate); // error handling issue
 
 	std::string body;
 	std::string cur;
-	std::cout << "Body: finalise with \"##\"\n"
+	std::cout << "Body: finalise with \"##\"" << std::endl;
 	do {
 		std::getline(std::cin, cur);
 		trim(cur);
