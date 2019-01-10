@@ -134,7 +134,7 @@ namespace notelib {
 		return notes;
 	}
 
-	void unmarshAll(std::vector<Note> notes, std::string fname)
+	void unmarshAll(std::vector<Note>& notes, std::string fname)
 	{
 		std::ofstream file;
 		file.open(fname, std::ofstream::trunc);

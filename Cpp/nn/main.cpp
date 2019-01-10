@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 #include "lib/parsing.hpp"
 #include "lib/note.hpp"
@@ -129,6 +130,41 @@ unsigned int i_index(unsigned int size)
 	return index;
 }
 
+/*Note i_note()
+{
+	std::string head;
+	std::cout << "Heading: ";
+	std::getline(std::cin, head);
+	trim(head);
+
+	std::string strdate;
+	std::cout << "Event ";
+	std::getline(std::cin, strdate);
+	trim(strdate);
+	Note_time event = notelib::makeEvent(strdate); // error handling issue
+
+	std::string body;
+	std::string cur;
+	std::cout << "Body: finalise with \"##\"\n"
+	do {
+		std::getline(std::cin, cur);
+		trim(cur);
+		body += cur + '\n';
+	} while(cur.substr(0, 2) != "##"); // stop reading on EOE
+	body.erase(std::find_if(body.rbegin(), body.rend(),
+				(auto ch){ch == '\n'})); // remove EOE line
+
+	// Compile Note w/ optionals
+}*/
+
+void i_list(std::vector<Note> &notes)
+{
+	std::cout << "[N] interactive" << std::endl;
+	for(unsigned int i = 0; i < notes.size(); ++i) {
+		std::cout << "[" << i << "] " << notes[i].unmarshal() << std::endl;
+	}
+}
+
 void usage(std::string prog)
 {
 	exit(1);
@@ -203,27 +239,38 @@ int main(int argc, char **argv)
 			usage(argv[0]);
 	} else {
 		std::vector<Note> notes = notelib::parse(file);
-		std::cout << "[N] interactive" << std::endl;
-		for(unsigned int i = 0; i < notes.size(); ++i) {
-			std::cout << "[" << i << "] " << notes[i].unmarshal() << std::endl;
-		}
-
+		i_list(notes);
 		std::cout << "Actions: Add, Remove, Edit" << std::endl;
-		const std::string iCOMS = COMS.substr(1); // listing already made
+		const std::string i_COMS = COMS.substr(1); // listing already made
 		char action;
 		do {
 			std::cout << "Select action: ";
 			std::cin >> action;
 			action = std::tolower(action);
-		} while (std::none_of(iCOMS.cbegin(), iCOMS.cend(),
+		} while (std::none_of(i_COMS.cbegin(), i_COMS.cend(),
 					[&action](auto o){return action == o;}));
 		Com command = static_cast<Com>(action);
-		std::cout << command << std::endl;
+		std::cout << '\n' << command << std::endl;
+		
+		if(command == REMOVE || command == EDIT) {
+			unsigned int index = i_index(notes.size());
+			if(command == REMOVE)
+				notes.erase(notes.begin() + index);
+			/*else {
+				notes[index] = i_note();
+			}*/
+		} /*else
+			notes.push_back(i_note());*/
+		//notelib::unmarshAll(notes, file);
+		std::cout << std::endl; //spacing
+		i_list(notes);
 
 		/* Interactive TODO
 		 * switch/dispatch COM
 		 * * Maybe read in note, for Adding and Editing
-		 * * Read in index for Removing and Editing
+		 *
+		 * Fully read in Note
+		 * Loop until interrupt?
 		 */
 	}
 }
