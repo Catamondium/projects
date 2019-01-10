@@ -21,6 +21,8 @@
  * interactive IO
  * * Traverse by ID, parse com by letter
  *
+ * Could the body be rendered non-optional via ""?
+ *
  * IO unification
  * * Tuple passing & concatenation?
  * * * Resolve validity by tuple_size?
