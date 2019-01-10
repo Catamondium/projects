@@ -92,7 +92,7 @@ namespace notelib {
 		std::ifstream file(fname);
 
 		std::optional<std::string> head;
-		std::optional<std::string> body;
+		std::string body = "";
 		std::optional<note_time> event;
 		while(std::getline(file, line)) {
 			auto [field, pos] = getkwd(line);
@@ -108,27 +108,20 @@ namespace notelib {
 					break;
 				case Keyword::EOE:
 					if(head) {
-						if(body)
-							notes.push_back(Note(head.value(), rtrim(body.value()), event));
-						else
-							notes.push_back(Note(head.value(), body, event));
+						notes.push_back(Note(head.value(), body, event));
 					}
 					head.reset();
-					body.reset();
+					body = "";
 					event.reset();
 					break;
 				default:
-					line += "\n";
-					body = (body) ? body.value() + line : line;
+					body += line + '\n';
 					break;
 			}
 		}
 
 		if(head) {
-			if(body)
-				notes.push_back(Note(head.value(), rtrim(body.value()), event));
-			else
-				notes.push_back(Note(head.value(), body, event));
+			notes.push_back(Note(head.value(), body, event));
 		}
 
 		return notes;

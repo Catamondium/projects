@@ -21,20 +21,14 @@
  * interactive IO
  * * Traverse by ID, parse com by letter
  *
- * Could the body be rendered non-optional via ""?
- *
  * IO unification
  * * Tuple passing & concatenation?
  * * * Resolve validity by tuple_size?
  * * * In any case, separate functions from input
  *
- * breakout COM into lib?
- * Cleanup com functors?
- *
  * Debugging / clarity
  * * filename expansion
  * * find a substitute for 'i' to get index
- * * Find way to integrate argv dispatch with 'interactive'IO
  */
 
 const std::string DATAFILE = "/.notes";
@@ -145,7 +139,7 @@ unsigned int i_index(unsigned int size)
 	trim(strdate);
 	Note_time event = notelib::makeEvent(strdate); // error handling issue
 
-	std::string body;
+	std::string body = ""; 
 	std::string cur;
 	std::cout << "Body: finalise with \"##\"" << std::endl;
 	do {
@@ -186,7 +180,7 @@ int main(int argc, char **argv)
 	std::string file = getHome() + DATAFILE;
 
 	std::optional<std::string> head;
-	std::optional<std::string> body;
+	std::string body = "";
 	std::optional<note_time> event;
 	std::optional<unsigned int> index;
 

@@ -11,21 +11,18 @@ std::optional<std::string> Note::printEvent()
 	std::time_t tt = systime::to_time_t(event.value());
 
 	struct std::tm *tm = std::gmtime(&tt);
-	std::stringstream ss;
-	ss << std::put_time(tm, "%d/%m/%Y %R");
-	return ss.str();
+	std::stringstream ret;
+	ret << std::put_time(tm, "%d/%m/%Y %R");
+	return ret.str();
 }
 
 std::string Note::unmarshal()
 {
-	std::stringstream ss;
+	std::string ret;
 
-	ss << "Heading:\t" << heading << std::endl;
+	ret += "Heading:\t" + heading + '\n';
 	if(event)
-		ss << "Event:\t" << printEvent().value() << std::endl;
-	if(body)
-		ss << body.value() << std::endl;
-
-	ss << "##";
-	return ss.str();
+		ret += "Event:\t" + printEvent().value() + '\n';
+	ret += body + "##";
+	return ret;
 }
