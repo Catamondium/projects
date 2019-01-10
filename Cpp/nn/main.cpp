@@ -19,15 +19,19 @@
 /* TODO
  * interactive IO
  * * Traverse by ID, parse com by letter
- * callable COM struct?
+ *
+ * IO unification
+ * * Tuple passing & concatenation?
+ * * * Resolve validity by tuple_size?
+ * * * In any case, separate functions from input
  *
  * breakout COM into lib?
+ * Cleanup com functors?
  *
  * Debugging / clarity
+ * * filename expansion
  * * find a substitute for 'i' to get index
  * * Find way to integrate argv dispatch with 'interactive'IO
- *
- * Cleanup com functors?
  */
 
 const std::string DATAFILE = "/.notes";
@@ -216,11 +220,10 @@ int main(int argc, char **argv)
 		Com command = static_cast<Com>(action);
 		std::cout << command << std::endl;
 
-
 		/* Interactive TODO
 		 * switch/dispatch COM
 		 * * Maybe read in note, for Adding and Editing
 		 * * Read in index for Removing and Editing
-		*/
+		 */
 	}
 }
