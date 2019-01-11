@@ -136,7 +136,7 @@ Note i_note()
 
 	std::string strdate;
 	std::cout << "Event: ";
-	std::cin.ignore();
+	std::cin.ignore(0);
 	std::getline(std::cin, strdate);
 	notelib::trim(strdate);
 	std::optional<note_time> event = notelib::makeEvent(strdate);
@@ -144,7 +144,7 @@ Note i_note()
 	std::string body = ""; 
 	std::string cur;
 	std::cout << "Body: finalise with \"##\"" << std::endl;
-	std::cin.ignore();
+	std::cin.ignore(0);
 	do {
 		std::getline(std::cin, cur);
 		notelib::trim(cur);

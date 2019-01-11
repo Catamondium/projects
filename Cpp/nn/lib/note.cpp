@@ -23,6 +23,6 @@ std::string Note::unmarshal()
 	ret += "Heading:\t" + heading + '\n';
 	if(event)
 		ret += "Event:\t" + printEvent().value() + '\n';
-	ret += body + "##";
+	ret += body + "\n##";
 	return ret;
 }

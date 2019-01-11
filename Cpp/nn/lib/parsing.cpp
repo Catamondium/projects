@@ -107,6 +107,7 @@ namespace notelib {
 					break;
 				case Keyword::EOE:
 					if(head) {
+						trim(body);
 						notes.push_back(Note(head.value(), body, event));
 					}
 					head.reset();
@@ -120,6 +121,7 @@ namespace notelib {
 		}
 
 		if(head) {
+			trim(body);
 			notes.push_back(Note(head.value(), body, event));
 		}
 
