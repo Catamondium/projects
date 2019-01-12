@@ -1,6 +1,6 @@
 console.log("BG");
 
-var re = new RegExp(".+(.jpg|.jpeg|.png)$", "i");
+var re = new RegExp(".+(\.jpg|\.jpeg|\.png)$", "i");
 
 function runtab(tabs) {
 	console.log("PRESSED");
