@@ -3,7 +3,7 @@
 
 : ${1:?Directory parameter required}
 printf "Cropdir:\t%s\n" "$1"
-files="$1/*"
-gimp $files
-mv $files "$1/.."
+declare -a files="$1/*"
+gimp ${files[@]}
+mv ${files[@]} "$1/.."
 rm -d $1
