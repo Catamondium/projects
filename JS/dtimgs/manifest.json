@@ -1,0 +1,33 @@
+{
+
+  "manifest_version": 2,
+  "name": "dtimgs",
+  "version": "1.0",
+
+  "description": "Button to download images in open tabs, closing the tabs",
+  "homepage_url": "https://github.com/Catamondium/projects/tree/master/JS/dtimgs",
+  "icons": {
+    "48": "icons/img.png"
+  },
+
+  "permissions": [
+    "tabs",
+	"<all_urls>",
+	"downloads"
+  ],
+
+  "browser_action": {
+    "default_icon": "icons/img.png",
+    "default_title": "dtimgs"
+  },
+
+  "applications": {
+	  "gecko": {
+		  "id": "dtimgs@firefox.mozilla.org"
+	  }
+  },
+
+  "background": {
+	  "scripts": ["bg.js"]
+  }
+}
