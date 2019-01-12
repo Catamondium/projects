@@ -12,7 +12,7 @@ function runtab(tabs) {
 		browser.downloads.download(
 			{
 				url: tab.url,
-				filename: `dir/${fname}`
+				filename: `dtimgs/${fname}`
 			});
 	}
 }
