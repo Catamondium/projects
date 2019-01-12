@@ -14,7 +14,7 @@ function rename() # (path, recurse, dry, verbose)
 			local dest=$(printf "%s/%s-%0*d.%s" "$1" "${1##/*/}" "$width" "$i" "${f#*.}")
 			if $4; then echo "$f" "->" "$dest"; fi
 			# Suppress 'x to x' error 
-			if ! $3; then mv "$f" "$dest" 2> /dev/null; fi
+			if ! $3; then mv -n "$f" "$dest" 2> /dev/null; fi
 			((i++))
 		elif [[ $2 && -d "$f" ]]; then
 			rename "$f" $2 $3 $4
