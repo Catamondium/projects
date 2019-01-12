@@ -1,7 +1,7 @@
 #!/bin/bash
 # Workflow automation: edit inside child, move into parent, delete child
 
-${1:?Directory parameter required}
+: ${1:?Directory parameter required}
 printf "Cropdir:\t%s\n" "$1"
 files="$1/*"
 gimp $files
