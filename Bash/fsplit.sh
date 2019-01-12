@@ -30,6 +30,6 @@ for f in "${files[@]}"; do
 		echo $dir
 	fi
 
-	mv "$f" "$dir"
+	mv "$f" "$dir" 2> /dev/null # suppress '*.ext' error
 	((i++))
 done
