@@ -11,9 +11,9 @@
   },
 
   "permissions": [
-    "tabs",
-	"<all_urls>",
-	"downloads"
+	  "tabs",
+	  "<all_urls>",
+	  "downloads"
   ],
 
   "browser_action": {
