@@ -14,6 +14,7 @@ function runtab(tabs) {
 				url: tab.url,
 				filename: `dtimgs/${fname}`
 			});
+		browser.tabs.remove(tab.id);
 	}
 }
 
