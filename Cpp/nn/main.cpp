@@ -4,7 +4,8 @@
 #include <algorithm>   // any_of
 #include <functional>  // std::function
 #include <cctype>      // tolower
-//#include <experimental/filesystem>
+#include <filesystem>
+namespace fs = std::filesystem;
 
 #include <unistd.h>    // *nix api
 #include <sys/types.h> // *nix types
@@ -12,28 +13,21 @@
 
 #include <iostream>
 #include <fstream>
-#include <sstream>
 
 #include "lib/parsing.hpp"
 #include "lib/note.hpp"
 
 /* TODO
- * interactive IO
- * * Traverse by ID, parse com by letter
+ * find a substitute for 'i' to get index
  *
  * IO unification
  * * Tuple passing & concatenation?
  * * * Resolve validity by tuple_size?
  * * * In any case, separate functions from input
- *
- * Debugging / clarity
- * * filename expansion
- * * find a substitute for 'i' to get index
  */
 
 const std::string DATAFILE = "/.notes";
 const std::string COMS = "lare";
-//namespace fs = std::experimental::filesystem::v1;
 
 enum Com : char
 {
@@ -214,12 +208,10 @@ int main(int argc, char **argv)
 			case 'i': // replace with something intuitive, 'element'?
 				index = std::stoi(optarg);
 				break;
-			//case 'f': // Doesn't work with relative paths
-			//	std::cout << "File:\t" << optarg << std::endl;
-			//	break;
-			/*	A lot of pathname expansions require preexisting files,
-			 *	may ignore problem for now
-			 */
+			case 'f':
+				std::cout << "File:\t" << optarg << std::endl;
+				file = fs::absolute(optarg).string();
+				break;
 			default:
 				usage(argv[0]);
 		}
@@ -265,11 +257,7 @@ int main(int argc, char **argv)
 		std::cout << std::endl; //spacing
 		i_list(notes);
 
-		/* Interactive TODO
-		 * switch/dispatch COM
-		 * * Maybe read in note, for Adding and Editing
-		 *
-		 * Fully read in Note
+		/* Interactive IDEAS
 		 * Loop until interrupt?
 		 */
 	}
