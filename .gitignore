@@ -64,5 +64,6 @@ build-*-Debug
 *.jar
 
 # Client secrets
+*.secret
 credentials.json
 token.json
