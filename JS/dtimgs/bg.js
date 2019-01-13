@@ -3,7 +3,10 @@ console.log("BG");
 var re = /.+(\.jpg|\.jpeg|\.png)$/i;
 function runtab(tabs) {
 	console.log("PRESSED");
-	let imgtabs = tabs.filter(tab => re.test(tab.url));
+	let imgtabs = tabs.filter(tab => {
+		let check = new URL(tab.url);
+		return re.test(check.pathname);
+	});
 	console.log(imgtabs);
 	for(let tab of imgtabs) {
 		console.log(`Found: ${tab.url}`);
