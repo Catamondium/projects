@@ -44,5 +44,5 @@ if __name__ == "__main__":
             dropbox_path = dropPath(local_path, local_directory, dropbox_destination)
 
             # upload the file
-#            with open(local_path, 'rb') as f:
-#                client.files_upload(f.read(), dropbox_path, mode=dropbox.files.WriteMode("overwrite"))
+            with open(local_path, 'rb') as f:
+                client.files_upload(f.read(), dropbox_path, mode=dropbox.files.WriteMode("overwrite"))
