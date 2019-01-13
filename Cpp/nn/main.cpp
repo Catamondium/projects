@@ -8,6 +8,8 @@
 namespace fs = std::filesystem;
 
 #include <unistd.h>    // *nix api
+#include <stdlib.h>
+#include <getopt.h>    // getopt_long
 #include <sys/types.h> // *nix types
 #include <pwd.h>       // working directory stuff
 
@@ -17,9 +19,9 @@ namespace fs = std::filesystem;
 #include "lib/parsing.hpp"
 #include "lib/note.hpp"
 
+#define OPTHELP 500
+
 /* TODO
- * find a substitute for 'i' to get index
- *
  * IO unification
  * * Tuple passing & concatenation?
  * * * Resolve validity by tuple_size?
@@ -59,22 +61,22 @@ bool com_add(std::string fname, std::optional<Note> note, std::optional<unsigned
 	return false;
 }
 
-bool com_rm(std::string fname, std::optional<Note>, std::optional<unsigned int> index)
+bool com_rm(std::string fname, std::optional<Note>, std::optional<unsigned int> key)
 {
 	std::vector<Note> notes = notelib::parse(fname);
-	if(index && index.value() < notes.size())
-		notes.erase(notes.begin() + index.value());
+	if(key && key.value() < notes.size())
+		notes.erase(notes.begin() + key.value());
 	else
 		return true;
 	notelib::unmarshAll(notes, fname);
 	return false;
 }
 
-bool com_edit(std::string fname, std::optional<Note> note, std::optional<unsigned int> index)
+bool com_edit(std::string fname, std::optional<Note> note, std::optional<unsigned int> key)
 {
 	std::vector<Note> notes = notelib::parse(fname);
-	if(note && index && index.value() < notes.size())
-		notes[index.value()] = note.value();
+	if(note && key && key.value() < notes.size())
+		notes[key.value()] = note.value();
 	else
 		return true;
 	notelib::unmarshAll(notes, fname);
@@ -109,15 +111,15 @@ std::ostream& operator<<(std::ostream& stream, Com c)
 	return stream;
 }
 
-unsigned int i_index(unsigned int size)
+unsigned int i_key(unsigned int size)
 {
-	unsigned int index;
+	unsigned int key;
 	do {
 		std::cout << "Select N: ";
-		std::cin >> index;
-	} while(index >= size);
+		std::cin >> key;
+	} while(key >= size);
 
-	return index;
+	return key;
 }
 
 Note i_note()
@@ -162,6 +164,21 @@ void i_list(std::vector<Note> &notes)
 
 void usage(std::string prog)
 {
+	std::cout <<
+		"usage: " << prog << " command [ikhbef]\n"
+		"options:\n"
+		"\t-i\t--interactive\n"
+		"\t-k\t--key Key of note\n"
+		"\t-h\t--heading Define heading\n"
+		"\t-b\t--body Define body\n"
+		"\t-e\t--event Define event\n"
+		"\t-f\t--file Set subject file\n"
+		"\t--help\tPrint this message and exit\n"
+		"command:\n"
+		"\tlist:\tlist notes in file\n"
+		"\tadd:\tadd note to file\n"
+		"\tremove:\tremove note from file\n"
+		"\tedit:\tedit note by replacement" << std::endl;
 	exit(1);
 }
 
@@ -181,12 +198,24 @@ int main(int argc, char **argv)
 	std::optional<std::string> head;
 	std::string body = "";
 	std::optional<note_time> event;
-	std::optional<unsigned int> index;
+	std::optional<unsigned int> key;
 
 	bool interactive = false;
 
+	static struct option long_options[] = {
+		{"interactive", no_argument,       0, 'i'},
+		{"key",         required_argument, 0, 'k'},
+		{"header",      required_argument, 0, 'h'},
+		{"body",        required_argument, 0, 'b'},
+		{"event",       required_argument, 0, 'e'},
+		{"file",        required_argument, 0, 'f'},
+		{"help",        no_argument,       0, OPTHELP}
+	};
+
 	int c;
-	while((c = getopt(argc, argv, "ui:h:b:e:f:")) != -1) {
+	int option_index = 0;
+	while((c = getopt_long(argc, argv, "ik:h:b:e:f:",
+					long_options, &option_index)) != -1) {
 		std::string holder;
 		switch(c) {
 			case 'h':
@@ -202,11 +231,11 @@ int main(int argc, char **argv)
 				holder = optarg;
 				event = notelib::makeEvent(notelib::trim(holder));
 				break;
-			case 'u': // make use i
+			case 'i':
 				interactive = true;
 				break;
-			case 'i': // replace with something intuitive, 'element'?
-				index = std::stoi(optarg);
+			case 'k':
+				key = std::stoi(optarg);
 				break;
 			case 'f':
 				std::cout << "File:\t" << optarg << std::endl;
@@ -226,7 +255,7 @@ int main(int argc, char **argv)
 				note = Note(head.value(), body, event);
 			
 			std::cout << target << std::endl;
-			if(dispatch[target](file, note, index))
+			if(dispatch[target](file, note, key))
 				usage(argv[0]);
 		} else
 			usage(argv[0]);
@@ -246,11 +275,11 @@ int main(int argc, char **argv)
 		std::cout << '\n' << command << std::endl;
 		
 		if(command == REMOVE || command == EDIT) {
-			unsigned int index = i_index(notes.size());
+			unsigned int key = i_key(notes.size());
 			if(command == REMOVE)
-				notes.erase(notes.begin() + index);
+				notes.erase(notes.begin() + key);
 			else
-				notes[index] = i_note();
+				notes[key] = i_note();
 		} else
 			notes.push_back(i_note());
 		notelib::unmarshAll(notes, file);

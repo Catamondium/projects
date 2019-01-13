@@ -33,9 +33,9 @@ Time operator+(const Time lhs, const int rhs)
 void usage(const std::string prog)
 {
 	std::cout <<
-		"Usage: " << prog << " [-qh] hh:mm mins_elapse\n"
-		"Note: if mins_elapse is negative, precede it with '--'\n"
-		"Options:\n\t-q quietly output end time\n"
+		"usage: " << prog << " [-qh] hh:mm mins_elapse\n"
+		"note: if mins_elapse is negative, precede it with '--'\n"
+		"options:\n\t-q quietly output end time\n"
 		"\t-h print this message and exit" << std::endl;
 	std::exit(1);
 }
