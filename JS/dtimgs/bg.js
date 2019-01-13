@@ -1,16 +1,13 @@
-console.log("BG");
-
 var re = /.+(\.jpg|\.jpeg|\.png)$/i;
 function runtab(tabs) {
-	console.log("PRESSED");
 	let imgtabs = tabs.filter(tab => {
 		let check = new URL(tab.url);
 		return re.test(check.pathname);
 	});
-	console.log(imgtabs);
 	for(let tab of imgtabs) {
 		console.log(`Found: ${tab.url}`);
-		fname = tab.url.slice(tab.url.lastIndexOf('/'));
+		let path = new URL(tab.url);
+		fname = path.pathname.slice(1);
 		browser.downloads.download(
 			{
 				url: tab.url,
