@@ -1,7 +1,6 @@
 console.log("BG");
 
-var re = new RegExp(".+(\.jpg|\.jpeg|\.png)$", "i");
-
+var re = /.+(\.jpg|\.jpeg|\.png)$/i;
 function runtab(tabs) {
 	console.log("PRESSED");
 	let imgtabs = tabs.filter(tab => re.test(tab.url));
