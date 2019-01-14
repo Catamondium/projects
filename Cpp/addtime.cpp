@@ -1,8 +1,9 @@
+#include <unistd.h> // getopt
+#include <math.h> // floor
+
 #include <string> // stoi
 #include <iostream> // showpos/noshowpos
 #include <iomanip> // setw, setfill
-#include <unistd.h> // getopt
-#include <math.h> // floor
 
 struct Time {
 	int hrs;

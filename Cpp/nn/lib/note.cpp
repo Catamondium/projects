@@ -1,8 +1,9 @@
 #include <optional>
 #include <chrono>
-#include "note.hpp"
 #include <sstream>
 #include <iomanip>
+
+#include "note.hpp"
 
 using systime = std::chrono::system_clock;
 std::optional<std::string> Note::printEvent()

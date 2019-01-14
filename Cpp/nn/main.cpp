@@ -1,3 +1,9 @@
+#include <unistd.h>    // *nix api
+#include <stdlib.h>
+#include <getopt.h>    // getopt_long
+#include <sys/types.h> // *nix types
+#include <pwd.h>       // working directory stuff
+
 #include <vector>
 #include <unordered_map>
 
@@ -6,12 +12,6 @@
 #include <cctype>      // tolower
 #include <filesystem>
 namespace fs = std::filesystem;
-
-#include <unistd.h>    // *nix api
-#include <stdlib.h>
-#include <getopt.h>    // getopt_long
-#include <sys/types.h> // *nix types
-#include <pwd.h>       // working directory stuff
 
 #include <iostream>
 #include <fstream>
