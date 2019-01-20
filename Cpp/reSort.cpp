@@ -55,7 +55,7 @@ int main(int argc, char **argv)
 	}
 
 	if(!match_case) mode |= std::regex::icase;
-	mode |= std::regex::optimise // Only making 1 regex, more to scan
+	mode |= std::regex::optimize; // Only making 1 regex, more to scan
 
 	std::regex re;
 	std::vector<std::string> matched, unmatched;
