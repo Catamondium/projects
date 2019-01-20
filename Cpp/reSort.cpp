@@ -64,15 +64,10 @@ int main(int argc, char **argv)
 			unmatched.push_back(argv[i]);
 	}
 
-	if(!invert) {
-		for(auto &str : matched)
-			std::cout << str << std::endl;
-		for(auto &str : unmatched)
-			std::cout << str << std::endl;
-	} else {
-		for(auto &str : unmatched)
-			std::cout << str << std::endl;
-		for(auto &str : matched)
-			std::cout << str << std::endl;
-	}
+	if(invert) matched.swap(unmatched);
+
+	for(auto &str : matched)
+		std::cout << str << std::endl;
+	for(auto &str : unmatched)
+		std::cout << str << std::endl;
 }
