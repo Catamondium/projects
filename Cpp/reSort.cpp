@@ -12,11 +12,13 @@ void usage(const std::string prog)
 		"options:\n"
 		"\t-i invert group order\n"
 		"\t-c case-insensitive\n"
-		"\t-e ECMAScript regex (default)\n"
-		"\t-p POSIX regex\n"
-		"\t-a AWK regex\n"
-		"\t-g GREP regex\n"
-		"\t-h print this usage" << std::endl;
+		"\t-h print this usage"
+		"\tRegex grammars:\n"
+		"\t\t-e ECMAScript regex (default)\n"
+		"\t\t-p POSIX regex\n"
+		"\t\t-a AWK regex\n"
+		"\t\t-g GREP regex\n"
+		"\t\t-g EGREP regex" << std::endl;
 	std::exit(1);
 }
 
@@ -26,7 +28,7 @@ int main(int argc, char **argv)
 	auto mode = std::regex::ECMAScript;
 
 	int c;
-	while((c = getopt(argc, argv, "icpageh")) != -1) {
+	while((c = getopt(argc, argv, "icpagexh")) != -1) {
 		switch(c) {
 			case 'i':
 				invert = true;
@@ -45,12 +47,15 @@ int main(int argc, char **argv)
 			case 'e':
 				mode = std::regex::ECMAScript;
 				break;
+			case 'x':
+				mode = std::regex::egrep;
 			default:
 				usage(argv[0]);
 		}
 	}
 
 	if(!match_case) mode |= std::regex::icase;
+	mode |= std::regex::optimise // Only making 1 regex, more to scan
 
 	std::regex re;
 	std::vector<std::string> matched, unmatched;
