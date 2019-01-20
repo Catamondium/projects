@@ -49,6 +49,7 @@ int main(int argc, char **argv)
 				break;
 			case 'x':
 				mode = std::regex::egrep;
+				break;
 			default:
 				usage(argv[0]);
 		}
