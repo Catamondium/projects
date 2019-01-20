@@ -16,9 +16,9 @@ void usage(const std::string prog)
 		"\tRegex grammars:\n"
 		"\t\t-e ECMAScript regex (default)\n"
 		"\t\t-p POSIX regex\n"
-		"\t\t-a AWK regex\n"
+		"\t\t-a POSIX extended regex\n"
 		"\t\t-g GREP regex\n"
-		"\t\t-g EGREP regex" << std::endl;
+		"\t\t-x EGREP regex" << std::endl;
 	std::exit(1);
 }
 
