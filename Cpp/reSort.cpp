@@ -8,8 +8,11 @@
 void usage(const std::string prog)
 {
 	std::cout <<
-		"usage: " << prog << " [-ipagh] <regex> <strings>*\n"
-		"options:\n\t-i invert group order\n"
+		"usage: " << prog << " [-ipageh] <regex> <strings>*\n"
+		"options:\n"
+		"\t-i invert group order\n"
+		"\t-c case-insensitive\n"
+		"\t-e ECMAScript regex (default)\n"
 		"\t-p POSIX regex\n"
 		"\t-a AWK regex\n"
 		"\t-g GREP regex\n"
@@ -19,16 +22,17 @@ void usage(const std::string prog)
 
 int main(int argc, char **argv)
 {
-	bool invert = false;
+	bool invert = false, match_case = true;
 	auto mode = std::regex::ECMAScript;
-	std::regex re;
 
 	int c;
-	while((c = getopt(argc, argv, "ipagh")) != -1) {
+	while((c = getopt(argc, argv, "icpageh")) != -1) {
 		switch(c) {
 			case 'i':
 				invert = true;
 				break;
+			case 'c':
+				match_case = false;
 			case 'p':
 				mode = std::regex::basic;
 				break;
@@ -38,13 +42,18 @@ int main(int argc, char **argv)
 			case 'g':
 				mode = std::regex::grep;
 				break;
+			case 'e':
+				mode = std::regex::ECMAScript;
+				break;
 			default:
 				usage(argv[0]);
 		}
 	}
 
-	std::vector<std::string> matched;
-	std::vector<std::string> unmatched;
+	if(!match_case) mode |= std::regex::icase;
+
+	std::regex re;
+	std::vector<std::string> matched, unmatched;
 
 	if((argc - optind) < 1) usage(argv[0]);
 
