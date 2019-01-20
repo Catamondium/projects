@@ -8,9 +8,8 @@
 void usage(const std::string prog)
 {
 	std::cout <<
-		"usage: " << prog << " [-ir:] <strings>*\n"
-		"options:\n\t-i invert group order\n"
-		"\t-r regex to match by" << std::endl;
+		"usage: " << prog << " [-ir:] <regex> <strings>*\n"
+		"options:\n\t-i invert group order" << std::endl;
 	std::exit(1);
 }
 
@@ -20,13 +19,10 @@ int main(int argc, char **argv)
 	std::regex re;
 
 	int c;
-	while((c = getopt(argc, argv, "ihr:")) != -1) {
+	while((c = getopt(argc, argv, "ih")) != -1) {
 		switch(c) {
 			case 'i':
 				invert = true;
-				break;
-			case 'r':
-				re = std::string(optarg);
 				break;
 			default:
 				usage(argv[0]);
@@ -35,6 +31,10 @@ int main(int argc, char **argv)
 
 	std::vector<std::string> matched;
 	std::vector<std::string> unmatched;
+
+	if((argc - optind) < 1) usage(argv[0]);
+	else
+		re = argv[optind++];
 
 	for(int i = optind; i < argc; ++i) {
 		std::cmatch m;

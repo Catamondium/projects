@@ -2,7 +2,7 @@
 
 function rename() # (path, recurse, dry, verbose)
 { 
-	declare -a files=($(reSort -r "$1/${1##/*/}-.*" $1/*))
+	declare -a files=($(reSort "$1/${1##/*/}-.*" $1/*))
 	if [ "${#files[@]}" == 0 ]; then
 		exit 0
 	fi
