@@ -47,13 +47,12 @@ int main(int argc, char **argv)
 	std::vector<std::string> unmatched;
 
 	if((argc - optind) < 1) usage(argv[0]);
-	else {
-		try {
-			re = std::regex(argv[optind++], mode);
-		} catch (const std::regex_error& e) {
-			std::cout << e.what() << std::endl;
-			std::exit(1);
-		}
+
+	try {
+		re = std::regex(argv[optind++], mode);
+	} catch (const std::regex_error& e) {
+		std::cout << e.what() << std::endl;
+		std::exit(1);
 	}
 
 	for(int i = optind; i < argc; ++i) {
