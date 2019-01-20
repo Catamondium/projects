@@ -12,13 +12,13 @@ void usage(const std::string prog)
 		"options:\n"
 		"\t-i invert group order\n"
 		"\t-c case-insensitive\n"
-		"\t-h print this usage"
+		"\t-h print this usage\n"
 		"\tRegex grammars:\n"
-		"\t\t-e ECMAScript regex (default)\n"
-		"\t\t-p POSIX regex\n"
-		"\t\t-a POSIX extended regex\n"
-		"\t\t-g GREP regex\n"
-		"\t\t-x EGREP regex" << std::endl;
+		"\t\t-j JS / ECMAScript (default)\n"
+		"\t\t-p POSIX\n"
+		"\t\t-e POSIX extended\n"
+		"\t\t-g Grep\n"
+		"\t\t-x EGrep" << std::endl;
 	std::exit(1);
 }
 
@@ -28,24 +28,24 @@ int main(int argc, char **argv)
 	auto mode = std::regex::ECMAScript;
 
 	int c;
-	while((c = getopt(argc, argv, "icpagexh")) != -1) {
+	while((c = getopt(argc, argv, "ichjpegx")) != -1) {
 		switch(c) {
 			case 'i':
 				invert = true;
 				break;
 			case 'c':
 				match_case = false;
+			case 'j':
+				mode = std::regex::ECMAScript;
+				break;
 			case 'p':
 				mode = std::regex::basic;
 				break;
-			case 'a':
+			case 'e':
 				mode = std::regex::awk;
 				break;
 			case 'g':
 				mode = std::regex::grep;
-				break;
-			case 'e':
-				mode = std::regex::ECMAScript;
 				break;
 			case 'x':
 				mode = std::regex::egrep;
