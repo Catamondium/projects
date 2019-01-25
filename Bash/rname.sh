@@ -74,9 +74,16 @@ while getopts "dvhfir" c; do
 	esac
 done
 
-path=$(readlink -f $1 2> /dev/null) # suppressed readlink warnings
-: ${path:=$(pwd)}                   # default to current working dir
+shift $((OPTIND-1))
 
-if $dry || $force || verify $path; then
-	rename $path $recurse $dry $verbose
-fi
+declare -a args=$@
+: ${args:=$(pwd)} # default to working dir
+
+for f in ${args[@]}; do
+	path=$(readlink -f $f 2> /dev/null) # suppressed warnings
+	if [ -d $path ]; then
+		if $dry || $force || verify $path; then
+			rename $path $recurse $dry $verbose
+		fi
+	fi
+done
