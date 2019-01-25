@@ -35,7 +35,7 @@ function usage()
 	printf "Batch renamer following DIR-#.ext pattern.\n"
 	printf "# is an integer zfilled to width log10 of " 
 	printf "the number of files to mv recursing directories\n"
-	printf "Usage:\t$0 -[vhfir] [target]\n"
+	printf "Usage:\t$0 -[vhfir] [targets]\n"
 	printf "Options:\n"
 	printf "\t-d Dry run, verbosely\n"
 	printf "\t-v Verbose\n"

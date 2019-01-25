@@ -1,5 +1,5 @@
 #!/bin/bash
-path=$(readlink -f $1)
+path=$(readlink -f $1 2>/dev/null) # supress 'missing operand'
 size=$2
 
 : ${size:=10}     # default bucket size 10
