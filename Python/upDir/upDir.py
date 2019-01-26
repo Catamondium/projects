@@ -7,21 +7,15 @@ import sys
 # get an access token, local (from) directory, and Dropbox (to) directory
 # from the command-line
 
-def readToken(scriptRel='creds.secret'):
+def readToken(tok='creds.secret'):
     """
-    Read client token from relative to script
+    Read client token relative to script
     """
     script = os.path.realpath(__file__)
     scriptdir = os.path.dirname(script) # access client secret relative to script
-    fpath = os.path.join(scriptdir, scriptRel)
+    fpath = os.path.join(scriptdir, tok)
     with open(fpath, 'r') as f:
         return f.readline().strip()
-
-def dropPath(local_path, local_dir, drop_dir):
-    relative_path = os.path.relpath(local_path, local_dir)
-    drop_dirpath = os.path.join(drop_dir, local_dir) # Create with local directory
-    dropbox_path = os.path.join(drop_dirpath, relative_path)
-    return dropbox_path
 
 def usage():
     print("params: (local_dir, dropbox_dir)")
@@ -41,8 +35,10 @@ if __name__ == "__main__":
             local_path = os.path.join(root, filename)
 
             # construct the full Dropbox path
-            dropbox_path = dropPath(local_path, local_directory, dropbox_destination)
+            relative_path = os.path.relpath(local_path, local_directory)
+            dropbox_path = os.path.join(dropbox_destination, relative_path)
+            print(dropbox_path)
 
             # upload the file
-            with open(local_path, 'rb') as f:
-                client.files_upload(f.read(), dropbox_path, mode=dropbox.files.WriteMode("overwrite"))
+#            with open(local_path, 'rb') as f:
+#                client.files_upload(f.read(), dropbox_path, mode=dropbox.files.WriteMode("overwrite"))
