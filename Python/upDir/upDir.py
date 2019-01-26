@@ -37,8 +37,7 @@ if __name__ == "__main__":
             # construct the full Dropbox path
             relative_path = os.path.relpath(local_path, local_directory)
             dropbox_path = os.path.join(dropbox_destination, relative_path)
-            print(dropbox_path)
 
             # upload the file
-#            with open(local_path, 'rb') as f:
-#                client.files_upload(f.read(), dropbox_path, mode=dropbox.files.WriteMode("overwrite"))
+            with open(local_path, 'rb') as f:
+                client.files_upload(f.read(), dropbox_path, mode=dropbox.files.WriteMode("overwrite"))
