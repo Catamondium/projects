@@ -1,5 +1,5 @@
 const DEBUG = false;
-var re = /.+(\.jpg|\.jpeg|\.png)$/i;
+var re = /.+\.(jpg|jpeg|png)$/i;
 function runtab(tabs) {
 	let imgtabs = tabs.filter(tab => {
 		let check = new URL(tab.url);
