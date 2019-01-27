@@ -19,7 +19,7 @@ function usage()
 }
 
 force=true
-while getopts "hi" c; do
+while getopts "hif" c; do
 	case "${c}" in
 		i)
 			force=false

@@ -1,3 +1,4 @@
+const DEBUG = false;
 var re = /.+(\.jpg|\.jpeg|\.png)$/i;
 function runtab(tabs) {
 	let imgtabs = tabs.filter(tab => {
@@ -5,15 +6,18 @@ function runtab(tabs) {
 		return re.test(check.pathname);
 	});
 	for(let tab of imgtabs) {
-		console.log(`Found: ${tab.url}`);
 		let path = new URL(tab.url);
-		fname = path.pathname.slice(1);
-		browser.downloads.download(
-			{
-				url: tab.url,
-				filename: `dtimgs/${fname}`
-			});
-		browser.tabs.remove(tab.id);
+		fname = path.pathname;
+		fname = fname.slice(fname.lastIndexOf('/')+1); // flatten name
+		console.log(`Found: ${fname}`);
+		if(!DEBUG) {
+			browser.downloads.download(
+				{
+					url: tab.url,
+					filename: `dtimgs/${fname}`
+				});
+			browser.tabs.remove(tab.id);
+		}
 	}
 }
 
