@@ -41,8 +41,8 @@ enum Com : char
 	EDIT   = 'e'
 };
 
-namespace com {
-	bool ls(std::string fname, std::optional<Note>)
+namespace com {  // cmdline Com functions
+	bool ls(std::string fname)
 	{
 		std::vector<Note> notes = notelib::parse(fname);
 		std::cout << "[N]" << std::endl;
@@ -52,11 +52,11 @@ namespace com {
 		return false;
 	}
 
-	bool add(std::string fname, std::optional<Note> note)
+	bool add(std::string fname, std::optional<Note> n)
 	{
 		std::ofstream file(fname, std::ios_base::app);
-		if(note)
-			file << note.value().unmarshal() << std::endl;
+		if(n)
+			file << n.value().unmarshal() << std::endl;
 		else
 			return true;
 		return false;
@@ -73,15 +73,41 @@ namespace com {
 		return false;
 	}
 
-	bool edit(std::string fname, std::optional<Note> note, std::optional<unsigned int> key)
+	bool edit(std::string fname, std::optional<Note> n, std::optional<unsigned int> key)
 	{
 		std::vector<Note> notes = notelib::parse(fname);
-		if(note && key && key.value() < notes.size())
-			notes[key.value()] = note.value();
+		if(n && key && key.value() < notes.size())
+			notes[key.value()] = n.value();
 		else
 			return true;
 		notelib::unmarshAll(notes, fname);
 		return false;
+	}
+}
+
+namespace icom { // interactive side Com functions
+	void ls(std::vector<Note> &notes)
+	{
+		std::cout << "[N]" << std::endl;
+		for(unsigned int i = 0; i < notes.size(); ++i) {
+			std::cout << "[" << i << "] "
+				<< notes[i].unmarshal() << std::endl;
+		}
+	}
+
+	void add(std::vector<Note> &notes, Note n)
+	{
+		notes.push_back(n);
+	}
+
+	void rm(std::vector<Note> &notes, unsigned int key)
+	{
+		notes.erase(notes.begin() + key);
+	}
+
+	void edit(std::vector<Note> &notes, Note n, unsigned int key)
+	{
+		notes[key] = n;
 	}
 }
 
@@ -92,7 +118,7 @@ bool/*hasError*/ execute(Com target, std::string fname, std::optional<Note> note
 	std::vector<Note> notes;
 	switch(target) {
 		case LIST:
-			return com::ls(fname, note);
+			return com::ls(fname);
 		case ADD:
 			return com::add(fname, note);
 		case REMOVE:
@@ -122,54 +148,62 @@ std::ostream& operator<<(std::ostream& stream, Com c)
 	return stream;
 }
 
-unsigned int i_key(unsigned int size)
-{
-	unsigned int key;
-	do {
-		std::cout << "Select N: ";
-		std::cin >> key;
-	} while(key >= size);
+namespace iutil { // interactive side parameter aquisition
+	unsigned int key(unsigned int size)
+	{
+		unsigned int key;
+		do {
+			std::cout << "Select N: ";
+			std::cin >> key;
+		} while(key >= size);
 
-	return key;
-}
+		return key;
+	}
 
-Note i_note()
-{
-	std::string head;
-	std::cout << "Heading: ";
-	std::cin.ignore();
-	std::getline(std::cin, head);
-	notelib::trim(head);
+	Note note()
+	{
+		std::string head;
+		std::cout << "Heading: ";
+		std::cin.ignore();
+		std::getline(std::cin, head);
+		notelib::trim(head);
 
-	std::string strdate;
-	std::cout << "Event: ";
-	std::cin.ignore(0);
-	std::getline(std::cin, strdate);
-	notelib::trim(strdate);
-	std::optional<note_time> event = notelib::makeEvent(strdate);
+		std::string strdate;
+		std::cout << "Event: ";
+		std::cin.ignore(0);
+		std::getline(std::cin, strdate);
+		notelib::trim(strdate);
+		std::optional<note_time> event = notelib::makeEvent(strdate);
 
-	std::string body = ""; 
-	std::string cur;
-	std::cout << "Body: finalise with \"##\"" << std::endl;
-	std::cin.ignore(0);
-	do {
-		std::getline(std::cin, cur);
-		notelib::trim(cur);
-		body += cur + '\n';
-	} while(cur.substr(0, 2) != "##"); // stop reading on EOE
+		std::string body = ""; 
+		std::string cur;
+		std::cout << "Body: finalise with \"##\"" << std::endl;
+		std::cin.ignore(0);
+		do {
+			std::getline(std::cin, cur);
+			notelib::trim(cur);
+			body += cur + '\n';
+		} while(cur.substr(0, 2) != "##"); // stop reading on EOE
 
-	notelib::trim(body);
-	body.erase(std::find_if(body.rbegin(), body.rend(),
-				[](char ch){return ch == '\n';}).base()-1, body.end()); // remove EOE line
+		notelib::trim(body);
+		body.erase(std::find_if(body.rbegin(), body.rend(),
+					[](char ch){return ch == '\n';}).base()-1, body.end()); // remove EOE line
 
-	return Note(head, body, event);
-}
+		return Note(head, body, event);
+	}
 
-void i_ls(std::vector<Note> &notes)
-{
-	std::cout << "[N]" << std::endl;
-	for(unsigned int i = 0; i < notes.size(); ++i) {
-		std::cout << "[" << i << "] " << notes[i].unmarshal() << std::endl;
+	Com com()
+	{
+		std::cout << "Actions: Add, Remove, Edit" << std::endl;
+		const std::string i_COMS = COMS.substr(1);
+		char action;
+		do {
+			std::cout << "Select action: ";
+			std::cin >> action;
+			action = std::tolower(action);
+		} while (std::none_of(i_COMS.cbegin(), i_COMS.cend(),
+					[&action](auto o){return action == o;}));
+		return static_cast<Com>(action);
 	}
 }
 
@@ -272,29 +306,19 @@ int main(int argc, char **argv)
 			usage(argv[0]);
 	} else {
 		std::vector<Note> notes = notelib::parse(file);
-		i_ls(notes);
-		std::cout << "Actions: Add, Remove, Edit" << std::endl;
-		const std::string i_COMS = COMS.substr(1);
-		char action;
-		do {
-			std::cout << "Select action: ";
-			std::cin >> action;
-			action = std::tolower(action);
-		} while (std::none_of(i_COMS.cbegin(), i_COMS.cend(),
-					[&action](auto o){return action == o;}));
-		Com command = static_cast<Com>(action);
+		icom::ls(notes);
+		Com command = iutil::com();
 		std::cout << '\n' << command << std::endl;
 		
 		if(command == REMOVE || command == EDIT) {
-			unsigned int key = i_key(notes.size());
 			if(command == REMOVE)
-				notes.erase(notes.begin() + key);
+				icom::rm(notes, iutil::key(notes.size()));
 			else
-				notes[key] = i_note();
+				icom::edit(notes, iutil::note(), iutil::key(notes.size()));
 		} else
-			notes.push_back(i_note());
+			icom::add(notes, iutil::note());
 		notelib::unmarshAll(notes, file);
 		std::cout << std::endl; //spacing
-		i_ls(notes);
+		icom::ls(notes);
 	}
 }
