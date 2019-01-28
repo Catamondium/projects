@@ -21,11 +21,13 @@ namespace fs = std::filesystem;
 
 #define OPTHELP 500
 
-/* TODO
- * IO unification
- * * Tuple passing & concatenation?
- * * * Resolve validity by tuple_size?
- * * * In any case, separate functions from input
+/* IO unification
+ * * *
+ * Main issue, interactive `signatures` use vector<note> params
+ * but com:: reproduces vector<note> with filename
+ * so, do we bring com:: down to require vector<note>
+ * or, do we bring interactives up to recreate vector<note>
+ * repeatedly inside com::
  */
 
 const std::string DATAFILE = "/.notes";
@@ -39,59 +41,68 @@ enum Com : char
 	EDIT   = 'e'
 };
 
-//### COM argv functors
-// Ignore related 'unused parameter' warnings
-// Modifying signatures will void dispatch ###
-bool com_ls(std::string fname, std::optional<Note>, std::optional<unsigned int>)
-{
-	std::vector<Note> notes = notelib::parse(fname);
-	for(unsigned int i = 0; i < notes.size(); ++i) {
-		std::cout << "[" << i << "] " << notes[i].unmarshal() << std::endl;
+namespace com {
+	bool ls(std::string fname, std::optional<Note>)
+	{
+		std::vector<Note> notes = notelib::parse(fname);
+		std::cout << "[N]" << std::endl;
+		for(unsigned int i = 0; i < notes.size(); ++i) {
+			std::cout << "[" << i << "] " << notes[i].unmarshal() << std::endl;
+		}
+		return false;
 	}
-	return false;
+
+	bool add(std::string fname, std::optional<Note> note)
+	{
+		std::ofstream file(fname, std::ios_base::app);
+		if(note)
+			file << note.value().unmarshal() << std::endl;
+		else
+			return true;
+		return false;
+	}
+
+	bool rm(std::string fname, std::optional<unsigned int> key)
+	{
+		std::vector<Note> notes = notelib::parse(fname);
+		if(key && key.value() < notes.size())
+			notes.erase(notes.begin() + key.value());
+		else
+			return true;
+		notelib::unmarshAll(notes, fname);
+		return false;
+	}
+
+	bool edit(std::string fname, std::optional<Note> note, std::optional<unsigned int> key)
+	{
+		std::vector<Note> notes = notelib::parse(fname);
+		if(note && key && key.value() < notes.size())
+			notes[key.value()] = note.value();
+		else
+			return true;
+		notelib::unmarshAll(notes, fname);
+		return false;
+	}
 }
 
-bool com_add(std::string fname, std::optional<Note> note, std::optional<unsigned int>)
+bool/*hasError*/ execute(Com target, std::string fname, std::optional<Note> note, std::optional<unsigned int> index)
 {
+	std::cout << target << std::endl;
 	std::ofstream file(fname, std::ios_base::app);
-	if(note)
-		file << note.value().unmarshal() << std::endl;
-	else
-		return true;
+	std::vector<Note> notes;
+	switch(target) {
+		case LIST:
+			return com::ls(fname, note);
+		case ADD:
+			return com::add(fname, note);
+		case REMOVE:
+			return com::rm(fname, index);
+		case EDIT:
+			return com::edit(fname, note, index);
+	}
+
 	return false;
 }
-
-bool com_rm(std::string fname, std::optional<Note>, std::optional<unsigned int> key)
-{
-	std::vector<Note> notes = notelib::parse(fname);
-	if(key && key.value() < notes.size())
-		notes.erase(notes.begin() + key.value());
-	else
-		return true;
-	notelib::unmarshAll(notes, fname);
-	return false;
-}
-
-bool com_edit(std::string fname, std::optional<Note> note, std::optional<unsigned int> key)
-{
-	std::vector<Note> notes = notelib::parse(fname);
-	if(note && key && key.value() < notes.size())
-		notes[key.value()] = note.value();
-	else
-		return true;
-	notelib::unmarshAll(notes, fname);
-	return false;
-}
-//###
-
-using com_functor = std::function<bool/*HasError*/(std::string, std::optional<Note>, std::optional<unsigned int>)>;
-std::unordered_map<Com, com_functor> dispatch
-{
-	{LIST,   com_ls},
-	{ADD,    com_add},
-	{REMOVE, com_rm},
-	{EDIT,   com_edit}
-};
 
 std::ostream& operator<<(std::ostream& stream, Com c)
 {
@@ -154,9 +165,9 @@ Note i_note()
 	return Note(head, body, event);
 }
 
-void i_list(std::vector<Note> &notes)
+void i_ls(std::vector<Note> &notes)
 {
-	std::cout << "[N] interactive" << std::endl;
+	std::cout << "[N]" << std::endl;
 	for(unsigned int i = 0; i < notes.size(); ++i) {
 		std::cout << "[" << i << "] " << notes[i].unmarshal() << std::endl;
 	}
@@ -255,13 +266,13 @@ int main(int argc, char **argv)
 				note = Note(head.value(), body, event);
 			
 			std::cout << target << std::endl;
-			if(dispatch[target](file, note, key))
+			if(execute(target, file, note, key))
 				usage(argv[0]);
 		} else
 			usage(argv[0]);
 	} else {
 		std::vector<Note> notes = notelib::parse(file);
-		i_list(notes);
+		i_ls(notes);
 		std::cout << "Actions: Add, Remove, Edit" << std::endl;
 		const std::string i_COMS = COMS.substr(1);
 		char action;
@@ -284,10 +295,6 @@ int main(int argc, char **argv)
 			notes.push_back(i_note());
 		notelib::unmarshAll(notes, file);
 		std::cout << std::endl; //spacing
-		i_list(notes);
-
-		/* Interactive IDEAS
-		 * Loop until interrupt?
-		 */
+		i_ls(notes);
 	}
 }
