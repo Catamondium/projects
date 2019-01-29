@@ -41,7 +41,7 @@ enum Com : char
 	EDIT   = 'e'
 };
 
-namespace com {  // cmdline Com functions
+/*namespace com {  // cmdline Com functions
 	bool ls(std::string fname)
 	{
 		std::vector<Note> notes = notelib::parse(fname);
@@ -83,7 +83,7 @@ namespace com {  // cmdline Com functions
 		notelib::unmarshAll(notes, fname);
 		return false;
 	}
-}
+}*/
 
 namespace icom { // interactive side Com functions
 	void ls(std::vector<Note> &notes)
@@ -111,20 +111,31 @@ namespace icom { // interactive side Com functions
 	}
 }
 
-bool/*hasError*/ execute(Com target, std::string fname, std::optional<Note> note, std::optional<unsigned int> index)
+bool/*hasError*/ execute(Com target, std::vector<Note> &notes, std::optional<Note> note, std::optional<unsigned int> index)
 {
-	std::cout << target << std::endl;
-	std::ofstream file(fname, std::ios_base::app);
-	std::vector<Note> notes;
 	switch(target) {
 		case LIST:
-			return com::ls(fname);
+			icom::ls(notes);
+			return true;
+			break;
 		case ADD:
-			return com::add(fname, note);
+			if(note) {
+				icom::add(notes, note.value());
+				return true;
+			}
+			break;
 		case REMOVE:
-			return com::rm(fname, index);
+			if(index) {
+				icom::rm(notes, index.value());
+				return true;
+			}
+			break;
 		case EDIT:
-			return com::edit(fname, note, index);
+			if(note && index) {
+				icom::edit(notes, note.value(), index.value());
+				return true;
+			}
+			break;
 	}
 
 	return false;
@@ -244,6 +255,7 @@ int main(int argc, char **argv)
 	std::string body = "";
 	std::optional<note_time> event;
 	std::optional<unsigned int> key;
+	std::optional<Note> note;
 
 	bool interactive = false;
 
@@ -291,21 +303,21 @@ int main(int argc, char **argv)
 		}
 	}
 
-	std::optional<Note> note;
+	if(head)
+		note = Note(head.value(), body, event);
+
+	std::vector<Note> notes = notelib::parse(file);
 	if(!interactive && optind < argc) {
 		char c = std::tolower(argv[optind][0]);
 		if(std::any_of(COMS.cbegin(), COMS.cend(), [&c](auto o){return c == o;})) {
 			Com target = static_cast<Com>(c);
-			if(head)
-				note = Note(head.value(), body, event);
 			
 			std::cout << target << std::endl;
-			if(execute(target, file, note, key))
+			if(execute(target, notes, note, key))
 				usage(argv[0]);
 		} else
 			usage(argv[0]);
 	} else {
-		std::vector<Note> notes = notelib::parse(file);
 		icom::ls(notes);
 		Com command = iutil::com();
 		std::cout << '\n' << command << std::endl;
@@ -317,8 +329,8 @@ int main(int argc, char **argv)
 				icom::edit(notes, iutil::note(), iutil::key(notes.size()));
 		} else
 			icom::add(notes, iutil::note());
-		notelib::unmarshAll(notes, file);
 		std::cout << std::endl; //spacing
 		icom::ls(notes);
 	}
+	notelib::unmarshAll(notes, file);
 }
