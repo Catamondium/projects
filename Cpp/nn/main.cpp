@@ -21,15 +21,6 @@ namespace fs = std::filesystem;
 
 #define OPTHELP 500
 
-/* IO unification
- * * *
- * Main issue, interactive `signatures` use vector<note> params
- * but com:: reproduces vector<note> with filename
- * so, do we bring com:: down to require vector<note>
- * or, do we bring interactives up to recreate vector<note>
- * repeatedly inside com::
- */
-
 const std::string DATAFILE = "/.notes";
 const std::string COMS = "lare";
 
@@ -41,51 +32,7 @@ enum Com : char
 	EDIT   = 'e'
 };
 
-/*namespace com {  // cmdline Com functions
-	bool ls(std::string fname)
-	{
-		std::vector<Note> notes = notelib::parse(fname);
-		std::cout << "[N]" << std::endl;
-		for(unsigned int i = 0; i < notes.size(); ++i) {
-			std::cout << "[" << i << "] " << notes[i].unmarshal() << std::endl;
-		}
-		return false;
-	}
-
-	bool add(std::string fname, std::optional<Note> n)
-	{
-		std::ofstream file(fname, std::ios_base::app);
-		if(n)
-			file << n.value().unmarshal() << std::endl;
-		else
-			return true;
-		return false;
-	}
-
-	bool rm(std::string fname, std::optional<unsigned int> key)
-	{
-		std::vector<Note> notes = notelib::parse(fname);
-		if(key && key.value() < notes.size())
-			notes.erase(notes.begin() + key.value());
-		else
-			return true;
-		notelib::unmarshAll(notes, fname);
-		return false;
-	}
-
-	bool edit(std::string fname, std::optional<Note> n, std::optional<unsigned int> key)
-	{
-		std::vector<Note> notes = notelib::parse(fname);
-		if(n && key && key.value() < notes.size())
-			notes[key.value()] = n.value();
-		else
-			return true;
-		notelib::unmarshAll(notes, fname);
-		return false;
-	}
-}*/
-
-namespace icom { // interactive side Com functions
+namespace com {
 	void ls(std::vector<Note> &notes)
 	{
 		std::cout << "[N]" << std::endl;
@@ -115,24 +62,23 @@ bool/*hasError*/ execute(Com target, std::vector<Note> &notes, std::optional<Not
 {
 	switch(target) {
 		case LIST:
-			icom::ls(notes);
+			com::ls(notes);
 			return true;
-			break;
 		case ADD:
 			if(note) {
-				icom::add(notes, note.value());
+				com::add(notes, note.value());
 				return true;
 			}
 			break;
 		case REMOVE:
 			if(index) {
-				icom::rm(notes, index.value());
+				com::rm(notes, index.value());
 				return true;
 			}
 			break;
 		case EDIT:
 			if(note && index) {
-				icom::edit(notes, note.value(), index.value());
+				com::edit(notes, note.value(), index.value());
 				return true;
 			}
 			break;
