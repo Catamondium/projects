@@ -19,8 +19,7 @@ namespace fs = std::filesystem;
 #include "lib/parsing.hpp"
 #include "lib/note.hpp"
 
-#define OPTHELP 500
-
+constexpr int OPTHELP = 500;
 const std::string DATAFILE = "/.notes";
 const std::string COMS = "lare";
 
@@ -152,13 +151,12 @@ namespace iutil { // interactive side parameter aquisition
 	Com com()
 	{
 		std::cout << "Actions: Add, Remove, Edit" << std::endl;
-		const std::string i_COMS = COMS.substr(1);
 		char action;
 		do {
 			std::cout << "Select action: ";
 			std::cin >> action;
 			action = std::tolower(action);
-		} while (std::none_of(i_COMS.cbegin(), i_COMS.cend(),
+		} while (std::none_of(COMS.cbegin()+1, COMS.cend(),
 					[&action](auto o){return action == o;}));
 		return static_cast<Com>(action);
 	}
@@ -264,19 +262,19 @@ int main(int argc, char **argv)
 		} else
 			usage(argv[0]);
 	} else {
-		icom::ls(notes);
+		com::ls(notes);
 		Com command = iutil::com();
 		std::cout << '\n' << command << std::endl;
 		
 		if(command == REMOVE || command == EDIT) {
 			if(command == REMOVE)
-				icom::rm(notes, iutil::key(notes.size()));
+				com::rm(notes, iutil::key(notes.size()));
 			else
-				icom::edit(notes, iutil::note(), iutil::key(notes.size()));
+				com::edit(notes, iutil::note(), iutil::key(notes.size()));
 		} else
-			icom::add(notes, iutil::note());
+			com::add(notes, iutil::note());
 		std::cout << std::endl; //spacing
-		icom::ls(notes);
+		com::ls(notes);
 	}
 	notelib::unmarshAll(notes, file);
 }
