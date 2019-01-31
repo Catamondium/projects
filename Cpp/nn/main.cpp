@@ -5,7 +5,6 @@
 #include <pwd.h>       // working directory stuff
 
 #include <vector>
-#include <unordered_map>
 
 #include <algorithm>   // any_of
 #include <functional>  // std::function
@@ -156,7 +155,7 @@ namespace iutil { // interactive side parameter aquisition
 			std::cout << "Select action: ";
 			std::cin >> action;
 			action = std::tolower(action);
-		} while (std::none_of(COMS.cbegin()+1, COMS.cend(),
+		} while (std::none_of(COMS.cbegin(), COMS.cend(),
 					[&action](auto o){return action == o;}));
 		return static_cast<Com>(action);
 	}
@@ -266,15 +265,23 @@ int main(int argc, char **argv)
 		Com command = iutil::com();
 		std::cout << '\n' << command << std::endl;
 		
-		if(command == REMOVE || command == EDIT) {
-			if(command == REMOVE)
+		switch(command) {
+			case LIST:
+				com::ls(notes);
+				break;
+			case ADD:
+				com::add(notes, iutil::note());
+				break;
+			case REMOVE:
 				com::rm(notes, iutil::key(notes.size()));
-			else
+				break;
+			case EDIT:
 				com::edit(notes, iutil::note(), iutil::key(notes.size()));
-		} else
-			com::add(notes, iutil::note());
+				break;
+		}
 		std::cout << std::endl; //spacing
 		com::ls(notes);
 	}
+
 	notelib::unmarshAll(notes, file);
 }
