@@ -9,6 +9,7 @@
 #include <algorithm>   // any_of
 #include <functional>  // std::function
 #include <cctype>      // tolower
+#include <csignal>
 #include <filesystem>
 namespace fs = std::filesystem;
 
@@ -22,6 +23,10 @@ constexpr int OPTHELP = 500;
 const std::string DATAFILE = "/.notes";
 const std::string COMS = "lare";
 
+// lucky we need all these in main
+std::string file;
+std::vector<Note> notes;
+
 enum Com : char
 {
 	LIST   = 'l',
@@ -30,53 +35,60 @@ enum Com : char
 	EDIT   = 'e'
 };
 
+void inthandler(int sig)
+{
+	std::cout << "\nSIGINT(" << sig << ")" << std::endl;
+	notelib::unmarshAll(notes, file);
+	exit(sig);
+}
+
 namespace com {
-	void ls(std::vector<Note> &notes)
+	void ls(std::vector<Note> &ns)
 	{
 		std::cout << "[N]" << std::endl;
-		for(unsigned int i = 0; i < notes.size(); ++i) {
+		for(unsigned int i = 0; i < ns.size(); ++i) {
 			std::cout << "[" << i << "] "
-				<< notes[i].unmarshal() << std::endl;
+				<< ns[i].unmarshal() << std::endl;
 		}
 	}
 
-	void add(std::vector<Note> &notes, Note n)
+	void add(std::vector<Note> &ns, Note n)
 	{
-		notes.push_back(n);
+		ns.push_back(n);
 	}
 
-	void rm(std::vector<Note> &notes, unsigned int key)
+	void rm(std::vector<Note> &ns, unsigned int key)
 	{
-		notes.erase(notes.begin() + key);
+		ns.erase(ns.begin() + key);
 	}
 
-	void edit(std::vector<Note> &notes, Note n, unsigned int key)
+	void edit(std::vector<Note> &ns, Note n, unsigned int key)
 	{
-		notes[key] = n;
+		ns[key] = n;
 	}
 }
 
-bool/*hasError*/ execute(Com target, std::vector<Note> &notes, std::optional<Note> note, std::optional<unsigned int> index)
+bool/*hasError*/ execute(Com target, std::vector<Note> &ns, std::optional<Note> note, std::optional<unsigned int> index)
 {
 	switch(target) {
 		case LIST:
-			com::ls(notes);
+			com::ls(ns);
 			return true;
 		case ADD:
 			if(note) {
-				com::add(notes, note.value());
+				com::add(ns, note.value());
 				return true;
 			}
 			break;
 		case REMOVE:
 			if(index) {
-				com::rm(notes, index.value());
+				com::rm(ns, index.value());
 				return true;
 			}
 			break;
 		case EDIT:
 			if(note && index) {
-				com::edit(notes, note.value(), index.value());
+				com::edit(ns, note.value(), index.value());
 				return true;
 			}
 			break;
@@ -199,8 +211,7 @@ int main(int argc, char **argv)
 	std::optional<note_time> event;
 	std::optional<unsigned int> key;
 	std::optional<Note> note;
-
-	bool interactive = false;
+	bool interactive;
 
 	static struct option long_options[] = {
 		{"interactive", no_argument,       0, 'i'},
@@ -248,8 +259,8 @@ int main(int argc, char **argv)
 
 	if(head)
 		note = Note(head.value(), body, event);
-
-	std::vector<Note> notes = notelib::parse(file);
+	
+	notes = notelib::parse(file);
 	if(!interactive && optind < argc) {
 		char c = std::tolower(argv[optind][0]);
 		if(std::any_of(COMS.cbegin(), COMS.cend(), [&c](auto o){return c == o;})) {
@@ -262,26 +273,29 @@ int main(int argc, char **argv)
 			usage(argv[0]);
 	} else {
 		com::ls(notes);
-		Com command = iutil::com();
-		std::cout << '\n' << command << std::endl;
-		
-		switch(command) {
-			case LIST:
-				com::ls(notes);
-				break;
-			case ADD:
-				com::add(notes, iutil::note());
-				break;
-			case REMOVE:
-				com::rm(notes, iutil::key(notes.size()));
-				break;
-			case EDIT:
-				com::edit(notes, iutil::note(), iutil::key(notes.size()));
-				break;
+		// should only exist when notes are initialised
+		signal(SIGINT, inthandler); 
+		while(true) {
+			Com command = iutil::com();
+			std::cout << '\n' << command << std::endl;
+			
+			switch(command) {
+				case LIST:
+					com::ls(notes);
+					break;
+				case ADD:
+					com::add(notes, iutil::note());
+					break;
+				case REMOVE:
+					com::rm(notes, iutil::key(notes.size()));
+					break;
+				case EDIT:
+					com::edit(notes, iutil::note(), iutil::key(notes.size()));
+					break;
+			}
+			std::cout << std::endl; //spacing
+			com::ls(notes);
 		}
-		std::cout << std::endl; //spacing
-		com::ls(notes);
 	}
-
 	notelib::unmarshAll(notes, file);
 }
