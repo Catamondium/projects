@@ -8,7 +8,7 @@ class Time {
 
 	multi method fromStr (Str $s) {
 		my @subs = $s.split(":");
-		self.bless(hrs=>@subs[0].Numeric, mins=>@subs[1].Numeric);
+		self.bless(hrs => @subs[0].Int, mins => @subs[1].Int);
 	}
 
 	multi method Str (-->Str) {
