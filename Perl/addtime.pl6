@@ -6,24 +6,36 @@ class Time {
 	has Int $.hrs;
 	has Int $.mins;
 
-	multi method fromStr (Str $s) {
-		my @subs = $s.split(":");
-		self.bless(hrs => @subs[0].Int, mins => @subs[1].Int);
-	}
-
-	multi method Str (-->Str) {
+	method Str (-->Str) {
 		sprintf "%02d:%02d", $!hrs, $!mins;
 	}
 
-	multi method Int (-->Int) {
+	method Int (-->Int) {
 		($!hrs*60) + $!mins;
 	}
 }
 
-multi infix:<+>(Time $t, Int $elapse) {
-	my $tot = Int($t) + $elapse;
-	Time.new(hrs => ($tot / 60).floor, mins => $tot % 60);
+multi sub trait_mod:<is>(Routine $f, :$debug!) {
+	$f.wrap: sub (|args) {
+		my \ret := callwith(|args);
+		say "{$f.name}({\args.gist}) -> {\ret.gist}";
+		|ret;
+	}
 }
 
-my $t = Time.fromStr("1");
-say ~$t;
+sub pTime (Str $s) is debug {
+	my @subs = $s.split(':');
+	Time.new: :hrs(@subs[0].Int), :mins(@subs[1].Int);
+}
+
+multi infix:<+>(Time $t, Int $elapse) {
+	my $tot = Int($t) + Int($elapse);
+	Time.new: hrs => ($tot / 60).floor, mins => $tot % 60;
+}
+
+my %*SUB-MAIN-OPTS = :named-anywhere(True);
+sub MAIN(Str $time, Int $elapse, Bool :$quiet=False) {
+	say $time;
+	say $elapse;
+	say $quiet;
+}
