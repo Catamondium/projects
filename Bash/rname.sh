@@ -2,7 +2,7 @@
 
 function rename() # (path, recurse, dry, verbose)
 { 
-	declare -a files=($(reSort "$1/${1##/*/}-.*" $1/*))
+	declare -a files=($(reSort "$1/${1##/*/}-.*" "$1/*"))
 	if [ "${#files[@]}" == 0 ]; then
 		exit 0
 	fi
@@ -10,14 +10,14 @@ function rename() # (path, recurse, dry, verbose)
 	((width=$(log ${#files[@]}) + 1))
 	local i=0
 	for f in "${files[@]}"; do
-		if [[ -f "$f" ]]; then
+		if [[ -f $f ]]; then
 			local dest=$(printf "%s/%s-%0*d.%s" "$1" "${1##/*/}" "$width" "$i" "${f#*.}")
-			if $4; then echo "$f" "->" "$dest"; fi
+			if $4; then printf "\"%s\" -> \"%s\"\n" "$f" "$dest"; fi
 			# Suppress 'x to x' error 
-			if ! $3; then mv -n "$f" "$dest" 2> /dev/null; fi
+			if ! $3; then mv -n $f "$dest" 2> /dev/null; fi
 			((i++))
-		elif [[ $2 && -d "$f" ]]; then
-			rename "$f" $2 $3 $4
+		elif [[ $2 && -d $f ]]; then
+			rename $f $2 $3 $4
 		fi
 	done
 }
