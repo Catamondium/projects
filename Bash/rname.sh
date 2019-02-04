@@ -2,7 +2,9 @@
 
 function rename() # (path, recurse, dry, verbose)
 { 
-	declare -a files=($(reSort "$1/${1##/*/}-.*" "$1/*"))
+	regex="^$1/${1##/*/}-\d+.*$"
+	regex=${regex//\//\\/} # Escape contained '/'
+	declare -a files=($(reSort "$regex" $1/*))
 	if [ "${#files[@]}" == 0 ]; then
 		exit 0
 	fi
