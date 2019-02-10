@@ -22,13 +22,13 @@ sub pTime (Str $s) {
 
 multi infix:<+>(Time $t, Int $elapse) {
 	my $tot = Int($t) + Int($elapse);
-	Time.new: hrs => ($tot / 60).floor, mins => $tot % 60;
+	Time.new: :hrs(($tot / 60).floor), :mins($tot % 60);
 }
 
 my %*SUB-MAIN-OPTS = :named-anywhere(True);
-sub MAIN(Str $t_in, Str $e_in, Bool :$quiet=False) {
-	my $begin = pTime $t_in;
-	my $elapse = $e_in.contains(':') ?? Int(pTime($e_in)) !! Int($e_in);
+sub MAIN(Str $start, Str $mins, Bool :$quiet=False) {
+	my $begin = pTime $start;
+	my $elapse = $mins.contains(':') ?? Int(pTime($mins)) !! Int($mins);
 
 	if $quiet {
 		print "{$begin + $elapse}\n";
