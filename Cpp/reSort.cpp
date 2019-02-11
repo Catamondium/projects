@@ -71,6 +71,8 @@ int main(int argc, char **argv)
 		std::exit(1);
 	}
 
+	// std::partition / stable_partition ??
+
 	for(int i = optind; i < argc; ++i) {
 		std::cmatch m;
 		if(regex_match(argv[i], m, pattern))
@@ -78,7 +80,9 @@ int main(int argc, char **argv)
 		else
 			unmatched.push_back(argv[i]);
 	}
+	//
 
+	// reverse partitioned?
 	if(invert) matched.swap(unmatched);
 
 	for(auto &str : matched)
