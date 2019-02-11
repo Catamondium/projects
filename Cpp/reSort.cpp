@@ -1,5 +1,6 @@
 #include <iostream>
 #include <regex>
+#include <algorithm> // partition
 #include <unistd.h>
 
 /* Groups given strings based on regex match and prints them
@@ -71,18 +72,27 @@ int main(int argc, char **argv)
 		std::exit(1);
 	}
 
-	// std::partition / stable_partition ??
+	/*
+	auto result = std::partition(argv + optind, argv + argc,
+			[pattern](auto e){
+			std::cmatch m;
+			return regex_match(e, m, pattern);
+			});
+	
+	// argc - optind == len(result)
+	for(int i = 0; i < (argc - optind); ++i) {
+		std::cout << result[i] << std::endl;
+	}
+	*/
 
-	for(int i = optind; i < argc; ++i) {
+	 for(int i = optind; i < argc; ++i) {
 		std::cmatch m;
 		if(regex_match(argv[i], m, pattern))
 			matched.push_back(argv[i]);
 		else
 			unmatched.push_back(argv[i]);
 	}
-	//
 
-	// reverse partitioned?
 	if(invert) matched.swap(unmatched);
 
 	for(auto &str : matched)
