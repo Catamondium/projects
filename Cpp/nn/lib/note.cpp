@@ -27,3 +27,11 @@ std::string Note::unmarshal()
 	ret += body + "\n##";
 	return ret;
 }
+
+bool operator==(const Note &lhs, const Note &rhs) noexcept
+{
+	return 
+		(lhs.heading == rhs.heading) &&
+		(lhs.body    == rhs.body)    &&
+		(lhs.event   == rhs.event);
+}

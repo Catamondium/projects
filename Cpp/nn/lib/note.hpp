@@ -8,9 +8,11 @@ struct Note {
 	std::string body;
 	std::optional<note_time> event;
 
-	Note(std::string heading, std::string body="", std::optional<note_time> event={}):
+	Note(std::string heading="", std::string body="", std::optional<note_time> event={}):
 		heading(heading), body(body), event(event) {}
 
 	std::optional<std::string> printEvent();
 	std::string unmarshal();
 };
+
+bool operator==(const Note &lhs, const Note &rhs) noexcept;

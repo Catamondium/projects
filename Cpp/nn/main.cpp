@@ -129,10 +129,11 @@ namespace iutil { // interactive side parameter aquisition
 
 	Note note()
 	{
+		std::cin.ignore(0); // having skipped call issues again, up to body
 		std::string head;
 		std::cout << "Heading: ";
-		std::cin.ignore();
 		std::getline(std::cin, head);
+		std::cin.ignore(0);
 		notelib::trim(head);
 
 		std::string strdate;
@@ -150,13 +151,15 @@ namespace iutil { // interactive side parameter aquisition
 			std::getline(std::cin, cur);
 			notelib::trim(cur);
 			body += cur + '\n';
+			std::cin.ignore(0);
 		} while(cur.substr(0, 2) != "##"); // stop reading on EOE
 
 		notelib::trim(body);
-		body.erase(std::find_if(body.rbegin(), body.rend(),
-					[](char ch){return ch == '\n';}).base()-1, body.end()); // remove EOE line
+		if(body.size() > 0)
+			body.erase(std::find_if(body.rbegin(), body.rend(),
+						[](char ch){return ch == '\n';}).base()-1, body.end()); // remove EOE line
 
-		return Note(head, body, event);
+		return Note(head, body, event); // badalloc?
 	}
 
 	Com com()
@@ -206,7 +209,7 @@ int main(int argc, char **argv)
 {
 	std::string file = getHome() + DATAFILE;
 
-	std::optional<std::string> head;
+	std::string head = "";
 	std::string body = "";
 	std::optional<note_time> event;
 	std::optional<unsigned int> key;
@@ -257,8 +260,7 @@ int main(int argc, char **argv)
 		}
 	}
 
-	if(head)
-		note = Note(head.value(), body, event);
+	note = Note(head, body, event);
 	
 	notes = notelib::parse(file);
 	if(!interactive && optind < argc) {
@@ -294,8 +296,11 @@ int main(int argc, char **argv)
 					break;
 			}
 			std::cout << std::endl; //spacing
+			// clean
+			notes.erase(std::remove(notes.begin(), notes.end(), Note()));
 			com::ls(notes);
 		}
 	}
+
 	notelib::unmarshAll(notes, file);
 }

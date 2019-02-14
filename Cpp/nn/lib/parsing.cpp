@@ -11,7 +11,7 @@
 #include <fstream>
 #include <sstream>
 // functional/locale
-#include <algorithm> // transform, find_if
+#include <algorithm> // transform, find_if, remove
 #include <locale>    // tolower, isspace
 
 using systime = std::chrono::system_clock;
@@ -90,7 +90,7 @@ namespace notelib {
 		std::string line;
 		std::ifstream file(fname);
 
-		std::optional<std::string> head;
+		std::string head = "";
 		std::string body = "";
 		std::optional<note_time> event;
 		while(std::getline(file, line)) {
@@ -106,11 +106,9 @@ namespace notelib {
 					event = makeEvent(ltrim(line));
 					break;
 				case Keyword::EOE:
-					if(head) {
-						trim(body);
-						notes.push_back(Note(head.value(), body, event));
-					}
-					head.reset();
+					trim(body);
+					notes.push_back(Note(head, body, event));
+					head = "";
 					body = "";
 					event.reset();
 					break;
@@ -120,18 +118,17 @@ namespace notelib {
 			}
 		}
 
-		if(head) {
-			trim(body);
-			notes.push_back(Note(head.value(), body, event));
-		}
+		trim(body);
+		notes.push_back(Note(head, body, event));
 
 		return notes;
 	}
 
-	void unmarshAll(std::vector<Note>& notes, std::string fname)
+	void unmarshAll(std::vector<Note> &notes, std::string fname)
 	{
 		std::ofstream file;
 		file.open(fname, std::ofstream::trunc);
+		notes.erase(std::remove(notes.begin(), notes.end(), Note()));
 
 		for(Note note : notes) {
 			file << note.unmarshal() << std::endl;

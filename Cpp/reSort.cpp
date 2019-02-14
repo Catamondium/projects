@@ -74,13 +74,17 @@ int main(int argc, char **argv)
 
 	/*
 	auto result = std::partition(argv + optind, argv + argc,
-			[pattern](auto e){
+			[&pattern, &invert] (auto e) {
 			std::cmatch m;
-			return regex_match(e, m, pattern);
+			if(!invert)
+				return regex_match(e, m, pattern);
+			else
+				return !regex_match(e, m, pattern);
 			});
 	
 	// argc - optind == len(result)
 	for(int i = 0; i < (argc - optind); ++i) {
+		// doesn't print, nor segfault
 		std::cout << result[i] << std::endl;
 	}
 	*/
