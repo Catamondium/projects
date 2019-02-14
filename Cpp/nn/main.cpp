@@ -73,28 +73,28 @@ bool/*hasError*/ execute(Com target, std::vector<Note> &ns, std::optional<Note> 
 	switch(target) {
 		case LIST:
 			com::ls(ns);
-			return true;
+			return false;
 		case ADD:
 			if(note) {
 				com::add(ns, note.value());
-				return true;
+				return false;
 			}
 			break;
 		case REMOVE:
 			if(index) {
 				com::rm(ns, index.value());
-				return true;
+				return false;
 			}
 			break;
 		case EDIT:
 			if(note && index) {
 				com::edit(ns, note.value(), index.value());
-				return true;
+				return false;
 			}
 			break;
 	}
 
-	return false;
+	return true;
 }
 
 std::ostream& operator<<(std::ostream& stream, Com c)
@@ -263,6 +263,7 @@ int main(int argc, char **argv)
 	note = Note(head, body, event);
 	
 	notes = notelib::parse(file);
+	notes.erase(std::remove(notes.begin(), notes.end(), Note()));
 	if(!interactive && optind < argc) {
 		char c = std::tolower(argv[optind][0]);
 		if(std::any_of(COMS.cbegin(), COMS.cend(), [&c](auto o){return c == o;})) {
