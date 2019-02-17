@@ -4,7 +4,7 @@
 #include <utility>   // pair
 #include <chrono>    // timepoint
 #include <ctime>     // time_t, tm, localtime
-#include "note.hpp"
+#include "note.h"
 // streams
 #include <iostream>
 #include <iomanip>   // get_time

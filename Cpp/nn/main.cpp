@@ -16,8 +16,8 @@ namespace fs = std::filesystem;
 #include <iostream>
 #include <fstream>
 
-#include "lib/parsing.hpp"
-#include "lib/note.hpp"
+#include "lib/parsing.h"
+#include "lib/note.h"
 
 constexpr int OPTHELP = 500;
 const std::string DATAFILE = "/.notes";

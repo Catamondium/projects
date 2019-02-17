@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "note.hpp"
+#include "note.h"
 
 namespace notelib {
 	std::string ltrim(std::string&);
