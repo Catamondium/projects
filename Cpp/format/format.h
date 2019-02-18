@@ -73,7 +73,7 @@ struct repr<std::vector<X>> {
 	}
 };
 
-void print(std::stringstream &out, auto &start, auto &end)
+void print_(std::stringstream &out, auto &start, auto &end)
 {
 	for(auto it = start; it != end; ++it) {
 		out << *it;
@@ -81,14 +81,14 @@ void print(std::stringstream &out, auto &start, auto &end)
 }
 
 template<class T, class... Ts>
-void print(std::stringstream &out, auto start, auto end, T &val, Ts&... args)
+void print_(std::stringstream &out, auto start, auto end, T &val, Ts&... args)
 {
 	for(auto it = start; it != end; ++it) {
 		if(*it == '%') {
 			++it;
 			if(*it != '%') {
 				out << repr<T>{}(val);
-				print(out, it, end, args...); // enumerate recursively
+				print_(out, it, end, args...); // enumerate recursively
 				break;
 			}
 		}
@@ -105,6 +105,6 @@ template<class T, class... Ts>
 inline std::string fmt::operator()(T val, Ts... args) noexcept
 {
 	std::stringstream out;
-	print(out, str.begin(), str.end(), val, args...);
+	print_(out, str.begin(), str.end(), val, args...);
 	return out.str();
 }
