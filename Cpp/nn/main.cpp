@@ -35,13 +35,6 @@ enum Com : char
 	EDIT   = 'e'
 };
 
-void inthandler(int sig)
-{
-	std::cout << "\nSIGINT(" << sig << ")" << std::endl;
-	notelib::unmarshAll(notes, file);
-	exit(sig);
-}
-
 namespace com {
 	void ls(std::vector<Note> &ns)
 	{
@@ -115,73 +108,11 @@ std::ostream& operator<<(std::ostream& stream, Com c)
 	return stream;
 }
 
-namespace iutil { // interactive side parameter aquisition
-	unsigned int key(unsigned int size)
-	{
-		unsigned int key;
-		do {
-			std::cout << "Select N: ";
-			std::cin >> key;
-		} while(key >= size);
-
-		return key;
-	}
-
-	Note note()
-	{
-		std::cin.ignore(0); // having skipped call issues again, up to body
-		std::string head;
-		std::cout << "Heading: ";
-		std::getline(std::cin, head);
-		std::cin.ignore(0);
-		notelib::trim(head);
-
-		std::string strdate;
-		std::cout << "Event: ";
-		std::cin.ignore(0);
-		std::getline(std::cin, strdate);
-		notelib::trim(strdate);
-		std::optional<note_time> event = notelib::makeEvent(strdate);
-
-		std::string body = ""; 
-		std::string cur;
-		std::cout << "Body: finalise with \"##\"" << std::endl;
-		std::cin.ignore(0);
-		do {
-			std::getline(std::cin, cur);
-			notelib::trim(cur);
-			body += cur + '\n';
-			std::cin.ignore(0);
-		} while(cur.substr(0, 2) != "##"); // stop reading on EOE
-
-		notelib::trim(body);
-		if(body.size() > 0)
-			body.erase(std::find_if(body.rbegin(), body.rend(),
-						[](char ch){return ch == '\n';}).base()-1, body.end()); // remove EOE line
-
-		return Note(head, body, event); // badalloc?
-	}
-
-	Com com()
-	{
-		std::cout << "Actions: Add, Remove, Edit" << std::endl;
-		char action;
-		do {
-			std::cout << "Select action: ";
-			std::cin >> action;
-			action = std::tolower(action);
-		} while (std::none_of(COMS.cbegin(), COMS.cend(),
-					[&action](auto o){return action == o;}));
-		return static_cast<Com>(action);
-	}
-}
-
 void usage(std::string prog)
 {
 	std::cout <<
 		"usage: " << prog << " command [ikhbef]\n"
 		"options:\n"
-		"\t-i\t--interactive\n"
 		"\t-k\t--key Key of note\n"
 		"\t-h\t--heading Define heading\n"
 		"\t-b\t--body Define body\n"
@@ -214,10 +145,9 @@ int main(int argc, char **argv)
 	std::optional<note_time> event;
 	std::optional<unsigned int> key;
 	std::optional<Note> note;
-	bool interactive;
 
 	static struct option long_options[] = {
-		{"interactive", no_argument,       0, 'i'},
+		//{"interactive", no_argument,       0, 'i'},
 		{"key",         required_argument, 0, 'k'},
 		{"header",      required_argument, 0, 'h'},
 		{"body",        required_argument, 0, 'b'},
@@ -228,12 +158,11 @@ int main(int argc, char **argv)
 
 	int c;
 	int option_index = 0;
-	while((c = getopt_long(argc, argv, "ik:h:b:e:f:",
+	while((c = getopt_long(argc, argv, "k:h:b:e:f:",
 					long_options, &option_index)) != -1) {
 		std::string holder;
 		switch(c) {
 			case 'h':
-				interactive = false;
 				holder = optarg;
 				head = notelib::trim(holder);
 				break;
@@ -244,9 +173,6 @@ int main(int argc, char **argv)
 			case 'e':
 				holder = optarg;
 				event = notelib::makeEvent(notelib::trim(holder));
-				break;
-			case 'i':
-				interactive = true;
 				break;
 			case 'k':
 				key = std::stoi(optarg);
@@ -264,7 +190,7 @@ int main(int argc, char **argv)
 	
 	notes = notelib::parse(file);
 	notes.erase(std::remove(notes.begin(), notes.end(), Note()));
-	if(!interactive && optind < argc) {
+	if(optind < argc) {
 		char c = std::tolower(argv[optind][0]);
 		if(std::any_of(COMS.cbegin(), COMS.cend(), [&c](auto o){return c == o;})) {
 			Com target = static_cast<Com>(c);
@@ -274,7 +200,7 @@ int main(int argc, char **argv)
 				usage(argv[0]);
 		} else
 			usage(argv[0]);
-	} else {
+	}/* else {
 		com::ls(notes);
 		// should only exist when notes are initialised
 		signal(SIGINT, inthandler); 
@@ -301,7 +227,7 @@ int main(int argc, char **argv)
 			notes.erase(std::remove(notes.begin(), notes.end(), Note()));
 			com::ls(notes);
 		}
-	}
+	}*/
 
 	notelib::unmarshAll(notes, file);
 }
