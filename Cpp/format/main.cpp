@@ -36,4 +36,6 @@ int main()
 	std::cout << "%"_fmt(ints) << std::endl;
 
 	std::cout << "%"_fmt(S(600)) << std::endl;
+
+	fmtf::print("Printf: %\n", true);
 }

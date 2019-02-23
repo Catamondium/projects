@@ -4,6 +4,7 @@
 #include <sstream>
 #include <vector>
 #include <iomanip>
+#include <functional>
 
 template<class T>
 concept bool Stringable = requires(T a) {
@@ -93,6 +94,30 @@ void print_(std::stringstream &out, auto start, auto end, T &val, Ts&... args)
 			}
 		}
 		out << *it;
+	}
+}
+
+// ~printf family
+namespace fmtf {
+	// sprintf
+	template<class... Ts>
+	std::string string(std::string format, Ts... args)
+	{
+		return fmt(format)(args...);
+	}
+
+	// fprintf, where 'f' is some std::ostream
+	template<class... Ts>
+	void fprint(std::ostream& stream, std::string format, Ts... args)
+	{
+		stream << fmt(format)(args...);
+	}
+
+	// fprintf to cout/stdout
+	template<class... Ts>
+	void print(std::string format, Ts... args)
+	{
+		std::cout << fmt(format)(args...);
 	}
 }
 
