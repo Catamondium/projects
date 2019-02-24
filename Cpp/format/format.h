@@ -2,9 +2,7 @@
 #pragma once
 #include <iostream>
 #include <sstream>
-#include <vector>
 #include <iomanip>
-#include <functional>
 
 template<class T>
 concept bool Stringable = requires(T a) {
@@ -56,21 +54,6 @@ struct repr<bool> {
 		std::stringstream ss;
 		ss << std::boolalpha << bol;
 		return ss.str();
-	}
-};
-
-template<class X>
-struct repr<std::vector<X>> {
-	std::string operator()(std::vector<X> vec)
-	{
-		if(vec.size() == 0) return "[]";
-		else {
-			std::string ret = "[";
-			for(X &val : vec) {
-				ret += repr<X>{}(val) + ", ";
-			}
-			return ret.substr(0, ret.size()-2) + "]";
-		}
 	}
 };
 

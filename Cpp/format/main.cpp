@@ -1,6 +1,6 @@
 #include <iostream>
-#include <iomanip>
 #include <sstream>
+#include <iomanip>
 #include <vector>
 #include "format.h"
 
@@ -17,6 +17,21 @@ struct repr<S> {
 		std::stringstream ss;
 		ss << std::showpos << "S(" << n.x << ")";
 		return ss.str();
+	}
+};
+
+template<class X>
+struct repr<std::vector<X>> {
+	std::string operator()(std::vector<X> vec)
+	{
+		if(vec.size() == 0) return "[]";
+		else {
+			std::string ret = "[";
+			for(X &val : vec) {
+				ret += repr<X>{}(val) + ", ";
+			}
+			return ret.substr(0, ret.size()-2) + "]";
+		}
 	}
 };
 
