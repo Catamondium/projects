@@ -47,7 +47,7 @@ int main()
 	addtest += "Bass";
 	std::cout << "addtest: " << addtest() << std::endl;
 
-	std::vector<int> ints = {0, 1, 2, 3, 4, 5};
+	std::vector ints = {0, 1, 2, 3, 4, 5};
 	std::cout << "%"_fmt(ints) << std::endl;
 
 	std::cout << "%"_fmt(S(600)) << std::endl;
