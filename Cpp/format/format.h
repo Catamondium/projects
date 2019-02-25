@@ -1,32 +1,30 @@
-// g++-8 -std=c++2a -fconcepts
 #pragma once
 #include <iostream>
 #include <sstream>
 #include <iomanip>
 
-template<class T>
-concept bool Stringable = requires(T a) {
-	{std::string(a)} -> std::string;
-};
-static_assert(! Stringable<int>, "Ints are strings!");
-
 struct fmt {
 	std::string str;
-	fmt(const Stringable &str) noexcept: str(str){};
+	template<class T>
+	fmt(const T &str) noexcept: str(str){};
 	inline std::string operator()() noexcept;
 	template<class T, class... Ts> std::string operator()(T, Ts...) noexcept;
-	fmt& operator+=(const Stringable&) noexcept;
-	fmt operator+(const Stringable&) const noexcept;
+	template<class T>
+	fmt& operator+=(const T&) noexcept;
+	template<class T>
+	fmt operator+(const T&) const noexcept;
 	operator std::string() const { return str; }
 };
 
-fmt& fmt::operator+=(const Stringable &rhs) noexcept
+template<class T>
+fmt& fmt::operator+=(const T &rhs) noexcept
 {
 	this->str += std::string(rhs);
 	return *this;
 }
 
-fmt fmt::operator+(const Stringable &rhs) const noexcept
+template<class T>
+fmt fmt::operator+(const T &rhs) const noexcept
 {
 	return fmt(*this) += std::string(rhs);
 }
@@ -57,17 +55,17 @@ struct repr<bool> {
 	}
 };
 
-void print_(std::stringstream &out, auto &start, auto &end)
+void print_(std::stringstream &out, std::string::iterator &start, std::string::iterator &end)
 {
-	for(auto it = start; it != end; ++it) {
+	for(std::string::iterator it = start; it != end; ++it) {
 		out << *it;
 	}
 }
 
 template<class T, class... Ts>
-void print_(std::stringstream &out, auto start, auto end, T &val, Ts&... args)
+void print_(std::stringstream &out, std::string::iterator start, std::string::iterator end, T &val, Ts&... args)
 {
-	for(auto it = start; it != end; ++it) {
+	for(std::string::iterator it = start; it != end; ++it) {
 		if(*it == '%') {
 			++it;
 			if(*it != '%') {
