@@ -11,7 +11,7 @@ function rename() # (path, recurse, dry, verbose)
 	local width
 	((width=$(log ${#files[@]}) + 1))
 	local i=0
-	for f in "${files[@]:2}"; do
+	for f in "${files[@]}"; do
 		if [[ -f "$f" ]]; then
 			local dest=$(printf "%s/%s-%0*d.%s" "$1" "${1##/*/}" "$width" "$i" "${f##*.}")
 			if $4; then printf "\"%s\" -> \"%s\"\n" "$f" "$dest"; fi
