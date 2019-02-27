@@ -2,10 +2,9 @@
 
 function rename() # (path, recurse, dry, verbose)
 { 
-	find -name "* *" -type f | rename "s/ /_/g"
-	local regex="^$1/${1##/*/}-\\d+.*$"
+	regex="^$1/${1##/*/}-\d+.*$"
 	regex=${regex//\//\\/} # Escape contained '/'
-	declare -a files=($(reSort "$regex" $1/*)) # oddly choosy, either fails sort or breaks space compatibility
+	declare -a files=($(reSort "$regex" $1/*))
 	if [ "${#files[@]}" == 0 ]; then
 		exit 0
 	fi
@@ -13,14 +12,14 @@ function rename() # (path, recurse, dry, verbose)
 	((width=$(log ${#files[@]}) + 1))
 	local i=0
 	for f in "${files[@]}"; do
-		if [[ -f "$f" ]]; then
+		if [[ -f $f ]]; then
 			local dest=$(printf "%s/%s-%0*d.%s" "$1" "${1##/*/}" "$width" "$i" "${f##*.}")
 			if $4; then printf "\"%s\" -> \"%s\"\n" "$f" "$dest"; fi
 			# Suppress 'x to x' error 
-			if ! $3; then mv -n "$f" "$dest" 2> /dev/null; fi
+			if ! $3; then mv -n $f "$dest" 2> /dev/null; fi
 			((i++))
-		elif [[ $2 && -d "$f" ]]; then
-			rename "$f" $2 $3 $4
+		elif [[ $2 && -d $f ]]; then
+			rename $f $2 $3 $4
 		fi
 	done
 }
@@ -90,3 +89,4 @@ for f in ${args[@]}; do
 		fi
 	fi
 done
+
