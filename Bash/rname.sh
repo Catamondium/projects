@@ -2,9 +2,10 @@
 
 function rename() # (path, recurse, dry, verbose)
 { 
-	local regex="^$1/${1##/*/}-\d+.*$"
+	find -name "* *" -type f | rename "s/ /_/g"
+	local regex="^$1/${1##/*/}-\\d+.*$"
 	regex=${regex//\//\\/} # Escape contained '/'
-	declare -a files=(reSort "$regex" $1/*)
+	declare -a files=($(reSort "$regex" $1/*)) # oddly choosy, either fails sort or breaks space compatibility
 	if [ "${#files[@]}" == 0 ]; then
 		exit 0
 	fi
