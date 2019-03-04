@@ -13,7 +13,7 @@ int main()
     bTree tree = newTree();
 
     for (int i = 0; i < ITEMS; i++)
-	insert(&tree, rand() % RANGE);
+        insert(&tree, rand() % RANGE);
 
     assert(tree.size == ITEMS);
 
@@ -24,7 +24,7 @@ int main()
     int sorted[tree.size];
     sort(tree, sorted);
     for (int i = 0; i < tree.size; i++)
-	printf("tree[%02d]:\t%d\n", i, sorted[i]);
+        printf("tree[%02d]:\t%d\n", i, sorted[i]);
 
     destroy(&tree);
 }

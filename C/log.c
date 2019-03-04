@@ -11,9 +11,11 @@ void err()
 
 int main(int argc, char **argv)
 {
-	if(argc < 2) err();
+	if (argc < 2)
+		err();
 	int operand = atoi(argv[1]);
-	if(operand == 0) {
+	if (operand == 0)
+	{
 		printf("%d\n", 0); // default reasonable response to 0
 		err();
 	};
