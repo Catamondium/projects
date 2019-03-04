@@ -1,14 +1,15 @@
 #include <unistd.h> // getopt
-#include <math.h> // floor
+#include <math.h>   // floor
 
-#include <string> // stoi
+#include <string>   // stoi
 #include <iostream> // showpos/noshowpos
-#include <iomanip> // setw, setfill
+#include <iomanip>  // setw, setfill
 
-struct Time {
+struct Time
+{
 	int hrs;
 	int mins;
-	Time(int h, int m): hrs(h), mins(m) {}
+	Time(int h, int m) : hrs(h), mins(m) {}
 	int abs() const;
 };
 
@@ -29,25 +30,25 @@ Time operator+(const Time lhs, const int rhs)
 {
 	int tot = lhs.abs() + rhs;
 	return Time(floor(tot / 60), tot % 60);
-}		
+}
 
 void usage(const std::string prog)
 {
-	std::cout <<
-		"usage: " << prog << " [-qh] hh:mm mins_elapse\n"
-		"note: if mins_elapse is negative, precede it with '--'\n"
-		"options:\n\t-q quietly output end time\n"
-		"\t-h print this message and exit" << std::endl;
+	std::cout << "usage: " << prog << " [-qh] hh:mm mins_elapse\n"
+									  "note: if mins_elapse is negative, precede it with '--'\n"
+									  "options:\n\t-q quietly output end time\n"
+									  "\t-h print this message and exit"
+			  << std::endl;
 	std::exit(1);
 }
 
-std::ostream& operator<<(std::ostream& stream, Time a)
+std::ostream &operator<<(std::ostream &stream, Time a)
 {
 	char buf[1000];
 	sprintf(buf, "%02d:%02d", a.hrs, a.mins);
 	stream << buf; // c-style format solution
-		
-	//stream << std::noshowpos << std::setfill('0') << std::setw(2) << a.hrs << ':' 
+
+	//stream << std::noshowpos << std::setfill('0') << std::setw(2) << a.hrs << ':'
 	//	<< std::setw(2) << a.mins; // C++ format solution
 
 	return stream;
@@ -56,30 +57,33 @@ std::ostream& operator<<(std::ostream& stream, Time a)
 int main(int argc, char **argv)
 {
 	bool quiet = false;
-		
+
 	int c;
-	while((c = getopt(argc, argv, "qh")) != -1) {
-		switch(c) {
-			case 'q':
-				quiet = true;
-				break;
-			default:
-				usage(argv[0]);
-				break;
+	while ((c = getopt(argc, argv, "qh")) != -1)
+	{
+		switch (c)
+		{
+		case 'q':
+			quiet = true;
+			break;
+		default:
+			usage(argv[0]);
+			break;
 		}
 	}
-	
-	if(argc < 3) usage(argv[0]);
-	
+
+	if (argc < 3)
+		usage(argv[0]);
+
 	Time start = pTime(argv[optind++]);
-	int elapse = (std::string(argv[optind]).find(':') != std::string::npos) ?
-		pTime(argv[optind]).abs() : atoi(argv[optind]);
-		
+	int elapse = (std::string(argv[optind]).find(':') != std::string::npos) ? pTime(argv[optind]).abs() : atoi(argv[optind]);
+
 	Time end = start + elapse;
-	if(!quiet) {
+	if (!quiet)
+	{
 		std::cout << "Start:\t" << start << "\t"
-			<<  std::showpos << elapse <<
-			"\nEnd:\t" << end << std::endl;
-	} else
+				  << std::showpos << elapse << "\nEnd:\t" << end << std::endl;
+	}
+	else
 		std::cout << end << std::endl;
 }

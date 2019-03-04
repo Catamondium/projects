@@ -4,14 +4,16 @@
 #include <vector>
 #include "format.h"
 
-struct S {
+struct S
+{
 	int x;
-	S(int x): x(x) {};
+	S(int x) : x(x){};
 };
 
 // User specialisation
-template<>
-struct repr<S> {
+template <>
+struct repr<S>
+{
 	std::string operator()(S n)
 	{
 		std::stringstream ss;
@@ -20,17 +22,21 @@ struct repr<S> {
 	}
 };
 
-template<class X>
-struct repr<std::vector<X>> {
+template <class X>
+struct repr<std::vector<X>>
+{
 	std::string operator()(std::vector<X> vec)
 	{
-		if(vec.size() == 0) return "[]";
-		else {
+		if (vec.size() == 0)
+			return "[]";
+		else
+		{
 			std::string ret = "[";
-			for(X &val : vec) {
+			for (X &val : vec)
+			{
 				ret += repr<X>{}(val) + ", ";
 			}
-			return ret.substr(0, ret.size()-2) + "]";
+			return ret.substr(0, ret.size() - 2) + "]";
 		}
 	}
 };
