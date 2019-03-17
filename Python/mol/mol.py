@@ -5,7 +5,7 @@ import sys
 COEFFRE = r"^(\d+)" # beginning coefficient
 TOKRE = r"\(.*?\)|([A-Z][a-z]*)(\d*)"  # groups: Elem, [coeff]
 SUBRE = r"\((.*)\)(\d*)"  # groups: expr, [coeff]
-TRANS = str.makeTRANS("{[()]}", "((()))")
+TRANS = str.maketrans("{[()]}", "((()))")
 
 ptable = {'': 0.00}
 
@@ -32,7 +32,7 @@ def valid(c):
 
 
 def sanitize(thing):
-    thing = thing.TRANSlate(TRANS)
+    thing = thing.translate(TRANS)
     thing = [c for c in thing if valid(c)]
     return ''.join(thing)
 
