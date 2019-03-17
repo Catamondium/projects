@@ -37,7 +37,7 @@ def sanitize(thing):
     return ''.join(thing)
 
 
-def Mass(thing):
+def mass(thing):
     big = re.match(COEFFRE, thing)
     if big:
         bigCoeff = int(big[0])
@@ -53,7 +53,7 @@ def Mass(thing):
 
     for e, c in re.findall(SUBRE, thing):
         coeff = makeCoeff(c)
-        acc += Mass(e) * coeff
+        acc += mass(e) * coeff
 
     return bigCoeff * acc
 
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     for comp in sys.argv[1:]:
         clean = sanitize(comp)
         try:
-            print("%s:\t%.2f" % (clean, Mass(clean)))
+            print("%s:\t%.2f" % (clean, mass(clean)))
         except Exception as e:
             print(e)
             exit(1)
