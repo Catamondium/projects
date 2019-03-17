@@ -2,11 +2,9 @@
 import re
 import os
 import sys
-# beginning coefficient tokens groups: Elem, [coeff] blanking off subexprs
-coeffRe = r"^(\d+)"
-tokRe = r"\(.*?\)|([A-Z][a-z]*)(\d*)"
-subRe = r"\((.*)\)(\d*)"  # subexpr tokens groups: expr, [coeff]
-# Normalize nested exprs
+coeffRe = r"^(\d+)" # beginning coefficient
+tokRe = r"\(.*?\)|([A-Z][a-z]*)(\d*)"  # groups: Elem, [coeff]
+subRe = r"\((.*)\)(\d*)"  # groups: expr, [coeff]
 trans = str.maketrans("{[()]}", "((()))")
 
 ptable = {'': 0.00}
