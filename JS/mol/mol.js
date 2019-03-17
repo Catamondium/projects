@@ -12,6 +12,22 @@ function makeCoeff(c) {
     }
 }
 
+function mass(thing) {
+    var acc = 0;
+    var big = COEFFRE.exec(thing);
+    if (big !== null) {
+        console.log(`Big:\t${big[1]}`);
+    }
+
+    while ((m = TOKRE.exec(test)) !== null) {
+        console.log("token")
+    }
+
+    while ((m = SUBRE.exec(test)) !== null) {
+        console.log("subexpression")
+    }
+}
+
 function translate(source, froms, tos) {
     table = {};
     ret = [];
@@ -51,16 +67,7 @@ ptable = {
 
 // if(__name__ == '__main__') eqiv, supporting web embedding
 if (typeof require != 'undefined' && require.main == module) {
-    test = "CH3(CH3)2CH3"
-    while ((m = TOKRE.exec(test)) !== null) {
-        groups = m.slice(1);
-        console.log(`E:\t${ptable[groups[0]]}\tCoeff:\t${makeCoeff(groups[1])}`);
-    }
-
-    while ((m = SUBRE.exec(test)) !== null) {
-        groups = m.slice(1);
-        console.log(`Exp:\t${ptable[groups[0]]} Coeff:\t${makeCoeff(groups[1])}`);
-    }
-
-    console.log(sanitize("C224[](){}<>?££$£"))
+    test = "5CH3(CH3)2CH3";
+    mass(sanitize(test));
+    console.log(sanitize("C224[](){} \t<>?££$£"));
 }
