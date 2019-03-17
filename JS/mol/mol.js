@@ -12,6 +12,21 @@ function makeCoeff(c) {
     }
 }
 
+function sanitize(thing) {
+    thing = thing.replace(/[\[\{\}\]]/g, match => {
+        dict = {
+            '[': '(',
+            ']': ')',
+            '{': '(',
+            '}': ')'
+        }
+        return dict[match];
+    });
+    arr = thing.split('');
+    arr = arr.filter(c => c.match(/[a-z0-9\(\)]/i));
+    return arr.join('');
+}
+
 ptable = {
     H: 1,
     C: 12,
@@ -30,4 +45,6 @@ if (typeof require != 'undefined' && require.main == module) {
         groups = m.slice(1);
         console.log(`Exp:\t${ptable[groups[0]]} Coeff:\t${makeCoeff(groups[1])}`);
     }
+
+    console.log(sanitize("C224[](){}<>?££$£"))
 }
