@@ -12,16 +12,32 @@ function makeCoeff(c) {
     }
 }
 
-function sanitize(thing) {
-    thing = thing.replace(/[\[\{\}\]]/g, match => {
-        dict = {
-            '[': '(',
-            ']': ')',
-            '{': '(',
-            '}': ')'
+function translate(target, froms, tos) {
+    table = {};
+    ret = [];
+    if (froms.length != tos.length) {
+        throw "'froms' & 'tos' must be equal length"
+    }
+
+    // trans = str.maketrans ...
+    for (i = 0; i < froms.length; i++) {
+        table[froms[i]] = tos[i];
+    }
+
+    // str.translate ...
+    for (const c of target) {
+        if (table[c] == undefined) {
+            ret.push(c);
+        } else {
+            ret.push(table[c]);
         }
-        return dict[match];
-    });
+    }
+
+    return ret.join('');
+}
+
+function sanitize(thing) {
+    thing = translate(thing, "{[]}", "(())");
     arr = thing.split('');
     arr = arr.filter(c => c.match(/[a-z0-9\(\)]/i));
     return arr.join('');
