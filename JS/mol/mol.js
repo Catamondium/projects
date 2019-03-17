@@ -12,7 +12,7 @@ function makeCoeff(c) {
     }
 }
 
-function translate(target, froms, tos) {
+function translate(source, froms, tos) {
     table = {};
     ret = [];
     if (froms.length != tos.length) {
@@ -25,7 +25,7 @@ function translate(target, froms, tos) {
     }
 
     // str.translate ...
-    for (const c of target) {
+    for (const c of source) {
         if (table[c] == undefined) {
             ret.push(c);
         } else {
