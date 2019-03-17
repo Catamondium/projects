@@ -20,7 +20,7 @@ function translate(target, froms, tos) {
     }
 
     // trans = str.maketrans ...
-    for (i = 0; i < froms.length; i++) {
+    for (const i in froms) {
         table[froms[i]] = tos[i];
     }
 
