@@ -2,10 +2,10 @@
 import re
 import os
 import sys
-coeffRe = r"^(\d+)" # beginning coefficient
-tokRe = r"\(.*?\)|([A-Z][a-z]*)(\d*)"  # groups: Elem, [coeff]
-subRe = r"\((.*)\)(\d*)"  # groups: expr, [coeff]
-trans = str.maketrans("{[()]}", "((()))")
+COEFFRE = r"^(\d+)" # beginning coefficient
+TOKRE = r"\(.*?\)|([A-Z][a-z]*)(\d*)"  # groups: Elem, [coeff]
+SUBRE = r"\((.*)\)(\d*)"  # groups: expr, [coeff]
+TRANS = str.makeTRANS("{[()]}", "((()))")
 
 ptable = {'': 0.00}
 
@@ -32,26 +32,26 @@ def valid(c):
 
 
 def sanitize(thing):
-    thing = thing.translate(trans)
+    thing = thing.TRANSlate(TRANS)
     thing = [c for c in thing if valid(c)]
     return ''.join(thing)
 
 
 def Mass(thing):
-    big = re.match(coeffRe, thing)
+    big = re.match(COEFFRE, thing)
     if big:
         bigCoeff = int(big[0])
     else:
         bigCoeff = 1
 
     acc = 0
-    for e, c in re.findall(tokRe, thing):
+    for e, c in re.findall(TOKRE, thing):
         if e not in ptable:
             raise Exception("Element %r doesn't exist" % e)
         coeff = makeCoeff(c)
         acc += ptable[e] * coeff
 
-    for e, c in re.findall(subRe, thing):
+    for e, c in re.findall(SUBRE, thing):
         coeff = makeCoeff(c)
         acc += Mass(e) * coeff
 

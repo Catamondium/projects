@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-const coeffRe = /^(\d+)/g // beginning coefficient
-const tokRe = /\(.*?\)|([A-Z][a-z]*)(\d*)/g  // groups: Elem, [coeff]
-const subRe = /\((.*)\)(\d*)/g // groups: expr, [coeff]
+const COEFFRE = /^(\d+)/g // beginning coefficient
+const TOKRE = /\(.*?\)|([A-Z][a-z]*)(\d*)/g  // groups: Elem, [coeff]
+const SUBRE = /\((.*)\)(\d*)/g // groups: expr, [coeff]
 
 function makeCoeff(c) {
     if (c == '' || c === undefined) {
@@ -21,12 +21,12 @@ ptable = {
 // if(__name__ == '__main__') eqiv, supporting web embedding
 if (typeof require != 'undefined' && require.main == module) {
     test = "CH3(CH3)2CH3"
-    while ((m = tokRe.exec(test)) !== null) {
+    while ((m = TOKRE.exec(test)) !== null) {
         groups = m.slice(1);
         console.log(`E:\t${ptable[groups[0]]}\tCoeff:\t${makeCoeff(groups[1])}`);
     }
 
-    while ((m = subRe.exec(test)) !== null) {
+    while ((m = SUBRE.exec(test)) !== null) {
         groups = m.slice(1);
         console.log(`Exp:\t${ptable[groups[0]]} Coeff:\t${makeCoeff(groups[1])}`);
     }
