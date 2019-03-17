@@ -1,11 +1,25 @@
 #!/usr/bin/env python3
 import re
+import os
+import sys
 # beginning coefficient tokens groups: Elem, [coeff] blanking off subexprs
 coeffRe = r"^(\d+)"
 tokRe = r"\(.*?\)|([A-Z][a-z]*)([0-9]*)"
 subRe = r"\((.*)\)([0-9]*)"  # subexpr tokens groups: expr, [coeff]
 # Normalize nested exprs
 trans = str.maketrans("{[()]}", "((()))")
+
+ptable = {'': 0.00}
+
+
+def loadTable(fname="ptable.dsv"):
+    script = os.path.realpath(__file__)
+    script_dir = os.path.dirname(script)
+    tpath = os.path.join(script_dir, fname)
+    with open(tpath, 'r') as f:
+        for line in f:
+            k, v = line.strip().split('|')
+            ptable[k] = float(v)
 
 
 def valid(c):
@@ -14,23 +28,14 @@ def valid(c):
 
 def sanitize(thing):
     thing = thing.translate(trans)
-    clean = [c for c in thing if valid(c)]
-    return ''.join(clean)
-
-
-ptable = {
-    '':  0,
-    'C': 12,
-    'H': 1,
-    'O': 16
-}
+    thing = [c for c in thing if valid(c)]
+    return ''.join(thing)
 
 
 def Mass(thing):
-    clean = sanitize(thing)
-    match = re.findall(tokRe, clean)
-    subs = re.findall(subRe, clean)
-    big = re.match(coeffRe, clean)
+    match = re.findall(tokRe, thing)
+    subs = re.findall(subRe, thing)
+    big = re.match(coeffRe, thing)
     if big:
         bigCoeff = int(big[0])
     else:
@@ -38,6 +43,8 @@ def Mass(thing):
 
     acc = 0
     for e, c in match:
+        if e not in ptable:
+            raise Exception("Element %r doesn't exist" % e)
         if c == "":
             coeff = 1
         else:
@@ -54,8 +61,13 @@ def Mass(thing):
     return bigCoeff * acc
 
 
-# simple = "C2H3OH"  # Ethanol mr=44
-nested = "CH3C(CH3)2CH3"  # Dimethylpropane, C5H12 72
-invalid = "Ooo"
-#print("Mr:\t%d g/mol" % Mass(simple))
-print("Mr:\t%d g/mol" % Mass(nested))  # Doubly counted nesting!!!
+loadTable()
+
+if __name__ == "__main__":
+    for comp in sys.argv[1:]:
+        clean = sanitize(comp)
+        try:
+            print("%s:\t%.2f" % (comp, Mass(comp)))
+        except Exception as e:
+            print(e)
+            exit(1)
