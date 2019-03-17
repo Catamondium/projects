@@ -4,8 +4,8 @@ import os
 import sys
 # beginning coefficient tokens groups: Elem, [coeff] blanking off subexprs
 coeffRe = r"^(\d+)"
-tokRe = r"\(.*?\)|([A-Z][a-z]*)([0-9]*)"
-subRe = r"\((.*)\)([0-9]*)"  # subexpr tokens groups: expr, [coeff]
+tokRe = r"\(.*?\)|([A-Z][a-z]*)(\d*)"
+subRe = r"\((.*)\)(\d*)"  # subexpr tokens groups: expr, [coeff]
 # Normalize nested exprs
 trans = str.maketrans("{[()]}", "((()))")
 
