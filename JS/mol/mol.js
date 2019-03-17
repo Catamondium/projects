@@ -4,6 +4,12 @@ const COEFFRE = /^(\d+)/g; // beginning coefficient
 const TOKRE = /\(.*?\)|([A-Z][a-z]*)(\d*)/g; // groups: Elem, [coeff]
 const SUBRE = /\((.*)\)(\d*)/g; // groups: expr, [coeff]
 
+ptable = {
+    H: 1,
+    C: 12,
+    undefined: 0
+}
+
 function makeCoeff(c) {
     if (c == '' || c === undefined) {
         return 1;
@@ -67,12 +73,6 @@ function sanitize(thing) {
     var arr = thing.split('');
     arr = arr.filter(c => c.match(/[a-z0-9\(\)]/i));
     return arr.join('');
-}
-
-ptable = {
-    H: 1,
-    C: 12,
-    undefined: 0 // undefined is keyable?
 }
 
 // if(__name__ == '__main__') eqiv, supporting web embedding
