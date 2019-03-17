@@ -12,6 +12,13 @@ trans = str.maketrans("{[()]}", "((()))")
 ptable = {'': 0.00}
 
 
+def makeCoeff(c):
+    if c == "":
+        return 1
+    else:
+        return int(c)
+
+
 def loadTable(fname="ptable.dsv"):
     script = os.path.realpath(__file__)
     script_dir = os.path.dirname(script)
@@ -33,8 +40,6 @@ def sanitize(thing):
 
 
 def Mass(thing):
-    match = re.findall(tokRe, thing)
-    subs = re.findall(subRe, thing)
     big = re.match(coeffRe, thing)
     if big:
         bigCoeff = int(big[0])
@@ -42,20 +47,14 @@ def Mass(thing):
         bigCoeff = 1
 
     acc = 0
-    for e, c in match:
+    for e, c in re.findall(tokRe, thing):
         if e not in ptable:
             raise Exception("Element %r doesn't exist" % e)
-        if c == "":
-            coeff = 1
-        else:
-            coeff = int(c)
+        coeff = makeCoeff(c)
         acc += ptable[e] * coeff
 
-    for e, c in subs:
-        if c == "":
-            coeff = 1
-        else:
-            coeff = int(c)
+    for e, c in re.findall(subRe, thing):
+        coeff = makeCoeff(c)
         acc += Mass(e) * coeff
 
     return bigCoeff * acc
