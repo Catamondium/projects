@@ -15,9 +15,10 @@ function makeCoeff(c) {
 function mass(thing) {
     var acc = 0;
     var big = COEFFRE.exec(thing);
+    var bigCoeff = 1;
     if (big !== null) {
         console.log(`Big:\t${big[1]}`);
-        var bigCoeff = makeCoeff(big[1]);
+        bigCoeff = makeCoeff(big[1]);
     }
 
     while ((m = TOKRE.exec(test)) !== null) {
@@ -76,7 +77,7 @@ ptable = {
 
 // if(__name__ == '__main__') eqiv, supporting web embedding
 if (typeof require != 'undefined' && require.main == module) {
-    test = "5CH3(CH3)2CH3";
-    mass(sanitize(test));
+    test = "CH3(CH3)2CH3";
+    console.log(mass(sanitize(test)));
     console.log(sanitize("C224[](){} \t<>?££$£"));
 }
