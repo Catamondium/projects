@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-const COEFFRE = /^(\d+)/g // beginning coefficient
-const TOKRE = /\(.*?\)|([A-Z][a-z]*)(\d*)/g  // groups: Elem, [coeff]
-const SUBRE = /\((.*)\)(\d*)/g // groups: expr, [coeff]
+const COEFFRE = /^(\d+)/g; // beginning coefficient
+const TOKRE = /\(.*?\)|([A-Z][a-z]*)(\d*)/g; // groups: Elem, [coeff]
+const SUBRE = /\((.*)\)(\d*)/g; // groups: expr, [coeff]
 
 function makeCoeff(c) {
     if (c == '' || c === undefined) {
@@ -17,20 +17,29 @@ function mass(thing) {
     var big = COEFFRE.exec(thing);
     if (big !== null) {
         console.log(`Big:\t${big[1]}`);
+        var bigCoeff = makeCoeff(big[1]);
     }
 
     while ((m = TOKRE.exec(test)) !== null) {
-        console.log("token")
+        let toks = m.slice(1, 3);
+        console.log(`token:\t${toks}`);
+        acc += ptable[toks[0]] * makeCoeff(toks[1]);
     }
 
     while ((m = SUBRE.exec(test)) !== null) {
-        console.log("subexpression")
+        let toks = m.slice(1, 3);
+        console.log(`subexpression:\t${toks}`);
+
+        // Causing infinite looping
+        //acc += mass(toks[0]) * makeCoeff(toks[1]);
     }
+
+    return bigCoeff * acc;
 }
 
 function translate(source, froms, tos) {
-    table = {};
-    ret = [];
+    var table = {};
+    var ret = [];
     if (froms.length != tos.length) {
         throw "'froms' & 'tos' must be equal length"
     }
@@ -54,7 +63,7 @@ function translate(source, froms, tos) {
 
 function sanitize(thing) {
     thing = translate(thing, "{[]}", "(())");
-    arr = thing.split('');
+    var arr = thing.split('');
     arr = arr.filter(c => c.match(/[a-z0-9\(\)]/i));
     return arr.join('');
 }
