@@ -64,7 +64,7 @@ if __name__ == "__main__":
     for comp in sys.argv[1:]:
         clean = sanitize(comp)
         try:
-            print("%s:\t%.2f" % (clean, Mass(comp)))
+            print("%s:\t%.2f" % (clean, Mass(clean)))
         except Exception as e:
             print(e)
             exit(1)
