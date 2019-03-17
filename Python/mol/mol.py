@@ -2,10 +2,10 @@
 import re
 import os
 import sys
-COEFFRE = r"^(\d+)" # beginning coefficient
+COEFFRE = r"^(\d+)"  # beginning coefficient
 TOKRE = r"\(.*?\)|([A-Z][a-z]*)(\d*)"  # groups: Elem, [coeff]
 SUBRE = r"\((.*)\)(\d*)"  # groups: expr, [coeff]
-TRANS = str.maketrans("{[()]}", "((()))")
+TRANS = str.maketrans("{[]}", "(())")
 
 ptable = {'': 0.00}
 
