@@ -18,24 +18,26 @@ function makeCoeff(c) {
     }
 }
 
+//count = 0
 function mass(thing) {
+    console.log(`mass(${thing})`)
+    //count++
+    //if (count == 2) console.assert(0); // deliberate fail condition
     var acc = 0;
     var big = COEFFRE.exec(thing);
     var bigCoeff = 1;
     if (big !== null) {
-        console.log(`Big:\t${big[1]}`);
         bigCoeff = makeCoeff(big[1]);
     }
 
-    while ((m = TOKRE.exec(test)) !== null) {
+    while ((m = TOKRE.exec(thing)) !== null) {
         let toks = m.slice(1, 3);
-        console.log(`token:\t${toks}`);
         acc += ptable[toks[0]] * makeCoeff(toks[1]);
     }
 
-    while ((m = SUBRE.exec(test)) !== null) {
+    // problem section
+    while ((m = SUBRE.exec(thing)) !== null) {
         let toks = m.slice(1, 3);
-        console.log(`subexpression:\t${toks}`);
 
         // Causing infinite looping
         //acc += mass(toks[0]) * makeCoeff(toks[1]);
@@ -78,6 +80,7 @@ function sanitize(thing) {
 // if(__name__ == '__main__') eqiv, supporting web embedding
 if (typeof require != 'undefined' && require.main == module) {
     test = "CH3(CH3)2CH3";
-    console.log(mass(sanitize(test)));
-    console.log(sanitize("C224[](){} \t<>?££$£"));
+    console.log(mass(test));
+    //console.log(sanitize("C224[](){} \t<>?££$£"));
+    //console.log(mass("CH3"))
 }
