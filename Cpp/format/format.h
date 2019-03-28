@@ -54,13 +54,9 @@ void _collect(std::queue<std::string> &queue, T &val, Ts &... rest)
     _collect(queue, rest...);
 }
 
-template <class T, class... Ts>
-inline std::string fmt::operator()(T val, Ts... rest) noexcept
+std::string _print(std::queue<std::string> &queue, std::string str)
 {
-    std::queue<std::string> queue;
-    _collect(queue, val, rest...);
     std::stringstream out;
-
     for (int i = 0; i < str.length(); ++i)
     {
         if (str[i] == '%')
@@ -75,6 +71,14 @@ inline std::string fmt::operator()(T val, Ts... rest) noexcept
         out << str[i];
     }
     return out.str();
+}
+
+template <class T, class... Ts>
+inline std::string fmt::operator()(T val, Ts... rest) noexcept
+{
+    std::queue<std::string> queue;
+    _collect(queue, val, rest...);
+    return _print(queue, str);
 }
 
 // Emulate std::hash<T>{}(thing) interface
