@@ -113,10 +113,6 @@ class _collator
     _collator(fmt str) : str(str){};
     _collator(_collator &) = default;
     _collator(const _collator &) = default;
-    std::string to_string()
-    {
-        return _print(queue, str);
-    };
     template <class T>
     friend _collator operator%(_collator, T);
     friend std::ostream &operator<<(std::ostream &, const _collator &);
@@ -132,7 +128,7 @@ _collator operator%(_collator c, T arg)
 std::ostream &operator<<(std::ostream &os, const _collator &c)
 {
     _collator tmp = c;
-    os << tmp.to_string();
+    os << _print(tmp.queue, tmp.str);
     return os;
 }
 
