@@ -59,4 +59,6 @@ int main()
 	std::cout << "%"_fmt(S(600)) << std::endl;
 
 	fmtf::print("Printf: %\n", true);
+
+	std::cout << "%% construction %\n"_fmt % 555;
 }

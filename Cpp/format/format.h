@@ -4,6 +4,29 @@
 #include <iomanip>
 #include <queue>
 
+// Emulate std::hash<T>{}(thing) interface
+template <class T>
+struct repr
+{
+    std::string operator()(T in)
+    {
+        std::stringstream ss;
+        ss << in;
+        return ss.str();
+    }
+};
+
+template <>
+struct repr<bool>
+{
+    std::string operator()(bool bol)
+    {
+        std::stringstream ss;
+        ss << std::boolalpha << bol;
+        return ss.str();
+    }
+};
+
 struct fmt
 {
     std::string str;
@@ -81,28 +104,37 @@ inline std::string fmt::operator()(T val, Ts... rest) noexcept
     return _print(queue, str);
 }
 
-// Emulate std::hash<T>{}(thing) interface
-template <class T>
-struct repr
+class _collator
 {
-    std::string operator()(T in)
+    std::queue<std::string> queue;
+    std::string str;
+
+  public:
+    _collator(fmt str) : str(str){};
+    _collator(_collator &) = default;
+    _collator(const _collator &) = default;
+    std::string to_string()
     {
-        std::stringstream ss;
-        ss << in;
-        return ss.str();
-    }
+        return _print(queue, str);
+    };
+    template <class T>
+    friend _collator operator%(_collator, T);
+    friend std::ostream &operator<<(std::ostream &, const _collator &);
 };
 
-template <>
-struct repr<bool>
+template <class T>
+_collator operator%(_collator c, T arg)
 {
-    std::string operator()(bool bol)
-    {
-        std::stringstream ss;
-        ss << std::boolalpha << bol;
-        return ss.str();
-    }
-};
+    c.queue.push(repr<T>{}(arg));
+    return c;
+}
+
+std::ostream &operator<<(std::ostream &os, const _collator &c)
+{
+    _collator tmp = c;
+    os << tmp.to_string();
+    return os;
+}
 
 // ~printf family
 namespace fmtf
