@@ -65,6 +65,10 @@ build-*-Debug
 *.class
 *.jar
 
+# Rust
+*/target/*
+**/*.rs.bk
+
 # Client secrets
 *.secret
 credentials.json
