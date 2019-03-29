@@ -12,7 +12,7 @@ impl Time {
 }
 
 impl str::FromStr for Time {
-    type Err = num::ParseIntError;
+    type Err = num::ParseInterror;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let nums: Vec<&str> = s.trim()
             .split(':')
@@ -51,8 +51,8 @@ fn main() {
     let start = argv[1].parse::<Time>();
     let start = match start {
         Ok(t) => t,
-        Err(error) => {
-            panic!("Error occured");
+        Err(_error) => {
+            panic!("_error occured");
         }
     };
 
@@ -60,8 +60,8 @@ fn main() {
         let this = argv[2].parse::<Time>();
         let this = match this {
             Ok(t) => t,
-            Err(error) => {
-                panic!("Error occured");
+            Err(_error) => {
+                panic!("_error occured");
             }
         };
         this.abs()
@@ -69,8 +69,8 @@ fn main() {
         let this = argv[2].parse::<u32>();
         let this = match this {
             Ok(t) => t,
-            Err(error) => {
-                panic!("Error occured");
+            Err(_error) => {
+                panic!("_error occured");
             }
         };
         this
