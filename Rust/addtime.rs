@@ -12,7 +12,7 @@ impl Time {
 }
 
 impl str::FromStr for Time {
-    type Err = num::ParseInterror;
+    type Err = num::ParseIntError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let nums: Vec<&str> = s.trim()
             .split(':')
