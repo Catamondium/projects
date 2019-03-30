@@ -1,5 +1,8 @@
-use std::{fmt, ops, env, str, num};// module local, not polluting!
+use std::{fmt, ops, env, process};
+use std::{str, num };
+use std::error::Error;// module local, not polluting!
 
+#[derive(Clone, Copy)]
 struct Time {
     hrs: u32,
     mins: u32
@@ -18,8 +21,8 @@ impl str::FromStr for Time {
             .split(':')
             .collect();
 
-        let hrs = nums[0].parse::<u32>()?;
-        let mins = nums[1].parse::<u32>()?;
+        let hrs: u32 = nums[0].parse()?;
+        let mins: u32 = nums[1].parse()?;
 
         Ok(Time { hrs, mins})
     }
@@ -31,11 +34,10 @@ impl fmt::Display for Time {
     }
 }
 
-// impl for reference to circumvent move semantics
-impl ops::Add<u32> for &Time {
+impl ops::Add<u32> for Time {
     type Output = Time;
-    fn add(self, _rhs: u32) -> Self::Output {
-        let t = self.abs() + _rhs;
+    fn add(self, rhs: u32) -> Self::Output {
+        let t = self.abs() + rhs;
         Time {
             hrs: t / 60,
             mins: t % 60
@@ -43,39 +45,30 @@ impl ops::Add<u32> for &Time {
     }
 }
 
-fn main() {
-    let argv: Vec<String> = env::args().collect();
-    if argv.len() < 3 {
-        panic!("Insufficient arguments")
+fn parse_args(args: &Vec<String>) -> Result<(Time, u32), Box<dyn Error>> {
+    if args.len() < 3 {
+        Err("Insufficient arguments")?;
     }
-    let start = argv[1].parse::<Time>();
-    let start = match start {
-        Ok(t) => t,
-        Err(_error) => {
-            panic!("_error occured");
-        }
+
+    let start = args[1].parse::<Time>()?;
+
+    let elapse = if args[2].contains(':') {
+        args[2].parse::<Time>()?.abs()
+    } else {
+        args[2].parse::<u32>()?
     };
 
-    let elapse = if argv[2].contains(':') {
-        let this = argv[2].parse::<Time>();
-        let this = match this {
-            Ok(t) => t,
-            Err(_error) => {
-                panic!("_error occured");
-            }
-        };
-        this.abs()
-    } else {
-        let this = argv[2].parse::<u32>();
-        let this = match this {
-            Ok(t) => t,
-            Err(_error) => {
-                panic!("_error occured");
-            }
-        };
-        this
-    };
+    Ok((start, elapse))
+}
+
+fn main() {
+    let args: Vec<String> = env::args().collect();
+
+    let (start, elapse) = parse_args(&args).unwrap_or_else(|err| {
+        println!("Parsing error: {}", err);
+        process::exit(1);
+        });
 
     println!("Start:\t{}\t{:+}\nEnd:\t{}",
-        start, elapse, &start + elapse)
+        start, elapse, start + elapse)
 }
