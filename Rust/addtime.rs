@@ -1,5 +1,5 @@
-use std::{fmt, ops, env, process};
-use std::{str, num };
+use std::{env, process};
+use std::{fmt, ops, str, num };
 use std::error::Error;// module local, not polluting!
 
 #[derive(Clone, Copy)]
