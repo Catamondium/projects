@@ -16,18 +16,14 @@ mod tests {
     #[test]
     fn addition() {
         let time = Time {hrs: 0, mins: 30};
-        let other = 30;
+        let result = time + 30;
 
-        let result = time + other;
-        let abs_result = (result.hrs * 60) + result.mins;
-
-        assert_eq!(60, abs_result);
+        assert_eq!(60, result.abs());
     }
 
     #[test]
     fn parse() {
-        let subject = "1:30";
-        let time: Time = subject.parse().unwrap();
+        let time: Time = "1:30".parse().unwrap();
 
         assert_eq!(time.hrs, 1);
         assert_eq!(time.mins, 30);
