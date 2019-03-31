@@ -1,8 +1,8 @@
 [package]
-name = "minigrep"
+name = "addtime"
 version = "0.1.0"
 authors = ["Catamondium <30911915+Catamondium@users.noreply.github.com>"]
 edition = "2018"
 
 [dependencies]
-getopts = "0.2"
+optargs = "2.0"

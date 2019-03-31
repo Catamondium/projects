@@ -1,5 +1,7 @@
+extern crate getopts;
+use getopts::Matches;
+
 use std::{error::Error, fs};
-use std::env;
 
 #[cfg(test)]
 mod tests {
@@ -83,15 +85,15 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 3 {
+    pub fn new(matches: &Matches) -> Result<Config, &'static str> {
+        if matches.free.len() < 2 {
             return Err("insufficient arguments")
         }
 
-        let query = args[1].clone();
-        let filename = args[2].clone();
+        let query = matches.free[0].clone();
+        let filename = matches.free[1].clone();
 
-        let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
+        let case_sensitive = matches.opt_present("i");
 
         Ok(Config {query, filename, case_sensitive})
     }
