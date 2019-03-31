@@ -19,7 +19,7 @@ function elapse()
 
 function usage()
 {
-	printf "Usage: $0 [-qh] hh:mm mins_elapse\n"
+	printf "Usage: {} [-hq] <HH:MM> <mins>\n"
 	printf "Options:\n\t-q quietly output end time\n"
 	printf "\t-h print this message and exit\n"
 	exit 1

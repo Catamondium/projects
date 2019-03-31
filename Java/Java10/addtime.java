@@ -30,7 +30,7 @@ class Time {
 
 class addtime {
 	public static void usage() {
-		System.out.println("Usage: hh:mm mins_elapse");
+		System.out.println("Usage: <HH:MM> <mins>");
 		System.exit(1);
 	}
 
