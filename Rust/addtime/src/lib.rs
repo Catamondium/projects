@@ -1,4 +1,46 @@
-use std::{fmt, ops, str, num };
+use std::fmt;
+use std::ops;
+use std::str;
+use std::num;
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn abs_mins() {
+        let time = Time {hrs: 1, mins: 30};
+        assert_eq!(90, time.abs());
+    }
+
+    #[test]
+    fn addition() {
+        let time = Time {hrs: 0, mins: 30};
+        let other = 30;
+
+        let result = time + other;
+        let abs_result = (result.hrs * 60) + result.mins;
+
+        assert_eq!(60, abs_result);
+    }
+
+    #[test]
+    fn parse() {
+        let subject = "1:30";
+        let time: Time = subject.parse().unwrap();
+
+        assert_eq!(time.hrs, 1);
+        assert_eq!(time.mins, 30);
+    }
+
+    #[test]
+    fn display() {
+        let time = Time {hrs: 1, mins: 30};
+        let result = format!("{}", time);
+
+        assert_eq!("01:30", result);
+    }
+}
 
 #[derive(Clone, Copy)]
 pub struct Time {
