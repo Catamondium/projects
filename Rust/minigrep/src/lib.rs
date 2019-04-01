@@ -39,27 +39,16 @@ Trust me.";
 }
 
 fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let mut results = Vec::new();
-    for line in contents.lines() {
-        if line.contains(query) {
-            results.push(line);
-        }
-    }
-
-    results
+    contents.lines()
+        .filter(|line| line.contains(&query))
+        .collect()
 }
 
 fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     let query = query.to_lowercase();
-    let mut results = Vec::new();
-
-    for line in contents.lines() {
-        if line.to_lowercase().contains(&query) {
-            results.push(line);
-        }
-    }
-
-    results
+    contents.lines()
+        .filter(|line| line.to_lowercase().contains(&query))
+        .collect()
 }
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>>{
@@ -85,9 +74,9 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new(matches: &Matches) -> Result<Config, &'static str> {
+    pub fn new<'a>(matches: &Matches) -> Result<Config, Box<dyn Error>> {
         if matches.free.len() < 2 {
-            return Err("insufficient arguments")
+            Err("insufficient arguments")?
         }
 
         let query = matches.free[0].clone();
