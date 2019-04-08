@@ -17,7 +17,7 @@ def makeCoeff(c):
         return int(c)
 
 
-def loadTable(fname="ptable.csv"):
+def loadTable(fname="ptable.tsv"):
     script = os.path.realpath(__file__)
     script_dir = os.path.dirname(script)
     tpath = os.path.join(script_dir, fname)
