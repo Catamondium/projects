@@ -53,7 +53,7 @@ Mkfile.old
 dkms.conf
 
 # vscode metadata
-*.vscode/*
+**.vscode/**
 # Qt build folders
 build-*-Debug
 
