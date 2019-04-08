@@ -23,7 +23,7 @@ def loadTable(fname="ptable.tsv"):
     tpath = os.path.join(script_dir, fname)
     with open(tpath, 'r') as f:
         for line in f:
-            k, v = line.strip().split('|')
+            k, v = line.strip().split('\t')
             ptable[k] = float(v)
 
 
