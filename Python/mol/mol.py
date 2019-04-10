@@ -24,7 +24,10 @@ def loadTable(fname="ptable.tsv"):
     with open(tpath, 'r') as f:
         for line in f:
             k, v = line.strip().split('\t')
-            ptable[k] = float(v)
+            if k in ptable:
+                raise("Table error: Repeated element %s" % k)
+            else:
+                ptable[k] = float(v)
 
 
 def valid(c):
