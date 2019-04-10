@@ -75,7 +75,7 @@ fn load_table() -> Ptable {
 
     for line in PTABLE_FILE.lines() {
         let fields: Vec<&str> = line.split("\t").collect();
-        if out.contains_key(&fields[0].to_string()) {
+        if out.contains_key(fields[0]) {
             panic!(format!("Table error: Repeated element: {}", fields[0]));
         };
 
