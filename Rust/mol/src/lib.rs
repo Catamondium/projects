@@ -122,8 +122,8 @@ pub fn mass(comp: &String) -> f32 {
     for cap in TOKRE.captures_iter(&comp) {
         let mut temp = 0.0;
         if let Some(elem) = cap.get(1) {
-            let key = elem.as_str().to_string();
-            if let Some(efloat) = PTABLE.get(&key) {
+            let key = elem.as_str();
+            if let Some(efloat) = PTABLE.get(key) {
                 temp = *efloat;
             } else {
                 let err = format!("Element {} doesn't exist", key);
