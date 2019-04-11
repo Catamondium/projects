@@ -1,5 +1,5 @@
-use std::env;
 use mol::{mass, normalize};
+use std::env;
 
 fn main() {
     let args: Vec<String> = env::args().skip(1).collect();

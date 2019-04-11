@@ -16,10 +16,7 @@ safe, fast, productive.
 Pick three.
 Duct tape.";
 
-        assert_eq!(
-            vec!["safe, fast, productive."],
-            search(query, contents)
-            );
+        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
     }
 
     #[test]
@@ -34,24 +31,26 @@ Trust me.";
         assert_eq!(
             vec!["Rust:", "Trust me."],
             search_case_insensitive(query, contents)
-            );
+        );
     }
 }
 
 fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    contents.lines()
+    contents
+        .lines()
         .filter(|line| line.contains(&query))
         .collect()
 }
 
 fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     let query = query.to_lowercase();
-    contents.lines()
+    contents
+        .lines()
         .filter(|line| line.to_lowercase().contains(&query))
         .collect()
 }
 
-pub fn run(config: Config) -> Result<(), Box<dyn Error>>{
+pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.filename)?;
 
     let results = if config.case_sensitive {
@@ -59,7 +58,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>>{
     } else {
         search_case_insensitive(&config.query, &contents)
     };
-    
+
     for line in results {
         println!("{}", line);
     }
@@ -70,7 +69,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>>{
 pub struct Config {
     pub query: String,
     pub filename: String,
-    pub case_sensitive: bool
+    pub case_sensitive: bool,
 }
 
 impl Config {
@@ -84,6 +83,10 @@ impl Config {
 
         let case_sensitive = matches.opt_present("i");
 
-        Ok(Config {query, filename, case_sensitive})
+        Ok(Config {
+            query,
+            filename,
+            case_sensitive,
+        })
     }
 }

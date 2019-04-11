@@ -1,7 +1,7 @@
 use std::fmt;
+use std::num;
 use std::ops;
 use std::str;
-use std::num;
 
 #[cfg(test)]
 mod tests {
@@ -9,13 +9,13 @@ mod tests {
 
     #[test]
     fn abs_mins() {
-        let time = Time {hrs: 1, mins: 30};
+        let time = Time { hrs: 1, mins: 30 };
         assert_eq!(90, time.abs());
     }
 
     #[test]
     fn addition() {
-        let time = Time {hrs: 0, mins: 30};
+        let time = Time { hrs: 0, mins: 30 };
         let result = time + 30;
 
         assert_eq!(60, result.abs());
@@ -31,7 +31,7 @@ mod tests {
 
     #[test]
     fn display() {
-        let time = Time {hrs: 1, mins: 30};
+        let time = Time { hrs: 1, mins: 30 };
         let result = format!("{}", time);
 
         assert_eq!("01:30", result);
@@ -41,7 +41,7 @@ mod tests {
 #[derive(Clone, Copy)]
 pub struct Time {
     pub hrs: u32,
-    pub mins: u32
+    pub mins: u32,
 }
 
 impl Time {
@@ -53,14 +53,12 @@ impl Time {
 impl str::FromStr for Time {
     type Err = num::ParseIntError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let nums: Vec<&str> = s.trim()
-            .split(':')
-            .collect();
+        let nums: Vec<&str> = s.trim().split(':').collect();
 
         let hrs: u32 = nums[0].parse()?;
         let mins: u32 = nums[1].parse()?;
 
-        Ok(Time { hrs, mins})
+        Ok(Time { hrs, mins })
     }
 }
 
@@ -76,7 +74,7 @@ impl ops::Add<u32> for Time {
         let t = self.abs() + rhs;
         Time {
             hrs: t / 60,
-            mins: t % 60
+            mins: t % 60,
         }
     }
 }

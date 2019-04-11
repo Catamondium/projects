@@ -21,38 +21,26 @@ mod tests {
     #[test]
     fn normalization() {
         let dirty: String = "C   5#[20]{30}".to_string();
-        assert_eq!(
-            "C5(20)(30)".to_string(),
-            normalize(dirty)
-            );
+        assert_eq!("C5(20)(30)".to_string(), normalize(dirty));
     }
 
     #[test]
     fn element_carbon() {
-        assert_eq!(
-            12.01,
-            mass(&"C".to_string())
-            );
+        assert_eq!(12.01, mass(&"C".to_string()));
     }
 
     #[test]
-    fn simple_ethane() { 
-        assert_eq!(
-            30.02,
-            mass(&"C2H6".to_string())
-            ); 
+    fn simple_ethane() {
+        assert_eq!(30.02, mass(&"C2H6".to_string()));
     }
 
     #[test]
     fn five_struct_dimethylpropane() {
-        assert_eq!(
-            5.0 * 72.05, 
-            mass(&"5C(CH3)4".to_string())
-            );
+        assert_eq!(5.0 * 72.05, mass(&"5C(CH3)4".to_string()));
     }
 }
 
-const PTABLE_FILE : &str = include_str!("ptable.tsv");
+const PTABLE_FILE: &str = include_str!("ptable.tsv");
 lazy_static! {
     static ref PTABLE:  Ptable = load_table();
     static ref TTABLE:  TransTable = trans("[]{}", "()");
@@ -81,17 +69,16 @@ fn load_table() -> Ptable {
 
         out.insert(
             fields[0].to_string(),
-            fields[1].parse::<f32>()
-                .expect(&format!("Table error: bad float at {}", fields[0]))
+            fields[1]
+                .parse::<f32>()
+                .expect(&format!("Table error: bad float at {}", fields[0])),
         );
     }
     out
 }
 
 fn trans(from: &str, to: &str) -> TransTable {
-    from.chars()
-        .zip(to.chars().cycle())
-        .collect()
+    from.chars().zip(to.chars().cycle()).collect()
 }
 
 pub fn normalize(dirty: String) -> String {
@@ -100,23 +87,22 @@ pub fn normalize(dirty: String) -> String {
     for c in dirty.chars() {
         match TTABLE.get(&c) {
             Some(rep) => clean.push(*rep),
-            None => clean.push(c)
+            None => clean.push(c),
         }
     }
 
     clean
         .chars()
-        .filter(|c| {
-            *c == '(' || *c == ')' || c.is_alphanumeric()
-        }).collect()
+        .filter(|c| *c == '(' || *c == ')' || c.is_alphanumeric())
+        .collect()
 }
 
 pub fn mass(comp: &String) -> f32 {
     let bigcoeff = match COEFFRE.captures(&comp) {
         Some(x) => x[1].parse::<f32>().unwrap_or(1.0),
-        None    => 1.0
+        None => 1.0,
     };
-    
+
     let mut acc = 0.0;
 
     for cap in TOKRE.captures_iter(&comp) {
@@ -140,7 +126,7 @@ pub fn mass(comp: &String) -> f32 {
         if let Some(subexpr) = cap.get(1) {
             temp = mass(&subexpr.as_str().to_string());
         }
-        
+
         temp *= make_coeff(cap.get(2));
         acc += temp;
     }

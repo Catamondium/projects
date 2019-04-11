@@ -1,8 +1,8 @@
 extern crate getopts;
 use getopts::Options;
 
-use std::{env, process};
 use std::error::Error;
+use std::{env, process};
 
 use addtime;
 use addtime::Time;
@@ -34,13 +34,12 @@ fn main() {
         eprintln!("Parsing error: {}", err);
         usage(&program, &opts);
         process::exit(1);
-        });
+    });
 
     if matches.opt_present("q") {
         println!("{}", start + elapse);
     } else {
-        println!("Start:\t{}\t{:+}\nEnd:\t{}",
-            start, elapse, start + elapse);
+        println!("Start:\t{}\t{:+}\nEnd:\t{}", start, elapse, start + elapse);
     }
 }
 
