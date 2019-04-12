@@ -1,8 +1,8 @@
 extern crate regex;
 use regex::Regex;
 
-use std::fmt;
 use std::error;
+use std::fmt;
 #[macro_use]
 extern crate lazy_static;
 
@@ -17,7 +17,7 @@ mod tests {
 
     #[test]
     fn none_element() {
-        let badelem=  "Haag";
+        let badelem = "Haag";
         let res: Result<f32, ElementError> = mass(&badelem.to_string());
         assert!(res.is_err(), format!("\"{}\"Failed to fail", badelem));
         if let Err(e) = res {
@@ -25,7 +25,7 @@ mod tests {
             assert!(estr.contains(badelem), "Failed to produce description");
         }
     }
-    
+
     #[test]
     fn normalization() {
         let dirty: String = "C   5#[20]{30}".to_string();
@@ -70,6 +70,7 @@ impl fmt::Display for ElementError {
 
 impl error::Error for ElementError {
     fn description(&self) -> &str {
+        // depreciated for Display?
         "The element entered doesn't exist"
     }
 
