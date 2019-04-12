@@ -74,6 +74,8 @@ fn load_table() -> Ptable {
                 .expect(&format!("Table error: bad float at {}", fields[0])),
         );
     }
+
+    out.shrink_to_fit();
     out
 }
 
