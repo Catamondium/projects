@@ -22,6 +22,7 @@ def loadTable(fname="ptable.tsv"):
     script_dir = os.path.dirname(script)
     tpath = os.path.join(script_dir, fname)
     with open(tpath, 'r') as f:
+        next(f)
         for line in f:
             k, v = line.strip().split('\t')
             if k in ptable:
