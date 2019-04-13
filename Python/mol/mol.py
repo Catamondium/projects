@@ -50,7 +50,7 @@ def mass(thing):
     acc = 0
     for e, c in re.findall(TOKRE, thing):
         if e not in ptable:
-            raise Exception("Element %r doesn't exist" % e)
+            raise Exception("Element \"%s\" doesn't exist" % e)
         coeff = makeCoeff(c)
         acc += ptable[e] * coeff
 
