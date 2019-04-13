@@ -18,7 +18,7 @@ mod tests {
     #[test]
     fn none_element() {
         let badelem = "Haag";
-        let res: Result<f32, ElementError> = mass(&badelem.to_string());
+        let res: Result<f32, ElementError> = mass(&badelem);
         assert!(res.is_err(), format!("\"{}\"Failed to fail", badelem));
         if let Err(e) = res {
             let estr = format!("{}", e);
@@ -128,7 +128,7 @@ pub fn normalize(dirty: String) -> String {
         .collect()
 }
 
-pub fn mass(comp: &String) -> Result<f32, ElementError> {
+pub fn mass(comp: &str) -> Result<f32, ElementError> {
     let bigcoeff = match COEFFRE.captures(&comp) {
         Some(x) => x[1].parse::<f32>().unwrap_or(1.0),
         None => 1.0,
@@ -154,7 +154,7 @@ pub fn mass(comp: &String) -> Result<f32, ElementError> {
     for cap in SUBRE.captures_iter(&comp) {
         let mut temp = 0.0;
         if let Some(subexpr) = cap.get(1) {
-            temp = mass(&subexpr.as_str().to_string())?;
+            temp = mass(&subexpr.as_str())?;
         }
 
         temp *= make_coeff(cap.get(2));
