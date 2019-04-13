@@ -74,7 +74,7 @@ impl error::Error for ElementError {
         "The element entered doesn't exist"
     }
 
-    fn cause(&self) -> Option<&error::Error> {
+    fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         None
     }
 }

@@ -6,10 +6,10 @@ fn main() {
     for dirty in args {
         let clean = normalize(dirty);
         match mass(&clean) {
-            Ok(m)   => {
+            Ok(m) => {
                 println!("{}: {} g/mol", clean, m);
-                },
-            Err(e)  => {
+            }
+            Err(e) => {
                 eprintln!("{}", e);
                 process::exit(1);
             }
