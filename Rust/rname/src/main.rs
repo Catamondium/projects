@@ -1,21 +1,31 @@
-use std::io;
+use std::path::*;
 use std::{env, fs};
 
-fn pred(thing: &fs::DirEntry) -> bool {
+fn is_directory(thing: &fs::DirEntry) -> bool {
     if let Ok(typename) = thing.file_type() {
         return typename.is_dir();
     }
     false
 }
 
-fn rename(dir: io::Result<fs::ReadDir>) {
-    if let Ok(iter) = dir {
+fn rename(dir: &Path) {
+    if !dir.is_dir() {
+        return;
+    }
+
+    println!(
+        "in Path: {:?}",
+        dir.canonicalize().unwrap().file_name().unwrap()
+    );
+
+    if let Ok(iter) = fs::read_dir(dir) {
         let filtered = iter.filter_map(|x| x.ok());
-        let (dirs, files): (Vec<fs::DirEntry>, Vec<fs::DirEntry>) = filtered.partition(pred);
+        let (dirs, files): (Vec<fs::DirEntry>, Vec<fs::DirEntry>) =
+            filtered.partition(is_directory);
 
         for d in dirs {
             println!("Dir:\t{:?}", d);
-            //rename(fs::read_dir(d.path())); // Don't recurse when testing
+            //rename(&d.path()); // Don't recurse when testing
         }
 
         let width = (files.len() as f64).log10().ceil();
@@ -45,6 +55,6 @@ fn main() {
     println!("Args: {:?}", args);
 
     for x in args {
-        rename(fs::read_dir(x));
+        rename(Path::new(&x));
     }
 }
