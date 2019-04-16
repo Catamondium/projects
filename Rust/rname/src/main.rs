@@ -1,6 +1,10 @@
 use std::path::*;
 use std::{env, fs};
 
+fn re_sort(dir: Vec<PathBuf>, parent: &Path) {
+    unimplemented!();
+}
+
 fn is_directory(thing: &fs::DirEntry) -> bool {
     if let Ok(typename) = thing.file_type() {
         return typename.is_dir();
@@ -8,10 +12,12 @@ fn is_directory(thing: &fs::DirEntry) -> bool {
     false
 }
 
-fn rename(dir: &Path) {
-    if !dir.is_dir() {
+fn rename(reldir: &Path) {
+    if !reldir.is_dir() {
         return;
     }
+
+    let dir = reldir.canonicalize().unwrap();
 
     println!(
         "in Path: {:?}",
@@ -28,9 +34,10 @@ fn rename(dir: &Path) {
             //rename(&d.path()); // Don't recurse when testing
         }
 
-        let width = (files.len() as f64).log10().ceil();
-        println!("Width for {} files:\t{}", files.len(), width);
-        for f in files {
+        let fpaths: Vec<PathBuf> = files.iter().map(|f| f.path()).collect();
+        let width = (fpaths.len() as f64).log10().ceil();
+        println!("Width for {} files:\t{}", fpaths.len(), width);
+        for f in fpaths {
             println!("File:\t{:?}", f);
         }
     }
