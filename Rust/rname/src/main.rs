@@ -4,6 +4,7 @@ use regex::{escape, Regex};
 extern crate getopts;
 use getopts::Options;
 
+use std::io::prelude::*;
 use std::path::*;
 use std::{env, fs};
 
@@ -12,8 +13,19 @@ fn main() {
     let (args, config) = target(&args);
 
     for x in args {
-        mv(Path::new(&x), &config);
+        if config.dry || config.force || verify(&x) {
+            mv(Path::new(&x), &config);
+        }
     }
+}
+
+fn verify(path: &str) -> bool {
+    println!("About to rename inside:\t{}\nAre you sure?", path);
+    let mut buf = [0; 1];
+    let err = std::io::stdin().read(&mut buf).is_ok();
+    let c = std::str::from_utf8(&buf).unwrap_or("n");
+
+    err && c.to_lowercase() == "y"
 }
 
 fn re_sort<'a>(dir: &'a Vec<PathBuf>, parent: &str, width: &usize) -> Vec<&'a PathBuf> {
