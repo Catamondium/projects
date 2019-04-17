@@ -7,18 +7,15 @@ use std::{env, fs};
 fn re_sort<'a>(dir: &'a Vec<PathBuf>, parent: &Path) -> Vec<&'a PathBuf> {
     let width = (dir.len() as f64).log10().ceil();
     let re_string = format!(
-        r"{}-\d{{{}}}.*$",
+        r"^{}-\d{{{}}}.*$",
         escape(&parent.file_name().unwrap().to_str().unwrap()),
         width
     );
     let re = Regex::new(&re_string).unwrap();
 
-    let tup: (Vec<&PathBuf>, Vec<&PathBuf>) = dir
+    let (mut matched, mut unmatched): (Vec<&PathBuf>, Vec<&PathBuf>) = dir
         .iter()
         .partition(|e| re.is_match(e.file_name().unwrap().to_str().unwrap()));
-
-    let mut matched = tup.0;
-    let mut unmatched = tup.1;
 
     println!("Re: {:?}", re);
     println!("Matched: {:?}\nUnmatched: {:?}", matched, unmatched);
