@@ -62,7 +62,6 @@ fn mv(rel_parent: &Path, conf: &Config) {
         let dirname = parent.file_name().unwrap().to_str().unwrap();
 
         let sorted = re_sort(&fpaths, &dirname, &width);
-        println!("{:#?}", sorted);
 
         for (i, f) in sorted.iter().enumerate() {
             let ext = match f.extension() {
