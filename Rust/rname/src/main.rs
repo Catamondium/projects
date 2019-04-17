@@ -125,7 +125,7 @@ fn target(args: &Vec<String>) -> (Vec<String>, Config) {
 
     let mut opts = Options::new();
     opts.optflag("d", "dry_run", "Run without renaming anything, verbosely");
-    opts.optflag("v", "verbose", "Show all possible moves, verbosely");
+    opts.optflag("v", "verbose", "Show all possible moves");
     opts.optflag("r", "recurse", "Recurse through subdirectories");
     opts.optflag("f", "force", "Don't ask for approval");
     opts.optflag("i", "interactive", "Require approval");
