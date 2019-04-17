@@ -9,10 +9,10 @@ use std::path::*;
 use std::{env, fs};
 
 macro_rules! return_on_none {
-    ($ret:ident: $t:ty = $e:expr) => {
+    ($ret:ident = $e:expr) => {
         let $ret = match $e {
             Some(x) => x,
-            None => Default::default()
+            None => Default::default(),
         };
 
         if $e.is_none() {
@@ -70,7 +70,7 @@ fn mv(rel_parent: &Path, conf: &Config) {
         return;
     }
 
-    return_on_none!(parent: PathBuf = rel_parent.canonicalize().ok());
+    return_on_none!(parent = rel_parent.canonicalize().ok());
 
     if let Ok(iter) = fs::read_dir(&parent) {
         let filtered = iter.filter_map(|x| x.ok());
@@ -79,7 +79,7 @@ fn mv(rel_parent: &Path, conf: &Config) {
 
         let fpaths: Vec<PathBuf> = files.iter().map(|f| f.path()).collect();
         let width = (fpaths.len() as f64).log10().ceil().abs() as usize;
-        return_on_none!(dirname: str = parent.file_name().and_then(|x| x.to_str()));
+        return_on_none!(dirname = parent.file_name().and_then(|x| x.to_str()));
 
         let sorted = re_sort(&fpaths, &dirname, &width);
 
