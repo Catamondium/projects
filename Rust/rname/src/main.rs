@@ -15,7 +15,6 @@ macro_rules! return_on_none {
             if $e.is_none() {
                 return Ok(());
             }
-
             let $ret = $e.unwrap_or(Default::default());
        )+
     };
@@ -30,7 +29,6 @@ fn main() -> Result<(), Box<dyn Error>> {
             mv(Path::new(&x), &config)?;
         }
     }
-
     Ok(())
 }
 
@@ -39,7 +37,6 @@ fn verify(path: &str) -> bool {
     let mut buf = [0; 1];
     let err = std::io::stdin().read(&mut buf).is_ok();
     let c = std::str::from_utf8(&buf).unwrap_or("n");
-
     err && c.to_lowercase() == "y"
 }
 
