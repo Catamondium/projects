@@ -4,6 +4,7 @@ use regex::{escape, Regex};
 extern crate getopts;
 use getopts::Options;
 
+use std::error::Error;
 use std::io::prelude::*;
 use std::path::*;
 use std::{env, fs};
@@ -12,7 +13,7 @@ macro_rules! return_on_none {
     ($($ret:ident = $e:expr);+) => {
        $(
             if $e.is_none() {
-                return;
+                return Ok(());
             }
 
             let $ret = $e.unwrap_or(Default::default());
@@ -20,15 +21,17 @@ macro_rules! return_on_none {
     };
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
     let (args, config) = target(&args);
 
     for x in args {
         if config.dry || config.force || verify(&x) {
-            mv(Path::new(&x), &config);
+            mv(Path::new(&x), &config)?;
         }
     }
+
+    Ok(())
 }
 
 fn verify(path: &str) -> bool {
@@ -40,9 +43,13 @@ fn verify(path: &str) -> bool {
     err && c.to_lowercase() == "y"
 }
 
-fn re_sort<'a>(dir: &'a Vec<PathBuf>, parent: &str, width: &usize) -> Vec<&'a PathBuf> {
+fn re_sort<'a>(
+    dir: &'a Vec<PathBuf>,
+    parent: &str,
+    width: &usize,
+) -> Result<Vec<&'a PathBuf>, Box<dyn Error>> {
     let re_string = format!(r"^{}-\d{{{}}}.*$", escape(&parent), width);
-    let re = Regex::new(&re_string).unwrap();
+    let re = Regex::new(&re_string)?;
 
     let (mut matched, mut unmatched): (Vec<&PathBuf>, Vec<&PathBuf>) = dir.iter().partition(|e| {
         if let Some(thing) = e.file_name().and_then(|x| x.to_str()) {
@@ -54,57 +61,53 @@ fn re_sort<'a>(dir: &'a Vec<PathBuf>, parent: &str, width: &usize) -> Vec<&'a Pa
     matched.sort();
     matched.append(&mut unmatched);
 
-    matched
+    Ok(matched)
 }
 
 fn is_directory(file: &fs::DirEntry) -> bool {
     file.file_type().map(|x| x.is_dir()).unwrap_or(false)
 }
 
-fn mv(rel_parent: &Path, conf: &Config) {
-    if !rel_parent.is_dir() {
-        return;
-    }
+fn mv(rel_parent: &Path, conf: &Config) -> Result<(), Box<dyn Error>> {
+    let parent = rel_parent.canonicalize()?;
 
-    return_on_none! {parent = rel_parent.canonicalize().ok()};
+    let iter = fs::read_dir(&parent)?;
+    let filtered = iter.filter_map(|x| x.ok());
+    let (dirs, files): (Vec<fs::DirEntry>, Vec<fs::DirEntry>) = filtered.partition(is_directory);
 
-    if let Ok(iter) = fs::read_dir(&parent) {
-        let filtered = iter.filter_map(|x| x.ok());
-        let (dirs, files): (Vec<fs::DirEntry>, Vec<fs::DirEntry>) =
-            filtered.partition(is_directory);
+    let fpaths: Vec<PathBuf> = files.iter().map(|f| f.path()).collect();
+    let width = (fpaths.len() as f32).log10().ceil().abs() as usize;
+    return_on_none! {dirname = parent.file_name().and_then(|x| x.to_str())};
 
-        let fpaths: Vec<PathBuf> = files.iter().map(|f| f.path()).collect();
-        let width = (fpaths.len() as f32).log10().ceil().abs() as usize;
-        return_on_none! {dirname = parent.file_name().and_then(|x| x.to_str())};
+    let sorted = re_sort(&fpaths, &dirname, &width)?;
 
-        let sorted = re_sort(&fpaths, &dirname, &width);
+    for (i, f) in sorted.iter().enumerate() {
+        let ext = match f.extension() {
+            Some(e) => format!("{}{}", ".", e.to_str().unwrap_or("")),
+            None => String::new(),
+        };
 
-        for (i, f) in sorted.iter().enumerate() {
-            let ext = match f.extension() {
-                Some(e) => format!("{}{}", ".", e.to_str().unwrap_or("")),
-                None => String::new(),
-            };
-
-            let newname = format!("{}-{:03$}{}", dirname, i, ext, width);
-            if conf.verbose {
-                println!(
-                    "{:?} -> \"{}\"",
-                    f.file_name().and_then(|x| x.to_str()).unwrap_or("{ERR}"),
-                    newname
-                );
-            }
-
-            if !conf.dry {
-                let _r = fs::rename(f, parent.join(Path::new(&newname)));
-            }
+        let newname = format!("{}-{:03$}{}", dirname, i, ext, width);
+        if conf.verbose {
+            println!(
+                "{:?} -> \"{}\"",
+                f.file_name().and_then(|x| x.to_str()).unwrap_or("{ERR}"),
+                newname
+            );
         }
 
-        if conf.recurse {
-            for d in dirs {
-                mv(&d.path(), &conf); // Don't recurse when testing
-            }
+        if !conf.dry {
+            let _r = fs::rename(f, parent.join(Path::new(&newname)));
         }
     }
+
+    if conf.recurse {
+        for d in dirs {
+            mv(&d.path(), &conf)?; // Don't recurse when testing
+        }
+    }
+
+    Ok(())
 }
 
 #[derive(Debug, Clone)]
