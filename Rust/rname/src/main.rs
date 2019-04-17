@@ -9,15 +9,14 @@ use std::path::*;
 use std::{env, fs};
 
 macro_rules! return_on_none {
-    ($ret:ident = $e:expr) => {
-        let $ret = match $e {
-            Some(x) => x,
-            None => Default::default(),
-        };
+    ($($ret:ident = $e:expr);+) => {
+       $(
+            if $e.is_none() {
+                return;
+            }
 
-        if $e.is_none() {
-            return;
-        }
+            let $ret = $e.unwrap_or(Default::default());
+       )+
     };
 }
 
@@ -59,10 +58,7 @@ fn re_sort<'a>(dir: &'a Vec<PathBuf>, parent: &str, width: &usize) -> Vec<&'a Pa
 }
 
 fn is_directory(file: &fs::DirEntry) -> bool {
-    if let Ok(typename) = file.file_type() {
-        return typename.is_dir();
-    }
-    false
+    file.file_type().map(|x| x.is_dir()).unwrap_or(false)
 }
 
 fn mv(rel_parent: &Path, conf: &Config) {
@@ -70,7 +66,7 @@ fn mv(rel_parent: &Path, conf: &Config) {
         return;
     }
 
-    return_on_none!(parent = rel_parent.canonicalize().ok());
+    return_on_none! {parent = rel_parent.canonicalize().ok()};
 
     if let Ok(iter) = fs::read_dir(&parent) {
         let filtered = iter.filter_map(|x| x.ok());
@@ -78,8 +74,8 @@ fn mv(rel_parent: &Path, conf: &Config) {
             filtered.partition(is_directory);
 
         let fpaths: Vec<PathBuf> = files.iter().map(|f| f.path()).collect();
-        let width = (fpaths.len() as f64).log10().ceil().abs() as usize;
-        return_on_none!(dirname = parent.file_name().and_then(|x| x.to_str()));
+        let width = (fpaths.len() as f32).log10().ceil().abs() as usize;
+        return_on_none! {dirname = parent.file_name().and_then(|x| x.to_str())};
 
         let sorted = re_sort(&fpaths, &dirname, &width);
 
@@ -120,7 +116,7 @@ pub struct Config {
 }
 
 fn usage(program: &str, opts: &Options) {
-    let brief = format!("Usage: {}\nBatch renamer following DIR-#.ext pattern.\n# is an integer zfilled to width log10 of the number of files to mv recursing directories", program);
+    let brief = format!("Usage: {} [-dvrfih] [DIR]...\nBatch renamer following DIR-#.ext pattern.\n# is an integer zfilled to width log10 of the number of files to mv recursing directories", program);
     print!("{}", opts.usage(&brief));
 }
 
@@ -130,10 +126,10 @@ fn target(args: &Vec<String>) -> (Vec<String>, Config) {
     let mut opts = Options::new();
     opts.optflag("d", "dry_run", "Run without renaming anything, verbosely");
     opts.optflag("v", "verbose", "Show all possible moves, verbosely");
-    opts.optflag("r", "recurse", "Recurse through directories");
-    opts.optflag("f", "force", "Rename without asking permission");
-    opts.optflag("i", "interactive", "Rename while asking permission");
-    opts.optflag("h", "help", "show usage");
+    opts.optflag("r", "recurse", "Recurse through subdirectories");
+    opts.optflag("f", "force", "Don't ask for approval");
+    opts.optflag("i", "interactive", "Require approval");
+    opts.optflag("h", "help", "Show this usage");
     let matches = opts.parse(&args[1..]).unwrap_or_else(|e| {
         eprintln!("Bad option: {}", e);
         usage(&program, &opts);
