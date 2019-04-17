@@ -8,6 +8,19 @@ use std::io::prelude::*;
 use std::path::*;
 use std::{env, fs};
 
+macro_rules! return_on_none {
+    ($ret:ident: $t:ty = $e:expr) => {
+        let $ret = match $e {
+            Some(x) => x,
+            None => Default::default()
+        };
+
+        if $e.is_none() {
+            return;
+        }
+    };
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     let (args, config) = target(&args);
@@ -33,15 +46,10 @@ fn re_sort<'a>(dir: &'a Vec<PathBuf>, parent: &str, width: &usize) -> Vec<&'a Pa
     let re = Regex::new(&re_string).unwrap();
 
     let (mut matched, mut unmatched): (Vec<&PathBuf>, Vec<&PathBuf>) = dir.iter().partition(|e| {
-        if let Some(x) = e.file_name() {
-            if let Some(y) = x.to_str() {
-                return re.is_match(y);
-            } else {
-                return false;
-            }
-        } else {
-            return false;
+        if let Some(thing) = e.file_name().and_then(|x| x.to_str()) {
+            return re.is_match(thing);
         }
+        return false;
     });
 
     matched.sort();
@@ -62,7 +70,7 @@ fn mv(rel_parent: &Path, conf: &Config) {
         return;
     }
 
-    let parent = rel_parent.canonicalize().unwrap();
+    return_on_none!(parent: PathBuf = rel_parent.canonicalize().ok());
 
     if let Ok(iter) = fs::read_dir(&parent) {
         let filtered = iter.filter_map(|x| x.ok());
@@ -71,7 +79,7 @@ fn mv(rel_parent: &Path, conf: &Config) {
 
         let fpaths: Vec<PathBuf> = files.iter().map(|f| f.path()).collect();
         let width = (fpaths.len() as f64).log10().ceil().abs() as usize;
-        let dirname = parent.file_name().unwrap().to_str().unwrap();
+        return_on_none!(dirname: str = parent.file_name().and_then(|x| x.to_str()));
 
         let sorted = re_sort(&fpaths, &dirname, &width);
 
@@ -81,9 +89,13 @@ fn mv(rel_parent: &Path, conf: &Config) {
                 None => String::new(),
             };
 
-            let newname = format!("{}-{:0width$}{}", dirname, i, ext, width = width);
+            let newname = format!("{}-{:03$}{}", dirname, i, ext, width);
             if conf.verbose {
-                println!("{:?} -> \"{}\"", f.file_name().unwrap(), newname);
+                println!(
+                    "{:?} -> \"{}\"",
+                    f.file_name().and_then(|x| x.to_str()).unwrap_or("{ERR}"),
+                    newname
+                );
             }
 
             if !conf.dry {
