@@ -137,7 +137,7 @@ fn target(args: &Vec<String>) -> (Vec<String>, Config) {
         dry: matches.opt_present("d"),
         verbose: matches.opt_present("d") || matches.opt_present("v"),
         recurse: matches.opt_present("r"),
-        force: matches.opt_present("f") || !matches.opt_present("i"),
+        force: matches.opt_present("f") && !matches.opt_present("i"),
     };
 
     let mut ret_vec = matches.free;
