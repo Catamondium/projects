@@ -1,8 +1,31 @@
+extern crate regex;
+use regex::{escape, Regex};
+
 use std::path::*;
 use std::{env, fs};
 
-fn re_sort(dir: Vec<PathBuf>, parent: &Path) {
-    unimplemented!();
+fn re_sort<'a>(dir: &'a Vec<PathBuf>, parent: &Path) -> Vec<&'a PathBuf> {
+    let width = (dir.len() as f64).log10().ceil();
+    let re_string = format!(
+        r"{}-\d{{{}}}.*$",
+        escape(&parent.file_name().unwrap().to_str().unwrap()),
+        width
+    );
+    let re = Regex::new(&re_string).unwrap();
+
+    let tup: (Vec<&PathBuf>, Vec<&PathBuf>) = dir
+        .iter()
+        .partition(|e| re.is_match(e.file_name().unwrap().to_str().unwrap()));
+
+    let mut matched = tup.0;
+    let mut unmatched = tup.1;
+
+    println!("Re: {:?}", re);
+    println!("Matched: {:?}\nUnmatched: {:?}", matched, unmatched);
+
+    unmatched.append(&mut matched);
+
+    unmatched
 }
 
 fn is_directory(thing: &fs::DirEntry) -> bool {
@@ -24,22 +47,18 @@ fn rename(reldir: &Path) {
         dir.canonicalize().unwrap().file_name().unwrap()
     );
 
-    if let Ok(iter) = fs::read_dir(dir) {
+    if let Ok(iter) = fs::read_dir(&dir) {
         let filtered = iter.filter_map(|x| x.ok());
         let (dirs, files): (Vec<fs::DirEntry>, Vec<fs::DirEntry>) =
             filtered.partition(is_directory);
 
         for d in dirs {
-            println!("Dir:\t{:?}", d);
             //rename(&d.path()); // Don't recurse when testing
         }
 
         let fpaths: Vec<PathBuf> = files.iter().map(|f| f.path()).collect();
-        let width = (fpaths.len() as f64).log10().ceil();
-        println!("Width for {} files:\t{}", fpaths.len(), width);
-        for f in fpaths {
-            println!("File:\t{:?}", f);
-        }
+        re_sort(&fpaths, &dir);
+        for f in fpaths {}
     }
 }
 
