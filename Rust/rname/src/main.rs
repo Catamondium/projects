@@ -85,6 +85,11 @@ fn mv(rel_parent: &Path, conf: &Config) -> Result<(), Box<dyn Error>> {
         };
 
         let newname = format!("{}-{:03$}{}", dirname, i, ext, width);
+        let newpath = parent.join(Path::new(&newname));
+        if newpath == **f {
+            continue;
+        }
+
         if conf.verbose {
             println!(
                 "{:?} -> \"{}\"",
@@ -94,7 +99,7 @@ fn mv(rel_parent: &Path, conf: &Config) -> Result<(), Box<dyn Error>> {
         }
 
         if !conf.dry {
-            let _r = fs::rename(f, parent.join(Path::new(&newname)));
+            let _r = fs::rename(f, newpath);
         }
     }
 
