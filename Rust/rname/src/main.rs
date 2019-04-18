@@ -131,6 +131,7 @@ fn target(args: &Vec<String>) -> (Vec<String>, Config) {
     let mut opts = Options::new();
     opts.optflag("d", "dry_run", "Run without renaming anything, verbosely");
     opts.optflag("v", "verbose", "Show all possible moves");
+    opts.optflag("q", "quiet", "Show no moves");
     opts.optflag("r", "recurse", "Recurse through subdirectories");
     opts.optflag("f", "force", "Don't ask for approval");
     opts.optflag("i", "interactive", "Require approval");
@@ -148,7 +149,8 @@ fn target(args: &Vec<String>) -> (Vec<String>, Config) {
 
     let conf = Config {
         dry: matches.opt_present("d"),
-        verbose: matches.opt_present("d") || matches.opt_present("v"),
+        verbose: matches.opt_present("d")
+            || (matches.opt_present("v") && !matches.opt_present("q")),
         recurse: matches.opt_present("r"),
         force: matches.opt_present("f") && !matches.opt_present("i"),
     };
