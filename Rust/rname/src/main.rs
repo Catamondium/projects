@@ -9,17 +9,6 @@ use std::io::prelude::*;
 use std::path::*;
 use std::{env, fs};
 
-macro_rules! return_on_none {
-    ($($ret:ident = $e:expr);+) => {
-       $(
-            if $e.is_none() {
-                return Ok(());
-            }
-            let $ret = $e.unwrap_or(Default::default());
-       )+
-    };
-}
-
 fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
     let (args, config) = target(&args);
@@ -30,6 +19,17 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
     Ok(())
+}
+
+macro_rules! return_on_none {
+    ($($ret:ident = $e:expr);+) => {
+       $(
+            if $e.is_none() {
+                return Ok(());
+            }
+            let $ret = $e.unwrap_or(Default::default());
+       )+
+    };
 }
 
 fn verify(path: &str) -> bool {
