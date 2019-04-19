@@ -27,7 +27,7 @@ macro_rules! return_on_none {
             if $e.is_none() {
                 return Ok(());
             }
-            let $ret = $e.unwrap_or(Default::default());
+            let $ret = $e.unwrap();
        )+
     };
 }
