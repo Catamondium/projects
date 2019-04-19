@@ -1,12 +1,12 @@
 extern crate regex;
-use regex::{escape, Regex};
+use regex::{escape, Error as reError, Regex};
 
 extern crate getopts;
 use getopts::Options;
 
 use std::error::Error;
 use std::io::prelude::*;
-use std::path::*;
+use std::path::{Path, PathBuf};
 use std::{env, fs};
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -44,7 +44,7 @@ fn re_sort<'a>(
     dir: &'a Vec<PathBuf>,
     parent: &str,
     width: &usize,
-) -> Result<Vec<&'a PathBuf>, Box<dyn Error>> {
+) -> Result<Vec<&'a PathBuf>, reError> {
     let re_string = format!(r"^{}-\d{{{}}}.*$", escape(&parent), width);
     let re = Regex::new(&re_string)?;
 
