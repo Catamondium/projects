@@ -1,36 +1,12 @@
-extern crate regex;
-use regex::{escape, Error as reError, Regex};
-
 extern crate getopts;
 use getopts::Options;
 
+use std::env;
 use std::error::Error;
 use std::io::prelude::*;
-use std::path::{Path, PathBuf};
-use std::{env, fs};
+use std::path::Path;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    let args: Vec<String> = env::args().collect();
-    let (args, config) = target(&args);
-
-    for x in args {
-        if config.dry || config.force || verify(&x) {
-            mv(Path::new(&x), &config)?;
-        }
-    }
-    Ok(())
-}
-
-macro_rules! return_on_none {
-    ($($ret:ident = $e:expr);+) => {
-       $(
-            if $e.is_none() {
-                return Ok(());
-            }
-            let $ret = $e.unwrap();
-       )+
-    };
-}
+use rname::*;
 
 fn verify(path: &str) -> bool {
     println!("About to rename inside:\t{}\nAre you sure?", path);
@@ -40,92 +16,12 @@ fn verify(path: &str) -> bool {
     err && c.to_lowercase() == "y"
 }
 
-fn re_sort<'a>(
-    dir: &'a Vec<PathBuf>,
-    parent: &str,
-    width: &usize,
-) -> Result<Vec<&'a PathBuf>, reError> {
-    let re_string = format!(r"^{}-\d{{{}}}.*$", escape(&parent), width);
-    let re = Regex::new(&re_string)?;
-
-    let (mut matched, mut unmatched): (Vec<&PathBuf>, Vec<&PathBuf>) = dir.iter().partition(|e| {
-        if let Some(thing) = e.file_name().and_then(|x| x.to_str()) {
-            return re.is_match(thing);
-        }
-        return false;
-    });
-
-    matched.sort();
-    matched.append(&mut unmatched);
-
-    Ok(matched)
-}
-
-fn is_directory(file: &fs::DirEntry) -> bool {
-    file.file_type().map(|x| x.is_dir()).unwrap_or(false)
-}
-
-fn mv(rel_parent: &Path, conf: &Config) -> Result<(), Box<dyn Error>> {
-    let parent = rel_parent.canonicalize()?;
-
-    let iter = fs::read_dir(&parent)?;
-    let filtered = iter.filter_map(|x| x.ok());
-    let (dirs, files): (Vec<fs::DirEntry>, Vec<fs::DirEntry>) = filtered.partition(is_directory);
-
-    let fpaths: Vec<PathBuf> = files.iter().map(|f| f.path()).collect();
-    let width = (fpaths.len() as f32).log10().ceil().abs() as usize;
-    return_on_none! {dirname = parent.file_name().and_then(|x| x.to_str())};
-
-    let sorted = re_sort(&fpaths, &dirname, &width)?;
-
-    for (i, f) in sorted.iter().enumerate() {
-        let ext = match f.extension() {
-            Some(e) => format!("{}{}", ".", e.to_str().unwrap_or("")),
-            None => String::new(),
-        };
-
-        let newname = format!("{}-{:03$}{}", dirname, i, ext, width);
-        let newpath = parent.join(Path::new(&newname));
-        if newpath == **f {
-            continue;
-        }
-
-        if conf.verbose {
-            println!(
-                "{:?} -> \"{}\"",
-                f.file_name().and_then(|x| x.to_str()).unwrap_or("{ERR}"),
-                newname
-            );
-        }
-
-        if !conf.dry {
-            let _r = fs::rename(f, newpath);
-        }
-    }
-
-    if conf.recurse {
-        for d in dirs {
-            mv(&d.path(), &conf)?; // Don't recurse when testing
-        }
-    }
-
-    Ok(())
-}
-
-#[derive(Debug, Clone)]
-pub struct Config {
-    pub dry: bool,
-    pub verbose: bool,
-    pub recurse: bool,
-    pub force: bool,
-}
-
 fn usage(program: &str, opts: &Options) {
     let brief = format!("Usage: {} [-dvrfih] [DIR]...\nBatch renamer following DIR-#.ext pattern.\n# is an integer zfilled to width log10 of the number of files to mv recursing directories", program);
     print!("{}", opts.usage(&brief));
 }
 
-fn target(args: &Vec<String>) -> (Vec<String>, Config) {
+fn parse(args: &Vec<String>) -> (Vec<String>, Config, bool) {
     let program = args[0].clone();
 
     let mut opts = Options::new();
@@ -152,8 +48,9 @@ fn target(args: &Vec<String>) -> (Vec<String>, Config) {
         verbose: matches.opt_present("d")
             || (matches.opt_present("v") && !matches.opt_present("q")),
         recurse: matches.opt_present("r"),
-        force: matches.opt_present("f") && !matches.opt_present("i"),
     };
+
+    let force = matches.opt_present("f") && !matches.opt_present("i");
 
     let mut ret_vec = matches.free;
     if ret_vec.len() == 0 {
@@ -162,5 +59,17 @@ fn target(args: &Vec<String>) -> (Vec<String>, Config) {
         }
     }
 
-    (ret_vec, conf)
+    (ret_vec, conf, force)
+}
+
+fn main() -> Result<(), Box<dyn Error>> {
+    let args: Vec<String> = env::args().collect();
+    let (args, config, force) = parse(&args);
+
+    for x in args {
+        if config.dry || force || verify(&x) {
+            mv(Path::new(&x), &config)?;
+        }
+    }
+    Ok(())
 }
