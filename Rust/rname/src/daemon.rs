@@ -1,6 +1,9 @@
 extern crate inotify;
 use inotify::{Inotify, WatchDescriptor, WatchMask};
 
+extern crate daemonize;
+use daemonize::Daemonize;
+
 use std::collections::HashMap;
 use std::env;
 use std::error::Error;
@@ -28,6 +31,8 @@ fn to_path(args: &Vec<String>) -> Result<Vec<PathBuf>, Box<dyn Error>> {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let paths = to_path(&env::args().skip(1).collect())?;
+
+    Daemonize::new().start()?;
 
     let mut inotify = Inotify::init()?;
 

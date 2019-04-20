@@ -13,7 +13,10 @@ path = "src/client.rs"
 name = "rname_daemon"
 path = "src/daemon.rs"
 
+# TODO: properly separate dependencies
+
 [dependencies]
 regex = "1"
 getopts = "0.2"
 inotify = "0.7"
+daemonize = "0.4"
