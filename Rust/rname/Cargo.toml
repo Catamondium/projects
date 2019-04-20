@@ -5,6 +5,15 @@ authors = ["Catamondium <30911915+Catamondium@users.noreply.github.com>"]
 edition = "2018"
 publish = false
 
+[[bin]]
+name = "rname"
+path = "src/client.rs"
+
+[[bin]]
+name = "rname_daemon"
+path = "src/daemon.rs"
+
 [dependencies]
 regex = "1"
 getopts = "0.2"
+inotify = "0.7"

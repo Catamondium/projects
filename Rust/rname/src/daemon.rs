@@ -6,7 +6,8 @@ use std::env;
 use std::error::Error;
 use std::path::*;
 
-use rname_daemon::*;
+mod rname;
+use rname::*;
 
 type WatchMap = HashMap<WatchDescriptor, PathBuf>;
 
