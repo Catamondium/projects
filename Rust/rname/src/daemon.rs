@@ -24,7 +24,7 @@ const CONF: Config = Config {
 
 const BUFSIZE: usize = 1024;
 
-fn to_path(args: &Vec<String>) -> Result<Vec<PathBuf>, Box<dyn Error>> {
+fn to_path(args: &Vec<String>) -> std::io::Result<Vec<PathBuf>> {
     let mut vec = Vec::new();
     for x in args {
         vec.push(Path::new(&x).canonicalize()?);
