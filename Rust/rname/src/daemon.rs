@@ -33,17 +33,6 @@ fn to_path(args: &Vec<String>) -> std::io::Result<Vec<PathBuf>> {
     Ok(vec)
 }
 
-fn get_assoc(xs: &[String], target: &str) -> Vec<String> {
-    xs.windows(2)
-        .filter_map(|xy| {
-            if target == xy[0] {
-                return Some(xy[1].clone());
-            }
-            return None;
-        })
-        .collect()
-}
-
 fn daemon_call(paths: &Vec<PathBuf>) -> Result<(), Box<dyn Error>> {
     let mut inotify = Inotify::init()?;
 
