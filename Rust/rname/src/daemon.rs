@@ -9,10 +9,11 @@ use std::env;
 use std::error::Error;
 use std::path::*;
 
+use std::fs::File;
+use std::io::{BufRead, BufReader};
+
 mod rname;
 use rname::*;
-
-// TODO dotfile w/ dirs-to-watch list
 
 type WatchMap = HashMap<WatchDescriptor, PathBuf>;
 
@@ -24,13 +25,15 @@ const CONF: Config = Config {
 
 const BUFSIZE: usize = 1024;
 
-fn to_path(args: &Vec<String>) -> std::io::Result<Vec<PathBuf>> {
-    let mut vec = Vec::new();
-    for x in args {
-        vec.push(Path::new(&x).canonicalize()?);
+fn file_expand(args: &Vec<String>) -> std::io::Result<Vec<PathBuf>> {
+    let mut ret = Vec::new();
+    for a in args {
+        let file = File::open(a)?;
+        for line in BufReader::new(file).lines() {
+            ret.push(Path::new(&line?).canonicalize()?);
+        }
     }
-
-    Ok(vec)
+    Ok(ret)
 }
 
 fn daemon_call(paths: &Vec<PathBuf>) -> Result<(), Box<dyn Error>> {
@@ -58,7 +61,7 @@ fn daemon_call(paths: &Vec<PathBuf>) -> Result<(), Box<dyn Error>> {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let paths = to_path(&env::args().skip(1).collect())?;
+    let paths = file_expand(&env::args().skip(1).collect())?;
 
     match Daemonize::new().start() {
         Ok(_) => {
