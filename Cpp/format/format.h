@@ -4,6 +4,11 @@
 #include <iomanip>
 #include <queue>
 
+std::string _print(std::queue<std::string> &queue, std::string str);
+void _collect(std::queue<std::string> &queue);
+template <class T, class... Ts>
+void _collect(std::queue<std::string> &queue, T &val, Ts &... rest);
+
 // Emulate std::hash<T>{}(thing) interface
 template <class T>
 struct repr
@@ -30,39 +35,38 @@ struct repr<bool>
 struct fmt
 {
     std::string str;
-    template <class T>
-    fmt(const T &str) noexcept : str(str){};
-    inline std::string operator()() noexcept;
-    template <class T, class... Ts>
-    std::string operator()(T, Ts...) noexcept;
-    template <class T>
-    fmt &operator+=(const T &) noexcept;
-    template <class T>
-    fmt operator+(const T &) const noexcept;
+    fmt(const std::string &str) noexcept : str(str){};
+    fmt(const char *str) noexcept : str(str){};
+    fmt(fmt &) = default;
+    fmt(const fmt &) = default;
+    template <class... Ts>
+    fmt operator()(Ts...) noexcept;
     operator std::string() const { return str; };
+    template <class T>
+    friend fmt operator%(fmt, T);
+    friend std::ostream &operator<<(std::ostream &, const fmt &);
+
+protected:
+    std::queue<std::string> queue;
 };
-
-template <class T>
-fmt &fmt::operator+=(const T &rhs) noexcept
-{
-    this->str += std::string(rhs);
-    return *this;
-}
-
-template <class T>
-fmt fmt::operator+(const T &rhs) const noexcept
-{
-    return fmt(*this) += std::string(rhs);
-}
 
 fmt operator""_fmt(const char *str, std::size_t) noexcept
 {
     return {str};
 }
 
-inline std::string fmt::operator()() noexcept
+template <class T>
+fmt operator%(fmt f, T arg)
 {
-    return str;
+    f.queue.push(repr<T>{}(arg));
+    return f;
+}
+
+std::ostream &operator<<(std::ostream &os, const fmt &f)
+{
+    fmt tmp = f;
+    os << _print(tmp.queue, tmp.str);
+    return os;
 }
 
 void _collect(std::queue<std::string> &queue)
@@ -96,40 +100,11 @@ std::string _print(std::queue<std::string> &queue, std::string str)
     return out.str();
 }
 
-template <class T, class... Ts>
-inline std::string fmt::operator()(T val, Ts... rest) noexcept
+template <class... Ts>
+fmt fmt::operator()(Ts... rest) noexcept
 {
-    std::queue<std::string> queue;
-    _collect(queue, val, rest...);
-    return _print(queue, str);
-}
-
-class _collator
-{
-    std::queue<std::string> queue;
-    std::string str;
-
-  public:
-    _collator(fmt str) : str(str){};
-    _collator(_collator &) = default;
-    _collator(const _collator &) = default;
-    template <class T>
-    friend _collator operator%(_collator, T);
-    friend std::ostream &operator<<(std::ostream &, const _collator &);
-};
-
-template <class T>
-_collator operator%(_collator c, T arg)
-{
-    c.queue.push(repr<T>{}(arg));
-    return c;
-}
-
-std::ostream &operator<<(std::ostream &os, const _collator &c)
-{
-    _collator tmp = c;
-    os << _print(tmp.queue, tmp.str);
-    return os;
+    _collect(queue, rest...);
+    return *this;
 }
 
 // ~printf family

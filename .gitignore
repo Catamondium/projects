@@ -66,7 +66,7 @@ build-*-Debug
 *.jar
 
 # Rust
-*/target/*
+**/target/**
 **/*.rs.bk
 
 # Client secrets

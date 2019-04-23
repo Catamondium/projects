@@ -50,7 +50,7 @@ int main()
 
 	// Stringable, accepts any T -> std::string
 	fmt addtest = "Ass";
-	addtest += "Bass";
+	addtest = addtest.str + "Bass";
 	std::cout << "addtest: " << addtest() << std::endl;
 
 	std::vector ints = {0, 1, 2, 3, 4, 5};
