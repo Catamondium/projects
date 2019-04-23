@@ -4,7 +4,6 @@
 #include <iomanip>
 #include <queue>
 
-std::string _print(std::queue<std::string> &queue, std::string str);
 void _collect(std::queue<std::string> &queue);
 template <class T, class... Ts>
 void _collect(std::queue<std::string> &queue, T &val, Ts &... rest);
@@ -65,7 +64,19 @@ fmt operator%(fmt f, T arg)
 std::ostream &operator<<(std::ostream &os, const fmt &f)
 {
     fmt tmp = f;
-    os << _print(tmp.queue, tmp.str);
+    for (int i = 0; i < tmp.str.length(); ++i)
+    {
+        if (tmp.str[i] == '%')
+        {
+            ++i;
+            if (tmp.str[i] != '%' && !tmp.queue.empty())
+            {
+                os << tmp.queue.front();
+                tmp.queue.pop();
+            }
+        }
+        os << tmp.str[i];
+    }
     return os;
 }
 
@@ -79,25 +90,6 @@ void _collect(std::queue<std::string> &queue, T &val, Ts &... rest)
 {
     queue.push(repr<T>{}(val));
     _collect(queue, rest...);
-}
-
-std::string _print(std::queue<std::string> &queue, std::string str)
-{
-    std::stringstream out;
-    for (int i = 0; i < str.length(); ++i)
-    {
-        if (str[i] == '%')
-        {
-            ++i;
-            if (str[i] != '%' && !queue.empty())
-            {
-                out << queue.front();
-                queue.pop();
-            }
-        }
-        out << str[i];
-    }
-    return out.str();
 }
 
 template <class... Ts>
