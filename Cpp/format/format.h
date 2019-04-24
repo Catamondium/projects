@@ -34,12 +34,12 @@ struct repr<bool>
 struct fmt
 {
     std::string str;
-    fmt(const std::string &str) noexcept : str(str){};
-    fmt(const char *str) noexcept : str(str){};
+    fmt(const std::string &str) : str(str){};
+    fmt(const char *str) : str(str){};
     fmt(fmt &) = default;
     fmt(const fmt &) = default;
     template <class... Ts>
-    fmt operator()(Ts...) noexcept;
+    fmt operator()(Ts...);
     operator std::string() const { return str; };
     template <class T>
     friend fmt operator%(fmt, T);
@@ -49,7 +49,7 @@ protected:
     std::queue<std::string> queue;
 };
 
-fmt operator""_fmt(const char *str, std::size_t) noexcept
+fmt operator""_fmt(const char *str, std::size_t)
 {
     return {str};
 }
@@ -93,7 +93,7 @@ void _collect(std::queue<std::string> &queue, T &val, Ts &... rest)
 }
 
 template <class... Ts>
-fmt fmt::operator()(Ts... rest) noexcept
+fmt fmt::operator()(Ts... rest)
 {
     _collect(queue, rest...);
     return *this;
