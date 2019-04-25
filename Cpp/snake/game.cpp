@@ -6,6 +6,14 @@
 #include "snake.h"
 
 #define DEBUG
+/* TODO:
+ * BASIC:
+ * * eat fruit
+ * * death conditions
+ * BUGS:
+ * * delay between keypress & action
+ * * * adjust framerate?
+ */
 
 using namespace std::chrono_literals;
 
@@ -22,7 +30,7 @@ struct game
     vec fruit;
 
 #ifdef DEBUG
-    int lastkey; //XXX
+    int lastkey;
 #endif
     game()
     {
@@ -37,10 +45,10 @@ struct game
         nodelay(stdscr, TRUE);
         curs_set(0);
 
-        getmaxyx(stdscr, width, height);
+        getmaxyx(stdscr, height, width);
     }
     void loop();
-    void keypressed();
+    bool keypressed();
 
     ~game()
     {
@@ -52,7 +60,10 @@ struct game
 
 void game::loop()
 {
-    long frame = 0; //XXX
+#ifdef DEBUG
+    long frame = 0;
+#endif
+
     player = {width, height};
     fruit = {(int)std::floor(rand() % width),
              (int)std::floor(rand() % height)};
@@ -64,23 +75,24 @@ void game::loop()
         player.draw(width, height);
         mvaddch(fruit.y, fruit.x, 'X');
 
-        mvprintw(0, 20, std::to_string(frame).c_str()); //XXX
 #ifdef DEBUG
+        mvprintw(0, 20, std::to_string(frame).c_str());
         mvaddch(0, 50, lastkey);
         frame = (frame + 1) % 2;
 #endif
 
-        keypressed(); // getch() calls refresh()
+        if (keypressed())
+            break;
 
 #ifdef DEBUG
         std::this_thread::sleep_for(framerate(2));
 #else
-        //std::this_thread::sleep_for(66ms); // 15 fps
+            //std::this_thread::sleep_for(66ms); // 15 fps
 #endif
     }
 }
 
-void game::keypressed()
+bool game::keypressed() // bool == should_quit
 {
 #ifdef DEBUG
     int ch = getch();
@@ -91,25 +103,34 @@ void game::keypressed()
     switch (getch())
 #endif
     {
-    case 'w':
+    case 'w': // UP
     case KEY_UP:
         player.dir(0, -1);
         break;
-    case 's':
+
+    case 's': // RIGHT
     case KEY_DOWN:
         player.dir(0, 1);
         break;
-    case 'a':
+
+    case 'a': // LEFT
     case KEY_LEFT:
         player.dir(-1, 0);
         break;
-    case 'd':
+
+    case 'd': // DOWN
     case KEY_RIGHT:
         player.dir(1, 0);
         break;
+
+    case 'q': // QUIT
+    case 27:
+        return true;
     default:
         break;
     }
+
+    return false;
 }
 
 int main()

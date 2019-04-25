@@ -1,10 +1,10 @@
 #pragma once
-
 #include <curses.h>
 #include <cmath>
 #include <iostream>
 #include "iterable_queue.h"
 
+#define DEBUG
 struct vec
 {
     int x;
@@ -27,10 +27,12 @@ struct vec
         return {-x, -y};
     };
 
+#ifdef DEBUG
     operator std::string()
     {
         return "P(" + std::to_string(x) + ", " + std::to_string(y) + ")";
     };
+#endif
 };
 
 vec vec::operator+(vec other) const
@@ -41,7 +43,6 @@ vec vec::operator+(vec other) const
 class snake
 {
     static constexpr char ch = 'O';
-    // NOTE size >= 1 currently
     iterable_queue<vec> body;
     vec vel;
     inline vec &head() { return body.front(); }
@@ -57,7 +58,7 @@ public:
     void dir(int x, int y)
     {
         vec d = {x, y};
-#ifdef DEBUG
+#ifndef DEBUG
         if (vel == -d)
             return;
 #endif
@@ -66,6 +67,9 @@ public:
 
     void update()
     {
+        if (body.size() == 0)
+            return;
+
         if (vel != vec(0, 0))
         {
             vec h = head() + vel;
@@ -78,7 +82,7 @@ public:
     {
         update();
 
-        mvprintw(0, 2, ("SCORE: " + std::to_string(body.size())).c_str());
+        mvprintw(0, 0, ("SCORE: " + std::to_string(body.size() - 1)).c_str());
 #ifdef DEBUG
         mvprintw(10, 0, std::string(head()).c_str());
 #endif
