@@ -53,8 +53,6 @@ struct game
     ~game()
     {
         endwin();
-        player.~snake();
-        fruit.~vec();
     }
 };
 
