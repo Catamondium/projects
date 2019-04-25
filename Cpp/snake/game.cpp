@@ -3,7 +3,7 @@
 #include <time.h>
 #include <thread>
 #include <chrono>
-#include "snake.h"
+#include "snake.hpp"
 
 #define DEBUG
 /* TODO:

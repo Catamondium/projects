@@ -3,7 +3,7 @@
 #include <sstream>
 #include <iomanip>
 
-#include "note.h"
+#include "note.hpp"
 
 using systime = std::chrono::system_clock;
 std::optional<std::string> Note::printEvent()

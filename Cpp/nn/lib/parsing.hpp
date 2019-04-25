@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "note.h"
+#include "note.hpp"
 
 namespace notelib
 {

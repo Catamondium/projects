@@ -2,7 +2,7 @@
 #include <curses.h>
 #include <cmath>
 #include <iostream>
-#include "iterable_queue.h"
+#include "iterable_queue.hpp"
 
 #define DEBUG
 struct vec
