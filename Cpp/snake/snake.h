@@ -82,9 +82,9 @@ public:
     {
         update();
 
-        mvprintw(0, 0, ("SCORE: " + std::to_string(body.size() - 1)).c_str());
+        mvaddstr(0, 0, ("SCORE: " + std::to_string(body.size() - 1)).c_str());
 #ifdef DEBUG
-        mvprintw(10, 0, std::string(head()).c_str());
+        mvaddstr(3, 0, std::string(head()).c_str());
 #endif
 
         for (vec &p : body)

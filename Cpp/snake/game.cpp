@@ -76,8 +76,8 @@ void game::loop()
         mvaddch(fruit.y, fruit.x, 'X');
 
 #ifdef DEBUG
-        mvprintw(0, 20, std::to_string(frame).c_str());
-        mvaddch(0, 50, lastkey);
+        mvaddstr(1, 0, ("Framemod: " + std::to_string(frame)).c_str());
+        mvaddch(2, 0, lastkey);
         frame = (frame + 1) % 2;
 #endif
 
@@ -87,7 +87,7 @@ void game::loop()
 #ifdef DEBUG
         std::this_thread::sleep_for(framerate(2));
 #else
-            //std::this_thread::sleep_for(66ms); // 15 fps
+        std::this_thread::sleep_for(framerate(10));
 #endif
     }
 }
