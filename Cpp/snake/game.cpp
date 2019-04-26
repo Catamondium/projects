@@ -62,14 +62,14 @@ void game::loop()
     long frame = 0;
 #endif
 
-    player = {width, height};
-    fruit = {(int)std::floor(rand() % width),
-             (int)std::floor(rand() % height)};
+    player = spawn(width, height);
+    fruit = spawn(width, height);
     while (true)
     {
-        getmaxyx(stdscr, width, height);
+        getmaxyx(stdscr, height, width);
         erase();
 
+        player.update(fruit, width, height);
         player.draw(width, height);
         mvaddch(fruit.y, fruit.x, 'X');
 
@@ -83,7 +83,7 @@ void game::loop()
             break;
 
 #ifdef DEBUG
-        std::this_thread::sleep_for(framerate(2));
+        std::this_thread::sleep_for(framerate(5));
 #else
         std::this_thread::sleep_for(framerate(10));
 #endif
