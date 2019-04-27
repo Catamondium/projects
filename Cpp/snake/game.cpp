@@ -5,17 +5,9 @@
 #include <chrono>
 #include "snake.hpp"
 
-/* BUGS:
- * * delay between keypress & action
- * * * adjust framerate?
- * * * halfdelay / timeout?
- */
-
-using namespace std::chrono_literals;
-
 constexpr std::chrono::milliseconds framerate(double fps)
 {
-    return std::chrono::milliseconds((unsigned long long)std::floor((1 / fps) * 1000));
+    return std::chrono::milliseconds((int)(1000 / fps));
 }
 
 struct game
@@ -38,7 +30,7 @@ struct game
         nodelay(stdscr, TRUE);
         curs_set(0);
 
-        getmaxyx(stdscr, height, width);
+        player = snake{vec(width / 2, height / 2)}; // avoids empty body;
     }
     void loop();
     bool keypressed();
@@ -51,7 +43,8 @@ struct game
 
 void game::loop()
 {
-    player = snake{spawn(width, height), false};
+    getmaxyx(stdscr, height, width);
+
     fruit = vec{spawn(width, height)};
     while (true)
     {
@@ -60,11 +53,11 @@ void game::loop()
 
         if (player.update(fruit, width, height))
         {
-            player = snake{spawn(width, height), false};
+            player = snake{vec(width / 2, height / 2)};
         }
+
         player.draw(width, height);
         mvaddch(fruit.y, fruit.x, 'X');
-
         if (keypressed())
             break;
 

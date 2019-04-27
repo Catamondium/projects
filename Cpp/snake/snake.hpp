@@ -2,15 +2,8 @@
 #include <curses.h>
 #include <cmath>
 #include <iostream>
+#include <cassert>
 #include "iterable_queue.hpp"
-
-enum snakestate
-{
-    NIL,
-    EATEN,
-    TAIL,
-    WALL,
-};
 
 struct vec
 {
@@ -44,18 +37,16 @@ struct vec
         return vec{-x, -y};
     };
 
-#ifdef DEBUG
     operator std::string()
     {
         return "P(" + std::to_string(x) + ", " + std::to_string(y) + ")";
     };
-#endif
 };
 
 vec spawn(int &width, int &height)
 {
-    return vec{(int)std::floor(rand() % width),
-               (int)std::floor(rand() % height)};
+    return vec{rand() % width,
+               rand() % height};
 }
 
 vec vec::operator+(vec other) const
@@ -68,12 +59,15 @@ class snake
     static constexpr char ch = 'O';
     iterable_queue<vec> body;
     vec vel;
-    bool wallwrap;
-    inline vec &head() { return body.back(); }
 
 public:
+    inline vec &head()
+    {
+        assert(body.size() != 0);
+        return body.back();
+    }
     snake() = default;
-    snake(vec v, bool wallwrap) : wallwrap(wallwrap)
+    snake(vec v)
     {
         body.push(v);
     };
@@ -81,7 +75,7 @@ public:
     void dir(int x, int y)
     {
         vec d = vec{x, y};
-        
+
         if (vel == -d)
             return;
         vel = d;
@@ -91,6 +85,16 @@ public:
     {
         return (head() < vec{0, 0} ||
                 head() > vec{width - 1, height - 1});
+    }
+
+    bool bodycollide()
+    {
+        for (auto iter = body.begin(); iter != body.end() - 1; ++iter)
+        {
+            if (head() == *iter)
+                return true;
+        }
+        return false;
     }
 
     bool /* dead */ update(vec &fruit, int &width, int &height)
@@ -104,23 +108,14 @@ public:
             fruit = vec{spawn(width, height)};
         }
 
-        // Body collision
-        for (auto iter = body.begin(); iter != body.end() - 1; ++iter)
-        {
-            if (head() == *iter)
-                return true;
-        }
+        if (bodycollide())
+            return true;
 
         if (vel != vec(0, 0))
         {
             vec h = head() + vel;
 
-            if (wallwrap)
-            {
-                h.x %= width;
-                h.y %= height;
-            }
-            else if (outofbounds(width, height))
+            if (outofbounds(width, height))
             {
                 return true;
             }
