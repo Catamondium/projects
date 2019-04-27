@@ -5,14 +5,10 @@
 #include <chrono>
 #include "snake.hpp"
 
-#define DEBUG
-/* TODO:
- * BASIC:
- * * eat fruit
- * * death conditions
- * BUGS:
+/* BUGS:
  * * delay between keypress & action
  * * * adjust framerate?
+ * * * halfdelay / timeout?
  */
 
 using namespace std::chrono_literals;
@@ -29,9 +25,6 @@ struct game
     snake player;
     vec fruit;
 
-#ifdef DEBUG
-    int lastkey;
-#endif
     game()
     {
         srand(time(NULL));
@@ -58,48 +51,30 @@ struct game
 
 void game::loop()
 {
-#ifdef DEBUG
-    long frame = 0;
-#endif
-
-    player = spawn(width, height);
-    fruit = spawn(width, height);
+    player = snake{spawn(width, height), false};
+    fruit = vec{spawn(width, height)};
     while (true)
     {
         getmaxyx(stdscr, height, width);
         erase();
 
-        player.update(fruit, width, height);
+        if (player.update(fruit, width, height))
+        {
+            player = snake{spawn(width, height), false};
+        }
         player.draw(width, height);
         mvaddch(fruit.y, fruit.x, 'X');
-
-#ifdef DEBUG
-        mvaddstr(1, 0, ("Framemod: " + std::to_string(frame)).c_str());
-        mvaddch(2, 0, lastkey);
-        frame = (frame + 1) % 2;
-#endif
 
         if (keypressed())
             break;
 
-#ifdef DEBUG
-        std::this_thread::sleep_for(framerate(5));
-#else
         std::this_thread::sleep_for(framerate(10));
-#endif
     }
 }
 
 bool game::keypressed() // bool == should_quit
 {
-#ifdef DEBUG
-    int ch = getch();
-    if (ch != ERR)
-        lastkey = ch;
-    switch (ch)
-#else
     switch (getch())
-#endif
     {
     case 'w': // UP
     case KEY_UP:

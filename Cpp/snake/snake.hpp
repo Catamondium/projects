@@ -12,7 +12,6 @@ enum snakestate
     WALL,
 };
 
-#define DEBUG
 struct vec
 {
     int x;
@@ -22,7 +21,7 @@ struct vec
     vec operator+(vec) const;
     bool operator==(vec o) const
     {
-        return this->x == o.x && this->y == o.y;
+        return x == o.x && y == o.y;
     };
 
     bool operator!=(vec o) const
@@ -30,9 +29,19 @@ struct vec
         return !(*this == o);
     }
 
+    bool operator<(vec o) const
+    {
+        return x < o.x || y < o.y;
+    }
+
+    bool operator>(vec o) const
+    {
+        return x > o.x || y > o.y;
+    }
+
     vec operator-() const
     {
-        return {-x, -y};
+        return vec{-x, -y};
     };
 
 #ifdef DEBUG
@@ -43,15 +52,15 @@ struct vec
 #endif
 };
 
-vec spawn(int width, int height)
+vec spawn(int &width, int &height)
 {
-    return {(int)std::floor(rand() % width),
-            (int)std::floor(rand() % height)};
+    return vec{(int)std::floor(rand() % width),
+               (int)std::floor(rand() % height)};
 }
 
 vec vec::operator+(vec other) const
 {
-    return {this->x + other.x, this->y + other.y};
+    return vec{this->x + other.x, this->y + other.y};
 }
 
 class snake
@@ -59,55 +68,73 @@ class snake
     static constexpr char ch = 'O';
     iterable_queue<vec> body;
     vec vel;
+    bool wallwrap;
     inline vec &head() { return body.back(); }
 
 public:
     snake() = default;
-    snake(vec v)
+    snake(vec v, bool wallwrap) : wallwrap(wallwrap)
     {
         body.push(v);
     };
 
     void dir(int x, int y)
     {
-        vec d = {x, y};
-#ifndef DEBUG
+        vec d = vec{x, y};
+        
         if (vel == -d)
             return;
-#endif
         vel = d;
     };
 
-    void update(vec &fruit, int width, int height)
+    bool outofbounds(int &width, int &height)
+    {
+        return (head() < vec{0, 0} ||
+                head() > vec{width - 1, height - 1});
+    }
+
+    bool /* dead */ update(vec &fruit, int &width, int &height)
     {
         if (body.size() == 0)
-            return;
+            return false;
 
-        if (fruit == head())
+        if (head() == fruit)
         {
             body.push(head() + vel);
-            fruit = spawn(width, height);
+            fruit = vec{spawn(width, height)};
+        }
+
+        // Body collision
+        for (auto iter = body.begin(); iter != body.end() - 1; ++iter)
+        {
+            if (head() == *iter)
+                return true;
         }
 
         if (vel != vec(0, 0))
         {
             vec h = head() + vel;
-            h.x %= width;
-            h.y %= height;
+
+            if (wallwrap)
+            {
+                h.x %= width;
+                h.y %= height;
+            }
+            else if (outofbounds(width, height))
+            {
+                return true;
+            }
+
             body.pop();
             body.push(h);
         }
 
-        return;
+        return false;
     }
 
     void draw(int, int)
     {
         mvaddstr(0, 0, ("SCORE: " + std::to_string(body.size() - 1)).c_str());
-
-#ifdef DEBUG
-        mvaddstr(3, 0, std::string(head()).c_str());
-#endif
 
         for (vec &p : body)
         {
