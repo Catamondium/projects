@@ -30,6 +30,8 @@ struct game
         nodelay(stdscr, TRUE);
         curs_set(0);
 
+        attron(COLOR_PAIR(2));
+
         player = snake{vec(width / 2, height / 2)}; // avoids empty body;
     }
     void loop();

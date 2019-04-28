@@ -59,6 +59,7 @@ class snake
     static constexpr char ch = 'O';
     iterable_queue<vec> body;
     vec vel;
+    bool start = true;
 
 public:
     inline vec &head()
@@ -69,15 +70,22 @@ public:
     snake() = default;
     snake(vec v)
     {
-        body.push(v);
+        auto pos = v;
+        for (int i = 0; i < 6; ++i)
+        {
+            body.push(v + vec{i, 0});
+        }
     };
 
     void dir(int x, int y)
     {
         vec d = vec{x, y};
 
-        if (vel == -d)
+        if (vel == -d || (start && vel == vec{1, 0}))
+        {
+            start = false;
             return;
+        }
         vel = d;
     };
 
