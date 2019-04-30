@@ -1,9 +1,11 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # Python 3.6
 import sys
 
 
 class Time:
+    """hrs:mins simplistic time"""
+
     def __init__(self, hrs, mins):
         self.hrs = hrs
         self.mins = mins
@@ -12,10 +14,12 @@ class Time:
         return f"{self.hrs:02d}:{self.hrs:02d}"
 
     def __add__(self, t):
+        """Add a pair of Time objects"""
         tot = t + abs(self)
         return Time(tot // 60, tot % 60)
 
     def __abs__(self):
+        """Returns the total minutes represented"""
         return (self.hrs * 60) + self.mins
 
 
