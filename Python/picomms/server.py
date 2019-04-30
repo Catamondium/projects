@@ -24,11 +24,11 @@ with socket.socket() as server:
         conn, addr = server.accept()
         with conn:
             addr = "%s:%s" % addr
-            print("%s\tconn@\t%s" % (time(), addr))
+            print(f"{time()}\tconn@\t{addr}")
             while True:
                 msg = conn.recv(3000)
                 if msg.decode() != '':
-                    print("%s:\t%s" % (
+                    print("{}:\t{}".format(
                         time(),
                         msg.decode().strip()))
                 else:

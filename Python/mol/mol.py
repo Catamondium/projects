@@ -5,7 +5,7 @@ import sys
 COEFFRE = r"^(\d+)"  # beginning coefficient
 TOKRE = r"\(.*?\)|([A-Z][a-z]*)(\d*)"  # groups: Elem, [coeff]
 SUBRE = r"\((.*)\)(\d*)"  # groups: expr, [coeff]
-TRANS = str.maketrans("{[]}", "(())")
+TRANS = str.maketrans("{}[]", "()()")
 
 ptable = {'': 0.00}
 
@@ -26,7 +26,7 @@ def loadTable(fname="ptable.tsv"):
         for line in f:
             k, v = line.strip().split('\t')
             if k in ptable:
-                raise("Table error: Repeated element %s" % k)
+                raise(f"Table error: Repeated element {k}")
             else:
                 ptable[k] = float(v)
 
@@ -51,7 +51,7 @@ def mass(thing):
     acc = 0
     for e, c in re.findall(TOKRE, thing):
         if e not in ptable:
-            raise Exception("Element \"%s\" doesn't exist" % e)
+            raise Exception(f"Element \"{e}\" doesn't exist")
         coeff = makeCoeff(c)
         acc += ptable[e] * coeff
 
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     for comp in sys.argv[1:]:
         clean = sanitize(comp)
         try:
-            print("%s:\t%.2f g/mol" % (clean, mass(clean)))
+            print(f"{clean}:\t{mass(clean):.2f} g/mol")
         except Exception as e:
             print(e)
             exit(1)

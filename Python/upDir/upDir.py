@@ -7,19 +7,23 @@ import sys
 # get an access token, local (from) directory, and Dropbox (to) directory
 # from the command-line
 
+
 def readToken(tok='creds.secret'):
     """
     Read client token relative to script
     """
     script = os.path.realpath(__file__)
-    scriptdir = os.path.dirname(script) # access client secret relative to script
+    # access client secret relative to script
+    scriptdir = os.path.dirname(script)
     fpath = os.path.join(scriptdir, tok)
     with open(fpath, 'r') as f:
         return f.readline().strip()
 
+
 def usage():
     print("params: (local_dir, dropbox_dir)")
     sys.exit(1)
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
@@ -40,4 +44,5 @@ if __name__ == "__main__":
 
             # upload the file
             with open(local_path, 'rb') as f:
-                client.files_upload(f.read(), dropbox_path, mode=dropbox.files.WriteMode("overwrite"))
+                client.files_upload(f.read(), dropbox_path,
+                                    mode=dropbox.files.WriteMode("overwrite"))
