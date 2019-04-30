@@ -90,10 +90,13 @@ fn make_coeff(src: std::option::Option<regex::Match<'_>>) -> f32 {
 fn load_table() -> Ptable {
     let mut out: Ptable = HashMap::new();
 
-    for line in PTABLE_FILE.lines().skip(1) {
+    for (i, line) in PTABLE_FILE.lines().skip(1).enumerate() {
         let fields: Vec<&str> = line.split("\t").collect();
         if out.contains_key(fields[0]) {
-            panic!(format!("Table error: Repeated element: {}", fields[0]));
+            panic!(format!(
+                "Table error: line {}, Repeated element: {}",
+                i, fields[0]
+            ));
         };
 
         out.insert(
