@@ -23,14 +23,12 @@ def loadTable(fname="ptable.tsv"):
     tpath = os.path.join(script_dir, fname)
     with open(tpath, 'r') as f:
         next(f)  # skip header
-        i = 0
-        for line in f:
+        for i, line in enumerate(f):
             k, v = line.strip().split('\t')
             if k in ptable:
                 raise(f"Table error: line {i}, Repeated element {k}")
             else:
                 ptable[k] = float(v)
-            i += 1
 
 
 def valid(c):
