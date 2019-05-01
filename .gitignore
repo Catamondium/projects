@@ -8,6 +8,8 @@
 *.elf
 *__pycache__*
 
+#py venv ?
+
 # Linker output
 *.ilk
 *.map
@@ -73,3 +75,4 @@ build-*-Debug
 *.secret
 credentials.json
 token.json
+token.pickle
