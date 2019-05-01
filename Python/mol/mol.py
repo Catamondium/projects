@@ -2,6 +2,7 @@
 import re
 import os
 import sys
+from csv import reader
 COEFFRE = r"^(\d+)"  # beginning coefficient
 TOKRE = r"\(.*?\)|([A-Z][a-z]*)(\d*)"  # groups: Elem, [coeff]
 SUBRE = r"\((.*)\)(\d*)"  # groups: expr, [coeff]
@@ -23,10 +24,9 @@ def loadTable(fname="ptable.tsv"):
     tpath = os.path.join(script_dir, fname)
     with open(tpath, 'r') as f:
         next(f)  # skip header
-        for i, line in enumerate(f):
-            k, v = line.strip().split('\t')
+        for i, (k, v) in enumerate(reader(f, delimiter='\t')):
             if k in ptable:
-                raise(f"Table error: line {i}, Repeated element {k}")
+                raise Exception(f"Table error: line {i}, Repeated element {k}")
             else:
                 ptable[k] = float(v)
 

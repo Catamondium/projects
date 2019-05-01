@@ -12,14 +12,13 @@ from parser import parse
 import logging
 from functools import wraps
 
-logging.basicConfig(filename="main.log", filemode="w+")
-
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly",
           "https://www.googleapis.com/auth/calendar.events"]
 
 
 def exemptHandler(func):
-    """Pipes exceptions through main logger"""
+    """Pipes exceptions through main logger, bound to \"main.log\""""
+    logging.basicConfig(filename="main.log", filemode="w+")
     name = func.__name__
 
     @wraps(func)
@@ -27,7 +26,7 @@ def exemptHandler(func):
         try:
             result = func(*args)
         except Exception as e:
-            logging.exception("%s:\t%s" % (name, e))
+            logging.exception("%s:\n%s" % (name, e))
             sys.exit(1)
         return result
     return deco
@@ -56,19 +55,6 @@ def connect():
     return build('calendar', 'v3', credentials=creds)
 
 
-"""
-@exemptHandler
-def connect():
-    store = file.Storage('token.json')
-    creds = store.get()
-    if not creds or creds.invalid:
-        flow = client.flow_from_clientsecrets('credentials.json', SCOPES)
-        creds = tools.run_flow(flow, store)  # fails
-    logging.debug("Connection success")
-    return build('calendar', 'v3', http=creds.authorize(Http()))
-"""
-
-
 @exemptHandler
 def getCal(service, name):
     """Get calendar ID by name."""
@@ -87,17 +73,6 @@ def printCals(service):
     cals = service.calendarList().list(showHidden=True).execute()
     for entry in cals['items']:
         print("\t%s" % entry['summary'])
-
-
-@exemptHandler
-def is_recurring(event):
-    """True if recurring event, else False or error.
-    """
-    try:
-        event['recurrence']
-        return True
-    except KeyError:
-        return False
 
 
 @exemptHandler
@@ -123,7 +98,7 @@ def getEvents(service, cal, data):
             calendarId=cal,
             timeMin=start, timeMax=end).execute()
         for event in response['items']:
-            if is_recurring(event):
+            if 'recurrence' in event:
                 events |= expand(service, cal, event['id'], (start, end))
     return events
 
@@ -146,8 +121,9 @@ if __name__ == "__main__":
         print("Final arg should be calendar.")
         printCals(service)
     else:  # Run deletions
-        data = parse(sys.argv[1])
-        calID = getCal(service, sys.argv[2])
+        events_file, target_calendar = sys.argv[1:]
+        data = parse(events_file)
+        calID = getCal(service, target_calendar)
         expanded = getEvents(service, calID, data)
         delEvents(service, calID, expanded)
-        print("%d Events deleted from '%s'" % (len(expanded), sys.argv[2]))
+        print("%d Events deleted from '%s'" % (len(expanded), target_calendar))
