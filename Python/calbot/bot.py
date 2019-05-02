@@ -17,12 +17,12 @@ SCOPES = ["https://www.googleapis.com/auth/calendar.readonly",
 logging.basicConfig(filename="main.log", filemode="w+")
 
 
-def exemptHandler(func):
-    """Pipes exceptions through main logger, bound to \"main.log\""""
+def logged(func):
+    """Pipes exceptions through root logger"""
     @wraps(func)
-    def deco(*args):
+    def deco(*args, **kwargs):
         try:
-            result = func(*args)
+            result = func(*args, **kwargs)
         except Exception as e:
             logging.exception(f"{func.__name__}:\n{e}")
             sys.exit(1)
@@ -30,7 +30,7 @@ def exemptHandler(func):
     return deco
 
 
-@exemptHandler
+@logged
 def connect():
     """Authenticate with Google/user, connect to API"""
     creds = None
@@ -56,7 +56,7 @@ def connect():
     return build('calendar', 'v3', credentials=creds)
 
 
-@exemptHandler
+@logged
 def getCal(service, name):
     """Get calendar ID by name."""
     cals = service.calendarList().list(
@@ -68,7 +68,7 @@ def getCal(service, name):
     sys.exit(1)
 
 
-@exemptHandler
+@logged
 def printCals(service):
     """Enumerate available calendars."""
     print("Calendars:")
@@ -78,7 +78,7 @@ def printCals(service):
         print(f"\t{entry['summary']}")
 
 
-@exemptHandler
+@logged
 def expand(service, cal, event, holiday):
     """Expand recurring events to instances in data.
     """
@@ -92,7 +92,7 @@ def expand(service, cal, event, holiday):
     return events
 
 
-@exemptHandler
+@logged
 def getEvents(service, cal, data):
     """Get recurring instances."""
     events = set()
@@ -106,7 +106,7 @@ def getEvents(service, cal, data):
     return events
 
 
-@exemptHandler
+@logged
 def delEvents(service, cal, events):
     """Delete events and return number of deletions
     """
