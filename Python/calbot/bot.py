@@ -1,7 +1,10 @@
 #!./bin/python3
 import datetime
 import pickle
-import os.path
+
+# import os.path
+from pathlib import Path
+
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -14,19 +17,17 @@ from functools import wraps
 
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly",
           "https://www.googleapis.com/auth/calendar.events"]
+logging.basicConfig(filename="main.log", filemode="w+")
 
 
 def exemptHandler(func):
     """Pipes exceptions through main logger, bound to \"main.log\""""
-    logging.basicConfig(filename="main.log", filemode="w+")
-    name = func.__name__
-
     @wraps(func)
     def deco(*args):
         try:
             result = func(*args)
         except Exception as e:
-            logging.exception("%s:\n%s" % (name, e))
+            logging.exception(f"{func.__name__}:\n{e}")
             sys.exit(1)
         return result
     return deco
@@ -34,12 +35,15 @@ def exemptHandler(func):
 
 @exemptHandler
 def connect():
+    """Authenticate with Google/user, connect to API"""
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists('token.pickle'):
-        with open('token.pickle', 'rb') as token:
+    tokpath = Path(__file__).parent / 'token.pickle'
+    credpath = Path(__file__).parent / 'credentials.json'
+    if tokpath.exists():
+        with open(tokpath, 'rb') as token:
             creds = pickle.load(token)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
@@ -47,10 +51,10 @@ def connect():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
+                credpath, scopes=SCOPES)
             creds = flow.run_local_server()
         # Save the credentials for the next run
-        with open('token.pickle', 'wb') as token:
+        with open(tokpath, 'wb') as token:
             pickle.dump(creds, token)
     return build('calendar', 'v3', credentials=creds)
 
@@ -58,7 +62,8 @@ def connect():
 @exemptHandler
 def getCal(service, name):
     """Get calendar ID by name."""
-    cals = service.calendarList().list(showHidden=True).execute()
+    cals = service.calendarList().list(
+        showHidden=True, minAccessRole="writer").execute()
     for entry in cals['items']:
         if entry['summary'] == name:
             return entry['id']
@@ -70,9 +75,10 @@ def getCal(service, name):
 def printCals(service):
     """Enumerate available calendars."""
     print("Calendars:")
-    cals = service.calendarList().list(showHidden=True).execute()
+    cals = service.calendarList().list(
+        showHidden=True, minAccessRole="writer").execute()
     for entry in cals['items']:
-        print("\t%s" % entry['summary'])
+        print(f"\t{entry['summary']}")
 
 
 @exemptHandler
@@ -126,4 +132,4 @@ if __name__ == "__main__":
         calID = getCal(service, target_calendar)
         expanded = getEvents(service, calID, data)
         delEvents(service, calID, expanded)
-        print("%d Events deleted from '%s'" % (len(expanded), target_calendar))
+        print(f"{len(expanded)} Events deleted from '{target_calendar}'")
