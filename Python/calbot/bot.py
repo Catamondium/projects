@@ -53,7 +53,7 @@ def connect():
         # Save the credentials for the next run
         with open(tokpath, 'wb') as token:
             pickle.dump(creds, token)
-    return build('calendar', 'v3', credentials=creds)
+    return build('calendar', 'v3', credentials=creds, cache_discovery=False)
 
 
 @logged
