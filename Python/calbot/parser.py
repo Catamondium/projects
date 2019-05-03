@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from time import strftime, localtime
 from collections import namedtuple
 from csv import reader
 
@@ -16,7 +17,7 @@ def printData(data):
 def Gtime(event):
     """Convert date() object into Google calendar api UTC-ISO timestamp
     """
-    return datetime(event.year, event.month, event.day).isoformat() + 'Z'
+    return datetime(event.year, event.month, event.day).isoformat() + strftime("%z", localtime())
 
 
 def tparse(string):
