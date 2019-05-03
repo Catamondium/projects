@@ -11,27 +11,27 @@ def setentry(text, e):
 
 
 class App(tk.Frame):
-    DEFAULT = ""
 
     def __init__(self, master=None):
         super().__init__(master)
         self.pack()
+        DEFAULT = "C6H6"
 
         self.input = tk.Entry()
-        self.input.bind("<Return>", partial(self.onInput, self))
+        self.input.bind("<Key>", partial(self.onInput, self))
         self.input.pack()
 
         self.var = tk.StringVar()
-        self.var.set(self.DEFAULT)
+        self.var.set(DEFAULT)
+        self.input["textvariable"] = self.var
         self.input.focus()
         self.input.icursor(tk.END)
-        self.input["textvariable"] = self.var
 
         self.output = tk.Label()
         self.output.pack()
 
         self.out = tk.StringVar()
-        self.out.set(f"{mass(self.DEFAULT):.2f}")
+        self.out.set(f"{mass(DEFAULT):.2f}")
         self.output["textvariable"] = self.out
 
     def onInput(self, w, event):
