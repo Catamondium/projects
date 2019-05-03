@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 import re
-import os
+#import os
+from pathlib import Path
 import sys
 from csv import reader
 COEFFRE = r"^(\d+)"  # beginning coefficient
-TOKRE = r"\(.*?\)|([A-Z][a-z]*)(\d*)"  # groups: Elem, [coeff]
+ELEM = r"([A-Z][a-z]*)"
+TOKRE = r"\(.*?\)|" + ELEM + r"(\d*)"  # groups: Elem, [coeff]
 SUBRE = r"\((.*)\)(\d*)"  # groups: expr, [coeff]
 TRANS = str.maketrans("{}[]", "()()")
 
@@ -19,9 +21,9 @@ def makeCoeff(c):
 
 
 def loadTable(fname="ptable.tsv"):
-    script = os.path.realpath(__file__)
-    script_dir = os.path.dirname(script)
-    tpath = os.path.join(script_dir, fname)
+    #script = os.path.realpath(__file__)
+    #script_dir = os.path.dirname(script)
+    tpath = Path(__file__).parent / fname  # os.path.join(script_dir, fname)
     with open(tpath, 'r') as f:
         next(f)  # skip header
         for i, (k, v) in enumerate(reader(f, delimiter='\t')):
