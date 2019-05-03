@@ -31,7 +31,7 @@ class App(tk.Frame):
         self.output.pack()
 
         self.out = tk.StringVar()
-        self.out.set(f"{mass(DEFAULT):.2f}")
+        self.out.set(f"{mass(DEFAULT):.2f} g/mol")
         self.output["textvariable"] = self.out
 
     def onInput(self, w, event):
@@ -45,7 +45,7 @@ class App(tk.Frame):
             out = "ERROR"
             self.output.config(bg="red")
         else:
-            out = f"{val:.2f}"
+            out = f"{val:.2f} g/mol"
         self.out.set(out)
 
 
