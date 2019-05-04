@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import tkinter as tk
 from functools import partial
-from mol import mass, sanitize
+from mol import mass, sanitize, ElementError
 from re import findall
 
 
@@ -12,7 +12,7 @@ class Application(tk.Frame):
         DEFAULT = "C6H6"
 
         self.input = tk.Entry()
-        self.input.bind("<Key>", partial(self.onInput, self))
+        self.input.bind("<Return>", partial(self.onInput, self))
         self.input.pack()
 
         self.var = tk.StringVar()
@@ -33,8 +33,8 @@ class Application(tk.Frame):
         self.var.set(text)
         try:
             val = mass(text)
-        except:
-            self.out.set("ERROR")
+        except ElementError as e:
+            self.out.set(f"\"{e.elem}\" doesn't exist")
             self.output.config(bg="red")
         else:
             self.out.set(f"{val:.2f} g/mol")

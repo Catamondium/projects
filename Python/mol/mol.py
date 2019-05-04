@@ -43,6 +43,15 @@ def sanitize(thing):
     return ''.join(thing)
 
 
+class ElementError(BaseException):
+    def __init__(self, elem):
+        super().__init__()
+        self.elem = elem
+
+    def __repr__(self):
+        return f"Element \"{self.elem}\" doesn't exist"
+
+
 def mass(thing):
     big = re.match(COEFFRE, thing)
     if big:
@@ -53,7 +62,7 @@ def mass(thing):
     acc = 0
     for e, c in re.findall(TOKRE, thing):
         if e not in ptable:
-            raise Exception(f"Element \"{e}\" doesn't exist")
+            raise ElementError(e)
         coeff = makeCoeff(c)
         acc += ptable[e] * coeff
 
