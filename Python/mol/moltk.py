@@ -31,16 +31,14 @@ class Application(tk.Frame):
     def onInput(self, w, event):
         text = sanitize(self.var.get())
         self.var.set(text)
-        out = ""
         try:
             val = mass(text)
-            self.output.config(bg=self.cget("bg"))
         except:
-            out = "ERROR"
+            self.out.set("ERROR")
             self.output.config(bg="red")
         else:
-            out = f"{val:.2f} g/mol"
-        self.out.set(out)
+            self.out.set(f"{val:.2f} g/mol")
+            self.output.config(bg=self.cget("bg"))
 
 
 if __name__ == "__main__":
