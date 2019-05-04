@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
-# based on: https://stackoverflow.com/questions/29189557/how-to-upload-complete-folder-to-dropbox-using-python
-from pathlib import Path, PurePath  # import os
+from pathlib import Path, PurePath
 import dropbox
 import sys
-
-# get an access token, local (from) directory, and Dropbox (to) directory
-# from the command-line
 
 
 def readToken(tok='creds.secret'):
@@ -30,7 +26,7 @@ if __name__ == "__main__":
     local_directory, dropbox_destination = sys.argv[1:3]
     client = dropbox.Dropbox(readToken())
     # enumerate local files recursively
-    for i in Path(local_directory).glob("**/*"):
+    for i in Path(local_directory).rglob("*"):
         local_path = i.root / i
 
         relative_path = local_path.relative_to(local_directory)
