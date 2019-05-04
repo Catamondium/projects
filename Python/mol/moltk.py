@@ -5,12 +5,7 @@ from mol import mass, sanitize
 from re import findall
 
 
-def setentry(text, e):
-    e.delete(0, tk.END)
-    e.insert(0, text)
-
-
-class App(tk.Frame):
+class Application(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.pack()
@@ -49,6 +44,6 @@ class App(tk.Frame):
 
 
 if __name__ == "__main__":
-    app = App()
+    app = Application()
     app.master.title("Moltk")
     app.mainloop()
