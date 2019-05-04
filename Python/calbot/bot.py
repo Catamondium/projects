@@ -37,8 +37,8 @@ def connect():
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    tokpath = Path(__file__).parent / 'token.pickle'
-    credpath = Path(__file__).parent / 'credentials.json'
+    tokpath = Path(__file__).resolve().parent / 'token.pickle'
+    credpath = Path(__file__).resolve().parent / 'credentials.json'
     if tokpath.exists():
         with open(tokpath, 'rb') as token:
             creds = pickle.load(token)

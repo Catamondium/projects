@@ -21,9 +21,7 @@ def makeCoeff(c):
 
 
 def loadTable(fname="ptable.tsv"):
-    #script = os.path.realpath(__file__)
-    #script_dir = os.path.dirname(script)
-    tpath = Path(__file__).parent / fname  # os.path.join(script_dir, fname)
+    tpath = Path(__file__).resolve().parent / fname
     with open(tpath, 'r') as f:
         next(f)  # skip header
         for i, (k, v) in enumerate(reader(f, delimiter='\t')):

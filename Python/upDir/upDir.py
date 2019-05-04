@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # based on: https://stackoverflow.com/questions/29189557/how-to-upload-complete-folder-to-dropbox-using-python
-import os
+from pathlib import Path, PurePath  # import os
 import dropbox
 import sys
 
@@ -12,10 +12,8 @@ def readToken(tok='creds.secret'):
     """
     Read client token relative to script
     """
-    script = os.path.realpath(__file__)
     # access client secret relative to script
-    scriptdir = os.path.dirname(script)
-    fpath = os.path.join(scriptdir, tok)
+    fpath = Path(__file__).resolve().parent / tok
     with open(fpath, 'r') as f:
         return f.readline().strip()
 
@@ -32,17 +30,13 @@ if __name__ == "__main__":
     local_directory, dropbox_destination = sys.argv[1:3]
     client = dropbox.Dropbox(readToken())
     # enumerate local files recursively
-    for root, dirs, files in os.walk(local_directory):
-        for filename in files:
+    for i in Path(local_directory).glob("**/*"):
+        local_path = i.root / i
 
-            # construct the full local path
-            local_path = os.path.join(root, filename)
+        relative_path = local_path.relative_to(local_directory)
+        drop_path = Path(dropbox_destination) / relative_path
 
-            # construct the full Dropbox path
-            relative_path = os.path.relpath(local_path, local_directory)
-            dropbox_path = os.path.join(dropbox_destination, relative_path)
-
-            # upload the file
-            with open(local_path, 'rb') as f:
-                client.files_upload(f.read(), dropbox_path,
-                                    mode=dropbox.files.WriteMode("overwrite"))
+        # upload the file
+        with open(local_path, 'rb') as f:
+            client.files_upload(f.read(), drop_path,
+                                mode=dropbox.files.WriteMode("overwrite"))
