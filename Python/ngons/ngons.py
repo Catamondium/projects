@@ -22,7 +22,7 @@ class ngonR:
         Terry.begin_fill()
         Terry.pd()
         for _ in range(0, self.n):
-            Terry.left(180 - ((1 - (2 / self.n)) * 180))
+            Terry.left((2 / self.n) * 180)
             Terry.forward(length)
         Terry.end_fill()
         Terry.setpos(self.x, self.y)
@@ -39,5 +39,5 @@ if __name__ == "__main__":
 
     # Screenshot
     canvas = screen.getcanvas()
-    canvas.postscript(file='out.ps')
+    # canvas.postscript(file='out.ps')
     screen.exitonclick()
