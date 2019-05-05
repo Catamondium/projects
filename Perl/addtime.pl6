@@ -33,7 +33,6 @@ sub MAIN(Str $start, Str $mins, Bool :$quiet=False) {
 	if $quiet {
 		print "{$begin + $elapse}\n";
 	} else {
-
 		printf "Start:\t{$begin}\t%+d\nEnd:\t{$begin + $elapse}\n", $elapse
 	}
 }
