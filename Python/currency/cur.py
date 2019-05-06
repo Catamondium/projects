@@ -20,7 +20,7 @@ def check(file="master.tsv", delay=1):
         line = next(f)
         _, time = line.split('\t')
         dt = parse(time)
-        return datetime.utcnow().hour - delay > dt.hour
+        return datetime.utcnow().hour > dt.hour + delay
 
 
 def marshal(data, file="master.tsv"):
