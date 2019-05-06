@@ -3,15 +3,7 @@ from time import strftime, localtime
 from collections import namedtuple
 from csv import reader
 
-Holiday = namedtuple("Holiday", ["start", "end"])
-
-
-def printData(data):
-    """Clean repr of Holiday tuple."""
-    strings = []
-    for start, end in data:
-        strings.append("(%s)" % ", ".join((str(start), str(end))))
-    print("[%s]" % ",\n".join(strings))
+Holiday = namedtuple("Holiday", "start end")
 
 
 def Gtime(event):
@@ -21,10 +13,10 @@ def Gtime(event):
 
 
 def tparse(string):
-    """Convert "DD/MM/YYYY" into date() object."""
+    """Convert "DD/MM/YYYY" into UTC-ISO date"""
     triplet = string.split("/")
     triplet = [int(x) for x in triplet]
-    return date(triplet[2], triplet[1], triplet[0])
+    return Gtime(date(triplet[2], triplet[1], triplet[0]))
 
 
 def parse(f):
@@ -32,13 +24,12 @@ def parse(f):
     data = []  # all structs
     with open(f, "r") as f:  # Parse ranges
         for (start, end) in reader(f, delimiter='\t'):
-            if start == '':
-                break
             data.append(Holiday(tparse(start), tparse(end)))
-    data = [Holiday(Gtime(s), Gtime(e)) for s, e in data]
     return data
 
 
 if __name__ == "__main__":
-    print("Google times")
-   # printData(dates)
+    from sys import argv
+    file = argv[1]
+    data = map("{}".format, parse(file))
+    print("[\n%s\n]" % '\n'.join(data))
