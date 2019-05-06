@@ -28,7 +28,7 @@ def marshal(data, file="master.tsv"):
     with open(file, "w+") as f:
         f.write(f"{data['base']}\t{writenow()}\n")
         rates = data["rates"]
-        writer = DictWriter(f, ["country", "rate"], dialect="excel-tab")
+        writer = DictWriter(f, ["country", "rate"], delimiter='\t')
         for k, v in rates.items():
             writer.writerow({"country": k, "rate": v})
 
