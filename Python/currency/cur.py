@@ -33,7 +33,6 @@ def marshal(data, file="master.tsv"):
             writer.writerow({"country": k, "rate": v})
 
 
-# https://api.exchangeratesapi.io/latest
 if __name__ == "__main__":
     if check():  # throttle requests
         stuff = requests.get("https://api.exchangeratesapi.io/latest")
