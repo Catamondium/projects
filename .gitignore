@@ -8,7 +8,10 @@
 *.elf
 *__pycache__*
 
-#py venv ?
+#py venv
+*share*
+*include*
+*lib64*
 
 # Linker output
 *.ilk
