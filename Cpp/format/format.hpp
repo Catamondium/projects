@@ -4,10 +4,6 @@
 #include <iomanip>
 #include <queue>
 
-void _collect(std::queue<std::string> &queue);
-template <class T, class... Ts>
-void _collect(std::queue<std::string> &queue, T &val, Ts &... rest);
-
 // Emulate std::hash<T>{}(thing) interface
 template <class T>
 struct repr
@@ -80,6 +76,8 @@ std::ostream &operator<<(std::ostream &os, const fmt &f)
     return os;
 }
 
+namespace
+{
 void _collect(std::queue<std::string> &queue)
 {
     // noop
@@ -91,6 +89,7 @@ void _collect(std::queue<std::string> &queue, T &val, Ts &... rest)
     queue.push(repr<T>{}(val));
     _collect(queue, rest...);
 }
+} // namespace
 
 template <class... Ts>
 fmt fmt::operator()(Ts... rest)
