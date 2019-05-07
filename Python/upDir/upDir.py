@@ -29,8 +29,8 @@ if __name__ == "__main__":
     for i in Path(local_directory).rglob("*"):
         local_path = i.root / i
 
-        relative_path = local_path.relative_to(local_directory)
-        drop_path = Path(dropbox_destination) / relative_path
+        relative_path = local_path.relative_to(local_directory).resolve()
+        drop_path = str(Path(dropbox_destination) / relative_path)
 
         # upload the file
         with open(local_path, 'rb') as f:

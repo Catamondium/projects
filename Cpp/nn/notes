@@ -1,6 +1,3 @@
-Heading:	Get Note unmarshalling functioning.
-Event:	25/12/2018 12:00
-Get nn capable of unmarshalling this file,
-current system involves parsing line by line.
-Given the possibly massive size of these arbitrary text fields, it's probably preferable to loading the whole file and splitting by delimiters.
+Heading:	
+
 ##
