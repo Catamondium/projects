@@ -76,25 +76,10 @@ std::ostream &operator<<(std::ostream &os, const fmt &f)
     return os;
 }
 
-namespace
-{
-void _collect(std::queue<std::string> &queue)
-{
-    // noop
-}
-
-template <class T, class... Ts>
-void _collect(std::queue<std::string> &queue, T &val, Ts &... rest)
-{
-    queue.push(repr<T>{}(val));
-    _collect(queue, rest...);
-}
-} // namespace
-
 template <class... Ts>
-fmt fmt::operator()(Ts... rest)
+fmt fmt::operator()(Ts... args)
 {
-    _collect(queue, rest...);
+    (this->queue.push(repr<Ts>{}(args)), ...);
     return *this;
 }
 
@@ -103,22 +88,22 @@ namespace fmtf
 {
 // sprintf
 template <class... Ts>
-std::string string(std::string format, Ts... rest)
+std::string string(std::string format, Ts... args)
 {
-    return fmt(format)(rest...);
+    return fmt(format)(args...);
 }
 
 // fprintf, where 'f' is some std::ostream
 template <class... Ts>
-void fprint(std::ostream &stream, std::string format, Ts... rest)
+void fprint(std::ostream &stream, std::string format, Ts... args)
 {
-    stream << fmt(format)(rest...);
+    stream << fmt(format)(args...);
 }
 
 // fprintf to cout/stdout
 template <class... Ts>
-void print(std::string format, Ts... rest)
+void print(std::string format, Ts... args)
 {
-    std::cout << fmt(format)(rest...);
+    std::cout << fmt(format)(args...);
 }
 } // namespace fmtf
