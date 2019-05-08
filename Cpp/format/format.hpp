@@ -38,7 +38,7 @@ struct fmt
     fmt operator()(Ts...);
     operator std::string() const { return str; };
     template <class T>
-    friend fmt operator%(fmt, T);
+    friend fmt &operator%(fmt &&, T &&);
     friend std::ostream &operator<<(std::ostream &, const fmt &);
 
 protected:
@@ -47,11 +47,11 @@ protected:
 
 fmt operator""_fmt(const char *str, std::size_t)
 {
-    return {str};
+    return fmt{str};
 }
 
 template <class T>
-fmt operator%(fmt f, T arg)
+fmt &operator%(fmt &&f, T &&arg)
 {
     f.queue.push(repr<T>{}(arg));
     return f;
@@ -90,20 +90,20 @@ namespace fmtf
 template <class... Ts>
 std::string string(std::string format, Ts... args)
 {
-    return fmt(format)(args...);
+    return fmt{format}(args...);
 }
 
 // fprintf, where 'f' is some std::ostream
 template <class... Ts>
 void fprint(std::ostream &stream, std::string format, Ts... args)
 {
-    stream << fmt(format)(args...);
+    stream << fmt{format}(args...);
 }
 
 // fprintf to cout/stdout
 template <class... Ts>
 void print(std::string format, Ts... args)
 {
-    std::cout << fmt(format)(args...);
+    std::cout << fmt{format}(args...);
 }
 } // namespace fmtf
