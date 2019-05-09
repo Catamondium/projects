@@ -44,9 +44,11 @@ struct repr<std::vector<X>>
 int main()
 {
     std::cout << "_fmt: %-0*s"_fmt(5, "ABC") << std::endl;
-    std::cout << "bol: %s, %s, %+s"_fmt(true, false, 555) << std::endl;
+    std::cout << "bol: %s, %s, %s"_fmt(true, false, 555) << std::endl;
     std::cout << "str: %s"_fmt(std::string("string")) << std::endl;
+#ifdef FAIL
     std::cout << "escaped: %% continued"_fmt(44444) << std::endl;
+#endif
 
     // Stringable, accepts any T -> std::string
     fmt addtest = "Ass";

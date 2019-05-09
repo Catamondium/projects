@@ -72,8 +72,10 @@ std::string fmt::Spec::operator()(std::queue<std::string> &q) const
     ss << ((align_left) ? std::left : std::right);
 
     int w;
-    if (capture && !q.empty())
+    if (capture)
     {
+        if (q.empty())
+            throw std::logic_error("Too few arguments");
         w = stoi(q.front());
         q.pop();
     }
@@ -137,7 +139,7 @@ std::ostream &operator<<(std::ostream &os, const fmt &f)
     fmt tmp = f;
     for (int i = 0; i < tmp.str.length(); ++i)
     {
-        if (tmp.str[i] == '%' && !tmp.queue.empty())
+        if (tmp.str[i] == '%')
         {
             ++i;
             auto specbegin = tmp.str.begin() + i;
@@ -151,12 +153,17 @@ std::ostream &operator<<(std::ostream &os, const fmt &f)
             }
             else
             {
+                if (tmp.queue.empty())
+                    throw std::logic_error("Too few arguments");
                 os << tmp.queue.front();
                 tmp.queue.pop();
             }
         }
         os << tmp.str[i];
     }
+    if (!tmp.queue.empty())
+        throw std::logic_error("Unused arguments");
+
     return os;
 }
 
