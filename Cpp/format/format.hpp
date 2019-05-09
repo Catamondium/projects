@@ -6,13 +6,6 @@
 #include <queue>
 #include <cctype>
 
-// XXX
-#ifdef DEBUG
-#include <fstream>
-std::ofstream speclog("specs.log", std::ofstream::trunc);
-#endif
-//
-
 // Emulate std::hash<T>{}(thing) interface
 template <class T>
 struct repr
@@ -38,8 +31,6 @@ struct repr<bool>
 
 struct fmt
 {
-
-    static constexpr std::string_view TYPES = "sr";
     std::string str;
     fmt(const std::string &str) : str(str){};
     fmt(const char *str) : str(str){};
@@ -54,11 +45,14 @@ struct fmt
 
     struct Spec
     {
+        static constexpr std::string_view TYPES = "%sr";
         char type = 'r';
         char fill = ' ';
         int width = 0;
+        bool capture = false;
+        bool align_left = false;
+        bool sign = false;
         Spec() = default;
-        Spec(char type, char fill, int width) : type(type), fill(fill), width(width){};
         Spec(char type) : type(type){};
         std::string operator()(std::queue<std::string> &) const;
     };
@@ -68,20 +62,27 @@ protected:
         queue;
 };
 
-std::ostream &operator<<(std::ostream &os, fmt::Spec &sp)
-{
-    os << "SPEC {\n";
-    os << "\ttype:\t" << '\'' << sp.type << '\'';
-    os << "\n\tfill:\t" << '\'' << sp.fill << '\'';
-    os << "\n\twidth:\t" << sp.width;
-    os << "\n}\n";
-    return os;
-}
-
 std::string fmt::Spec::operator()(std::queue<std::string> &q) const
 {
+    if (type == '%')
+        return "%";
+
     std::stringstream ss;
-    ss << std::setfill(fill) << std::setw(width);
+    ss << ((sign) ? std::showpos : std::noshowpos);
+    ss << ((align_left) ? std::left : std::right);
+
+    int w;
+    if (capture && !q.empty())
+    {
+        w = stoi(q.front());
+        q.pop();
+    }
+    else
+    {
+        w = width;
+    }
+
+    ss << std::setfill(fill) << std::setw(w);
     // Currently used type has only 1 meaning;
     std::string item = q.front();
     ss << item;
@@ -101,6 +102,12 @@ fmt::Spec _parse(std::string::iterator begin, std::string::iterator end)
 
         if (c == ' ' || c == '0')
             sp.fill = c;
+        else if (c == '-')
+            sp.align_left = true;
+        else if (c == '+')
+            sp.sign = true;
+        else if (c == '*')
+            sp.capture = true;
         else if (std::isdigit(c))
             width.push_back(c);
 
@@ -130,29 +137,22 @@ std::ostream &operator<<(std::ostream &os, const fmt &f)
     fmt tmp = f;
     for (int i = 0; i < tmp.str.length(); ++i)
     {
-        if (tmp.str[i] == '%')
+        if (tmp.str[i] == '%' && !tmp.queue.empty())
         {
             ++i;
-            // Specification hit
-            if (tmp.str[i] != '%' && !tmp.queue.empty())
+            auto specbegin = tmp.str.begin() + i;
+            auto specend = std::find_first_of(specbegin, tmp.str.end(), fmt::Spec::TYPES.begin(), fmt::Spec::TYPES.end());
+            fmt::Spec sp;
+            if (specend != tmp.str.end())
             {
-                auto specbegin = tmp.str.begin() + i;
-                auto specend = std::find_first_of(specbegin, tmp.str.end(), fmt::TYPES.begin(), fmt::TYPES.end());
-                fmt::Spec sp;
-                if (specend != tmp.str.end())
-                {
-                    sp = _parse(specbegin, specend);
-                    os << sp(tmp.queue);
-                    i = specend - tmp.str.begin() + 1;
-                }
-                else
-                {
-                    os << tmp.queue.front();
-                    tmp.queue.pop();
-                }
-#ifdef DEBUG
-                speclog << sp;
-#endif
+                sp = _parse(specbegin, specend);
+                os << sp(tmp.queue);
+                i = specend - tmp.str.begin() + 1;
+            }
+            else
+            {
+                os << tmp.queue.front();
+                tmp.queue.pop();
             }
         }
         os << tmp.str[i];
