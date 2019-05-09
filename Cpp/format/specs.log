@@ -1,0 +1,40 @@
+SPEC {
+	type:	's'
+	fill:	'0'
+	width:	5
+}
+SPEC {
+	type:	's'
+	fill:	' '
+	width:	0
+}
+SPEC {
+	type:	's'
+	fill:	' '
+	width:	0
+}
+SPEC {
+	type:	's'
+	fill:	' '
+	width:	0
+}
+SPEC {
+	type:	'r'
+	fill:	' '
+	width:	0
+}
+SPEC {
+	type:	'r'
+	fill:	' '
+	width:	0
+}
+SPEC {
+	type:	'r'
+	fill:	' '
+	width:	0
+}
+SPEC {
+	type:	's'
+	fill:	' '
+	width:	0
+}

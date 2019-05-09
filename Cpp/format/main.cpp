@@ -43,9 +43,9 @@ struct repr<std::vector<X>>
 
 int main()
 {
-    std::cout << "_fmt: %"_fmt(5) << std::endl;
-    std::cout << "bol: % %"_fmt(true, false, 555) << std::endl;
-    std::cout << "str: %"_fmt(std::string("string")) << std::endl;
+    std::cout << "_fmt: %05s"_fmt(5) << std::endl;
+    std::cout << "bol: %s %s"_fmt(true, false, 555) << std::endl;
+    std::cout << "str: %s"_fmt(std::string("string")) << std::endl;
     std::cout << "escaped: %% continued"_fmt(44444) << std::endl;
 
     // Stringable, accepts any T -> std::string
@@ -60,5 +60,5 @@ int main()
 
     fmtf::print("Printf: %\n", true);
 
-    std::cout << "%% construction %\n"_fmt % 555;
+    std::cout << "%% construction %s\n"_fmt % 555;
 }
