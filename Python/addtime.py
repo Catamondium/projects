@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-# Python 3.6
 import argparse
 
 
 class Time:
-    """hrs:mins simplistic time"""
+    """HH:MM simplistic time"""
 
     def __init__(self, hrs=0, mins=0):
         self.hrs = hrs  # becoming 1?
@@ -45,10 +44,8 @@ if __name__ == "__main__":
                         help="Print elapsed time only")
     args = parser.parse_args()
 
-    start = args.Start
     elapse = abs(args.Elapse)
-
     if args.quiet:
-        print(f"{start + elapse}")
+        print(f"{args.Start + elapse}")
     else:
-        print(f"Start:\t{start}\t{elapse:+}\nEnd:\t{start + elapse}")
+        print(f"Start:\t{args.Start}\t{elapse:+}\nEnd:\t{args.Start + elapse}")

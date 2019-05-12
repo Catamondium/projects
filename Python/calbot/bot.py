@@ -8,6 +8,7 @@ from google.auth.transport.requests import Request
 
 
 import sys
+import argparse
 from parser import parse
 import logging
 from functools import wraps
@@ -117,8 +118,6 @@ def delEvents(service, cal, events):
 
 if __name__ == "__main__":
     service = connect()
-
-    import argparse
     parser = argparse.ArgumentParser(description="Delete reccuring events")
     parser.add_argument("descriptor", argparse.FileType(mode='r'), metavar="Descriptor file",
                         help="TSV of event ranges to be cleared")
@@ -130,10 +129,8 @@ if __name__ == "__main__":
         printCals(service)
         sys.exit(1)
 
-    events_file = args.descriptor
-    target_calendar = args.target
-    data = parse(events_file)
-    calID = getCal(service, target_calendar)
+    data = parse(args.descriptor)
+    calID = getCal(service, args.target)
     expanded = getEvents(service, calID, data)
     delEvents(service, calID, expanded)
-    print(f"{len(expanded)} Events deleted from '{target_calendar}'")
+    print(f"{len(expanded)} Events deleted from '{args.target}'")
