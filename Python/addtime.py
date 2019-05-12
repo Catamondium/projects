@@ -42,9 +42,14 @@ if __name__ == "__main__":
                         help="HH:MM or mins, representing beginning time")
     parser.add_argument("Elapse", type=Time.from_string,
                         help="HH:MM or mins, representing time to elapse by")
+    parser.add_argument('-q', '--quiet', action='store_true',
+                        help="Print elapsed time only")
     args = parser.parse_args()
 
     start = args.Start
     elapse = abs(args.Elapse)
 
-    print(f"Start:\t{start}\t{elapse:+}\nEnd:\t{start + elapse}")
+    if args.quiet:
+        print(f"{start + elapse}")
+    else:
+        print(f"Start:\t{start}\t{elapse:+}\nEnd:\t{start + elapse}")
