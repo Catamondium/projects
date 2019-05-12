@@ -14,24 +14,29 @@ def readToken(tok='creds.secret'):
         return f.readline().strip()
 
 
+def pair(arg):
+    return arg.split(',')
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Upload directory to Dropbox recursively")
-    parser.add_argument("local", help="Local target directory")
-    parser.add_argument("drop", help="Dropbox destination directory")
+    parser.add_argument("pair", type=pair, nargs='+',
+                        help="LOCAL,DROP directory pairs")
     args = parser.parse_args()
 
-    local_directory = args.local
-    dropbox_destination = args.drop
+    for local, drop in args.pair:
+        local = args.local
+        drop = args.drop
 
-    client = dropbox.Dropbox(readToken())
-    # enumerate local files recursively
-    for i in Path(local_directory).rglob("*"):
-        local_path = i.root / i
+        client = dropbox.Dropbox(readToken())
+        # enumerate local files recursively
+        for i in Path(local).rglob("*"):
+            local_path = i.root / i
 
-        relative_path = local_path.relative_to(local_directory).resolve()
-        drop_path = str(Path(dropbox_destination) / relative_path)
+            relative_path = local_path.relative_to(local).resolve()
+            drop_path = str(Path(drop) / relative_path)
 
-        # upload the file
-        with open(local_path, 'rb') as f:
-            client.files_upload(f.read(), drop_path,
-                                mode=dropbox.files.WriteMode("overwrite"))
+            # upload the file
+            with open(local_path, 'rb') as f:
+                client.files_upload(f.read(), drop_path,
+                                    mode=dropbox.files.WriteMode("overwrite"))
