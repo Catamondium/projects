@@ -73,9 +73,8 @@ loadTable()
 
 if __name__ == "__main__":
     import argparse
-    import sys
     parser = argparse.ArgumentParser(
-        description="Calculate molecular mass from structural formulae")
+        description="Calculate molecular masses from structural formulae")
     parser.add_argument("comps", metavar="Compound", nargs='+',
                         help="Structural formula to be evaluated")
     args = parser.parse_args()

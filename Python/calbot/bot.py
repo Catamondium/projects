@@ -127,7 +127,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.target == None:
-        print("Final arg should be calendar.")
         printCals(service)
         sys.exit(1)
 
