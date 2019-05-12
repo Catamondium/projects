@@ -120,7 +120,7 @@ if __name__ == "__main__":
 
     import argparse
     parser = argparse.ArgumentParser(description="Delete reccuring events")
-    parser.add_argument("descriptor", metavar="Descriptor file",
+    parser.add_argument("descriptor", argparse.FileType(mode='r'), metavar="Descriptor file",
                         help="TSV of event ranges to be cleared")
     parser.add_argument("target", metavar="Target calendar", nargs='?',
                         help="Calendar to be cleared", default=None)

@@ -16,8 +16,8 @@ def readToken(tok='creds.secret'):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Upload directory to Dropbox recursively")
-    parser.add_argument("local", metavar="Local target directory")
-    parser.add_argument("drop", metavar="Dropbox destination directory")
+    parser.add_argument("local", help="Local target directory")
+    parser.add_argument("drop", help="Dropbox destination directory")
     args = parser.parse_args()
 
     local_directory = args.local
