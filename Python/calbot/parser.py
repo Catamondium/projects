@@ -22,9 +22,8 @@ def tparse(string):
 def parse(f):
     """Parse holiday descriptors."""
     data = []  # all structs
-    with open(f, "r") as f:  # Parse ranges
-        for (start, end) in reader(f, delimiter='\t'):
-            data.append(Holiday(tparse(start), tparse(end)))
+    for (start, end) in reader(f, delimiter='\t'):
+        data.append(Holiday(tparse(start), tparse(end)))
     return data
 
 

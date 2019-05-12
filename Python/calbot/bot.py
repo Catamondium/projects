@@ -129,8 +129,9 @@ if __name__ == "__main__":
         parser.print_usage()
         printCals(service)
         sys.exit(1)
-
-    data = parse(args.descriptor)
+    data = None
+    with args.descriptor:
+        data = parse(args.descriptor)
     calID = getCal(service, args.target)
     expanded = getEvents(service, calID, data)
     delEvents(service, calID, expanded)
