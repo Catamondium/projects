@@ -4,7 +4,7 @@ import dropbox
 import argparse
 
 
-def readToken(tok='creds.secret'):
+def read_token(tok='creds.secret'):
     """
     Read client token relative to script
     """
@@ -25,7 +25,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     for local, drop in args.pair:
-        client = dropbox.Dropbox(readToken())
+        client = dropbox.Dropbox(read_token())
         # enumerate local files recursively
         for i in Path(local).rglob("*"):
             local_path = i.root / i

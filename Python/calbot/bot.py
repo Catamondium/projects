@@ -58,7 +58,7 @@ def connect():
 
 
 @logged
-def getCal(service, name):
+def get_cal(service, name):
     """Get calendar ID by name."""
     cals = service.calendarList().list(
         showHidden=True, minAccessRole="writer").execute()
@@ -70,7 +70,7 @@ def getCal(service, name):
 
 
 @logged
-def printCals(service):
+def print_cals(service):
     """Enumerate available calendars."""
     print("Calendars:")
     cals = service.calendarList().list(
@@ -94,7 +94,7 @@ def expand(service, cal, event, holiday):
 
 
 @logged
-def getEvents(service, cal, data):
+def get_events(service, cal, data):
     """Get recurring instances."""
     events = set()
     for start, end in data:
@@ -108,7 +108,7 @@ def getEvents(service, cal, data):
 
 
 @logged
-def delEvents(service, cal, events):
+def del_events(service, cal, events):
     """Delete events and return number of deletions
     """
     for event in events:
@@ -127,12 +127,12 @@ if __name__ == "__main__":
 
     if args.target == None:
         parser.print_usage()
-        printCals(service)
+        print_cals(service)
         sys.exit(1)
     data = None
     with args.descriptor:
         data = parse(args.descriptor)
-    calID = getCal(service, args.target)
-    expanded = getEvents(service, calID, data)
-    delEvents(service, calID, expanded)
+    calID = get_cal(service, args.target)
+    expanded = get_events(service, calID, data)
+    del_events(service, calID, expanded)
     print(f"{len(expanded)} Events deleted from '{args.target}'")

@@ -12,7 +12,7 @@ class Application(tk.Frame):
         DEFAULT = "C6H6"
 
         self.input = tk.Entry()
-        self.input.bind("<Return>", partial(self.onInput, self))
+        self.input.bind("<Return>", partial(self.on_input, self))
         self.input.pack()
 
         self.var = tk.StringVar()
@@ -28,7 +28,7 @@ class Application(tk.Frame):
         self.out.set(f"{mass(DEFAULT):.2f} g/mol")
         self.output["textvariable"] = self.out
 
-    def onInput(self, w, event):
+    def on_input(self, w, event):
         text = sanitize(self.var.get())
         self.var.set(text)
         try:

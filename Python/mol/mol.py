@@ -9,14 +9,14 @@ SUBRE = r"\((.*)\)(\d*)"  # groups: expr, [coeff]
 TRANS = str.maketrans("{}[]", "()()")
 
 
-def makeCoeff(c):
+def make_coeff(c):
     if c == "":
         return 1
     else:
         return int(c)
 
 
-def loadTable(fname="ptable.tsv"):
+def load_table(fname="ptable.tsv"):
     tpath = Path(__file__).resolve().parent / fname
     global ptable
     ptable = {'': 0.00}
@@ -27,6 +27,9 @@ def loadTable(fname="ptable.tsv"):
                 raise Exception(f"Table error: line {i}, Repeated element {k}")
             else:
                 ptable[k] = float(v)
+
+
+load_table()
 
 
 def valid(c):
@@ -59,17 +62,15 @@ def mass(thing):
     for e, c in re.findall(TOKRE, thing):
         if e not in ptable:
             raise ElementError(e)
-        coeff = makeCoeff(c)
+        coeff = make_coeff(c)
         acc += ptable[e] * coeff
 
     for e, c in re.findall(SUBRE, thing):
-        coeff = makeCoeff(c)
+        coeff = make_coeff(c)
         acc += mass(e) * coeff
 
     return bigCoeff * acc
 
-
-loadTable()
 
 if __name__ == "__main__":
     import argparse

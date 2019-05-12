@@ -6,7 +6,7 @@ from csv import reader
 Holiday = namedtuple("Holiday", "start end")
 
 
-def Gtime(event):
+def gtime(event):
     """Convert date() object into Google calendar api UTC-ISO timestamp
     """
     return datetime(event.year, event.month, event.day).isoformat() + strftime("%z", localtime())
@@ -16,7 +16,7 @@ def tparse(string):
     """Convert "DD/MM/YYYY" into UTC-ISO date"""
     triplet = string.split("/")
     triplet = [int(x) for x in triplet]
-    return Gtime(date(triplet[2], triplet[1], triplet[0]))
+    return gtime(date(triplet[2], triplet[1], triplet[0]))
 
 
 def parse(f):
