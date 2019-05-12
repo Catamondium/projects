@@ -25,9 +25,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     for local, drop in args.pair:
-        local = args.local
-        drop = args.drop
-
         client = dropbox.Dropbox(readToken())
         # enumerate local files recursively
         for i in Path(local).rglob("*"):
