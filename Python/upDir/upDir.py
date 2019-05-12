@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from pathlib import Path, PurePath
 import dropbox
-import sys
+import argparse
 
 
 def readToken(tok='creds.secret'):
@@ -14,16 +14,15 @@ def readToken(tok='creds.secret'):
         return f.readline().strip()
 
 
-def usage():
-    print("params: (local_dir, dropbox_dir)")
-    sys.exit(1)
-
-
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        usage()
+    parser = argparse.ArgumentParser("Upload directory to Dropbox recursively")
+    parser.add_argument("local", metavar="Local target directory")
+    parser.add_argument("drop", metavar="Dropbox destination directory")
+    args = parser.parse_args()
 
-    local_directory, dropbox_destination = sys.argv[1:3]
+    local_directory = args.local
+    dropbox_destination = args.drop
+
     client = dropbox.Dropbox(readToken())
     # enumerate local files recursively
     for i in Path(local_directory).rglob("*"):

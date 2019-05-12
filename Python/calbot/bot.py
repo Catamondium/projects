@@ -117,16 +117,24 @@ def delEvents(service, cal, events):
 
 if __name__ == "__main__":
     service = connect()
-    if len(sys.argv) < 3:
-        if len(sys.argv) == 1:
-            print("Descriptor file needed.")
-            sys.exit(1)
+
+    import argparse
+    parser = argparse.ArgumentParser(description="Delete reccuring events")
+    parser.add_argument("descriptor", metavar="Descriptor file",
+                        help="TSV of event ranges to be cleared")
+    parser.add_argument("target", metavar="Target calendar", nargs='?',
+                        help="Calendar to be cleared", default=None)
+    args = parser.parse_args()
+
+    if args.target == None:
         print("Final arg should be calendar.")
         printCals(service)
-    else:  # Run deletions
-        events_file, target_calendar = sys.argv[1:]
-        data = parse(events_file)
-        calID = getCal(service, target_calendar)
-        expanded = getEvents(service, calID, data)
-        delEvents(service, calID, expanded)
-        print(f"{len(expanded)} Events deleted from '{target_calendar}'")
+        sys.exit(1)
+
+    events_file = args.descriptor
+    target_calendar = args.target
+    data = parse(events_file)
+    calID = getCal(service, target_calendar)
+    expanded = getEvents(service, calID, data)
+    delEvents(service, calID, expanded)
+    print(f"{len(expanded)} Events deleted from '{target_calendar}'")

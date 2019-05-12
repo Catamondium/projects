@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
 import re
-#import os
 from pathlib import Path
-import sys
 from csv import reader
 COEFFRE = r"^(\d+)"  # beginning coefficient
 ELEM = r"([A-Z][a-z]*)"
 TOKRE = r"\(.*?\)|" + ELEM + r"(\d*)"  # groups: Elem, [coeff]
 SUBRE = r"\((.*)\)(\d*)"  # groups: expr, [coeff]
 TRANS = str.maketrans("{}[]", "()()")
-
-ptable = {'': 0.00}
 
 
 def makeCoeff(c):
@@ -22,6 +18,8 @@ def makeCoeff(c):
 
 def loadTable(fname="ptable.tsv"):
     tpath = Path(__file__).resolve().parent / fname
+    global ptable
+    ptable = {'': 0.00}
     with open(tpath, 'r') as f:
         next(f)  # skip header
         for i, (k, v) in enumerate(reader(f, delimiter='\t')):
@@ -74,10 +72,18 @@ def mass(thing):
 loadTable()
 
 if __name__ == "__main__":
-    for comp in sys.argv[1:]:
+    import argparse
+    import sys
+    parser = argparse.ArgumentParser(
+        description="Calculate molecular mass from structural formulae")
+    parser.add_argument("comps", metavar="Compound", nargs='+',
+                        help="Structural formula to be evaluated")
+    args = parser.parse_args()
+
+    for comp in args.comps:
         clean = sanitize(comp)
         try:
             print(f"{clean}:\t{mass(clean):.2f} g/mol")
-        except Exception as e:
-            print(e)
+        except ElementError as e:
+            print("%r" % e)
             exit(1)
