@@ -1,44 +1,50 @@
 #!/usr/bin/env python3
 # Python 3.6
 import sys
+import argparse
 
 
 class Time:
     """hrs:mins simplistic time"""
 
-    def __init__(self, hrs, mins):
-        self.hrs = hrs
+    def __init__(self, hrs=0, mins=0):
+        self.hrs = hrs  # becoming 1?
         self.mins = mins
 
     def __repr__(self):
-        return f"{self.hrs:02d}:{self.hrs:02d}"
+        return f"{self.hrs:02d}:{self.mins:02d}"
 
     def __add__(self, t):
-        """Add a pair of Time objects"""
+        """Return Time + mins t"""
         tot = t + abs(self)
-        return Time(tot // 60, tot % 60)
+        return Time.from_int(tot)
 
     def __abs__(self):
         """Returns the total minutes represented"""
         return (self.hrs * 60) + self.mins
 
+    @classmethod
+    def from_int(cls, i):
+        return cls(i // 60, i % 60)
 
-def pTime(string):
-    Istr = sys.argv[1].split(':')
-    parts = [int(x) for x in Istr]
-    return Time(parts[0], parts[1])
+    @classmethod
+    def from_string(cls, string):
+        if ':' in string:
+            parts = [int(x) for x in string.split(':')]
+            return cls(parts[0], parts[1])
+        else:
+            return cls.from_int(int(string))
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("Error:\thh:mm mins expected")
-        sys.exit(1)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("Start", type=Time.from_string,
+                        help="HH:MM or mins, representing beginning time")
+    parser.add_argument("Elapse", type=Time.from_string,
+                        help="HH:MM or mins, representing time to elapse by")
+    args = parser.parse_args()
 
-    start = pTime(sys.argv[1])
-
-    if ":" in sys.argv[2]:
-        elapse = abs(pTime(sys.argv[2]))
-    else:
-        elapse = int(sys.argv[2])
+    start = args.Start
+    elapse = abs(args.Elapse)
 
     print(f"Start:\t{start}\t{elapse:+}\nEnd:\t{start + elapse}")
