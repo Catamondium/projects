@@ -29,6 +29,6 @@ def parse(f):
 
 if __name__ == "__main__":
     from sys import argv
-    file = argv[1]
-    data = map("{}".format, parse(file))
-    print("[\n%s\n]" % '\n'.join(data))
+    with open(argv[1], 'r') as file:
+        data = map("{}".format, parse(file))
+        print("[\n%s\n]" % '\n'.join(data))
