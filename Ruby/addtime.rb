@@ -1,3 +1,5 @@
+#!/usr/bin/ruby
+
 class Time
     attr_reader :hrs, :mins
     attr_writer :hrs, :mins
@@ -56,8 +58,23 @@ class String
     end
 end
 
-#TODO
-# ARGV input
-start = Time.new(1, 30)
-elapse = 90
-puts "#{start} + #{elapse} -> #{start + elapse}"
+quiet, rest = ARGV.to_enum.partition {|x| x =~ /-q/}
+
+if rest.length < 2
+    puts "Usage: #{$0} [-q] START ELAPSE"
+    puts "\t-q: print elapsed time only"
+    exit 1
+end
+
+start = rest[0].to_t
+elapse = rest[1].to_t
+if start.nil? or elapse.nil?
+    puts "Invalid time"
+    exit 1
+end
+
+if quiet.length > 0
+    puts start + elapse
+else
+    puts "#{start} + #{elapse.abs} -> #{start + elapse}"
+end
