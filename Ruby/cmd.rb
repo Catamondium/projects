@@ -91,7 +91,7 @@ class Cmd
 
     private
     def complete(s)
-        list = self.methods.grep(/^do_/).collect {|x| x.to_s[3..x.length]}
+        list = self.methods.grep(/^do_/).collect {|x| x.to_s[3...x.length]}
         return list.grep(/^#{Regexp.escape(s)}/).sort
     end
 end
