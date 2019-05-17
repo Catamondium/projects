@@ -42,11 +42,7 @@ class Cmd
     def precmd(line)
         return line
     end
-
-    def interrupt
-        nil
-    end
-
+    
     def postcmd(stop, line)
         return stop
     end
