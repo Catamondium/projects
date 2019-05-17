@@ -3,8 +3,6 @@ require "readline"
 
 class Cmd
     IDENTCHARS = [*'a'...'z', *'0'...'9', '_'].join
-    attr_reader :cmdqueue, :lastcmd, :prompt, :list
-    attr_writer :cmdqueue, :lastcmd, :prompt
     def initialize
         @cmdqueue = []
         @lastcmd = nil
@@ -26,7 +24,7 @@ class Cmd
                 line = @cmdqueue.pop
             else
                 Readline.completion_append_character = " "
-                Readline.completion_proc = proc {|x| GREP(x)}
+                Readline.completion_proc = proc {|x| collect(x)}
                 line = Readline.readline((@prompt or ''), true)
                 line ||= 'EOF'
                 line.strip!
@@ -59,20 +57,20 @@ class Cmd
             return [nil, nil, line]
         elsif line[0] == '!'
             if self.respond_to? :do_shell
-                line = "shell #{line.slice(1)}"
+                line.sub!('!', "shell ")
             else
                 return [nil, nil, line]
             end
         end
         i, n = 0, line.length
-        i +=1 while i < n and Cmd::IDENTCHARS.include? line[i]
+        i += 1 while i < n and Cmd::IDENTCHARS.include? line[i]
         cmd, arg = line[0...i], line[i...n].strip
         return [cmd, arg, line]
     end
 
     def onecmd(line)
         cmd, arg, line = self.parseline line
-        self.lastcmd = line
+        @lastcmd = line
         if !line
             return @emptyline
         end
@@ -101,7 +99,7 @@ class Cmd
     end
 
     private
-    def GREP(s)
+    def complete(s)
         list = self.methods.grep(/^do_/).map {|x| x.to_s[3..x.length]}
         return list.grep(/^#{Regexp.escape(s)}/).sort
     end
