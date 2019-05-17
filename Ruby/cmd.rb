@@ -8,8 +8,15 @@ class Cmd
         @lastcmd = nil
         @prompt = "(Com) "
     end
+
+    # STUBS
+    def precmd(line) line end
+    def postcmd(stop, line) stop end
+    def preloop; end
+    def postloop; end
+    # STUBS
     
-    def cmdloop(intro=nil)
+    def cmdloop(intro: nil)
         self.preloop
         @cmdqueue ||= []
         if intro
@@ -35,22 +42,6 @@ class Cmd
         end
         self.postloop
     end
-
-    # stubs
-    def precmd(line)
-        return line
-    end
-    
-    def postcmd(stop, line)
-        return stop
-    end
-
-    def preloop
-    end
-
-    def postloop
-    end
-    # stubs
 
     def parseline(line)
         if line == ''
@@ -79,9 +70,9 @@ class Cmd
         elsif cmd == ''
             return self.default(line)
         else
-            sym = "do_#{cmd}"
-            if self.respond_to? sym
-                return self.send(sym, arg)
+            command = "do_#{cmd}"
+            if self.respond_to? command
+                return self.send(command, arg)
             else
                 return self.default(line)
             end
@@ -100,7 +91,7 @@ class Cmd
 
     private
     def complete(s)
-        list = self.methods.grep(/^do_/).map {|x| x.to_s[3..x.length]}
+        list = self.methods.grep(/^do_/).collect {|x| x.to_s[3..x.length]}
         return list.grep(/^#{Regexp.escape(s)}/).sort
     end
 end
