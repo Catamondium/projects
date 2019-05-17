@@ -1,8 +1,8 @@
 require "readline"
 # translated from CPython
 
-IDENTCHARS = [*'a'...'z', *'0'...'9', '_'].join
 class Cmd
+    IDENTCHARS = [*'a'...'z', *'0'...'9', '_'].join
     attr_reader :cmdqueue, :lastcmd, :prompt, :list
     attr_writer :cmdqueue, :lastcmd, :prompt
     def initialize
@@ -65,7 +65,7 @@ class Cmd
             end
         end
         i, n = 0, line.length
-        i +=1 while i < n and IDENTCHARS.include? line[i]
+        i +=1 while i < n and Cmd::IDENTCHARS.include? line[i]
         cmd, arg = line[0...i], line[i...n].strip
         return [cmd, arg, line]
     end
