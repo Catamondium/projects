@@ -3,17 +3,12 @@ require "readline"
 
 IDENTCHARS = [*'a'...'z', *'0'...'9', '_'].join
 class Cmd
-    attr_reader :cmdqueue, :lastcmd, :prompt, :completer
+    attr_reader :cmdqueue, :lastcmd, :prompt, :list
     attr_writer :cmdqueue, :lastcmd, :prompt
     def initialize
         @cmdqueue = []
         @lastcmd = nil
         @prompt = "(Com) "
-        @completer = proc do |s|
-            s.strip!
-            list = self.methods.grep(/^do_/).map {|x| x.to_s}
-            return list.sort.grep(/^do_#{Regexp.escape(s)}/).map {|x| x[2...x.length]}
-        end
     end
     
     def cmdloop(intro=nil)
@@ -27,7 +22,7 @@ class Cmd
                 line = cmdqueue.pop
             else
                 Readline.completion_append_character = " "
-                Readline.completion_proc = self.completer # not working
+                Readline.completion_proc = proc {|x| GREP(x)} # not working
                 line = Readline.readline((self.prompt or ''), true)
                 line ||= 'eof'
                 line.strip!
@@ -38,7 +33,7 @@ class Cmd
         end
         self.postloop
     end
-
+    # stubs
     def precmd(line)
         return line
     end
@@ -52,6 +47,7 @@ class Cmd
 
     def postloop
     end
+    # stubs
 
     def parseline(line)
         if line == ''
@@ -64,7 +60,7 @@ class Cmd
             end
         end
         i, n = 0, line.length
-        i +=1 while i < n and (IDENTCHARS.include? line[i])
+        i +=1 while i < n and IDENTCHARS.include? line[i]
         cmd, arg = line[0...i], line[i...n].strip
         return [cmd, arg, line]
     end
@@ -88,6 +84,7 @@ class Cmd
             end
         end
     end
+
     def emptyline
         if self.lastcmd
             return self.onecmd(self.lastcmd)
@@ -96,5 +93,11 @@ class Cmd
 
     def default(line)
         puts "*** Unknown syntax: #{line}"
+    end
+
+    private
+    def GREP(s)
+        list = self.methods.grep(/^do_/).map {|x| x.to_s[3..x.length]}
+        return list.grep(/^#{Regexp.escape(s)}/).sort
     end
 end

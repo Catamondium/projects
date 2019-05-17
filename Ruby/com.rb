@@ -1,3 +1,4 @@
+#!/usr/bin/ruby
 require './cmd.rb'
 
 class Shell < Cmd
@@ -10,9 +11,8 @@ class Shell < Cmd
     end
 
     def do_me(arg)
-        list =  self.methods.grep(/^do_/).map {|x| x.to_s}
-        puts list
-        puts list.class
+        p self.methods.grep(/^do_/).map {|x| x.to_s[3..x.length]}
+        nil
     end
 
     def do_reverse(arg)
