@@ -2,7 +2,7 @@ require "readline"
 # translated from CPython
 
 class Cmd
-    IDENTCHARS = [*'a'...'z', *'0'...'9', '_'].join
+    IDENTCHARS = [*'a'..'z', *'0'..'9', '_'].join
     def initialize
         @cmdqueue = []
         @lastcmd = nil
