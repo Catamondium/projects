@@ -31,22 +31,25 @@ class Shell < Cmd
 
     # -- record & playback, misc --
     def do_record(arg)
-        @file = IO::open(arg, 'a')
+        @file = File.new(arg, 'a')
         nil
     end
 
     def do_playback(arg)
         self.close
-        IO::open(arg, 'w') do |f|
-            self.cmdqueue |= f.readlines
+        File::open(arg) do |f|
+            @cmdqueue |= f.readlines
         end
         nil
     end
 
     def precmd(line)
         line.downcase!
-        if !@file.nil? and !line.include? 'playback'
-            file.write(line)
+        begin
+            if !@file.nil? and !line.include? 'playback'
+                file.write(line + "\n")
+            end
+        rescue
         end
         return line
     end

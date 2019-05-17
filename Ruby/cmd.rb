@@ -13,17 +13,21 @@ class Cmd
     
     def cmdloop(intro=nil)
         self.preloop
+        @cmdqueue ||= []
         if intro
             puts intro
+        elsif @intro
+            puts @intro
         end
+
         stop = nil
         while !stop
-            if self.cmdqueue && !self.cmdqueue.empty?
-                line = cmdqueue.pop
+            if !@cmdqueue.empty? # nil by default?
+                line = @cmdqueue.pop
             else
                 Readline.completion_append_character = " "
-                Readline.completion_proc = proc {|x| GREP(x)} # not working
-                line = Readline.readline((self.prompt or ''), true)
+                Readline.completion_proc = proc {|x| GREP(x)}
+                line = Readline.readline((@prompt or ''), true)
                 line ||= 'eof'
                 line.strip!
             end
@@ -33,9 +37,14 @@ class Cmd
         end
         self.postloop
     end
+
     # stubs
     def precmd(line)
         return line
+    end
+
+    def interrupt
+        nil
     end
 
     def postcmd(stop, line)
@@ -69,7 +78,7 @@ class Cmd
         cmd, arg, line = self.parseline line
         self.lastcmd = line
         if !line
-            return self.emptyline
+            return @emptyline
         end
         if cmd.nil?
             return self.default(line)
@@ -86,8 +95,8 @@ class Cmd
     end
 
     def emptyline
-        if self.lastcmd
-            return self.onecmd(self.lastcmd)
+        if @lastcmd
+            return self.onecmd(@lastcmd)
         end
     end
 
