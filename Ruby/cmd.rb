@@ -28,7 +28,7 @@ class Cmd
                 Readline.completion_append_character = " "
                 Readline.completion_proc = proc {|x| GREP(x)}
                 line = Readline.readline((@prompt or ''), true)
-                line ||= 'eof'
+                line ||= 'EOF'
                 line.strip!
             end
             line = self.precmd line
