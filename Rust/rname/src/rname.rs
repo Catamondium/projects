@@ -39,6 +39,7 @@ fn re_sort<'a>(
     });
 
     matched.sort();
+    unmatched.sort();
     matched.append(&mut unmatched);
 
     Ok(matched)
