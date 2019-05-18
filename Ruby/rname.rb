@@ -4,7 +4,11 @@ Config = Struct.new(:dry, :verbose, :recurse)
 
 class Pathname
     def resolve
-        Pathname.new(self.to_s.sub('~', ENV['HOME'])).cleanpath
+        self.sub('~', ENV['HOME']).cleanpath
+    end
+
+    def fullpath
+        self.each_filename.inject('/') {|acc, x| acc + x + '/' } # not successfully rooted
     end
 end
 
