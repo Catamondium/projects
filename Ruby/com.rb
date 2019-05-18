@@ -44,9 +44,9 @@ class Shell < Cmd
     end
 
     def precmd(line)
-        line.downcase!
+        line&.downcase!
         begin
-            if !@file.nil? and !line.include? 'playback'
+            if !@file.nil? and !line&.include? 'playback'
                 file.write(line + "\n")
             end
         rescue
@@ -55,7 +55,7 @@ class Shell < Cmd
     end
 
     def close
-        if not @file.nil?
+        if @file
             @file.close
             @file = nil
         end

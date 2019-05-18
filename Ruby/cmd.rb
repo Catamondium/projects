@@ -2,7 +2,6 @@ require "readline"
 # translated from CPython
 
 class Cmd
-    IDENTCHARS = [*'a'..'z', *'0'..'9', '_'].join
     def initialize
         @cmdqueue = []
         @lastcmd = nil
@@ -18,7 +17,7 @@ class Cmd
     
     def cmdloop(intro: nil)
         self.preloop
-        @cmdqueue ||= []
+        @cmdqueue ||= [] # nil guard
         if intro
             puts intro
         elsif @intro
@@ -27,14 +26,13 @@ class Cmd
 
         stop = nil
         while !stop
-            if !@cmdqueue.empty? # nil by default?
+            if !@cmdqueue.empty?
                 line = @cmdqueue.pop
             else
                 Readline.completion_append_character = " "
-                Readline.completion_proc = proc {|x| collect(x)}
+                Readline.completion_proc = proc {|x| complete(x)}
                 line = Readline.readline((@prompt or ''), true)
-                line ||= 'EOF'
-                line.strip!
+                line&.strip!
             end
             line = self.precmd line
             stop = self.onecmd line
@@ -44,7 +42,7 @@ class Cmd
     end
 
     def parseline(line)
-        if line == ''
+        if !line or line == ''
             return [nil, nil, line]
         elsif line[0] == '!'
             if self.respond_to? :do_shell
@@ -53,21 +51,15 @@ class Cmd
                 return [nil, nil, line]
             end
         end
-        i, n = 0, line.length
-        i += 1 while i < n and Cmd::IDENTCHARS.include? line[i]
-        cmd, arg = line[0...i], line[i...n].strip
+        cmd, arg = line.split(/\W/, 2).map {|x| x.strip}
         return [cmd, arg, line]
     end
 
     def onecmd(line)
         cmd, arg, line = self.parseline line
         @lastcmd = line
-        if !line
-            return @emptyline
-        end
-        if cmd.nil?
-            return self.default(line)
-        elsif cmd == ''
+        return self.emptyline if !line
+        if !cmd or cmd == ''
             return self.default(line)
         else
             command = "do_#{cmd}"
@@ -82,6 +74,8 @@ class Cmd
     def emptyline
         if @lastcmd
             return self.onecmd(@lastcmd)
+        else
+            puts
         end
     end
 
