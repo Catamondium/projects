@@ -25,7 +25,7 @@ operator fun Time.plus(other: Time) : Time {
 
 fun usage() {
     println("""
-    |Usage: addtime [-qh] hh:mm mins_elapse
+    |Usage: addtime [-qh] HH:MM HH:MM|mins_elapse
     |Note: if mins_elapse is negative, precede it with '--'
     |Options:
     |        -q quietly output end time
