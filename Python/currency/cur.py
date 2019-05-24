@@ -7,6 +7,7 @@ import requests
 from datetime import datetime
 from csv import DictWriter
 from dateutil.parser import parse
+from pathlib import Path
 
 
 def writenow():
@@ -16,6 +17,8 @@ def writenow():
 
 def check(file="master.tsv", delay=1):
     """Check master file expiry"""
+    if not Path(file).exists():
+        return True
     with open(file, "r") as f:
         line = next(f)
         _, time = line.split('\t')
