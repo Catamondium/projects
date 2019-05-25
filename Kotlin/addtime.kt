@@ -44,7 +44,7 @@ fun String.toTime() : Time {
 }
 
 fun main(args: Array<String>) {
-    val re: Regex = "^-[a-zA-Z]+".toRegex()
+    val re = "^-[a-zA-Z]+".toRegex()
     val (opts, free) = args.partition {thing -> re.matches(thing)}
 
     if ("-h" in opts || free.size < 2) {
