@@ -34,16 +34,17 @@ fun usage() {
     exitProcess(1)
 }
 
-fun fromString(str: String) : Time {
-    if (':' in str) {
-        return Time(str)
+fun String.toTime() : Time {
+    if (':' in this) {
+        val (hrs, mins) = this.split(':')
+        return Time(hrs.toInt(), mins.toInt())
     } else {
-        return Time(str.toInt())
+        return Time(this.toInt())
     }
 }
 
 fun main(args: Array<String>) {
-    val re = "^-[a-zA-Z]+".toRegex()
+    val re: Regex = "^-[a-zA-Z]+".toRegex()
     val (opts, free) = args.partition {thing -> re.matches(thing)}
 
     if ("-h" in opts || free.size < 2) {
@@ -51,12 +52,13 @@ fun main(args: Array<String>) {
     }
 
     val (str_start, str_elapse) = free
-    val start = fromString(str_start)
-    val elapse = fromString(str_elapse)
+    val start = str_start.toTime()
+    val elapse = str_elapse.toTime()
 
     if (opts.contains("-q")) {
         println("${start + elapse}")
     } else {
-        println("Start:\t$start\t${elapse.abs}\nEnd:\t${start + elapse}")
+        println("Start:\t%s\t%+d".format(start, elapse.abs))
+        println("End:\t%s".format(start + elapse))
     }
 }
