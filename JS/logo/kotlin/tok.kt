@@ -54,7 +54,7 @@ val rules =  listOf(
 
 fun tokenize(input: String) : List<Token> {
     val ret = mutableListOf<Token>()
-    var local = input
+    var local = input.toLowerCase()
     while (0 != local.length) {
         var tokenized = false
         rules.forEach { fn ->
