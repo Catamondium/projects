@@ -17,7 +17,7 @@ commands:
 */
 
 enum class TokenType {PAREN, VERB, INTEGER, WHITESPACE}
-data class Token(val type: TokenType, var value: String)
+data class Token(val type: TokenType, val value: String)
 
 typealias RulePair = Pair<Int, Token?>
 typealias Predicate = (ch: Char) -> Boolean
