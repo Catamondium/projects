@@ -16,7 +16,7 @@ commands:
 	do num block ==> repeat 'block' num times
 */
 
-enum class TokenType {PAREN, WORD, INTEGER, WHITESPACE}
+enum class TokenType {PAREN, VERB, INTEGER, WHITESPACE}
 data class Token(val type: TokenType, var value: String)
 
 typealias RulePair = Pair<Int, Token?>
@@ -32,14 +32,14 @@ class CharRule(val type: TokenType, val ch: Char) : Rule {
     }
 }
 
-class PatternRule(val type: TokenType, val pred: Predicate) : Rule {
+class PredRule(val type: TokenType, val pred: Predicate) : Rule {
     override operator fun invoke(input: String) : RulePair {
-        var ch = input[0]
-        if(pred(ch)) {
-            val out = input.takeWhile(pred)
-            return Pair(out.length, Token(type, out))
-        }
-        return Pair(0, null)
+        val out = input.takeWhile(pred)
+        return Pair(
+            out.length,
+            if (out.length != 0) 
+                Token(type, out)
+                else null)
     }
 }
 
@@ -47,9 +47,9 @@ class PatternRule(val type: TokenType, val pred: Predicate) : Rule {
 val rules =  listOf(
     CharRule(TokenType.PAREN, '{'),
     CharRule(TokenType.PAREN, '}'),
-    PatternRule(TokenType.WORD, {it in 'a'..'z' || it in 'A'..'Z'}),
-    PatternRule(TokenType.INTEGER, {"-?[0-9]+".toRegex().matches(it.toString())}),
-    PatternRule(TokenType.WHITESPACE, Char::isWhitespace)
+    PredRule(TokenType.VERB, Char::isLetter),
+    PredRule(TokenType.INTEGER, {it == '-' || it.isDigit()}),
+    PredRule(TokenType.WHITESPACE, Char::isWhitespace)
     )
 
 fun tokenize(input: String) : List<Token> {
