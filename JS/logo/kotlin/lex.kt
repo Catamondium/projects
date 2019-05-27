@@ -15,6 +15,7 @@ commands:
 
 	do num block ==> repeat 'block' num times
 */
+package compile.lex
 
 enum class TokenType {PAREN, VERB, INTEGER, WHITESPACE}
 data class Token(val type: TokenType, val value: String)
@@ -76,10 +77,4 @@ fun tokenize(input: String) : List<Token> {
     }
 
     return ret
-}
-
-fun main() {
-    val sample = "do 10 { fd 30 rt 36 }"
-    val toks = tokenize(sample)
-    println(toks.joinToString(separator=",\n"))
 }
