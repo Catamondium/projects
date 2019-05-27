@@ -17,7 +17,13 @@ commands:
 */
 package compile.lex
 
-enum class TokenType {PAREN, VERB, INTEGER, WHITESPACE}
+enum class TokenType {
+    PAREN,
+    VERB,
+    INTEGER,
+    WHITESPACE
+    }
+
 data class Token(val type: TokenType, val value: String)
 
 typealias RulePair = Pair<Int, Token?>
