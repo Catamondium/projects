@@ -28,6 +28,18 @@ const std::string COMS = "lare";
 std::string file;
 std::vector<Note> notes;
 
+/* CLEANUP over summer (OOP integration)
+    * Builder patterns
+    * * Builder for parser, conventional builder
+    * * builder for cin, self-building builder
+    * * * pick between cin and readline(), else problems
+
+    * Command pattern for COMS?
+    * * Polymorphic action
+    * * Removes switching, partially
+    * * remaining switching becomes Factory pattern
+*/
+
 enum Com : char
 {
     LIST = 'l',
