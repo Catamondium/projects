@@ -3,8 +3,6 @@ import kotlin.system.exitProcess
 class Time(val hrs: Int, val mins: Int) {
     val abs = hrs*60 + mins
     
-    constructor(s: String): this(s.split(':'))
-    constructor(s: List<String>) : this(s.getOrNull(0)?.toInt() ?: 0, s.getOrNull(1)?.toInt() ?: 0)
     constructor(m: Int): this((m/60).toInt(), m % 60)
     
     override fun toString() : String {
