@@ -41,8 +41,8 @@ struct Game
             if (ch == KEY_MOUSE)
             {
                 MEVENT rawmouse;
-                getmouse(&rawmouse);
-                mouseEvent(ch, rawmouse);
+                if (getmouse(&rawmouse) == OK)
+                    mouseEvent(ch, rawmouse);
             }
             else
             {
