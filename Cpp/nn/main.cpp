@@ -167,7 +167,7 @@ int main(int argc, char **argv)
     std::optional<unsigned int> key;
     std::optional<Note> note;
 
-    static struct option long_options[] = {
+    static const option long_options[] = {
         //{"interactive", no_argument,       0, 'i'},
         {"key", required_argument, 0, 'k'},
         {"header", required_argument, 0, 'h'},
@@ -212,9 +212,9 @@ int main(int argc, char **argv)
 
     notes = notelib::parse(file);
     // TODO: filter out blanks safely
-    if (optind < argc)
+    if (optind <= argc)
     {
-        char c = std::tolower(argv[optind][0]);
+        char c = (optind != argc) ? std::tolower(argv[optind][0]) : 'l';
         if (std::any_of(COMS.cbegin(), COMS.cend(), [&c](auto o) -> bool { return c == o; }))
         {
             Com target = static_cast<Com>(c);

@@ -6,10 +6,10 @@
 #include "note.hpp"
 
 using systime = std::chrono::system_clock;
-std::optional<std::string> Note::printEvent()
+std::string Note::printEvent()
 {
     if (!event)
-        return {};
+        return "";
     std::time_t tt = systime::to_time_t(event.value());
 
     struct std::tm *tm = std::gmtime(&tt);
@@ -20,13 +20,13 @@ std::optional<std::string> Note::printEvent()
 
 std::string Note::unmarshal()
 {
-    std::string ret;
+    std::stringstream ss;
 
-    ret += "Heading:\t" + heading + '\n';
+    ss << "Heading:\t" << heading << '\n';
     if (event)
-        ret += "Event:\t" + printEvent().value() + '\n';
-    ret += body + "\n##";
-    return ret;
+        ss << "Event:\t" << printEvent() << '\n';
+    ss << body << "\n##";
+    return ss.str();
 }
 
 bool operator==(const Note &lhs, const Note &rhs) noexcept

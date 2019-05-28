@@ -11,7 +11,7 @@ struct Note
 
     Note(std::string heading = "", std::string body = "", std::optional<note_time> event = {}) : heading(heading), body(body), event(event) {}
 
-    std::optional<std::string> printEvent();
+    std::string printEvent();
     std::string unmarshal();
 };
 
