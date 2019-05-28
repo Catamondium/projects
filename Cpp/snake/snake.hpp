@@ -5,36 +5,36 @@
 #include <cassert>
 #include "iterable_queue.hpp"
 
-struct vec
+struct Vec
 {
     int x;
     int y;
-    vec() = default;
-    vec(int x, int y) : x(x), y(y){};
-    vec operator+(vec) const;
-    bool operator==(vec o) const
+    Vec() = default;
+    Vec(int x, int y) : x(x), y(y){};
+    Vec operator+(Vec) const;
+    bool operator==(Vec o) const
     {
         return x == o.x && y == o.y;
     };
 
-    bool operator!=(vec o) const
+    bool operator!=(Vec o) const
     {
         return !(*this == o);
     }
 
-    bool operator<(vec o) const
+    bool operator<(Vec o) const
     {
         return x < o.x || y < o.y;
     }
 
-    bool operator>(vec o) const
+    bool operator>(Vec o) const
     {
         return x > o.x || y > o.y;
     }
 
-    vec operator-() const
+    Vec operator-() const
     {
-        return vec{-x, -y};
+        return Vec{-x, -y};
     };
 
     operator std::string()
@@ -43,45 +43,45 @@ struct vec
     };
 };
 
-vec spawn(int &width, int &height)
+Vec spawn(int &width, int &height)
 {
-    return vec{rand() % width,
+    return Vec{rand() % width,
                rand() % height};
 }
 
-vec vec::operator+(vec other) const
+Vec Vec::operator+(Vec other) const
 {
-    return vec{this->x + other.x, this->y + other.y};
+    return Vec{this->x + other.x, this->y + other.y};
 }
 
-class snake
+class Snake
 {
     static constexpr char ch = 'O';
-    iterable_queue<vec> body;
-    vec vel;
+    iterable_queue<Vec> body;
+    Vec vel;
     bool start = true;
 
 public:
-    inline vec &head()
+    inline Vec &head()
     {
         assert(body.size() != 0);
         return body.back();
     }
-    snake() = default;
-    snake(vec v)
+    Snake() = default;
+    Snake(Vec v)
     {
         auto pos = v;
         for (int i = 0; i < 6; ++i)
         {
-            body.push(v + vec{i, 0});
+            body.push(v + Vec{i, 0});
         }
     };
 
     void dir(int x, int y)
     {
-        vec d = vec{x, y};
+        Vec d = Vec{x, y};
 
-        if (vel == -d || (start && vel == vec{1, 0}))
+        if (vel == -d || (start && vel == Vec{1, 0}))
         {
             start = false;
             return;
@@ -91,8 +91,8 @@ public:
 
     bool outofbounds(int &width, int &height)
     {
-        return (head() < vec{0, 0} ||
-                head() > vec{width - 1, height - 1});
+        return (head() < Vec{0, 0} ||
+                head() > Vec{width - 1, height - 1});
     }
 
     bool bodycollide()
@@ -105,7 +105,7 @@ public:
         return false;
     }
 
-    bool /* dead */ update(vec &fruit, int &width, int &height)
+    bool /* dead */ update(Vec &fruit, int &width, int &height)
     {
         if (body.size() == 0)
             return false;
@@ -113,15 +113,15 @@ public:
         if (head() == fruit)
         {
             body.push(head() + vel);
-            fruit = vec{spawn(width, height)};
+            fruit = Vec{spawn(width, height)};
         }
 
         if (bodycollide())
             return true;
 
-        if (vel != vec(0, 0))
+        if (vel != Vec(0, 0))
         {
-            vec h = head() + vel;
+            Vec h = head() + vel;
 
             if (outofbounds(width, height))
             {
@@ -139,7 +139,7 @@ public:
     {
         mvaddstr(0, 0, ("SCORE: " + std::to_string(body.size() - 1)).c_str());
 
-        for (vec &p : body)
+        for (Vec &p : body)
         {
             mvaddch(p.y, p.x, ch);
         }
