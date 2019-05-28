@@ -13,7 +13,7 @@ struct SnakeGame : public Game
     {
         setFrameRate(10);
         srand(time(NULL));
-        player = Snake{Vec(width / 2, height / 2)}; // avoids empty body;
+        player = Snake{Vec{width / 2, height / 2}}; // avoids empty body;
         fruit = Vec{spawn(width, height)};
     }
 
@@ -31,7 +31,7 @@ void SnakeGame::loop()
 
     if (player.update(fruit, width, height))
     {
-        player = Snake{Vec(width / 2, height / 2)};
+        player = Snake{Vec{width / 2, height / 2}};
     }
 
     player.draw(width, height);

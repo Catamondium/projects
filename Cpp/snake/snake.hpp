@@ -119,7 +119,7 @@ public:
         if (bodycollide())
             return true;
 
-        if (vel != Vec(0, 0))
+        if (vel != Vec{0, 0})
         {
             Vec h = head() + vel;
 
