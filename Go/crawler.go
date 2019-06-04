@@ -51,7 +51,6 @@ func isActive(id int, ret chan<- string, access *sync.Mutex) {
 
 	source := fmt.Sprintf(template, id)
 
-	// Might need to mutex GET, 'tcp no such host' issues
 	access.Lock()
 	resp, err := http.Get(source)
 	access.Unlock()
