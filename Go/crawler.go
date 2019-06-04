@@ -47,7 +47,7 @@ const sampleRatio = 0.1
 const sample = max * sampleRatio
 const template = "https://www.example.co.uk/product_info.php?products_id=%05d"
 
-func isActive(id int, ret chan<- string, access *sync.Mutex) {
+func crawl(id int, ret chan<- string, access *sync.Mutex) {
 
 	source := fmt.Sprintf(template, id)
 
@@ -67,12 +67,12 @@ func isActive(id int, ret chan<- string, access *sync.Mutex) {
 
 	sbody := string(body)
 	if !strings.Contains(sbody, "Product not found!") {
-		ret <- "true"
+		ret <- "active"
 	} else {
-		ret <- "false"
+		ret <- "inactive"
 	}
-	return
 
+	return
 }
 
 func percent(x, max int) int {
@@ -90,25 +90,22 @@ func main() {
 	set := randomSet(sample, max)
 
 	for i := 0; i < sample; i++ {
-		go isActive(set[i], c, getAccess)
+		go crawl(set[i], c, getAccess)
 	}
 
 	active := 0
 	inactive := 0
 	for i := 0; i < sample; i++ {
 		switch b := <-c; b {
-		case "true":
+		case "active":
 			active++
-		case "false":
+		case "inactive":
 			inactive++
 		default:
 			fmt.Fprintf(os.Stderr, "%s\n\n", b)
 		}
 	}
 
-	if active+inactive != max {
-		println("ERROR")
-	}
 	fmt.Printf("Set: %v\n", set)
 	fmt.Printf("Active: %d\n", active)
 	fmt.Printf("Inactive: %d\n", inactive)
