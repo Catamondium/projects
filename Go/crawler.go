@@ -106,7 +106,6 @@ func main() {
 		}
 	}
 
-	fmt.Printf("Set: %v\n", set)
 	fmt.Printf("Active: %d\n", active)
 	fmt.Printf("Inactive: %d\n", inactive)
 	fmt.Printf("Errors: %d\n", sample-(active+inactive))
