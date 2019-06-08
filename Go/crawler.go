@@ -25,12 +25,12 @@ func randomSet(n, max int) []int {
 		panic(fmt.Sprintf("Insufficient range: [0, %d) to fill %d spots", max, n))
 	}
 
-	set := make(map[int]bool, n)
+	set := make(map[int]struct{}, n)
 	ret := make([]int, n)
 	rand.Seed(time.Now().UnixNano())
 
 	for len(set) < n {
-		set[rand.Intn(max)] = true
+		set[rand.Intn(max)] = struct{}{}
 	}
 
 	i := 0
