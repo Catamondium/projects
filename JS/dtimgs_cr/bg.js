@@ -21,10 +21,6 @@ function runtab(tabs) {
     }
 }
 
-function onErr(err) {
-    console.error(err);
-}
-
 chrome.browserAction.onClicked.addListener(() => {
-    chrome.tabs.query({ currentWindow: true }, (tab) => runtab(tab))
+    chrome.tabs.query({ currentWindow: true }, runtab)
 });
