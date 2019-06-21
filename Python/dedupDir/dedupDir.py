@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import hashlib
 from pathlib import Path
+import argparse
 
 
 def md5(file):
@@ -30,5 +31,12 @@ def dedup(path, recurse=True):
 
 
 if __name__ == "__main__":
-    target = './dir'
-    dedup(Path(target))
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--recurse', '-r', action='store_true',
+                        help="dedupliate recursively")
+    parser.add_argument("dirs", type=Path, nargs='*',
+                        help="Directories to deduplicate")
+    args = parser.parse_args()
+
+    for f in args.dirs:
+        dedup(f, args.recurse)
