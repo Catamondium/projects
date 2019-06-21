@@ -15,6 +15,7 @@ def md5(file):
 
 def dedup(path, recurse=True):
     """Deduplicate exact file matches from directory"""
+    dels = 0
     uniques = dict()
     glob = path.rglob if recurse else path.glob
     fs = [x for x in glob('*') if not x.is_dir()]
@@ -24,10 +25,12 @@ def dedup(path, recurse=True):
         if size in uniques:
             if md5(f) in uniques[size]:
                 f.unlink()
+                dels += 1
             else:
                 uniques[size].append(md5(f))
         else:
             uniques[size] = [md5(f)]
+    return dels
 
 
 if __name__ == "__main__":
@@ -38,5 +41,7 @@ if __name__ == "__main__":
                         help="Directories to deduplicate")
     args = parser.parse_args()
 
+    acc = 0
     for f in args.dirs:
-        dedup(f, args.recurse)
+        acc += dedup(f, args.recurse)
+    print(f"{acc} deletions")
