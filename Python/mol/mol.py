@@ -36,13 +36,13 @@ def valid(c):
     return c.isalnum() or c == "(" or c == ")"
 
 
-def sanitize(thing):
-    thing = thing.translate(TRANS)
-    thing = [c for c in thing if valid(c)]
-    return ''.join(thing)
+def sanitize(comp):
+    comp = comp.translate(TRANS)
+    comp = [c for c in comp if valid(c)]
+    return ''.join(comp)
 
 
-class ElementError(BaseException):
+class ElementError(Exception):
     def __init__(self, elem):
         super().__init__()
         self.elem = elem
@@ -51,21 +51,21 @@ class ElementError(BaseException):
         return f"Element \"{self.elem}\" doesn't exist"
 
 
-def mass(thing):
-    big = re.match(COEFFRE, thing)
+def mass(comp):
+    big = re.match(COEFFRE, comp)
     if big:
         bigCoeff = int(big[0])
     else:
         bigCoeff = 1
 
     acc = 0
-    for e, c in re.findall(TOKRE, thing):
+    for e, c in re.findall(TOKRE, comp):
         if e not in ptable:
             raise ElementError(e)
         coeff = make_coeff(c)
         acc += ptable[e] * coeff
 
-    for e, c in re.findall(SUBRE, thing):
+    for e, c in re.findall(SUBRE, comp):
         coeff = make_coeff(c)
         acc += mass(e) * coeff
 
