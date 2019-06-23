@@ -7,6 +7,7 @@
 *.obj
 *.elf
 *__pycache__*
+*.mypy_cache*
 
 #py venv
 *share*
@@ -57,8 +58,8 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-# vscode metadata
-**.vscode/**
+# editor metadata
+*.vscode*
 # Qt build folders
 build-*-Debug
 
