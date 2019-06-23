@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
-import argparse
 
 
 class Time:
     """HH:MM simplistic time"""
 
     def __init__(self, hrs=0, mins=0):
-        self.hrs = hrs  # becoming 1?
+        self.hrs = hrs
         self.mins = mins
 
     def __repr__(self):
         return f"{self.hrs:02d}:{self.mins:02d}"
 
     def __add__(self, t):
-        """Return Time + mins t"""
+        """Return Time + t, where t is another Time or Int mins"""
         tot = t + abs(self)
         return Time.from_int(tot)
 
@@ -23,7 +22,7 @@ class Time:
 
     @classmethod
     def from_int(cls, i):
-        return cls(i // 60, i % 60)
+        return cls(*divmod(i, 60))
 
     @classmethod
     def from_string(cls, string):
@@ -35,6 +34,7 @@ class Time:
 
 
 if __name__ == "__main__":
+    import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("Start", type=Time.from_string,
                         help="HH:MM or mins, representing beginning time")
