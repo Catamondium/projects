@@ -14,22 +14,22 @@ def md5(file):
 
 def dedup(path, recurse=True):
     """Deduplicate exact file matches from directory"""
-    dels = 0
     uniques = dict()
     glob = path.rglob if recurse else path.glob
-    fs = [x for x in glob('*') if not x.is_dir()]
+    fs = {x for x in glob('*') if not x.is_dir()}
 
+    dels = set()
     for f in fs:
         size = f.stat().st_size
         fhash = md5(f)
         if size in uniques:
             if fhash in uniques[size]:
+                dels.add(f)
                 f.unlink()
-                dels += 1
             else:
                 uniques[size].append(fhash)
         else:
-            uniques[size] = [fhash]
+            uniques[size] = {fhash}
     return dels
 
 

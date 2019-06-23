@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 from shutil import rmtree, copytree
 from dedupDir import dedup
+from typing import Set
 
 
 class TestDedup(unittest.TestCase):
@@ -13,13 +14,26 @@ class TestDedup(unittest.TestCase):
     def setUp(self):
         rmtree(self.TARGET, ignore_errors=True)
         copytree(self.BACK, self.TARGET)
-        print(f"{self.TARGET} restored from {self.BACK}")
 
     def test_nonrecurse(self):
-        self.assertEqual(dedup(self.TARGET, False), 0)
+        """Successful flat dedup"""
+        result = dedup(self.TARGET, False)
+        expected = set()
+        self.assertEqual(result, expected)
 
     def test_recurse(self):
-        self.assertEqual(dedup(self.TARGET, True), 8)
+        """Successfully recurses"""
+        result = dedup(self.TARGET, True)
+        expected = 8
+        self.assertEqual(len(result), expected)
+        self.assertTrue(seqcheck(result))
+
+
+def seqcheck(dels: Set[Path]):
+    """We should have 1...7 among the deleted"""
+    names = sorted([x.name for x in dels])
+    nums = (str(x) for x in range(8))
+    return all(y in x for (x, y) in zip(names, nums))
 
 
 if __name__ == "__main__":
