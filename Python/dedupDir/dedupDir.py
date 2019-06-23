@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 import hashlib
 from pathlib import Path
-import argparse
 
 
 def md5(file):
     """md5 hash a file"""
     hash_md5 = hashlib.md5()
     with file.open("rb") as f:
-        for chunk in iter(lambda: f.read(4096), b""):
+        for chunk in iter(lambda: f.read(64 * hash_md5.block_size), b""):
             hash_md5.update(chunk)
     return hash_md5.hexdigest()
 
@@ -22,18 +21,20 @@ def dedup(path, recurse=True):
 
     for f in fs:
         size = f.stat().st_size
+        fhash = md5(f)
         if size in uniques:
-            if md5(f) in uniques[size]:
+            if fhash in uniques[size]:
                 f.unlink()
                 dels += 1
             else:
-                uniques[size].append(md5(f))
+                uniques[size].append(fhash)
         else:
-            uniques[size] = [md5(f)]
+            uniques[size] = [fhash]
     return dels
 
 
 if __name__ == "__main__":
+    import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--recurse', '-r', action='store_true',
                         help="dedupliate recursively")

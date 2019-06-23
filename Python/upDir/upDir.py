@@ -30,7 +30,10 @@ if __name__ == "__main__":
         for i in Path(local).rglob("*"):
             local_path = i.root / i
 
-            relative_path = local_path.relative_to(local).resolve()
+            if local_path.is_dir():
+                continue
+
+            relative_path = local_path.relative_to(local)
             drop_path = str(Path(drop) / relative_path)
 
             # upload the file
