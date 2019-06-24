@@ -22,10 +22,12 @@ class Time:
 
     @classmethod
     def from_int(cls, i):
+        """Construct from i minutes"""
         return cls(*divmod(i, 60))
 
     @classmethod
     def from_string(cls, string):
+        """Construct from HH:MM or mins"""
         if ':' in string:
             parts = [int(x) for x in string.split(':')]
             return cls(parts[0], parts[1])
