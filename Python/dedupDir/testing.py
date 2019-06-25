@@ -8,8 +8,8 @@ from typing import Set
 
 
 class TestDedup(unittest.TestCase):
-    TARGET = Path('./dir')
-    BACK = Path('./keepdir')
+    TARGET = Path('/dev/shm/dir')
+    BACK = Path('./backup')
 
     def setUp(self):
         rmtree(self.TARGET, ignore_errors=True)
