@@ -5,17 +5,6 @@ use std::error::Error;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-macro_rules! return_on_none {
-    ($($ret:ident = $e:expr);+) => {
-       $(
-            if $e.is_none() {
-                return Ok(());
-            }
-            let $ret = $e.unwrap();
-       )+
-    };
-}
-
 #[derive(Debug, Clone, Default)]
 pub struct Config {
     pub dry: bool,
@@ -58,14 +47,17 @@ pub fn mv(rel_parent: &Path, conf: &Config) -> Result<(), Box<dyn Error>> {
     let (dirs, files): (Vec<fs::DirEntry>, Vec<fs::DirEntry>) = filtered.partition(is_directory);
 
     let fpaths: Vec<PathBuf> = files.iter().map(|f| f.path()).collect();
-    let width = (fpaths.len() as f32).log10().ceil().abs() as usize;
-    return_on_none! {dirname = parent.file_name().and_then(|x| x.to_str())};
+    let width = (fpaths.len() as f32).log10().ceil() as usize;
+    let dirname = parent
+        .file_name()
+        .and_then(|x| x.to_str())
+        .ok_or("No Filename")?;
 
     let sorted = re_sort(&fpaths, &dirname, &width)?;
 
     for (i, f) in sorted.iter().enumerate() {
         let ext = match f.extension() {
-            Some(e) => format!("{}{}", ".", e.to_str().unwrap_or("")),
+            Some(e) => format!(".{}", e.to_str().unwrap_or("")),
             None => String::new(),
         };
 
@@ -84,7 +76,7 @@ pub fn mv(rel_parent: &Path, conf: &Config) -> Result<(), Box<dyn Error>> {
         }
 
         if !conf.dry {
-            let _r = fs::rename(f, newpath);
+            fs::rename(f, newpath)?;
         }
     }
 
