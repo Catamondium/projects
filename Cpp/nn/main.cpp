@@ -5,6 +5,7 @@
 #include <pwd.h>       // working directory stuff
 
 #include <vector>
+#include <memory> // unique_ptr
 
 #include <algorithm>  // any_of, remove_if
 #include <functional> // std::function
@@ -18,11 +19,11 @@ namespace fs = std::filesystem;
 
 #include "lib/parsing.hpp"
 #include "lib/note.hpp"
+#include "lib/com.hpp"
 #include <cassert>
 
 constexpr int OPTHELP = 500;
 const std::string DATAFILE = "/.notes";
-const std::string COMS = "lare";
 
 // lucky we need all these in main
 std::string file;
@@ -33,101 +34,7 @@ std::vector<Note> notes;
     * * Builder for parser, conventional builder
     * * builder for cin, self-building builder
     * * * pick between cin and readline(), else problems
-
-    * Command pattern for COMS?
-    * * Polymorphic action
-    * * Removes switching, partially
-    * * remaining switching becomes Factory pattern
 */
-
-enum Com : char
-{
-    LIST = 'l',
-    ADD = 'a',
-    REMOVE = 'r',
-    EDIT = 'e'
-};
-
-namespace com
-{
-void ls(std::vector<Note> &ns)
-{
-    std::cout << "[N]" << std::endl;
-    for (unsigned int i = 0; i < ns.size(); ++i)
-    {
-        std::cout
-            << "[" << i << "] "
-            << ns[i].unmarshal() << std::endl;
-    }
-}
-
-void add(std::vector<Note> &ns, Note n)
-{
-    ns.push_back(n);
-}
-
-void rm(std::vector<Note> &ns, unsigned int key)
-{
-    ns.erase(ns.begin() + key);
-}
-
-void edit(std::vector<Note> &ns, Note n, unsigned int key)
-{
-    ns[key] = n;
-}
-} // namespace com
-
-bool /*hasError*/ execute(Com target, std::vector<Note> &ns, std::optional<Note> note, std::optional<unsigned int> index)
-{
-    switch (target)
-    {
-    case LIST:
-        com::ls(ns);
-        return false;
-    case ADD:
-        if (note)
-        {
-            com::add(ns, note.value());
-            return false;
-        }
-        break;
-    case REMOVE:
-        if (index)
-        {
-            com::rm(ns, index.value());
-            return false;
-        }
-        break;
-    case EDIT:
-        if (note && index)
-        {
-            com::edit(ns, note.value(), index.value());
-            return false;
-        }
-        break;
-    }
-
-    return true;
-}
-
-std::ostream &operator<<(std::ostream &stream, Com c)
-{
-    switch (c)
-    {
-    case LIST:
-        stream << "LIST";
-        break;
-    case ADD:
-        stream << "ADD";
-        break;
-    case REMOVE:
-        stream << "REMOVE";
-        break;
-    case EDIT:
-        stream << "EDIT";
-    }
-    return stream;
-}
 
 void usage(std::string prog)
 {
@@ -220,7 +127,9 @@ int main(int argc, char **argv)
             Com target = static_cast<Com>(c);
 
             std::cout << target << std::endl;
-            if (execute(target, notes, note, key))
+            std::unique_ptr<Command> cmd = comFactory(target, notes, note, key);
+            cmd->execute();
+            if (cmd == nullptr)
                 usage(argv[0]);
         }
         else
@@ -228,11 +137,11 @@ int main(int argc, char **argv)
     } /* else {
 		com::ls(notes);
 		// should only exist when notes are initialised
-		signal(SIGINT, inthandler); 
+		signal(SIGINT, inthandler);
 		while(true) {
 			Com command = iutil::com();
 			std::cout << '\n' << command << std::endl;
-			
+
 			switch(command) {
 				case LIST:
 					com::ls(notes);
