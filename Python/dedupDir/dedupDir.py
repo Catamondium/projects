@@ -39,7 +39,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--recurse', '-r', action='store_true',
                         help="dedupliate recursively")
-    parser.add_argument("dirs", type=Path, nargs='*', default=Path(getcwd()),
+    parser.add_argument("dirs", type=Path, nargs='*', default=[Path(getcwd())],
                         help="Directories to deduplicate")
     args = parser.parse_args()
 
