@@ -44,5 +44,5 @@ if __name__ == "__main__":
 
     acc = 0
     for f in args.dirs:
-        acc += dedup(f, args.recurse)
+        acc += len(dedup(f, args.recurse))
     print(f"{acc} deletions")
