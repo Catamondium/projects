@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import hashlib
 from pathlib import Path
+from os import getcwd
 
 
 def md5(file):
@@ -38,7 +39,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--recurse', '-r', action='store_true',
                         help="dedupliate recursively")
-    parser.add_argument("dirs", type=Path, nargs='*',
+    parser.add_argument("dirs", type=Path, nargs='*', default=Path,
                         help="Directories to deduplicate")
     args = parser.parse_args()
 
