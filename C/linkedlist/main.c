@@ -120,4 +120,7 @@ int main()
 
     destroy(&list);
     printf("\nDestroy:\t%d items remaining\n", length(list));
+
+    destroy(&fromArr);
+    destroy(&clone);
 }
