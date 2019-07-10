@@ -2,9 +2,13 @@
 #include <iostream>
 #include <numeric>
 #include <optional>
+#include <algorithm>
+#include <string_view>
+#include <memory>
 
 #include "iter_stack.hpp"
 #include "../game.hpp"
+#include "../cursesgame.hpp"
 using Tower = Iter_stack<int>;
 
 std::string printTower(Tower t)
@@ -113,8 +117,30 @@ private:
     int mov;
 };
 
-int main()
+#ifdef CURSE_ENABLE
+struct CursesHanoi : public CursesGame
 {
+};
+
+std::unique_ptr<Game> chooseHanoi(bool curses)
+{
+    if (curses)
+        return std::make_unique<CursesHanoi>();
+    else
+        return std::make_unique<CmdHanoi>();
+}
+#endif
+
+int main(int argc, char **argv)
+{
+#ifdef CURSE_ENABLE
+    bool curses = std::any_of(argv, argv + argc, [](std::string str) {
+        return (str.find("curses") != std::string::npos) || (str.find("-c") != std::string::npos);
+    });
+    std::unique_ptr<Game> hanoi = chooseHanoi(curses);
+    hanoi->run();
+#else
     CmdHanoi hanoi;
     hanoi.run();
+#endif
 }
