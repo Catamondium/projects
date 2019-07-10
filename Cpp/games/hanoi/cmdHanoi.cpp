@@ -57,7 +57,7 @@ struct CmdHanoi final : public Game
     }
 
 private:
-    std::array<Tower, 3> towers;
+    std::array<Tower, TOWERS> towers;
     int mov = 0;
 };
 

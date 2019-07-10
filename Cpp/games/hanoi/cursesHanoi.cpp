@@ -17,15 +17,14 @@ constexpr int odd(int n)
 struct CursesHanoi final : public CursesGame
 {
     static constexpr char ch = '#';
-    static constexpr int maxval = 4;
-    static constexpr int realmax = odd(maxval);
+    static constexpr int realmax = odd(MAXVAL);
 
     void init() override;
     void loop() override;
     void input() override;
 
 private:
-    std::array<Tower, 3> towers;
+    std::array<Tower, TOWERS> towers;
     int mov = 0;
     std::string err = "";
 };
@@ -56,7 +55,7 @@ void CursesHanoi::init()
     echo();      // User sees input
     frameperiod = 0s;
 
-    for (int i = maxval; i >= 0; --i)
+    for (int i = MAXVAL; i >= 0; --i)
     {
         towers[0].push(odd(i));
     }

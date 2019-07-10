@@ -5,6 +5,9 @@
 #include "iter_stack.hpp"
 using Tower = Iter_stack<int>;
 
+constexpr int TOWERS = 3;
+constexpr int MAXVAL = 4;
+
 std::string printTower(Tower t)
 // Printed representation for cmdline
 {
