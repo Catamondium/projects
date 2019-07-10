@@ -4,32 +4,40 @@
 #include <optional>
 
 #include "iter_stack.hpp"
+#include "../game.hpp"
 using Tower = Iter_stack<int>;
-using namespace std;
+//using namespace std;
 
-string printTower(Tower t)
+std::string printTower(Tower t)
 // Printed representation for cmdline
 {
-    string body;
+    using std::begin;
+    using std::end;
+    using std::next;
+    using std::to_string;
+
+    std::string body;
     if (!t.empty())
-        body = accumulate(next(t.begin()), t.end(), to_string(t[0]), [](string s, int a) {
-            return move(s) + ", " + to_string(a);
+        body = std::accumulate(next(begin(t)), end(t), to_string(t[0]), [](std::string s, int a) {
+            return std::move(s) + ", " + to_string(a);
         });
     return '[' + body + ']';
 }
 
 template <size_t N>
-bool /* valid move */ transfer(array<Tower, N> &ts, int from, int to)
+std::string /* Error string */ transfer(std::array<Tower, N> &ts, int from, int to)
 // Perform a move
 {
-    size_t size = ts.size();
-    if (from >= size || to >= size)
+    using std::size;
+    using std::to_string;
+
+    std::size_t arrsize = size(ts);
+    if (from >= arrsize || to >= arrsize)
     {
-        cout << "Bad input" << endl;
-        return false;
+        return "Bad input";
     }
 
-    optional<int> mover, reciever;
+    std::optional<int> mover, reciever;
     if (!ts[from].empty())
         mover = ts[from].top();
     if (!ts[to].empty())
@@ -37,9 +45,7 @@ bool /* valid move */ transfer(array<Tower, N> &ts, int from, int to)
 
     if (mover && reciever && mover > reciever)
     {
-        cout << "Illegal move: ";
-        cout << mover.value_or(0) << " > " << reciever.value_or(0) << endl;
-        return false;
+        return "Illegal move: " + to_string(mover.value_or(0)) + " > " + to_string(reciever.value_or(0));
     }
 
     if (mover)
@@ -49,51 +55,63 @@ bool /* valid move */ transfer(array<Tower, N> &ts, int from, int to)
     }
     else
     {
-        cout << "Illegal move: empty source" << endl;
-        return false;
+        return "Illegal move: empty source";
     }
 
-    return true;
+    return "";
 }
 
-void cmdline()
-// Cmdline version of hanoi
-// Represented by printing raw stacks
+struct CmdHanoi final : public Game
 {
-    array<Tower, 3> towers;
-    for (int i = 4; i >= 0; --i)
+    void init() override
     {
-        towers[0].push(i);
+        for (int i = 4; i >= 0; --i)
+        {
+            towers[0].push(i);
+        }
+
+        mov = 0;
     }
 
-    int mov = 0;
-    while (true)
+    void loop() override
     {
+        using std::end;
+
         for (int i = 0; i < towers.size(); ++i)
         {
-            cout << '[' << i << "]: ";
-            cout << printTower(towers[i]) << endl;
+            std::cout << '[' << i << "]: ";
+            std::cout << printTower(towers[i]) << std::endl;
         }
 
         int from, to;
-        cout << mov << " Move? ";
-        cin >> from;
-        cin >> to;
+        std::cout << mov << " Move? ";
+        std::cin >> from;
+        std::cin >> to;
 
-        if (transfer(towers, from, to))
+        std::string err = transfer(towers, from, to);
+        if (err == "")
         {
             ++mov;
         }
-
-        if (towers[towers.size() - 1].cont() == deque{4, 3, 2, 1, 0})
+        else
         {
-            cout << "WIN in " << mov << " moves." << endl;
-            break;
+            std::cout << err << std::endl;
+        }
+
+        if (end(towers)->cont() == std::deque{4, 3, 2, 1, 0})
+        {
+            std::cout << "WIN in " << mov << " moves." << std::endl;
+            noLoop();
         }
     }
-}
+
+private:
+    std::array<Tower, 3> towers;
+    int mov;
+};
 
 int main()
 {
-    cmdline();
+    CmdHanoi hanoi;
+    hanoi.run();
 }

@@ -4,7 +4,7 @@
 #include "snake.hpp"
 #include "../game.hpp"
 
-struct SnakeGame : public Game
+struct SnakeGame : public CursesGame
 {
     Snake player;
     Vec fruit;

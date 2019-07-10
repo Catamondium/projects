@@ -2,14 +2,8 @@
 #include <chrono>
 #include <thread>
 
-constexpr std::chrono::milliseconds frameRate(double fps)
-{
-    return std::chrono::milliseconds((int)(1000 / fps));
-}
-
-using Mouse = MEVENT;
-
 struct Game
+// Basic step-oriented game
 {
     void noLoop()
     {
@@ -21,12 +15,42 @@ struct Game
         stoploop = false;
     }
 
+    virtual void run()
+    {
+        init();
+        while (true)
+        {
+            loop();
+
+            if (stoploop)
+                break;
+        }
+    };
+
+    virtual void init() = 0;
+    virtual void loop() = 0;
+
+protected:
+    bool stoploop = false;
+};
+
+constexpr std::chrono::milliseconds frameRate(double fps)
+{
+    return std::chrono::milliseconds((int)(1000 / fps));
+}
+
+using Mouse = MEVENT;
+
+struct CursesGame : public Game
+// 'Realtime' NCurses game
+{
+
     void setFrameRate(double fps)
     {
         framerate = frameRate(fps);
     }
 
-    void run()
+    void run() final
     {
         init();
         while (true)
@@ -53,7 +77,7 @@ struct Game
         }
     }
 
-    Game()
+    CursesGame()
     {
         initscr();
         cbreak();
@@ -67,19 +91,18 @@ struct Game
         getmaxyx(stdscr, height, width);
     }
 
-    ~Game()
+    ~CursesGame()
     {
         endwin();
     }
 
-    int height;
-    int width;
-    virtual void loop() = 0;
-    virtual void init() = 0;
     virtual void keyPressed(int){};
     virtual void mouseEvent(int, Mouse){};
 
+protected:
+    int height;
+    int width;
+
 private:
     std::chrono::milliseconds framerate = frameRate(60);
-    bool stoploop = false;
 };
