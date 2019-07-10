@@ -13,6 +13,11 @@ struct CmdHanoi final : public Game
             towers[0].push(i);
         }
 
+        for (int i = 1; i < towers.size(); ++i)
+        {
+            towers[i] = Tower();
+        }
+
         std::cout << "Move? FROM TO" << std::endl;
     }
 

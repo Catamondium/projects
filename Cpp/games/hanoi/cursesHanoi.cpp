@@ -27,6 +27,7 @@ struct CursesHanoi final : public CursesGame
 private:
     std::array<Tower, 3> towers;
     int mov = 0;
+    std::string err = "";
 };
 
 std::pair<std::string, int> drawTower(Tower t)
@@ -59,11 +60,18 @@ void CursesHanoi::init()
     {
         towers[0].push(odd(i));
     }
+
+    for (int i = 1; i < towers.size(); ++i)
+    {
+        towers[i] = Tower();
+    }
 }
 
 void CursesHanoi::loop()
 {
     using std::to_string;
+
+    mvaddstr(0, 0, err.c_str());
     for (int i = 0; i < towers.size(); ++i)
     {
         auto [repr, lines] = drawTower(towers[i]);
@@ -71,6 +79,14 @@ void CursesHanoi::loop()
         int corner_x = (i == 0) ? 0 : (i * realmax) + 2;
         mvaddstr(corner_y - 1, corner_x, to_string(i).c_str());
         render(corner_y, corner_x, repr.c_str());
+    }
+
+    if (towers[towers.size() - 1].cont() == std::deque<int>{odd(4), odd(3), odd(2), odd(1), odd(0)})
+    {
+        mvaddstr(height / 2, width / 2, ("WIN in " + to_string(mov) + " moves.").c_str());
+        mvaddstr((height / 2) + 1, width / 2, "Ctl + C to quit");
+        noecho();
+        int ch = getch();
     }
 }
 
@@ -86,14 +102,10 @@ void CursesHanoi::input()
     ss >> from;
     ss >> to;
 
-    std::string err = transfer(towers, from, to);
+    err = transfer(towers, from, to);
     if (err == "")
     {
         mov++;
-    }
-    else
-    {
-        mvaddstr(0, 0, err.c_str());
     }
 }
 
