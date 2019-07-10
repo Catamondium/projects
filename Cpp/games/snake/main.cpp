@@ -19,11 +19,6 @@ struct SnakeGame : public CursesGame
 
     void loop() override;
     void keyPressed(int) override;
-
-    ~SnakeGame()
-    {
-        endwin();
-    }
 };
 
 void SnakeGame::loop()

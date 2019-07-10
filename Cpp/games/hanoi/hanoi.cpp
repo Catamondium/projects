@@ -1,14 +1,10 @@
 #include <array>
-#include <iostream>
 #include <numeric>
 #include <optional>
-#include <algorithm>
-#include <string_view>
-#include <memory>
+#include <iostream>
 
-#include "iter_stack.hpp"
 #include "../game.hpp"
-#include "../cursesgame.hpp"
+#include "iter_stack.hpp"
 using Tower = Iter_stack<int>;
 
 std::string printTower(Tower t)
@@ -74,7 +70,7 @@ struct CmdHanoi final : public Game
         }
 
         mov = 0;
-        std::cout << "Move? FROM TO";
+        std::cout << "Move? FROM TO" << std::endl;
     }
 
     void loop() override
@@ -87,7 +83,7 @@ struct CmdHanoi final : public Game
             std::cout << printTower(towers[i]) << std::endl;
         }
 
-        if (end(towers)->cont() == std::deque{4, 3, 2, 1, 0})
+        if (towers[towers.size() - 1].cont() == std::deque<int>{4, 3, 2, 1, 0})
         {
             std::cout << "WIN in " << mov << " moves." << std::endl;
             noLoop();
@@ -117,30 +113,8 @@ private:
     int mov;
 };
 
-#ifdef CURSE_ENABLE
-struct CursesHanoi : public CursesGame
-{
-};
-
-std::unique_ptr<Game> chooseHanoi(bool curses)
-{
-    if (curses)
-        return std::make_unique<CursesHanoi>();
-    else
-        return std::make_unique<CmdHanoi>();
-}
-#endif
-
 int main(int argc, char **argv)
 {
-#ifdef CURSE_ENABLE
-    bool curses = std::any_of(argv, argv + argc, [](std::string str) {
-        return (str.find("curses") != std::string::npos) || (str.find("-c") != std::string::npos);
-    });
-    std::unique_ptr<Game> hanoi = chooseHanoi(curses);
-    hanoi->run();
-#else
     CmdHanoi hanoi;
     hanoi.run();
-#endif
 }
