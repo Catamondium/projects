@@ -78,7 +78,7 @@ void CursesHanoi::loop()
         int corner_y = height - lines - 1;
         int corner_x = (i == 0) ? 0 : (i * realmax) + 2;
         mvaddstr(corner_y - 1, corner_x, to_string(i).c_str());
-        render(corner_y, corner_x, repr.c_str());
+        render(corner_y, corner_x, repr);
     }
 
     if (towers[towers.size() - 1].cont() == std::deque<int>{odd(4), odd(3), odd(2), odd(1), odd(0)})
