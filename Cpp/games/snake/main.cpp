@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <time.h>
 #include "snake.hpp"
-#include "../game.hpp"
+#include "../cursesgame.hpp"
 
 struct SnakeGame : public CursesGame
 {

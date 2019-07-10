@@ -70,6 +70,7 @@ struct CmdHanoi final : public Game
         }
 
         mov = 0;
+        std::cout << "Move? FROM TO";
     }
 
     void loop() override
@@ -82,6 +83,15 @@ struct CmdHanoi final : public Game
             std::cout << printTower(towers[i]) << std::endl;
         }
 
+        if (end(towers)->cont() == std::deque{4, 3, 2, 1, 0})
+        {
+            std::cout << "WIN in " << mov << " moves." << std::endl;
+            noLoop();
+        }
+    }
+
+    void input() override
+    {
         int from, to;
         std::cout << mov << " Move? ";
         std::cin >> from;
@@ -95,12 +105,6 @@ struct CmdHanoi final : public Game
         else
         {
             std::cout << err << std::endl;
-        }
-
-        if (end(towers)->cont() == std::deque{4, 3, 2, 1, 0})
-        {
-            std::cout << "WIN in " << mov << " moves." << std::endl;
-            noLoop();
         }
     }
 

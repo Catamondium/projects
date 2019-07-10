@@ -60,6 +60,7 @@ class Snake
     iterable_queue<Vec> body;
     Vec vel;
     bool start = true;
+    static constexpr int DEFSIZE = 6;
 
 public:
     inline Vec &head()
@@ -71,7 +72,7 @@ public:
     Snake(Vec v)
     {
         auto pos = v;
-        for (int i = 0; i < 6; ++i)
+        for (int i = 0; i < DEFSIZE; ++i)
         {
             body.push(v + Vec{i, 0});
         }
@@ -137,7 +138,7 @@ public:
 
     void draw(int, int)
     {
-        mvaddstr(0, 0, ("SCORE: " + std::to_string(body.size() - 1)).c_str());
+        mvaddstr(0, 0, ("SCORE: " + std::to_string(body.size() - DEFSIZE)).c_str());
 
         for (Vec &p : body)
         {
