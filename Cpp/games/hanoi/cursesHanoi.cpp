@@ -84,8 +84,6 @@ void CursesHanoi::loop()
     {
         mvaddstr(height / 2, width / 2, ("WIN in " + to_string(mov) + " moves.").c_str());
         mvaddstr((height / 2) + 1, width / 2, "Ctl + C to quit");
-        noecho();
-        int ch = getch();
     }
 }
 
