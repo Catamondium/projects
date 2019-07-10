@@ -44,7 +44,7 @@ std::string /* Error string */ transfer(std::array<Tower, N> &ts, int from, int 
 
     if (mover && reciever && mover > reciever)
     {
-        return "Illegal move: " + to_string(mover.value(0)) + " > " + to_string(reciever.value(0));
+        return "Illegal move: " + to_string(mover.value()) + " > " + to_string(reciever.value());
     }
 
     if (mover)
