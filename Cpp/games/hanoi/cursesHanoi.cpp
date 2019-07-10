@@ -53,7 +53,7 @@ void CursesHanoi::init()
 {
     timeout(-1); // Turn blocking IO back on
     echo();      // User sees input
-    framerate = 0s;
+    frameperiod = 0s;
 
     for (int i = maxval; i >= 0; --i)
     {

@@ -3,13 +3,32 @@
 #include <chrono>
 #include <thread>
 #include "game.hpp"
+using Mouse = MEVENT;
 
 constexpr std::chrono::milliseconds frameRate(double fps)
 {
     return std::chrono::milliseconds((int)(1000 / fps));
 }
 
-using Mouse = MEVENT;
+void render(int yoff, int xoff, std::string img)
+// renders char 'images', with each row newline delimited
+{
+    int col = 0, line = 0;
+
+    for (auto ch : img)
+    {
+        if (ch == '\n')
+        {
+            col = 0;
+            ++line;
+        }
+        else
+        {
+            mvaddch(line + yoff, col + xoff, ch);
+            ++col;
+        }
+    }
+}
 
 struct CursesGame : public Game
 // 'Realtime' NCurses game
@@ -17,7 +36,7 @@ struct CursesGame : public Game
 
     void setFrameRate(double fps)
     {
-        framerate = frameRate(fps);
+        frameperiod = frameRate(fps);
     }
 
     void run() final
@@ -33,11 +52,11 @@ struct CursesGame : public Game
             if (stoploop)
                 break;
 
-            std::this_thread::sleep_for(framerate);
+            std::this_thread::sleep_for(frameperiod);
         }
     }
 
-    void input() final
+    virtual void input() override
     {
         int ch = getch();
         if (ch == 27)
@@ -83,7 +102,5 @@ struct CursesGame : public Game
 protected:
     int height;
     int width;
-
-private:
-    std::chrono::milliseconds framerate = frameRate(60);
+    std::chrono::milliseconds frameperiod = frameRate(60);
 };
