@@ -58,8 +58,7 @@ struct fmt
     };
 
 protected:
-    std::queue<std::string>
-        queue;
+    std::queue<std::string> queue;
 };
 
 std::string fmt::Spec::operator()(std::queue<std::string> &q) const
@@ -75,7 +74,7 @@ std::string fmt::Spec::operator()(std::queue<std::string> &q) const
     if (capture)
     {
         if (q.empty())
-            throw std::logic_error("Too few arguments");
+            throw std::logic_error("Insufficient arguments");
         w = stoi(q.front());
         q.pop();
     }
@@ -102,16 +101,24 @@ fmt::Spec _parse(std::string::iterator begin, std::string::iterator end)
     {
         char c = *begin;
 
-        if (c == ' ' || c == '0')
+        switch (c)
+        {
+        case ' ':
+        case '0':
             sp.fill = c;
-        else if (c == '-')
+            break;
+        case '-':
             sp.align_left = true;
-        else if (c == '+')
+            break;
+        case '+':
             sp.sign = true;
-        else if (c == '*')
+        case '*':
             sp.capture = true;
-        else if (std::isdigit(c))
-            width.push_back(c);
+            break;
+        default:
+            if (std::isdigit(c))
+                width.push_back(c);
+        }
 
         begin++;
     }
