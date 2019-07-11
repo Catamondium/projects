@@ -1,22 +1,22 @@
 import kotlin.system.exitProcess
 
 class Time(val hrs: Int, val mins: Int) {
-    val abs = hrs*60 + mins
-    
-    constructor(m: Int): this((m/60).toInt(), m % 60)
-    
-    override fun toString() : String {
-      return "%02d:%02d".format(hrs, mins)
+    val abs = hrs * 60 + mins
+
+    constructor(m: Int) : this((m / 60).toInt(), m % 60)
+
+    override fun toString(): String {
+        return "%02d:%02d".format(hrs, mins)
     }
 
 }
 
-operator fun Time.plus(mins_in: Int) : Time {
+operator fun Time.plus(mins_in: Int): Time {
     val tot = this.abs + mins_in
     return Time(tot)
 }
 
-operator fun Time.plus(other: Time) : Time {
+operator fun Time.plus(other: Time): Time {
     val tot = this.abs + other.abs
     return Time(tot)
 }
@@ -32,7 +32,7 @@ fun usage() {
     exitProcess(1)
 }
 
-fun String.toTime() : Time {
+fun String.toTime(): Time {
     if (':' in this) {
         val (hrs, mins) = this.split(':')
         return Time(hrs.toInt(), mins.toInt())
@@ -43,7 +43,7 @@ fun String.toTime() : Time {
 
 fun main(args: Array<String>) {
     val re = "^-[a-zA-Z]+".toRegex()
-    val (opts, free) = args.partition {thing -> re.matches(thing)}
+    val (opts, free) = args.partition { thing -> re.matches(thing) }
 
     if ("-h" in opts || free.size < 2) {
         usage()
