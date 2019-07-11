@@ -99,10 +99,26 @@ void CursesHanoi::input()
     ss >> from;
     ss >> to;
 
-    err = transfer(towers, from, to);
-    if (err == "")
+    Error error = transfer(towers, from, to);
+    if (!error)
     {
+        err = "";
         mov++;
+    }
+    else
+    {
+        switch (error.kind)
+        {
+        case Error::kinds::BAD_INPUT:
+            err = error.str;
+            break;
+        case Error::kinds::ILL_COMP:
+            err = "Illegal move";
+            break;
+        case Error::kinds::ILL_EMPTY:
+            err = "Nothing to move";
+            break;
+        }
     }
 }
 

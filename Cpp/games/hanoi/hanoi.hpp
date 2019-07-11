@@ -1,6 +1,7 @@
 #include <array>
 #include <numeric>
 #include <optional>
+#include <string>
 
 #include "iter_stack.hpp"
 using Tower = Iter_stack<int>;
@@ -8,7 +9,26 @@ using Tower = Iter_stack<int>;
 constexpr int TOWERS = 3;
 constexpr int MAXVAL = 4;
 
-std::string printTower(Tower t)
+struct Error
+{
+    enum kinds
+    {
+        NONE,
+        BAD_INPUT,
+        ILL_COMP,
+        ILL_EMPTY
+    } kind = NONE;
+    std::string str = "";
+    Error() = default;
+    Error(kinds kind, std::string str) : kind(kind), str(str) {}
+    operator bool()
+    {
+        return kind != NONE;
+    }
+};
+
+std::string
+printTower(Tower t)
 // Printed representation for cmdline
 {
     using std::begin;
@@ -25,7 +45,7 @@ std::string printTower(Tower t)
 }
 
 template <size_t N>
-std::string /* Error string */ transfer(std::array<Tower, N> &ts, int from, int to)
+Error transfer(std::array<Tower, N> &ts, int from, int to)
 // Perform a move
 {
     using std::size;
@@ -34,7 +54,7 @@ std::string /* Error string */ transfer(std::array<Tower, N> &ts, int from, int 
     std::size_t arrsize = size(ts);
     if (from >= arrsize || to >= arrsize)
     {
-        return "Bad input";
+        return {Error::kinds::BAD_INPUT, "Bad input"};
     }
 
     std::optional<int> mover, reciever;
@@ -45,7 +65,7 @@ std::string /* Error string */ transfer(std::array<Tower, N> &ts, int from, int 
 
     if (mover && reciever && mover > reciever)
     {
-        return "Illegal move: " + to_string(mover.value()) + " > " + to_string(reciever.value());
+        return {Error::kinds::ILL_COMP, "Illegal move: " + to_string(mover.value()) + " > " + to_string(reciever.value())};
     }
 
     if (mover)
@@ -55,8 +75,8 @@ std::string /* Error string */ transfer(std::array<Tower, N> &ts, int from, int 
     }
     else
     {
-        return "Illegal move: empty source";
+        return {Error::kinds::ILL_EMPTY, "Illegal move: empty source"};
     }
 
-    return "";
+    return {};
 }

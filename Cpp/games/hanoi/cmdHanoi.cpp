@@ -45,14 +45,14 @@ struct CmdHanoi final : public Game
         std::cin >> from;
         std::cin >> to;
 
-        std::string err = transfer(towers, from, to);
-        if (err == "")
+        Error err = transfer(towers, from, to);
+        if (!err)
         {
             ++mov;
         }
         else
         {
-            std::cout << err << std::endl;
+            std::cout << err.str << std::endl;
         }
     }
 
