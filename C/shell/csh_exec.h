@@ -1,4 +1,5 @@
 #pragma once
+#include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,6 +10,7 @@
     do                      \
     {                       \
         perror(msg);        \
+        putchar('\n');      \
         exit(EXIT_FAILURE); \
     } while (false)
 
@@ -21,6 +23,7 @@ typedef int (*builtin_fun)(char *);
 int csh_cd(char **args);
 int csh_help(char **args);
 int csh_exit(char **args);
+char *canonicalize(char *);
 
 char *builtins_str[] = {
     "cd",
@@ -38,16 +41,18 @@ int csh_cd(char **args)
 {
     if (args[1] == NULL)
     {
-        fprintf(stderr, "Missing argument to \"cd\"");
+        fprintf(stderr, "Missing argument to \"cd\"\n");
         return 1;
     }
 
-    char *resolved = realpath(args[1], NULL);
+    char *resolved = canonicalize(args[1]);
     if (!resolved)
         handle_error("csh");
 
     if (chdir(resolved) != 0)
         handle_error("csh");
+
+    free(resolved);
     return 1;
 }
 
@@ -91,6 +96,38 @@ int csh_syscall(char **args)
         handle_error("csh");
 
     return 1;
+}
+
+char *getHome()
+{
+    char *homedir;
+    if ((homedir = getenv("HOME")) == NULL)
+        homedir = getpwuid(getuid())->pw_dir;
+
+    if (!homedir)
+        handle_error("csh");
+
+    return homedir;
+}
+
+char *canonicalize(char *relpath)
+{
+    char *buffer;
+
+    if (relpath[0] == '~')
+    { // HOME substitution
+        char *home = getHome();
+        size_t homelen = strlen(home);
+        size_t rellen = strlen(relpath);
+
+        buffer = malloc(sizeof(char) * (homelen + rellen));
+        if (!buffer)
+            handle_error("Allocation error");
+
+        strcpy(buffer, home);
+        strcpy(buffer + homelen, &(relpath[1]));
+    }
+    return buffer;
 }
 
 int csh_exec(char **args)
