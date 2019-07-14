@@ -8,7 +8,7 @@
 
 void printList(intList list)
 {
-    for (unsigned int i = 0; i < length(list); i++)
+    for (unsigned int i = 0; i < length(list); ++i)
     {
         printf("[%02d]:\t%d\n", i, get(list, i));
     }
@@ -38,7 +38,7 @@ int main()
 {
     intList list = EMPTYLIST;
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 10; ++i)
     {
         insert(&list, -1, i);
     }
@@ -60,7 +60,7 @@ int main()
     printList(list);
 
     section("\nSetting");
-    for (unsigned int i = 0; i < length(list); i++)
+    for (unsigned int i = 0; i < length(list); ++i)
     {
         set(list, i, i * 20);
         printf("[%d]:\t%d\n", i, i * 20);
@@ -72,14 +72,14 @@ int main()
     printf("removelast:\t%d\n", removeAt(&list, length(list) - 1));
 
     section("\nPopping");
-    for (unsigned int i = 0; length(list) != 0; i++)
+    for (unsigned int i = 0; length(list) != 0; ++i)
     {
         printf("[%02d]:\t%d\n", i, pop(&list));
     }
 
     printf("\nemptylist:\t%d items\n", length(list));
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 10; ++i)
     {
         insert(&list, i, i);
     }
@@ -90,7 +90,7 @@ int main()
     int testarr[length(list)];
     toArray(list, testarr);
     section("\nArray construction");
-    for (unsigned int i = 0; i < length(list); i++)
+    for (unsigned int i = 0; i < length(list); ++i)
     {
         printf("arr[%02d]:\t%d\n", i, testarr[i]);
     }
@@ -105,7 +105,7 @@ int main()
 
     section("\nMapping:\t(x > 5)");
     map(list, mapfunc);
-    for (unsigned int i = 0; i < length(list); i++)
+    for (unsigned int i = 0; i < length(list); ++i)
     {
         int val = get(list, i);
         printf("[%02d]:\t%d\t%s\n", i, val, (val) ? "true" : "false");

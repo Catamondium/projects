@@ -6,7 +6,7 @@
 
 node *newNode(int i)
 {
-    node *newElem = (node *)malloc(sizeof(node));
+    node *newElem = malloc(sizeof(node));
 
     if (newElem == NULL)
     {

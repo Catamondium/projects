@@ -135,7 +135,7 @@ int csh_exec(char **args)
     if (args[0] == NULL)
         return 1;
 
-    for (int i = 0; i < NBUILTINS; i++)
+    for (int i = 0; i < NBUILTINS; ++i)
     {
         if (strcmp(args[0], builtins_str[i]) == 0)
         {

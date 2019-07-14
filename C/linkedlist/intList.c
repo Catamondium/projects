@@ -43,7 +43,7 @@ node *travP1(node *head, signed int index)
     while (i < index && current != NULL)
     {
         current = current->next;
-        i++;
+        ++i;
     }
 
     if (current == NULL)
@@ -65,7 +65,7 @@ node **travP2(node **headAddr, signed int index)
     while (i < index && *current != NULL)
     {
         current = (&(*current)->next);
-        i++;
+        ++i;
     }
 
     if (i != index)
@@ -79,7 +79,7 @@ node **travP2(node **headAddr, signed int index)
 
 node *makeNode(const int x)
 {
-    node *newElem = (node *)malloc(sizeof(node));
+    node *newElem = malloc(sizeof(node));
     if (newElem == NULL)
     {
         fprintf(stderr, "Unable to allocate new element\n");
@@ -208,7 +208,7 @@ void map(node *head, M_agent f)
 int toArray(node *head, int arr[])
 {
     node *current = head;
-    for (unsigned int i = 0; i < length(head); i++)
+    for (unsigned int i = 0; i < length(head); ++i)
     {
         if (current == NULL)
             return 1;
@@ -223,7 +223,7 @@ node *fromArray(int arr[], const unsigned int arrsize)
     node *head = NULL;
 
     node **linker = NULL;
-    for (unsigned int i = 0; i < arrsize; i++)
+    for (unsigned int i = 0; i < arrsize; ++i)
     {
         node *newElem = makeNode(arr[i]);
 

@@ -1,8 +1,9 @@
+#include <getopt.h>
+#include <math.h> // floor
 #include <stdio.h>
-#include <math.h>   // floor
-#include <unistd.h> // getopt
 #include <stdlib.h> // exit, atoi
 #include <string.h> // strstr
+#include <unistd.h> // getopt
 
 typedef struct Time
 {
@@ -35,10 +36,10 @@ Time doElapse(const Time s, const signed int t)
 
 void usage(const char *prog)
 {
-    printf("Usage: %s [-hq] <HH:MM> <mins | HH:MM>"\n "
-                                                      "Note: if mins_elapse is negative, precede it with '--'\n"
-                                                      "Options:\n\t-q quietly output end time\n"
-                                                      "\t-h print this message and exit\n",
+    printf("Usage: %s [-hq] <HH:MM> <mins | HH:MM>\n "
+           "Note: if mins_elapse is negative, precede it with '--'\n"
+           "Options:\n\t-q quietly output end time\n"
+           "\t-h print this message and exit\n",
            prog);
     exit(1);
 }
