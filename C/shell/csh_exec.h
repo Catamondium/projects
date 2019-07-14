@@ -125,7 +125,7 @@ char *canonicalize(char *relpath)
             handle_error("Allocation error");
 
         strcpy(buffer, home);
-        strcpy(buffer + homelen, &(relpath[1]));
+        strcpy(buffer + homelen, relpath + 1);
     }
     return buffer;
 }
