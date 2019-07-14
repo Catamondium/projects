@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <limits.h>
+#include <sys/wait.h>
 
 #define BUFSIZE_CSH 1024
 #define TOK_DELIM " \t\r\n\a"
