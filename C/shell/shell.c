@@ -3,13 +3,13 @@
 #include <stdbool.h>
 #include <string.h>
 
-#define READLINE
-#ifdef READLINE
+#ifndef READLINE
 #include <readline/readline.h>
 #include <readline/history.h>
 #endif
 #include <readline/tilde.h>
 
+#include "tokenizer.h"
 #include "csh_exec.h"
 
 #define BUFSIZE_CSH 1024
@@ -19,7 +19,7 @@
  * proper tokenization: acknowledge " " strings & escapes
  */
 
-#ifndef READLINE
+#ifdef READLINE
 // Readline does exist, but is example of dynamic array
 char *readline(const char *prompt)
 {
@@ -56,34 +56,6 @@ char *readline(const char *prompt)
 }
 #endif
 
-char **tokenize(char *line)
-{
-    size_t bufsize = BUFSIZE_CSH, position = 0;
-    char **tokens = malloc(bufsize * sizeof(char *));
-    char *tok;
-
-    if (!tokens)
-        handle_error("Bad allocation");
-
-    tok = strtok(line, TOK_DELIM);
-    while (tok != NULL)
-    {
-        tokens[position++] = tok;
-
-        if (position >= bufsize)
-        {
-            bufsize += BUFSIZE_CSH;
-            tokens = realloc(tokens, bufsize * sizeof(char *));
-            if (!tokens)
-                handle_error("Bad allocation");
-        }
-
-        tok = strtok(NULL, TOK_DELIM);
-    }
-    tokens[position] = NULL;
-    return tokens;
-}
-
 void csh_loop()
 {
     char *line = NULL, *expanded = NULL;
@@ -98,7 +70,7 @@ void csh_loop()
         args = tokenize(expanded);
         status = csh_exec(args);
 
-#ifdef READLINE
+#ifndef READLINE
         add_history(line);
 #endif
         free(line);
@@ -107,7 +79,7 @@ void csh_loop()
     } while (status);
 }
 
-#ifdef READLINE
+#ifndef READLINE
 void init_readline()
 {
     rl_bind_key('\t', rl_complete);
@@ -116,7 +88,7 @@ void init_readline()
 
 int main()
 {
-#ifdef READLINE
+#ifndef READLINE
     init_readline();
 #endif
     csh_loop();
