@@ -1,14 +1,24 @@
+#include <array>
 #include <curses.h>
 #include <cstdlib>
 #include <time.h>
+
 #include "snake.hpp"
 #include "../cursesgame.hpp"
 #include "pallete.hpp"
 
-struct SnakeGame : public CursesGame
+struct SnakeGame : public CursesGame<2>
 {
     Snake player;
     Vec fruit;
+
+    SnakeGame()
+    {
+        pallete = {
+            Color{FOOD, COLOR_GREEN, COLOR_BLACK},
+            Color{SNAKE_HEAD, COLOR_RED, COLOR_BLACK},
+        };
+    }
 
     void init() override
     {
@@ -20,14 +30,7 @@ struct SnakeGame : public CursesGame
 
     void loop() override;
     void keyPressed(int) override;
-    void init_pallete() override;
 };
-
-void SnakeGame::init_pallete()
-{
-    init_pair(SNAKE_HEAD, COLOR_RED, COLOR_BLACK);
-    init_pair(FOOD, COLOR_GREEN, COLOR_BLACK);
-}
 
 void SnakeGame::loop()
 {

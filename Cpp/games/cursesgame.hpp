@@ -6,6 +6,13 @@
 #include "game.hpp"
 using Mouse = MEVENT;
 
+struct Color
+{
+    short id = 0, fg = 0, bg = 0;
+    Color() = default;
+    Color(short id, short fg, short bg) : id(id), fg(fg), bg(bg){};
+};
+
 constexpr std::chrono::milliseconds frameRate(double fps)
 {
     return std::chrono::milliseconds((int)(1000 / fps));
@@ -20,7 +27,6 @@ void render(int yoff, int xoff, std::string img)
 // renders char 'images', with each row newline delimited
 {
     int col = 0, line = 0;
-
     for (auto ch : img)
     {
         if (ch == '\n')
@@ -36,6 +42,7 @@ void render(int yoff, int xoff, std::string img)
     }
 }
 
+template <size_t N = 0>
 struct CursesGame : public Game
 // 'Realtime' NCurses game
 {
@@ -109,10 +116,17 @@ struct CursesGame : public Game
 
     virtual void keyPressed(int){};
     virtual void mouseEvent(int, Mouse){};
-    virtual void init_pallete(){};
+    virtual void init_pallete()
+    {
+        for (auto col : pallete)
+        {
+            init_pair(col.id, col.fg, col.bg);
+        }
+    };
 
 protected:
     int height;
     int width;
+    std::array<Color, N> pallete;
     std::chrono::milliseconds frameperiod = frameRate(60);
 };
