@@ -6,12 +6,22 @@
 #include <assert.h>
 #include <ctype.h>
 
+#define handle_error(msg)   \
+    do                      \
+    {                       \
+        perror(msg);        \
+        putchar('\n');      \
+        exit(EXIT_FAILURE); \
+    } while (false)
+
 // quote acknowledging, escaped tokenization
 char **tokenize(char *line)
 {
     size_t len = strlen(line);
     bool inquote = false;
     char **ptrs = malloc(sizeof(char *) * len);
+    if (!ptrs)
+        handle_error("Allocation error");
     size_t position = 0;
     bool inreal = false;
 

@@ -12,14 +12,18 @@
 #include "tokenizer.h"
 #include "csh_exec.h"
 
-#define BUFSIZE_CSH 1024
-#define TOK_DELIM " \t\r\n\a"
-
 /* TODO
- * proper tokenization: acknowledge " " strings & escapes
+ * preproc
+ * * elide escapes
+ * globbing
+ * * general
+ * * prefixed
+ * * suffixed
+ * * pre & suffixed
  */
 
 #ifdef READLINE
+#define BUFSIZE_CSH 1024
 // Readline does exist, but is example of dynamic array
 char *readline(const char *prompt)
 {
@@ -66,7 +70,7 @@ void csh_loop()
         line = readline("CSH> ");
         if (!line)
         {
-            printf("\n");
+            putchar('\n');
             continue;
         }
         expanded = tilde_expand(line);
