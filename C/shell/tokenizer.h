@@ -38,25 +38,21 @@ void _tok_addnulls(char *line)
     bool inquote = false;
     size_t len = strlen(line);
 
-    for (int i = 0; i < len;)
+    for (int i = 0; i < len; ++i)
     {
         if (line[i] == '\\') // skip escaped
         {
-            i += 2;
+            ++i;
         }
         else if (line[i] == '\"') // entered real quote
         {
             line[i] = 0;
             inquote = !inquote;
-            ++i;
         }
         else if (!inquote && isspace(line[i])) // entered real space
         {
             line[i] = 0;
-            ++i;
         }
-        else
-            ++i;
     }
 }
 
