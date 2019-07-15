@@ -18,23 +18,28 @@
  * proper tokenization: acknowledge " " strings & escapes
  */
 
-#define NBUILTINS 3
+#define NBUILTINS 4
 typedef int (*builtin_fun)(char *);
 int csh_cd(char **args);
 int csh_help(char **args);
 int csh_exit(char **args);
+int csh_enum(char **args);
 char *canonicalize(char *);
 
 char *builtins_str[] = {
     "cd",
     "exit",
     "help",
+    "enum",
+    "enumerate",
 };
 
 int (*builtins[])(char **) = {
     &csh_cd,
     &csh_exit,
     &csh_help,
+    &csh_enum,
+    &csh_enum,
 };
 
 int csh_cd(char **args)
@@ -61,6 +66,15 @@ int csh_exit(char **args)
     return 0;
 }
 
+int csh_enum(char **args)
+{
+    for (char **arg = (args + 1); *arg != NULL; ++arg)
+    {
+        printf("\'%s\'\n", *arg);
+    }
+    return 1;
+}
+
 int csh_help(char **args)
 {
     printf(
@@ -68,7 +82,8 @@ int csh_help(char **args)
         "\tcd: Change working directory\n"
         "\t\t->> relative paths not supported\n"
         "\texit: leave the shell\n"
-        "\thelp: display this message\n");
+        "\thelp: display this message\n"
+        "\tenumerate: list args quoted\n");
     return 1;
 }
 
