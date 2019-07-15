@@ -14,32 +14,25 @@
         exit(EXIT_FAILURE); \
     } while (false)
 
-/* TODO
- * proper tokenization: acknowledge " " strings & escapes
- */
-
-#define NBUILTINS 4
-typedef int (*builtin_fun)(char *);
+typedef int (*builtin_fun)(char **);
 int csh_cd(char **args);
 int csh_help(char **args);
 int csh_exit(char **args);
 int csh_enum(char **args);
-char *canonicalize(char *);
 
-char *builtins_str[] = {
-    "cd",
-    "exit",
-    "help",
-    "enum",
-    "enumerate",
-};
+typedef struct
+{
+    char *label;
+    builtin_fun fun;
+} Builtin;
 
-int (*builtins[])(char **) = {
-    &csh_cd,
-    &csh_exit,
-    &csh_help,
-    &csh_enum,
-    &csh_enum,
+#define NBUILTINS sizeof(builtins) / sizeof(Builtin)
+Builtin builtins[] = {
+    {"cd", csh_cd},
+    {"exit", csh_exit},
+    {"help", csh_help},
+    {"enum", csh_enum},
+    {"enumerate", csh_enum},
 };
 
 int csh_cd(char **args)
@@ -50,14 +43,9 @@ int csh_cd(char **args)
         return 1;
     }
 
-    char *resolved = canonicalize(args[1]);
-    if (!resolved)
+    if (chdir(args[1]) != 0)
         handle_error("csh");
 
-    if (chdir(resolved) != 0)
-        handle_error("csh");
-
-    free(resolved);
     return 1;
 }
 
@@ -125,26 +113,6 @@ char *getHome()
     return homedir;
 }
 
-char *canonicalize(char *relpath)
-{
-    char *buffer;
-
-    if (relpath[0] == '~')
-    { // HOME substitution
-        char *home = getHome();
-        size_t homelen = strlen(home);
-        size_t rellen = strlen(relpath);
-
-        buffer = malloc(sizeof(char) * (homelen + rellen));
-        if (!buffer)
-            handle_error("Allocation error");
-
-        strcpy(buffer, home);
-        strcpy(buffer + homelen, relpath + 1);
-    }
-    return buffer;
-}
-
 int csh_exec(char **args)
 {
     if (args[0] == NULL)
@@ -152,9 +120,9 @@ int csh_exec(char **args)
 
     for (int i = 0; i < NBUILTINS; ++i)
     {
-        if (strcmp(args[0], builtins_str[i]) == 0)
+        if (strcmp(args[0], builtins[i].label) == 0)
         {
-            return (*builtins[i])(args);
+            return (builtins[i].fun)(args);
         }
     }
     return csh_syscall(args);
