@@ -60,12 +60,15 @@ void csh_loop()
 {
     char *line = NULL, *expanded = NULL;
     char **args = NULL;
-    int status = false;
+    int status = true;
     do
     {
         line = readline("CSH> ");
         if (!line)
-            break;
+        {
+            printf("\n");
+            continue;
+        }
         expanded = tilde_expand(line);
         args = tokenize(expanded);
         status = csh_exec(args);
