@@ -3,6 +3,7 @@
 #include <time.h>
 #include "snake.hpp"
 #include "../cursesgame.hpp"
+#include "pallete.hpp"
 
 struct SnakeGame : public CursesGame
 {
@@ -19,7 +20,14 @@ struct SnakeGame : public CursesGame
 
     void loop() override;
     void keyPressed(int) override;
+    void init_pallete() override;
 };
+
+void SnakeGame::init_pallete()
+{
+    init_pair(SNAKE_HEAD, COLOR_RED, COLOR_BLACK);
+    init_pair(FOOD, COLOR_GREEN, COLOR_BLACK);
+}
 
 void SnakeGame::loop()
 {
@@ -30,7 +38,9 @@ void SnakeGame::loop()
     }
 
     player.draw(width, height);
+    attron(COLOR_PAIR(FOOD));
     mvaddch(fruit.y, fruit.x, 'X');
+    attroff(COLOR_PAIR(FOOD));
 }
 
 void SnakeGame::keyPressed(int ch)

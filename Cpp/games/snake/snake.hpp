@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cassert>
 #include "iterable_queue.hpp"
+#include "pallete.hpp"
 
 struct Vec
 {
@@ -144,5 +145,10 @@ public:
         {
             mvaddch(p.y, p.x, ch);
         }
+        
+        Vec h = head();
+        attron(COLOR_PAIR(SNAKE_HEAD));
+        mvaddch(h.y, h.x, ch);
+        attroff(COLOR_PAIR(SNAKE_HEAD));
     };
 };

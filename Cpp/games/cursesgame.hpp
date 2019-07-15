@@ -1,5 +1,6 @@
 #pragma once
 #include <curses.h>
+#include <cstdlib>
 #include <chrono>
 #include <thread>
 #include "game.hpp"
@@ -8,6 +9,11 @@ using Mouse = MEVENT;
 constexpr std::chrono::milliseconds frameRate(double fps)
 {
     return std::chrono::milliseconds((int)(1000 / fps));
+}
+
+void termkill()
+{
+    endwin();
 }
 
 void render(int yoff, int xoff, std::string img)
@@ -41,6 +47,7 @@ struct CursesGame : public Game
 
     void run() final
     {
+        init_pallete();
         init();
         while (true)
         {
@@ -80,6 +87,10 @@ struct CursesGame : public Game
     CursesGame()
     {
         initscr();
+        start_color();
+
+        atexit(termkill);
+
         cbreak();
         noecho();
         nonl();
@@ -98,6 +109,7 @@ struct CursesGame : public Game
 
     virtual void keyPressed(int){};
     virtual void mouseEvent(int, Mouse){};
+    virtual void init_pallete(){};
 
 protected:
     int height;
