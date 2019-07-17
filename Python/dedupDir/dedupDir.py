@@ -28,7 +28,7 @@ def dedup(path, recurse=True):
                 dels.add(f)
                 f.unlink()
             else:
-                uniques[size].append(fhash)
+                uniques[size].add(fhash)
         else:
             uniques[size] = {fhash}
     return dels
