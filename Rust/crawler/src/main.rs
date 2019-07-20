@@ -20,7 +20,7 @@ enum Msg {
 
 /// Generate random set in range [0, max), of length n.
 /// panics if max < n.
-fn random_set(n: usize, max: usize) -> Vec<usize> {
+fn random_set(n: usize, max: usize) -> HashSet<usize> {
     if max < n {
         panic!(format!(
             "Insufficient range: [0, {}) to fill {} spots",
@@ -28,15 +28,16 @@ fn random_set(n: usize, max: usize) -> Vec<usize> {
         ))
     }
 
-    let mut set: HashSet<usize> = HashSet::new();
+    let mut set = HashSet::new();
 
     while set.len() < n {
-        set.insert(rand::random());
+        // Will bias distribution
+        // next best implementation to avoid faff
+        let big: usize = rand::random();
+        set.insert(big % max);
     }
 
-    // Not great, will do for statistical sampling,
-    // close enough to rand range w/o faff
-    return set.iter().map(|x| x % max).collect();
+    return set;
 }
 
 fn percent(x: usize, max: usize) -> usize {
