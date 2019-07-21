@@ -2,15 +2,14 @@ extern crate rand;
 extern crate reqwest;
 
 use std::collections::{HashMap, HashSet};
-use std::error::Error;
 use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
 
 const POPULATION: usize = 100_000;
-const SAMPLERATIO: f64 = 0.0001;
+const SAMPLERATIO: f64 = 0.1;
 const SAMPLE: usize = ((POPULATION as f64) * SAMPLERATIO) as usize;
 
-#[derive(PartialEq, Eq, Debug, Clone, Hash)]
+#[derive(PartialEq, Eq, Debug, Hash)]
 enum Msg {
     Active,
     Inactive,
@@ -107,26 +106,23 @@ where
         dat = itr.next();
     }
 
-    match dat {
-        Some(body) => {
-            if body.contains("Product not found!") {
-                chan.send(Msg::Inactive).unwrap();
-            } else {
-                chan.send(Msg::Active).unwrap();
-            }
+    let msg = if let Some(body) = dat {
+        if body.contains("Product not found!") {
+            Msg::Inactive
+        } else {
+            Msg::Active
         }
-
-        None => {
-            chan.send(Msg::Err).unwrap();
-        }
-    }
+    } else {
+        Msg::Err
+    };
+    chan.send(msg).unwrap();
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() {
     let set = random_set(SAMPLE, POPULATION);
 
     let mtx = Arc::new(Mutex::new(Producer::new(set.into_iter())));
-    let (tx, rx): (mpsc::Sender<Msg>, mpsc::Receiver<Msg>) = mpsc::channel();
+    let (tx, rx) = mpsc::channel::<Msg>();
     for _ in 0..SAMPLE {
         let ctx = tx.clone();
         let mut cmtx = mtx.clone();
@@ -159,6 +155,4 @@ fn main() -> Result<(), Box<dyn Error>> {
         "~{} actually active",
         scale(&counts.get(&Msg::Active).unwrap(), &SAMPLERATIO)
     );
-
-    return Ok(());
 }
