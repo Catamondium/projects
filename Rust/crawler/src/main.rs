@@ -56,7 +56,7 @@ where
     fn next(&mut self) -> Option<Self::Item> {
         self.source.next().and_then(|id| {
             let site = format!(
-                "https://www.dartscorner.co.uk/product_info.php?products_id={:05}",
+                "https://www.example.co.uk/product_info.php?products_id={:05}",
                 id
             );
             reqwest::get(site.as_str())
