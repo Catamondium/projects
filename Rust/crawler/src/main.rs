@@ -6,7 +6,7 @@ use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
 
 const POPULATION: usize = 100_000;
-const SAMPLERATIO: f64 = 0.1;
+const SAMPLERATIO: f64 = 0.01;
 const SAMPLE: usize = ((POPULATION as f64) * SAMPLERATIO) as usize;
 
 #[derive(PartialEq, Eq, Debug, Hash)]
@@ -62,6 +62,10 @@ where
                 .ok()
                 .and_then(|mut x| x.text().ok())
         })
+    }
+    
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        self.source.size_hint()
     }
 }
 
