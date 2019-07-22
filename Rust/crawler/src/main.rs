@@ -99,7 +99,7 @@ fn scale(x: &usize, ratio: &f64) -> usize {
     return ((*x as f64) / ratio) as usize;
 }
 
-fn crawl<T>(chan: mpsc::Sender<Msg>, mutex: &mut Arc<Mutex<Producer<T>>>)
+fn crawl<T>(chan: mpsc::SyncSender<Msg>, mutex: &mut Arc<Mutex<Producer<T>>>)
 where
     T: Iterator<Item = usize>,
 {
@@ -126,7 +126,7 @@ fn main() {
     let set = random_set(SAMPLE, POPULATION);
 
     let mtx = Arc::new(Mutex::new(Producer::new(set.into_iter())));
-    let (tx, rx) = mpsc::channel::<Msg>();
+    let (tx, rx) = mpsc::sync_channel::<Msg>(SAMPLE);
     for _ in 0..SAMPLE {
         let ctx = tx.clone();
         let mut cmtx = mtx.clone();
