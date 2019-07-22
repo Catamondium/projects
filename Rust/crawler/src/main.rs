@@ -6,13 +6,12 @@ use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
 
 const POPULATION: usize = 100_000;
-const SAMPLERATIO: f64 = 0.01;
+const SAMPLERATIO: f64 = 0.001;
 const SAMPLE: usize = ((POPULATION as f64) * SAMPLERATIO) as usize;
 
 #[derive(PartialEq, Eq, Debug, Hash)]
 enum Msg {
-    Active,
-    Inactive,
+    Activity(bool),
     Err,
 }
 
@@ -30,32 +29,21 @@ macro_rules! map(
 
 /// templated http request iterator,
 /// adapts reqwest::get calls to struct
-/// to allow proper mutex utilization.
-struct Producer<T>
-where
-    T: Iterator<Item = usize>,
-{
-    pub source: T,
-}
+/// to mutex network calls.
+struct Producer<T: Iterator<Item = usize>>(T);
 
-impl<T> Producer<T>
-where
-    T: Iterator<Item = usize>,
-{
+impl<T: Iterator<Item = usize>> Producer<T> {
     pub fn new(source: T) -> Producer<T> {
-        Producer { source }
+        Producer(source)
     }
 }
 
-impl<T> Iterator for Producer<T>
-where
-    T: Iterator<Item = usize>,
-{
+impl<T: Iterator<Item = usize>> Iterator for Producer<T> {
     type Item = String;
     fn next(&mut self) -> Option<Self::Item> {
-        self.source.next().and_then(|id| {
+        self.0.next().and_then(|id| {
             let site = format!(
-                "https://www.example.co.uk/product_info.php?products_id={:05}",
+                "https://www.dartscorner.co.uk/product_info.php?products_id={:05}",
                 id
             );
             reqwest::get(site.as_str())
@@ -65,7 +53,7 @@ where
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        self.source.size_hint()
+        self.0.size_hint()
     }
 }
 
@@ -111,11 +99,7 @@ where
     }
 
     let msg = if let Some(body) = dat {
-        if body.contains("Product not found!") {
-            Msg::Inactive
-        } else {
-            Msg::Active
-        }
+        Msg::Activity(body.contains("Product not found!"))
     } else {
         Msg::Err
     };
@@ -137,8 +121,8 @@ fn main() {
     drop(tx); // allows other threads to terminate for hangup
 
     let mut counts: HashMap<Msg, usize> = map! {
-        Msg::Active => 0,
-        Msg::Inactive => 0,
+        Msg::Activity(true) => 0,
+        Msg::Activity(false) => 0,
         Msg::Err => 0
     };
 
@@ -146,17 +130,19 @@ fn main() {
         let cnt = counts.get_mut(&msg).unwrap();
         *cnt += 1;
     }
-
-    println!("Active: {}", counts.get(&Msg::Active).unwrap());
-    println!("Inactive: {}", counts.get(&Msg::Inactive).unwrap());
-    println!("Errors: {}", counts.get(&Msg::Err).unwrap());
+    println!(
+        "Active:\t{} / {}",
+        counts.get(&Msg::Activity(true)).unwrap(),
+        SAMPLE
+    );
+    println!("Errors:\t{}", counts.get(&Msg::Err).unwrap());
 
     println!(
         "~{:02}% activity",
-        percent(&counts.get(&Msg::Active).unwrap(), &SAMPLE)
+        percent(&counts.get(&Msg::Activity(true)).unwrap(), &SAMPLE)
     );
     println!(
         "~{} actually active",
-        scale(&counts.get(&Msg::Active).unwrap(), &SAMPLERATIO)
+        scale(&counts.get(&Msg::Activity(true)).unwrap(), &SAMPLERATIO)
     );
 }
