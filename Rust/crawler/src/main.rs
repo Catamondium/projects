@@ -63,7 +63,7 @@ where
                 .and_then(|mut x| x.text().ok())
         })
     }
-    
+
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.source.size_hint()
     }
@@ -134,6 +134,7 @@ fn main() {
             crawl(ctx, &mut cmtx);
         });
     }
+    drop(tx); // allows other threads to terminate for hangup
 
     let mut counts: HashMap<Msg, usize> = map! {
         Msg::Active => 0,
@@ -141,8 +142,7 @@ fn main() {
         Msg::Err => 0
     };
 
-    for _ in 0..SAMPLE {
-        let msg = rx.recv().unwrap();
+    for msg in rx {
         let cnt = counts.get_mut(&msg).unwrap();
         *cnt += 1;
     }
