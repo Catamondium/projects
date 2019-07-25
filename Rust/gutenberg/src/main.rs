@@ -6,8 +6,8 @@ use std::fs::File;
 use std::hash::Hash;
 use std::io::{BufRead, BufReader};
 
+
 /* TODO
- * extract titles from gutenberg headers
  * multithread across multiple files
  * * may require contrival for practice
  * * time analysis?
@@ -36,6 +36,7 @@ impl<K: Hash + Eq + Clone> Counthash<K> {
 
 #[derive(Debug)]
 struct Stats {
+    title: String,
     count: usize,
     mode: Option<(String, usize)>,
     longest: Option<String>,
@@ -45,6 +46,7 @@ struct Stats {
 impl Stats {
     fn new() -> Self {
         Stats {
+            title: "".to_owned(),
             count: 0,
             mode: None,
             longest: None,
@@ -63,14 +65,22 @@ fn analyze(source: BufReader<File>) -> Stats {
     let mut longest: Option<String> = None;
     let mut shortest: Option<String> = None;
 
-    for line in source.lines().skip(19) {
-        let uline = line.unwrap();
+    let mut lines = source
+        .lines()
+        .filter_map(|x| x.ok())
+        .skip_while(|x| !x.contains("Title: "));
+    let title_line = lines.next().expect("No title");
+    let title: String = title_line[7..].to_string();
 
-        if uline.contains("*** END OF THIS PROJECT GUTENBERG EBOOK") {
+    for line in lines
+        .skip_while(|x| !x.contains("*** START OF THIS PROJECT GUTENBERG EBOOK"))
+        .skip(1)
+    {
+        if line.contains("*** END OF THIS PROJECT GUTENBERG EBOOK") {
             break;
         }
 
-        for word in uline.split(char::is_whitespace).filter(|w| *w != "") {
+        for word in line.split(char::is_whitespace).filter(|w| *w != "") {
             words.add(&word.to_string());
             longest = longest
                 .filter(|v| v.len() > word.len())
@@ -87,6 +97,7 @@ fn analyze(source: BufReader<File>) -> Stats {
     });
 
     Stats {
+        title,
         count: words.sum(),
         mode: unmut(&mode),
         longest,
@@ -102,9 +113,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     let stats = analyze(reader);
 
     println!(
-        "count: {}\nmode: {:?}\nlongest: {:?}\nshortest: {:?}",
-        stats.count, stats.mode, stats.longest, stats.shortest
+        "title: {}\ncount: {}\nmode: {:?}\nlongest: {:?}\nshortest: {:?}",
+        stats.title, stats.count, stats.mode, stats.longest, stats.shortest
     );
-
     Ok(())
 }
