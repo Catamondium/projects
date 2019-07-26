@@ -6,6 +6,8 @@ use std::fs::File;
 use std::hash::Hash;
 use std::io::{BufRead, BufReader};
 
+use std::sync::{mpsc, Arc, Barrier};
+use std::thread;
 
 /* TODO
  * multithread across multiple files
@@ -64,7 +66,9 @@ fn unmut<A: Clone, B: Clone>(opt: &Option<(&A, &B)>) -> Option<(A, B)> {
     opt.map(|(a, b)| (a.clone(), b.clone()))
 }
 
-fn analyze(source: BufReader<File>) -> Stats {
+type ArcBarrier = Arc<Barrier>;
+
+fn analyze(source: BufReader<File>, chan: mpsc::SyncSender<Stats>, finish: ArcBarrier) {
     let mut words: Counthash<String> = Counthash::new();
 
     let mut lines = source
@@ -98,23 +102,34 @@ fn analyze(source: BufReader<File>) -> Stats {
         acc.filter(|aw| aw.len() > w.len()).or(Some(w.to_owned()))
     });
 
-    Stats {
+    let ret = Stats {
         title,
         count: words.sum(),
         mode: unmut(&mode),
         longest,
         shortest,
-    }
+    };
+
+    finish.wait(); // avoids staggered printing
+    chan.send(ret).expect("Send error");
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    //let files: Vec<String> = args().skip(1).collect();
-    for (i, file) in args().skip(1).enumerate() {
+    let (tx, rx) = mpsc::sync_channel::<Stats>(args().skip(1).count());
+
+    let flushline = ArcBarrier::new(Barrier::new(args().skip(1).count()));
+    for file in args().skip(1) {
         let handler = File::open(file.clone())?;
         let reader = BufReader::new(handler);
+        let ctx = tx.clone();
+        let cfline = flushline.clone();
+        thread::spawn(move || {
+            analyze(reader, ctx, cfline);
+        });
+    }
+    drop(tx);
 
-        let stats = analyze(reader);
-
+    for (i, stats) in rx.iter().enumerate() {
         println!(
             "title: {}\ncount: {}\nmode: {:?}\nlongest: {:?}\nshortest: {:?}",
             stats.title, stats.count, stats.mode, stats.longest, stats.shortest
