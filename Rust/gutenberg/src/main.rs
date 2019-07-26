@@ -9,12 +9,6 @@ use std::io::{BufRead, BufReader};
 use std::sync::{mpsc, Arc, Barrier};
 use std::thread;
 
-/* TODO
- * multithread across multiple files
- * * may require contrival for practice
- * * time analysis?
- */
-
 #[derive(Debug)]
 struct Counthash<K: Hash + Eq + Clone> {
     data: HashMap<K, usize>,
