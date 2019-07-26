@@ -108,15 +108,21 @@ fn analyze(source: BufReader<File>) -> Stats {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let files: Vec<String> = args().skip(1).collect();
-    let handler = File::open(files[0].clone())?;
-    let reader = BufReader::new(handler);
+    //let files: Vec<String> = args().skip(1).collect();
+    for (i, file) in args().skip(1).enumerate() {
+        let handler = File::open(file.clone())?;
+        let reader = BufReader::new(handler);
 
-    let stats = analyze(reader);
+        let stats = analyze(reader);
 
-    println!(
-        "title: {}\ncount: {}\nmode: {:?}\nlongest: {:?}\nshortest: {:?}",
-        stats.title, stats.count, stats.mode, stats.longest, stats.shortest
-    );
+        println!(
+            "title: {}\ncount: {}\nmode: {:?}\nlongest: {:?}\nshortest: {:?}",
+            stats.title, stats.count, stats.mode, stats.longest, stats.shortest
+        );
+
+        if i + 1 != args().skip(1).count() {
+            print!("\n");
+        }
+    }
     Ok(())
 }
