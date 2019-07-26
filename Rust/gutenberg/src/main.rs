@@ -14,23 +14,28 @@ use std::io::{BufRead, BufReader};
  */
 
 #[derive(Debug)]
-struct Counthash<K: Hash + Eq + Clone>(HashMap<K, usize>);
+struct Counthash<K: Hash + Eq + Clone> {
+    data: HashMap<K, usize>,
+}
+
 impl<K: Hash + Eq + Clone> Counthash<K> {
     fn new() -> Self {
-        Counthash(HashMap::new())
+        Counthash {
+            data: HashMap::new(),
+        }
     }
 
     fn add(&mut self, key: &K) {
-        let item = self.0.get_mut(&key);
+        let item = self.data.get_mut(&key);
         if let Some(count) = item {
             *count += 1;
         } else {
-            self.0.insert(key.clone(), 1);
+            self.data.insert(key.clone(), 1);
         }
     }
 
     fn sum(&self) -> usize {
-        self.0.iter().map(|(_, v)| v).sum()
+        self.data.values().sum()
     }
 }
 
@@ -60,10 +65,7 @@ fn unmut<A: Clone, B: Clone>(opt: &Option<(&A, &B)>) -> Option<(A, B)> {
 }
 
 fn analyze(source: BufReader<File>) -> Stats {
-    // Should we just use the hash to derive other stats?
     let mut words: Counthash<String> = Counthash::new();
-    let mut longest: Option<String> = None;
-    let mut shortest: Option<String> = None;
 
     let mut lines = source
         .lines()
@@ -79,21 +81,21 @@ fn analyze(source: BufReader<File>) -> Stats {
         if line.contains("*** END OF THIS PROJECT GUTENBERG EBOOK") {
             break;
         }
-
         for word in line.split(char::is_whitespace).filter(|w| *w != "") {
             words.add(&word.to_string());
-            longest = longest
-                .filter(|v| v.len() > word.len())
-                .or(Some(word.to_string()));
-
-            shortest = shortest
-                .filter(|v| v.len() < word.len())
-                .or(Some(word.to_string()));
         }
     }
 
-    let mode = words.0.iter().fold(None, |acc, (w, c)| {
-        acc.filter(|(_, ac)| *ac >= c).or(Some((w, c)))
+    let mode = words.data.iter().fold(None, |acc, (w, c)| {
+        acc.filter(|(_, ac)| *ac > c).or(Some((w, c)))
+    });
+
+    let shortest = words.data.keys().fold(None, |acc: Option<String>, w| {
+        acc.filter(|aw| aw.len() < w.len()).or(Some(w.to_owned()))
+    });
+
+    let longest = words.data.keys().fold(None, |acc: Option<String>, w| {
+        acc.filter(|aw| aw.len() > w.len()).or(Some(w.to_owned()))
     });
 
     Stats {
