@@ -44,7 +44,7 @@ class String
     def is_i?
         true if Integer(self) rescue false
     end
-    
+
     def to_t
         if self.is_i?
             return Time.new(self.to_i)
@@ -54,7 +54,7 @@ class String
     end
 end
 
-quiet, rest = ARGV.to_enum.partition {|x| x =~ /-q/}
+quiet, rest = ARGV.to_enum.partition {|x| x =~ /-/}
 
 if rest.length < 2
     puts "Usage: #{$0} [-q] START ELAPSE"

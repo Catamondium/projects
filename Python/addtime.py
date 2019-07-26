@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from sys import version
 
 
 class Time:
@@ -44,10 +45,15 @@ if __name__ == "__main__":
                         help="HH:MM or mins, representing time to elapse by")
     parser.add_argument('-q', '--quiet', action='store_true',
                         help="Print elapsed time only")
+    parser.add_argument('-l', '--lang', action='store_true',
+                        help="Print written language")
     args = parser.parse_args()
 
     elapse = abs(args.Elapse)
     if args.quiet:
         print(f"{args.Start + elapse}")
+    elif args.lang:
+        print(f"Python: {version}")
+        exit()
     else:
         print(f"Start:\t{args.Start}\t{elapse:+}\nEnd:\t{args.Start + elapse}")

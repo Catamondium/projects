@@ -34,10 +34,11 @@ Time operator+(const Time lhs, const int rhs)
 
 void usage(const std::string prog)
 {
-    std::cout << "Usage: " << prog << " [-hq] <HH:MM> <mins | HH:MM>\n"
+    std::cout << "Usage: " << prog << " [-hql] <HH:MM> <mins | HH:MM>\n"
                                       "note: if mins_elapse is negative, precede it with '--'\n"
                                       "options:\n\t-q quietly output end time\n"
-                                      "\t-h print this message and exit"
+                                      "\t-h print this message and exit\n"
+                                      "\t-l print written language"
               << std::endl;
     std::exit(1);
 }
@@ -59,13 +60,16 @@ int main(int argc, char **argv)
     bool quiet = false;
 
     int c;
-    while ((c = getopt(argc, argv, "qh")) != -1)
+    while ((c = getopt(argc, argv, "qhl")) != -1)
     {
         switch (c)
         {
         case 'q':
             quiet = true;
             break;
+        case 'l':
+            std::cout << "Cpp: " << __cplusplus << std::endl;
+            return 0;
         default:
             usage(argv[0]);
             break;

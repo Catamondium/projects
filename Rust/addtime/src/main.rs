@@ -8,7 +8,7 @@ use addtime;
 use addtime::Time;
 
 fn usage(program: &str, opts: &Options) {
-    let brief = format!("Usage: {} [-hq] <HH:MM> <mins | HH:MM>", program);
+    let brief = format!("Usage: {} [-hql] <HH:MM> <mins | HH:MM>", program);
     print!("{}", opts.usage(&brief));
 }
 
@@ -19,6 +19,7 @@ fn main() {
     let mut opts = Options::new();
     opts.optflag("h", "help", "print this usage");
     opts.optflag("q", "quiet", "Only display end time");
+    opts.optflag("l", "lang", "Print written language");
     let matches = opts.parse(&args[1..]).unwrap_or_else(|err| {
         eprintln!("Bad option: {}", err);
         usage(&program, &opts);
@@ -27,6 +28,12 @@ fn main() {
 
     if matches.opt_present("h") {
         usage(&program, &opts);
+        return;
+    }
+
+    if matches.opt_present("l") {
+        print!("Rust: ");
+        println!("{}", env!("CARGO_PKG_VERSION"));
         return;
     }
 
@@ -39,7 +46,12 @@ fn main() {
     if matches.opt_present("q") {
         println!("{}", start + elapse);
     } else {
-        println!("Start:\t{}\t{:+}\nEnd:\t{}", start, elapse, start + elapse);
+        println!(
+            "Start:\t{}\t{:+} mins\nEnd:\t{}",
+            start,
+            elapse,
+            start + elapse
+        );
     }
 }
 

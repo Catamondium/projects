@@ -36,10 +36,11 @@ Time doElapse(const Time s, const signed int t)
 
 void usage(const char *prog)
 {
-    printf("Usage: %s [-hq] <HH:MM> <mins | HH:MM>\n "
+    printf("Usage: %s [-hql] <HH:MM> <mins | HH:MM>\n "
            "Note: if mins_elapse is negative, precede it with '--'\n"
            "Options:\n\t-q quietly output end time\n"
-           "\t-h print this message and exit\n",
+           "\t-h print this message and exit\n"
+           "\t-l print written language\n",
            prog);
     exit(1);
 }
@@ -52,13 +53,16 @@ int main(int argc, char **argv)
     int quiet = 0;
 
     int c;
-    while ((c = getopt(argc, argv, "qh")) != -1)
+    while ((c = getopt(argc, argv, "qhl")) != -1)
     {
         switch (c)
         {
         case 'q':
             quiet = 1;
             break;
+        case 'l':
+            printf("C: %ld\n", __STDC_VERSION__);
+            return 0;
         default:
             usage(argv[0]);
             break;
@@ -80,6 +84,4 @@ int main(int argc, char **argv)
     }
     else
         printf("%02d:%02d\n", end.hrs, end.mins);
-
-    return 0;
 }
