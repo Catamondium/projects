@@ -42,7 +42,7 @@ fn daemon_call(paths: &Vec<PathBuf>) -> Result<(), Box<dyn Error>> {
     let mut map: WatchMap = HashMap::new();
     for p in paths {
         let c = p.clone();
-        let wd = inotify.add_watch(p, WatchMask::CREATE | WatchMask::DELETE)?;
+        let wd = inotify.add_watch(p,  WatchMask::MOVED_TO | WatchMask::MOVED_FROM | WatchMask::CREATE | WatchMask::DELETE)?;
         map.insert(wd, c);
     }
 
@@ -51,7 +51,7 @@ fn daemon_call(paths: &Vec<PathBuf>) -> Result<(), Box<dyn Error>> {
         let events = inotify.read_events_blocking(&mut buf)?;
 
         for e in events {
-            let caller = map.get(&e.wd).unwrap();
+            let caller = map.get(&e.wd)?;
             println!("Event: {:?}", e.mask);
             println!("name: {:?}", caller);
 
