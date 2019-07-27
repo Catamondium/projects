@@ -3,5 +3,6 @@ name = "gutenberg"
 version = "0.1.0"
 authors = ["Catamondium <30911915+Catamondium@users.noreply.github.com>"]
 edition = "2018"
+publish = false
 
 [dependencies]
