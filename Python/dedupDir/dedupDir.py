@@ -2,6 +2,7 @@
 import hashlib
 from pathlib import Path
 from os import getcwd
+from collections import defaultdict
 
 
 def md5(file):
@@ -12,10 +13,9 @@ def md5(file):
             hash_md5.update(chunk)
     return hash_md5.hexdigest()
 
-
 def dedup(path, recurse=True):
     """Deduplicate exact file matches from directory"""
-    uniques = dict()
+    uniques = defaultdict(set)
     glob = path.rglob if recurse else path.glob
     fs = {x for x in glob('*') if not x.is_dir()}
 
@@ -23,14 +23,11 @@ def dedup(path, recurse=True):
     for f in fs:
         size = f.stat().st_size
         fhash = md5(f)
-        if size in uniques:
-            if fhash in uniques[size]:
-                dels.add(f)
-                f.unlink()
-            else:
-                uniques[size].add(fhash)
+        if fhash in uniques[size]:
+            dels.add(f)
+            f.unlink()
         else:
-            uniques[size] = {fhash}
+            uniques[size].add(fhash)
     return dels
 
 
