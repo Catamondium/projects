@@ -86,7 +86,7 @@ fn send(
     remote_write: &mut LineWriter<TcpStream>,
 ) {
     let mut pending = false;
-    let mut buf = String::from(COM_SEND);
+    let mut buf = String::from(format!("{}\n", COM_SEND));
     for line in chan.try_iter() {
         write!(display, "{} -> {}", nick, line).unwrap();
         write!(&mut buf, "{}", line).unwrap();
@@ -95,7 +95,7 @@ fn send(
     }
 
     if pending {
-        write!(remote_write, "{}", buf).unwrap();
+        write!(remote_write, "{}\r", buf).unwrap();
     }
 
 }
@@ -106,10 +106,10 @@ fn recv(
     remote_write: &mut LineWriter<TcpStream>,
     remote_read: &mut BufReader<TcpStream>,
 ) {
-    write!(remote_write, "{}", COM_RECV).unwrap();
-    let mut buf = String::new();
-    remote_read.read_to_string(&mut buf).unwrap();
-    write!(display, "{}", buf).unwrap();
+    write!(remote_write, "{}\n", COM_RECV).unwrap();
+    let mut buf = Vec::new();
+    remote_read.read_until('\r' as u8, &mut buf).unwrap();
+    write!(display, "{}", std::str::from_utf8(&buf).unwrap()).unwrap();
 }
 
 /// Takes input and forwards to slave
