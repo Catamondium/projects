@@ -55,6 +55,7 @@ fn send(
     let mycontent = writeaccess.get_mut(nick).ok_or("Failed to get")?;
     write!(writer, "{}\n{}\n", mycontent, END_DELIM)?;
     mycontent.clear();
+    println!("SEND");
     Ok(())
 }
 
@@ -74,12 +75,41 @@ fn serv_loop(
     let mut reader2 = BufReader::new(inner.try_clone()?);
     let lines = BufReader::new(inner).lines().filter_map(|x| x.ok());
 
-    for line in lines {
+    /* reader2 & lines trampling??
+     *
+     * did reader2 steal Tcp ctrl, blocking reciept of command?
+     *  maybe false: command loop sees reader2's input
+     *  maybe true: reader2 sees command's input (where no terminators occur)
+     *
+     *  sol 1: separate command and gen purpose channels
+     *   other clients indistinguishable, no
+     *  sol 2: duplexing struct?
+     *   how, w/o duplicating handle?
+     *    Rc<TcpStream> ?
+     *     would have to have strict buffering behaviors
+     *     or more stealing will happen
+     *
+     *     closest implementation would read byte-for-byte
+     *     would keep lines representable, but essentially unbuffered
+     *
+     *  sol 3: 1 TcpStream-reader, 2 alternative readers
+     *   retains buffering
+     *   only 1 handle
+     *   conditionally select reciever
+     *
+     * readers & writer
+     * readers manage to avoid reading in writers transmissions
+     */
+
+    for line in lines.filter(|l| l != "") {
         if line == SER_SEND {
             send(&mut writer, &nick, &mut conn)?;
+            println!("SEND");
         } else if line == SER_RECV {
             recv(&mut reader2, &nick, &mut conn);
             println!("RECV");
+        } else {
+            println!("invalid: {}", line);
         }
     }
 

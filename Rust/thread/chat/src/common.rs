@@ -13,3 +13,11 @@ pub const SER_RECV: &str = CLI_SEND;
 /// message terminator
 pub const END_DELIM: &str = "END";
 pub type GenericResult<T> = Result<T, Box<dyn Error>>;
+
+/* large bug:
+ * initially runs with continuous RECV-SEND (cli-serv) loop
+ * this is correct in the blocking protocol
+ * upon first client SEND
+ *  SEND-RECV success on both ends
+ *  exchange gets blocked, fails to resume loop
+ */

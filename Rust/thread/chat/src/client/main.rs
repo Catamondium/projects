@@ -123,6 +123,7 @@ fn send(
     }
 
     if pending {
+        println!("SENT");
         write!(remote_write, "{}\n{}\n", buf, END_DELIM)?;
     }
     Ok(())
@@ -140,9 +141,13 @@ fn recv(
         .filter_map(|x| x.ok())
         .take_while(|l| l != END_DELIM)
         .filter(|l| l != "");
-    for line in lines {
-        write!(display, "{}", line)?;
+    /**** NOT PASSING */
+    // END_DELIM not passed?
+    for (i, line) in lines.enumerate() {
+        println!("recv passover: {}", i);
+        writeln!(display, "{}", line)?;
     }
+    /**** NOT reached at bug condition */
     Ok(())
 }
 
@@ -163,6 +168,7 @@ fn master(port: String) -> GenericResult<()> {
     });
 
     loop {
+        // SEND return w/o error
         send(&nick, &rx, &mut display, &mut remote_write)?;
         recv(&mut display, &mut remote_write, &mut remote_read)?;
     }
@@ -173,7 +179,7 @@ fn slave() {
     let pipe = UnixStream::connect(SOCK).unwrap();
     let reader = BufReader::new(pipe);
 
-    for line in reader.lines().filter_map(|x| x.ok()) {
+    for line in reader.lines().filter_map(|x| x.ok()).filter(|l| l != "") {
         println!("{}", line);
     }
 }
