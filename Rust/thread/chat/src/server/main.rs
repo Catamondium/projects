@@ -35,6 +35,7 @@ fn recv(reader: &mut BufReader<TcpStream>, nick: &str, conn: &mut Connection) {
         .collect::<Vec<String>>()
         .join("\n");
 
+
     conn.write()
         .unwrap()
         .iter_mut()
@@ -53,7 +54,6 @@ fn send(
     let mut writeaccess = conn.write().unwrap();
     let mycontent = writeaccess.get_mut(nick).ok_or("Failed to get")?;
     write!(writer, "{}\n{}\n", mycontent, END_DELIM)?;
-    println!("{}\n{}\n", mycontent, END_DELIM);
     mycontent.clear();
     Ok(())
 }
@@ -79,6 +79,7 @@ fn serv_loop(
             send(&mut writer, &nick, &mut conn)?;
         } else if line == SER_RECV {
             recv(&mut reader2, &nick, &mut conn);
+            println!("RECV");
         }
     }
 

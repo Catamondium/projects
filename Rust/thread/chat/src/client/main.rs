@@ -116,14 +116,14 @@ fn send(
 ) -> GenericResult<()> {
     let mut pending = false;
     let mut buf = String::from(format!("{}\n", CLI_SEND));
-    for line in chan.try_recv() {
+    for line in chan.try_iter() {
         pending = true;
-        write!(display, "{} -> {}", nick, line)?;
-        write!(buf, "{}", line)?;
+        write!(display, "{} -> {}\n", nick, line)?;
+        write!(buf, "{}\n", line)?;
     }
+
     if pending {
         write!(remote_write, "{}\n{}\n", buf, END_DELIM)?;
-        println!("{}\n{}\n", buf, END_DELIM);
     }
     Ok(())
 }
