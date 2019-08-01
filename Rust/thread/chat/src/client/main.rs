@@ -43,18 +43,18 @@ impl Write for UnixProtect {
     }
 }
 
-fn input_thread(chan: mpsc::Sender<String>) {
+fn input_thread(chan: mpsc::Sender<String>) -> Result<(), mpsc::SendError<String>> {
     loop {
         let mut buf: String = String::new();
-
         match stdin().read_line(&mut buf) {
             Ok(0) => {
                 // EOF
-                return;
+                return Ok(());
             }
             Ok(_) => {
-                println!("PENDING");
-                chan.send(buf).unwrap();
+                if buf != "".to_owned() {
+                    chan.send(buf).unwrap();
+                }
             }
             Err(_) => {
                 continue;
@@ -66,31 +66,34 @@ fn input_thread(chan: mpsc::Sender<String>) {
 
 /// Spawn slave process in new terminal.\
 /// Start Unix server (common::SOCK) & return stream
-fn slaveinit() -> LineWriter<UnixProtect> {
+fn slaveinit() -> GenericResult<LineWriter<UnixProtect>> {
     let pipe = UnixListener::bind(SOCK).expect("BIND");
     Command::new("x-terminal-emulator")
         .arg("-e")
-        .arg(env::current_exe().unwrap().to_str().unwrap())
+        .arg(
+            env::current_exe()?
+                .to_str()
+                .ok_or("Can't do convert `current exe`")?,
+        )
         .arg("-s")
-        .spawn()
-        .unwrap();
+        .spawn()?;
 
     let (sock, _) = pipe.accept().expect("ACCEPT");
-    return LineWriter::new(UnixProtect::new(sock));
+    return Ok(LineWriter::new(UnixProtect::new(sock)));
 }
 
-fn readnick() -> String {
+fn readnick() -> io::Result<String> {
     print!("Nick? ");
-    io::stdout().flush().unwrap();
+    io::stdout().flush()?;
     loop {
         let mut buf = String::new();
-        stdin().read_line(&mut buf).unwrap();
+        stdin().read_line(&mut buf)?;
         match buf.split_ascii_whitespace().nth(0) {
             Some(word) => {
                 if word == "" {
                     continue;
                 }
-                return word.to_string();
+                return Ok(word.to_string());
             }
 
             None => {
@@ -107,59 +110,56 @@ fn send(
     chan: &mpsc::Receiver<String>,
     display: &mut LineWriter<UnixProtect>,
     remote_write: &mut LineWriter<TcpStream>,
-) {
+) -> GenericResult<()> {
     let mut pending = false;
     let mut buf = String::from(format!("{}\n", COM_SEND));
-    for line in chan.try_iter() {
-        write!(display, "{} -> {}", nick, line).unwrap();
-        write!(&mut buf, "{}", line).unwrap();
-
+    for line in chan.try_recv() {
         pending = true;
+        write!(display, "{} -> {}", nick, line)?;
+        write!(buf, "{}", line)?;
     }
-
     if pending {
-        println!("REMOTE SEND");
-        write!(remote_write, "{}\n{}", buf, END_DELIM).unwrap();
+        write!(remote_write, "{}\n{}\n", buf, END_DELIM)?;
     }
-
+    Ok(())
 }
 
-// TODO: STICKY
 /// RECV all pending messages
 fn recv(
     display: &mut LineWriter<UnixProtect>,
     remote_write: &mut LineWriter<TcpStream>,
     remote_read: &mut BufReader<TcpStream>,
-) {
-    write!(remote_write, "{}\n", COM_RECV).unwrap();
+) -> GenericResult<()> {
+    write!(remote_write, "{}\n", COM_RECV)?;
     let lines = remote_read
         .lines()
         .filter_map(|x| x.ok())
         .take_while(|l| l != "END");
     for line in lines {
-        write!(display, "{}", line).unwrap();
+        write!(display, "{}", line)?;
     }
+    Ok(())
 }
 
 /// Takes input and forwards to slave
-fn master(port: String) {
-    let nick = readnick();
+fn master(port: String) -> GenericResult<()> {
+    let nick = readnick()?;
 
-    let sock = TcpStream::connect(&format!("localhost:{}", port)).unwrap();
-    let sock2 = sock.try_clone().unwrap();
+    let sock = TcpStream::connect(&format!("localhost:{}", port))?;
+    let sock2 = sock.try_clone()?;
     let mut remote_write = LineWriter::new(sock);
     let mut remote_read = BufReader::new(sock2);
-    writeln!(remote_write, "{}", nick).unwrap(); // TODO retry on refused nick
-    let mut display = slaveinit();
+    writeln!(remote_write, "{}", nick)?; // TODO retry on refused nick
+    let mut display = slaveinit()?;
 
     let (tx, rx) = mpsc::channel::<String>();
     thread::spawn(move || {
-        input_thread(tx);
+        input_thread(tx).unwrap();
     });
 
     loop {
-        send(&nick, &rx, &mut display, &mut remote_write);
-        recv(&mut display, &mut remote_write, &mut remote_read);
+        send(&nick, &rx, &mut display, &mut remote_write)?;
+        recv(&mut display, &mut remote_write, &mut remote_read)?;
     }
 }
 
@@ -173,18 +173,18 @@ fn slave() {
     }
 }
 
-fn main() {
+fn main() -> GenericResult<()> {
     match env::args().nth(1) {
         Some(x) => {
             if x == "-s" {
                 slave();
             } else {
-                master(x);
+                master(x)?;
             }
         }
-
         None => {
-            master(PORT.to_string());
+            master(PORT.to_string())?;
         }
     }
+    Ok(())
 }
