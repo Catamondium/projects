@@ -9,6 +9,9 @@ use std::process::Command;
 use std::sync::mpsc;
 use std::thread;
 
+/// Common Unix Socket
+pub const SOCK: &str = "/tmp/chat_path";
+
 /// UnixStream wrapper providing Drop\
 /// UnixStream is wrapped in BufWriter to delegate Write impl
 struct UnixProtect {
@@ -112,7 +115,7 @@ fn send(
     remote_write: &mut LineWriter<TcpStream>,
 ) -> GenericResult<()> {
     let mut pending = false;
-    let mut buf = String::from(format!("{}\n", COM_SEND));
+    let mut buf = String::from(format!("{}\n", CLI_SEND));
     for line in chan.try_recv() {
         pending = true;
         write!(display, "{} -> {}", nick, line)?;
@@ -120,6 +123,7 @@ fn send(
     }
     if pending {
         write!(remote_write, "{}\n{}\n", buf, END_DELIM)?;
+        println!("{}\n{}\n", buf, END_DELIM);
     }
     Ok(())
 }
@@ -130,11 +134,12 @@ fn recv(
     remote_write: &mut LineWriter<TcpStream>,
     remote_read: &mut BufReader<TcpStream>,
 ) -> GenericResult<()> {
-    write!(remote_write, "{}\n", COM_RECV)?;
+    write!(remote_write, "{}\n", CLI_RECV)?;
     let lines = remote_read
         .lines()
         .filter_map(|x| x.ok())
-        .take_while(|l| l != "END");
+        .take_while(|l| l != END_DELIM)
+        .filter(|l| l != "");
     for line in lines {
         write!(display, "{}", line)?;
     }

@@ -6,7 +6,7 @@ use std::net::{TcpListener, TcpStream};
 use std::sync::{Arc, LockResult, RwLock, RwLockWriteGuard};
 use std::thread;
 
-
+/// Active user hash
 struct Connection(Arc<RwLock<HashMap<String, String>>>);
 
 impl Connection {
@@ -24,15 +24,16 @@ impl Connection {
     }
 }
 
+/// Recieve content from client
 fn recv(reader: &mut BufReader<TcpStream>, nick: &str, conn: &mut Connection) {
-    println!("recv");
     let concat = reader
         .lines()
         .filter_map(|x| x.ok())
-        .map(|l| format!("{} -> {}", nick, l))
         .take_while(|l| l != END_DELIM)
+        .filter(|l| l != "")
+        .map(|l| format!("{} -> {}", nick, l))
         .collect::<Vec<String>>()
-        .join("");
+        .join("\n");
 
     conn.write()
         .unwrap()
@@ -43,6 +44,7 @@ fn recv(reader: &mut BufReader<TcpStream>, nick: &str, conn: &mut Connection) {
         });
 }
 
+/// Send content to client
 fn send(
     writer: &mut LineWriter<TcpStream>,
     nick: &str,
@@ -51,6 +53,7 @@ fn send(
     let mut writeaccess = conn.write().unwrap();
     let mycontent = writeaccess.get_mut(nick).ok_or("Failed to get")?;
     write!(writer, "{}\n{}\n", mycontent, END_DELIM)?;
+    println!("{}\n{}\n", mycontent, END_DELIM);
     mycontent.clear();
     Ok(())
 }
@@ -66,19 +69,16 @@ fn serv_loop(
     println!("REG: {}", nick);
     conn.write().unwrap().insert(nick.clone(), String::new());
 
-    // WARN, might not move each-other along
     let inner = reader.into_inner();
 
     let mut reader2 = BufReader::new(inner.try_clone()?);
     let lines = BufReader::new(inner).lines().filter_map(|x| x.ok());
 
     for line in lines {
-        if line == COM_RECV {
-            // client recieving
-            send(&mut writer, &nick, &mut conn)?; // I send
-        } else if line == COM_SEND {
-            // client sending
-            recv(&mut reader2, &nick, &mut conn); // I recieve
+        if line == SER_SEND {
+            send(&mut writer, &nick, &mut conn)?;
+        } else if line == SER_RECV {
+            recv(&mut reader2, &nick, &mut conn);
         }
     }
 
