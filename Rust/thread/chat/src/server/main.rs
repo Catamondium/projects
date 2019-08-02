@@ -97,6 +97,11 @@ fn serv_loop(
      *   only 1 handle
      *   conditionally select reciever
      *
+     *   readers:
+     *    String doesn't implement Read
+     *    lines() is most important
+     *      mode-locked iterators requesting from struct?
+     *
      * readers & writer
      * readers manage to avoid reading in writers transmissions
      */
