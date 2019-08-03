@@ -27,10 +27,11 @@ constexpr int OPTHELP = 500;
 const std::string DATAFILE = "/.notes";
 
 /* CLEANUP over summer (OOP integration)
-    * Builder pattern
-    * * use for usr input
-    * * * pick between cin and readline(), else problems
-*/
+ * move former 'parser' stuff into util
+ *  remove multi def issue
+ *  namespace to avoid undef
+ * builder for stdin mode
+ */
 
 void usage(std::string prog)
 {
