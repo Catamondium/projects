@@ -13,6 +13,10 @@ struct Note
 
     std::string printEvent();
     std::string unmarshal();
+    operator bool() const
+    {
+        return heading == "" && body == "" && !event;
+    };
 };
 
 bool operator==(const Note &lhs, const Note &rhs) noexcept;

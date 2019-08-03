@@ -19,6 +19,7 @@ namespace fs = std::filesystem;
 
 #include "lib/parsing.hpp"
 #include "lib/note.hpp"
+#include "lib/builder.hpp"
 #include "lib/com.hpp"
 #include <cassert>
 
@@ -30,9 +31,8 @@ std::string file;
 std::vector<Note> notes;
 
 /* CLEANUP over summer (OOP integration)
-    * Builder patterns
-    * * Builder for parser, conventional builder
-    * * builder for cin, self-building builder
+    * Builder pattern
+    * * use for usr input
     * * * pick between cin and readline(), else problems
 */
 

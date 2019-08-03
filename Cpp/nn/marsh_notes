@@ -1,11 +1,6 @@
-Heading:	Get Note unmarshalling functioning.
+Heading:			Get Note unmarshalling functioning.
 Event:	25/12/2018 00:00
 Get nn capable of unmarshalling this file,
 current system involves parsing line by line.
 Given the possibly massive size of these arbitrary text fields, it's probably preferable to loading the whole file and splitting by delimiters.
 ##
-Heading:	Get Note marshalling working
-Event:	07/01/2019 00:00
-Get nn capable of appending the example note into this file,
-(we'll be stowing user notes in ~/something to save on configuration parsing)
-mayyybe into a tempfile for trialling
