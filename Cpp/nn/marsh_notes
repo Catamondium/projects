@@ -1,4 +1,4 @@
-Heading:			Get Note unmarshalling functioning.
+Heading:				Get Note unmarshalling functioning.
 Event:	25/12/2018 00:00
 Get nn capable of unmarshalling this file,
 current system involves parsing line by line.

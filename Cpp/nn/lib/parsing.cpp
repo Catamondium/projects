@@ -12,6 +12,8 @@
 #include <algorithm> // transform, find_if, remove
 #include <locale>    // tolower, isspace
 
+#include "util.hpp"
+
 namespace notelib
 {
 enum struct Keyword
@@ -24,7 +26,7 @@ enum struct Keyword
 
 Keyword fEnum(std::string s)
 {
-    rtrim(s);
+    util::rtrim(s);
     std::transform(s.begin(), s.end(), s.begin(), ::tolower);
 
     if (s == "heading")
@@ -59,7 +61,7 @@ std::vector<Note> parse(std::string fname)
     while (std::getline(file, line))
     {
         auto [field, pos] = getkwd(line);
-        trim(line);
+        util::trim(line);
         switch (field)
         {
         case Keyword::HEADING:
@@ -68,7 +70,7 @@ std::vector<Note> parse(std::string fname)
             break;
         case Keyword::EVENT:
             line = line.substr(pos);
-            builder.setEvent(ltrim(line));
+            builder.setEvent(util::ltrim(line));
             break;
         case Keyword::EOE:
             notes.push_back(builder.build());

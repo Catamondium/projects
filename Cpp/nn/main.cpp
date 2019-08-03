@@ -20,6 +20,7 @@ namespace fs = std::filesystem;
 #include "lib/parsing.hpp"
 #include "lib/note.hpp"
 #include "lib/builder.hpp"
+#include "lib/util.hpp"
 #include "lib/com.hpp"
 #include <cassert>
 
@@ -89,15 +90,15 @@ int main(int argc, char **argv)
         {
         case 'h':
             holder = optarg;
-            builder.setHeading(notelib::trim(holder));
+            builder.setHeading(util::trim(holder));
             break;
         case 'b':
             holder = optarg;
-            builder.setBody(notelib::trim(holder));
+            builder.setBody(util::trim(holder));
             break;
         case 'e':
             holder = optarg;
-            builder.setEvent(notelib::trim(holder));
+            builder.setEvent(util::trim(holder));
             break;
         case 'k':
             key = std::stoi(optarg);

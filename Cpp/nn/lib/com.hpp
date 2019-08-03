@@ -2,12 +2,6 @@
 #include <iostream>
 #include <vector>
 #include <memory>
-/*
-Com target, // DONE
-std::vector<Note> &ns,
-std::optional<Note> note,
-std::optional<unsigned int> index
- */
 
 struct Command
 {
