@@ -68,9 +68,10 @@ int main(int argc, char **argv)
 {
     std::string file = getHome() + DATAFILE;
 
-    std::string head = "";
-    std::string body = "";
-    std::optional<note_time> event;
+    //std::string head = "";
+    //std::string body = "";
+    //std::optional<note_time> event;
+    NoteBuilder builder;
     std::optional<unsigned int> key;
     std::optional<Note> note;
 
@@ -93,15 +94,15 @@ int main(int argc, char **argv)
         {
         case 'h':
             holder = optarg;
-            head = notelib::trim(holder);
+            builder.setHeading(notelib::trim(holder));
             break;
         case 'b':
             holder = optarg;
-            body = notelib::trim(holder);
+            builder.setBody(notelib::trim(holder));
             break;
         case 'e':
             holder = optarg;
-            event = notelib::makeEvent(notelib::trim(holder));
+            builder.setEvent(notelib::trim(holder));
             break;
         case 'k':
             key = std::stoi(optarg);
@@ -115,7 +116,7 @@ int main(int argc, char **argv)
         }
     }
 
-    note = Note(head, body, event);
+    note = builder.build();
 
     notes = notelib::parse(file);
     // TODO: filter out blanks safely
