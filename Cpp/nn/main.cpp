@@ -28,9 +28,6 @@ constexpr int OPTHELP = 500;
 const std::string DATAFILE = "/.notes";
 
 /* CLEANUP over summer (OOP integration)
- * move former 'parser' stuff into util
- *  remove multi def issue
- *  namespace to avoid undef
  * builder for stdin mode
  */
 
@@ -38,6 +35,7 @@ void usage(std::string prog)
 {
     std::cout << "usage: " << prog << " command [ikhbef]\n"
                                       "options:\n"
+                                      //"\t-i\t--interactive Interactive mode\n"
                                       "\t-k\t--key Key of note\n"
                                       "\t-h\t--heading Define heading\n"
                                       "\t-b\t--body Define body\n"
@@ -70,6 +68,7 @@ int main(int argc, char **argv)
     NoteBuilder builder;
     std::optional<unsigned int> key;
     std::optional<Note> note;
+    bool interactive = false;
 
     static const option long_options[] = {
         //{"interactive", no_argument,       0, 'i'},
@@ -107,6 +106,9 @@ int main(int argc, char **argv)
             std::cout << "File:\t" << optarg << std::endl;
             file = fs::absolute(optarg).string();
             break;
+        case 'i':
+            interactive = true;
+            break;
         default:
             usage(argv[0]);
         }
@@ -115,8 +117,8 @@ int main(int argc, char **argv)
     note = builder.build();
 
     notes = notelib::parse(file);
-    // TODO: filter out blanks safely
-    if (optind <= argc)
+    notes.erase(std::remove_if(notes.begin(), notes.end(), [](auto x) { return bool(x); }), notes.end());
+    if (!interactive && optind <= argc)
     {
         char c = (optind != argc) ? std::tolower(argv[optind][0]) : 'l';
         if (std::any_of(COMS.cbegin(), COMS.cend(), [&c](auto o) -> bool { return c == o; }))
