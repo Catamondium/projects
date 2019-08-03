@@ -26,10 +26,6 @@ namespace fs = std::filesystem;
 constexpr int OPTHELP = 500;
 const std::string DATAFILE = "/.notes";
 
-// lucky we need all these in main
-std::string file;
-std::vector<Note> notes;
-
 /* CLEANUP over summer (OOP integration)
     * Builder pattern
     * * use for usr input
@@ -66,11 +62,9 @@ std::string getHome()
 
 int main(int argc, char **argv)
 {
+    std::vector<Note> notes;
     std::string file = getHome() + DATAFILE;
 
-    //std::string head = "";
-    //std::string body = "";
-    //std::optional<note_time> event;
     NoteBuilder builder;
     std::optional<unsigned int> key;
     std::optional<Note> note;
@@ -136,33 +130,8 @@ int main(int argc, char **argv)
         else
             usage(argv[0]);
     } /* else {
-		com::ls(notes);
-		// should only exist when notes are initialised
-		signal(SIGINT, inthandler);
-		while(true) {
-			Com command = iutil::com();
-			std::cout << '\n' << command << std::endl;
-
-			switch(command) {
-				case LIST:
-					com::ls(notes);
-					break;
-				case ADD:
-					com::add(notes, iutil::note());
-					break;
-				case REMOVE:
-					com::rm(notes, iutil::key(notes.size()));
-					break;
-				case EDIT:
-					com::edit(notes, iutil::note(), iutil::key(notes.size()));
-					break;
-			}
-			std::cout << std::endl; //spacing
-			// clean
-			notes.erase(std::remove(notes.begin(), notes.end(), Note()));
-			com::ls(notes);
-		}
-	}*/
+        //TODO stdin mode
+    }*/
 
     notelib::unmarshAll(notes, file);
 }
