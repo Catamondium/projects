@@ -7,10 +7,8 @@
 #include <vector>
 #include <memory> // unique_ptr
 
-#include <algorithm>  // any_of, remove_if
-#include <functional> // std::function
-#include <cctype>     // tolower
-#include <csignal>
+#include <algorithm> // any_of, remove_if
+#include <cctype>    // tolower
 #include <filesystem>
 namespace fs = std::filesystem;
 
@@ -22,7 +20,6 @@ namespace fs = std::filesystem;
 #include "lib/builder.hpp"
 #include "lib/util.hpp"
 #include "lib/com.hpp"
-#include <cassert>
 
 constexpr int OPTHELP = 500;
 const std::string DATAFILE = "/.notes";
@@ -87,6 +84,12 @@ int main(int argc, char **argv)
         std::string holder;
         switch (c)
         {
+        /* case 'i':
+            interactive = true;
+            break;*/
+        case 'k':
+            key = std::stoi(optarg);
+            break;
         case 'h':
             holder = optarg;
             builder.setHeading(util::trim(holder));
@@ -99,15 +102,9 @@ int main(int argc, char **argv)
             holder = optarg;
             builder.setEvent(util::trim(holder));
             break;
-        case 'k':
-            key = std::stoi(optarg);
-            break;
         case 'f':
             std::cout << "File:\t" << optarg << std::endl;
             file = fs::absolute(optarg).string();
-            break;
-        case 'i':
-            interactive = true;
             break;
         default:
             usage(argv[0]);
@@ -117,19 +114,19 @@ int main(int argc, char **argv)
     note = builder.build();
 
     notes = notelib::parse(file);
-    notes.erase(std::remove_if(notes.begin(), notes.end(), [](auto x) { return bool(x); }), notes.end());
+    notes.erase(std::remove_if(notes.begin(), notes.end(), [](auto x) -> bool { return bool(x); }), notes.end());
     if (!interactive && optind <= argc)
     {
-        char c = (optind != argc) ? std::tolower(argv[optind][0]) : 'l';
-        if (std::any_of(COMS.cbegin(), COMS.cend(), [&c](auto o) -> bool { return c == o; }))
+        char ch = (optind != argc) ? std::tolower(argv[optind][0]) : 'l';
+        if (std::any_of(COMS.cbegin(), COMS.cend(), [&ch](auto o) -> bool { return ch == o; }))
         {
-            Com target = static_cast<Com>(c);
+            Com target = static_cast<Com>(ch);
 
             std::cout << target << std::endl;
             std::unique_ptr<Command> cmd = comFactory(target, notes, note, key);
-            cmd->execute();
             if (cmd == nullptr)
                 usage(argv[0]);
+            cmd->execute();
         }
         else
             usage(argv[0]);
