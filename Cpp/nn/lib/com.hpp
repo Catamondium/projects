@@ -130,3 +130,8 @@ std::unique_ptr<Command> comFactory(Com target, std::vector<Note> &ns, std::opti
     }
     return nullptr;
 }
+
+std::unique_ptr<Command> ioComFactory(std::vector<Note> &ns)
+{
+    return nullptr;
+}

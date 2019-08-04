@@ -124,15 +124,25 @@ int main(int argc, char **argv)
 
             std::cout << target << std::endl;
             std::unique_ptr<Command> cmd = comFactory(target, notes, note, key);
-            if (cmd == nullptr)
+            if (!cmd)
                 usage(argv[0]);
             cmd->execute();
         }
         else
             usage(argv[0]);
-    } /* else {
-        //TODO stdin mode
-    }*/
+    }
+#ifdef ENABLE_IMODE
+    else
+    {
+        std::unique_ptr<Command> cmd;
+        do
+        {
+            cmd = ioComFactory(notes);
+            if (cmd)
+                cmd->execute();
+        } while (cmd);
+    }
+#endif
 
     notelib::unmarshAll(notes, file);
 }
