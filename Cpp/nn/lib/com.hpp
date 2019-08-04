@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <string>
 
 struct Command
 {
@@ -128,10 +129,5 @@ std::unique_ptr<Command> comFactory(Com target, std::vector<Note> &ns, std::opti
         }
         break;
     }
-    return nullptr;
-}
-
-std::unique_ptr<Command> ioComFactory(std::vector<Note> &ns)
-{
     return nullptr;
 }

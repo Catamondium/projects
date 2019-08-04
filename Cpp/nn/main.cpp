@@ -24,10 +24,6 @@ namespace fs = std::filesystem;
 constexpr int OPTHELP = 500;
 const std::string DATAFILE = "/.notes";
 
-/* CLEANUP over summer (OOP integration)
- * builder for stdin mode
- */
-
 void usage(std::string prog)
 {
     std::cout << "usage: " << prog << " command [ikhbef]\n"
@@ -65,10 +61,8 @@ int main(int argc, char **argv)
     NoteBuilder builder;
     std::optional<unsigned int> key;
     std::optional<Note> note;
-    bool interactive = false;
 
     static const option long_options[] = {
-        //{"interactive", no_argument,       0, 'i'},
         {"key", required_argument, 0, 'k'},
         {"header", required_argument, 0, 'h'},
         {"body", required_argument, 0, 'b'},
@@ -84,9 +78,6 @@ int main(int argc, char **argv)
         std::string holder;
         switch (c)
         {
-        /* case 'i':
-            interactive = true;
-            break;*/
         case 'k':
             key = std::stoi(optarg);
             break;
@@ -114,8 +105,10 @@ int main(int argc, char **argv)
     note = builder.build();
 
     notes = notelib::parse(file);
-    notes.erase(std::remove_if(notes.begin(), notes.end(), [](auto x) -> bool { return bool(x); }), notes.end());
-    if (!interactive && optind <= argc)
+    // Still causing problems
+    //notes.erase(std::remove_if(notes.begin(), notes.end(), [](auto x) -> bool { return bool(x); }), notes.end());
+    //notes.shrink_to_fit();
+    if (optind <= argc)
     {
         char ch = (optind != argc) ? std::tolower(argv[optind][0]) : 'l';
         if (std::any_of(COMS.cbegin(), COMS.cend(), [&ch](auto o) -> bool { return ch == o; }))
@@ -126,23 +119,12 @@ int main(int argc, char **argv)
             std::unique_ptr<Command> cmd = comFactory(target, notes, note, key);
             if (!cmd)
                 usage(argv[0]);
-            cmd->execute();
+            else
+                cmd->execute();
         }
         else
             usage(argv[0]);
-    }
-#ifdef ENABLE_IMODE
-    else
-    {
-        std::unique_ptr<Command> cmd;
-        do
-        {
-            cmd = ioComFactory(notes);
-            if (cmd)
-                cmd->execute();
-        } while (cmd);
-    }
-#endif
 
-    notelib::unmarshAll(notes, file);
+        notelib::unmarshAll(notes, file);
+    }
 }
