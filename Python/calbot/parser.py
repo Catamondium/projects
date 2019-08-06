@@ -1,7 +1,11 @@
+#!/usr/bin/env python3
 from datetime import date, datetime
 from time import strftime, localtime
 from collections import namedtuple
 from csv import reader
+from itertools import takewhile
+from functools import reduce, partial
+from operator import add, ne
 
 Holiday = namedtuple("Holiday", "start end")
 
@@ -19,10 +23,17 @@ def tparse(string):
     return gtime(date(triplet[2], triplet[1], triplet[0]))
 
 
+def decomment(csvfile, symbol='#'):
+    """Strip line comments, delimited by symbol"""
+    for line in csvfile:
+        nline = takewhile(partial(ne, symbol), line)
+        yield reduce(add, nline)
+
+
 def parse(f):
     """Parse holiday descriptors."""
     data = []  # all structs
-    for (start, end) in reader(f, delimiter='\t'):
+    for (start, end) in reader(decomment(f), delimiter='\t', skipinitialspace=True):
         data.append(Holiday(tparse(start), tparse(end)))
     return data
 
