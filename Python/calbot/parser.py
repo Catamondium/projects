@@ -33,7 +33,7 @@ def decomment(csvfile, symbol='#'):
 def parse(f):
     """Parse holiday descriptors."""
     data = []  # all structs
-    for (start, end) in reader(decomment(f), delimiter=' ', skipinitialspace=True):
+    for start, end in reader(decomment(f), delimiter=' ', skipinitialspace=True):
         data.append(Holiday(tparse(start), tparse(end)))
     return data
 
