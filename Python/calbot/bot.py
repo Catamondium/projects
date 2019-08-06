@@ -9,7 +9,7 @@ from google.auth.transport.requests import Request
 
 import sys
 import argparse
-from parser import parse
+from parser import parse, Holiday
 import logging
 from functools import wraps
 
@@ -38,8 +38,9 @@ def connect():
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    tokpath = Path(__file__).resolve().parent / 'token.pickle'
-    credpath = Path(__file__).resolve().parent / 'credentials.json'
+    parent = Path(__file__).resolve().parent
+    tokpath = parent / 'token.pickle'
+    credpath = parent / 'credentials.json'
     if tokpath.exists():
         with open(tokpath, 'rb') as token:
             creds = pickle.load(token)
