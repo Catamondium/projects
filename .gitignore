@@ -15,6 +15,7 @@ Python/**/*include*
 Python/**/*lib64*
 Python/**/*lib*
 Python/**/*bin*
+Python/**/*pyvenv*
 
 # Linker output
 *.ilk
