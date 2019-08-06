@@ -10,9 +10,11 @@
 *.mypy_cache*
 
 #py venv
-*share*
-*include*
-*lib64*
+Python/**/*share*
+Python/**/*include*
+Python/**/*lib64*
+Python/**/*lib*
+Python/**/*bin*
 
 # Linker output
 *.ilk
