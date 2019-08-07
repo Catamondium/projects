@@ -2,8 +2,6 @@
 """French deck playing card stuff"""
 from collections import namedtuple
 from random import shuffle
-from itertools import takewhile
-from functools import partial
 
 Card = namedtuple('Card', ["rank", "suite"])
 Card.__repr__ = lambda c: f"{c.rank} of {c.suite}"
