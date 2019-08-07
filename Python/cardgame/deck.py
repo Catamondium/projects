@@ -30,12 +30,9 @@ class Deck:
         Create full standard deck if cards is None
         else create Deck containing cards
         """
-        if not cards:
-            self._cards = [Card(r, s)
-                           for r in self.ranks
-                           for s in self.suites]
-        else:
-            self._cards = cards
+        self._cards = cards or [Card(r, s)
+                                for r in self.ranks
+                                for s in self.suites]
 
     def __getitem__(self, i):
         return self._cards[i]
