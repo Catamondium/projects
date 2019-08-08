@@ -60,10 +60,13 @@ def mass(comp):
 
     acc = 0
     for e, c in re.findall(TOKRE, comp):
-        if e not in ptable:
-            raise ElementError(e)
+        #if e not in ptable:
+        #    raise ElementError(e)
         coeff = make_coeff(c)
-        acc += ptable[e] * coeff
+        try:
+            acc += ptable[e] * coeff
+        except KeyError:
+            raise ElementError(e)
 
     for e, c in re.findall(SUBRE, comp):
         coeff = make_coeff(c)
