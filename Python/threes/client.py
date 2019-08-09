@@ -22,6 +22,9 @@ chaining rules:
     ^^^^ either must hold throughout chain
 held, faceup and faceown may only be accessed
 in sequence as exhausted
+
+test over Unix sockets?
+    INET won't allow morethan 1 concurrent localhost conn
 """
 
 
