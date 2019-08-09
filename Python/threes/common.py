@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 from itertools import islice
 
+REMOTE = ('localhost', 22555)
+TESTING = '/tmp/threes_sock'
+
 
 def window(seq, n=2):
     """
