@@ -8,6 +8,11 @@ Card.__repr__ = lambda c: f"{c.rank} of {c.suite}"
 Card.__doc__ = "Playing card representation"
 
 
+def cardToNet(c):
+    """Put card into 'word' form"""
+    return f"{c.rank}:{c.suite}"
+
+
 def byRank(c: Card):
     """keyfunction, sort by card rank"""
     return Deck.ranks.index(c.rank)
@@ -66,3 +71,15 @@ class Deck:
             del cdeck[slc]
         rest = cdeck[::]
         return (out, Deck(rest))
+
+
+class Hand:
+    def __init__(self, deal):
+        assert(len(deal) == 9)
+        self.held = sorted(deal[:3], key=byRank)
+        self.faceup = sorted(deal[3:6], key=byRank)
+        self.facedown = deal[6:]
+        self.hidden = True
+
+    def __repr__(self):
+        return f"held    :\t{self.held}\nfaceup  :\t{self.faceup}\nfacedown:\t[ {len(self.facedown)} cards ]"

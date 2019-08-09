@@ -26,25 +26,3 @@ in sequence as exhausted
 test over Unix sockets?
     INET won't allow morethan 1 concurrent localhost conn
 """
-
-
-def cardToNet(c):
-    """Put card into 'word' form"""
-    return f"{c.rank}:{c.suite}"
-
-
-class Hand:
-    def __init__(self, deal):
-        assert(len(deal) == 9)
-        self.held = sorted(deal[:3], key=byRank)
-        self.faceup = sorted(deal[3:6], key=byRank)
-        self.facedown = deal[6:]
-        self.hidden = True
-
-    def __repr__(self):
-        return f"held    :\t{self.held}\nfaceup  :\t{self.faceup}\nfacedown:\t[ {len(self.facedown)} cards ]"
-
-
-if __name__ == "__main__":
-    d, rest = Deck().deal(5, 9)
-    print(Hand(d[0]))
