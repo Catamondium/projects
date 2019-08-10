@@ -1,4 +1,4 @@
-#!./bin/python3
+#!/usr/bin/env python3
 import datetime
 import pickle
 from pathlib import Path

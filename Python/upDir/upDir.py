@@ -1,7 +1,7 @@
-#!./bin/python3
-from pathlib import Path, PurePath
+#!/usr/bin/env python3
 import dropbox
 import argparse
+from pathlib import Path
 
 
 def read_token(tok='creds.secret'):
