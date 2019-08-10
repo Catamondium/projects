@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 import dropbox
-import argparse
 from pathlib import Path
+
+CHUNK_SIZE = 4 * 1024 * 1024
 
 
 def read_token(tok='creds.secret'):
@@ -18,8 +19,26 @@ def pair(arg):
     return arg.split(',')
 
 
+def large_upload(dbx, f, file_size, dest_path):
+    upload_session_start_result = dbx.files_upload_session_start(
+        f.read(CHUNK_SIZE))
+    cursor = dropbox.files.UploadSessionCursor(
+        upload_session_start_result.session_id, f.tell())
+    commit = dropbox.files.CommitInfo(
+        path=dest_path, mode=dropbox.files.WriteMode("overwrite"))
+    while f.tell() < file_size:
+        if ((file_size - f.tell()) <= CHUNK_SIZE):
+            dbx.files_upload_session_finish(
+                f.read(CHUNK_SIZE), cursor, commit)
+        else:
+            dbx.files_upload_session_append_v2(
+                f.read(CHUNK_SIZE), cursor.session_id, cursor.offset)
+            cursor.offset = f.tell()
+
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser("Upload directory to Dropbox recursively")
+    import argparse
+    parser = argparse.ArgumentParser("Upload directory to dropbox recursively")
     parser.add_argument("pair", type=pair, nargs='+',
                         help="LOCAL,DROP directory pairs")
     args = parser.parse_args()
@@ -38,5 +57,9 @@ if __name__ == "__main__":
 
             # upload the file
             with open(local_path, 'rb') as f:
-                client.files_upload(f.read(), drop_path,
-                                    mode=dropbox.files.WriteMode("overwrite"))
+                try:
+                    client.files_upload(f.read(), drop_path,
+                                        mode=dropbox.files.WriteMode("overwrite"))
+                except:  # write timeout
+                    large_upload(
+                        client, f, local_path.stat().st_size, drop_path)
