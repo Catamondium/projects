@@ -12,9 +12,10 @@ from parser import parse, Holiday
 import logging
 from functools import wraps
 
+LOGFILE = "main.log"
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly",
           "https://www.googleapis.com/auth/calendar.events"]
-logging.basicConfig(filename="main.log", filemode="w+")
+logging.basicConfig(filename=LOGFILE, filemode="w+")
 
 
 def logged(func):
@@ -25,6 +26,7 @@ def logged(func):
             result = func(*args, **kwargs)
         except Exception as e:
             logging.exception(f"{func.__name__}:\n{e}")
+            print("Exception logged to {LOGFILE}")
             sys.exit(1)
         return result
     return deco
@@ -109,11 +111,8 @@ def get_events(service, cal, data):
 
 @logged
 def del_events(service, cal, events):
-    """Delete events and return number of deletions
-    """
     for event in events:
         service.events().delete(calendarId=cal, eventId=event).execute()
-    return len(events)
 
 
 if __name__ == "__main__":
