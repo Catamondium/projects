@@ -8,7 +8,6 @@ from google.auth.transport.requests import Request
 
 
 import sys
-import argparse
 from parser import parse, Holiday
 import logging
 from functools import wraps
@@ -82,7 +81,7 @@ def print_cals(service):
 
 @logged
 def expand(service, cal, event, holiday):
-    """Expand recurring events to instances in data.
+    """Expand recurring events to instances
     """
     events = set()
     start, end = holiday
@@ -96,7 +95,7 @@ def expand(service, cal, event, holiday):
 
 @logged
 def get_events(service, cal, data):
-    """Get recurring instances."""
+    """Get recuring event instances in data ranges"""
     events = set()
     for start, end in data:
         response = service.events().list(
@@ -118,10 +117,11 @@ def del_events(service, cal, events):
 
 
 if __name__ == "__main__":
+    import argparse
     service = connect()
     parser = argparse.ArgumentParser(description="Delete reccuring events")
-    parser.add_argument("descriptor", type=argparse.FileType(mode='r'), metavar="Descriptor file",
-                        help="TSV of event ranges to be cleared")
+    parser.add_argument("descriptor", type=argparse.FileType(mode='r'), metavar="Descriptor",
+                        help="space-delimited table of event ranges to be cleared")
     parser.add_argument("target", metavar="Target calendar", nargs='?',
                         help="Calendar to be cleared", default=None)
     args = parser.parse_args()
