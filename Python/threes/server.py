@@ -52,10 +52,10 @@ handlers = defaultdict(lambda: noop, _handlers)
 
 def serve(x, sock, addr):
     # needs to thread off at some point
-    reader = sock.makefile(buffering=1)
+    reader = iter(sock.makefile(buffering=1))
     for name, args in call_iter(reader):
         try:
-            handlers[name](*args, sock=sock, addr=addr)
+            handlers[name](*args, sock=sock, reader=reader, addr=addr)
         except TypeError:  # bad call
             pass
 
@@ -75,9 +75,11 @@ if __name__ == "__main__":
         "--mode", default='inet', choices=trans_mode.keys(), help="Network family")
     nspace = parser.parse_args()
 
-    """
     server = socket.socket(trans_mode[nspace.mode][0])
     server.bind(*trans_mode[nspace.mode][1])
     for x in range(nspace.players):
         serve(x, *server.accept())
-    """
+
+    if nspace.mode == 'unix':
+        from pathlib import Path
+        Path(NIX).unlink()
