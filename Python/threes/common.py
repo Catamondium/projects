@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-REMOTE = ('localhost', 22555)
+REMOTE = ('', 22555)
 NIX = '/tmp/threes_sock'
 
 

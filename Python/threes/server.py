@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import socket
-import socketserver
 from common import *
+from collections import defaultdict
 from deck import Card, Deck, byRank
 """
 https://en.wikipedia.org/wiki/Shithead_(card_game)
@@ -22,7 +22,7 @@ played pile may only rise in rank
 chaining rules:
     rank rises for same suit
     suit changes for same rank
-    ^^^^ either must hold throughout chain
+    ^ either must hold throughout chain
 held, faceup and faceown may only be accessed
 in sequence as exhausted
 
@@ -30,30 +30,54 @@ test over Unix sockets?
     INET won't allow morethan 1 concurrent localhost conn
 """
 
+trans_mode = {
+    'inet': (socket.AF_INET, (REMOTE,)),
+    'unix': (socket.AF_UNIX, NIX)
+}
 
-class ThreesHandler(socketserver.BaseRequestHandler):
-    def handle(self):
-        pass
+
+def noop(*args, **kwargs):
+    pass
+
+
+def test(*args, **kwargs):
+    print("TS")
+
+
+_handlers = [
+    ('TEST', test)
+]
+handlers = defaultdict(lambda: noop, _handlers)
+
+
+def serve(x, sock, addr):
+    # needs to thread off at some point
+    reader = sock.makefile(buffering=1)
+    for name, args in call_iter(reader):
+        try:
+            handlers[name](*args, sock=sock, addr=addr)
+        except TypeError:  # bad call
+            pass
 
 
 if __name__ == "__main__":
-    from argparse import ArgumentParser
-    parser = ArgumentParser()
-    parser.add_argument("players", type=int, help="Number of players to serve")
+    from argparse import ArgumentParser, ArgumentTypeError
+
+    def player_type(i):
+        x = int(i)
+        if not x > 1:
+            raise ArgumentTypeError("Must have more than 1 player.")
+        return x
+    parser = ArgumentParser("Threes server")
+    parser.add_argument("players", type=player_type,
+                        help="Number of players to serve")
     parser.add_argument(
-        "--mode", default='inet', choices=['inet', 'unix'], help="Network family")
+        "--mode", default='inet', choices=trans_mode.keys(), help="Network family")
     nspace = parser.parse_args()
 
-    # Should probably be threading variants
-    if nspace.mode == 'inet':
-        server = socketserver.TCPServer(REMOTE, ThreesHandler)
-    elif nspace.mode == 'unix':
-        server = socketserver.UnixStreamServer(NIX, ThreesHandler)
-
-    # How do we limit connections?
-    with server:
-        server.serve_forever()
-
-    if nspace.mode == 'unix':
-        from pathlib import Path
-        Path(NIX).unlink()
+    """
+    server = socket.socket(trans_mode[nspace.mode][0])
+    server.bind(*trans_mode[nspace.mode][1])
+    for x in range(nspace.players):
+        serve(x, *server.accept())
+    """
