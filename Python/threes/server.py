@@ -52,12 +52,13 @@ handlers = defaultdict(lambda: noop, _handlers)
 
 def serve(x, sock, addr):
     # needs to thread off at some point
-    reader = iter(sock.makefile(buffering=1))
-    for name, args in call_iter(reader):
-        try:
-            handlers[name](*args, sock=sock, reader=reader, addr=addr)
-        except TypeError:  # bad call
-            pass
+    with sock.makefile(buffering=1) as f:
+        reader = iter(f)
+        for name, args in call_iter(reader):
+            try:
+                handlers[name](*args, conn=(sock, addr), reader=reader)
+            except TypeError:  # bad call
+                pass
 
 
 if __name__ == "__main__":
