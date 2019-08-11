@@ -30,35 +30,9 @@ test over Unix sockets?
     INET won't allow morethan 1 concurrent localhost conn
 """
 
-trans_mode = {
-    'inet': (socket.AF_INET, (REMOTE,)),
-    'unix': (socket.AF_UNIX, NIX)
-}
-
-
-def noop(*args, **kwargs):
-    pass
-
-
-def test(*args, **kwargs):
-    print("TS")
-
-
-_handlers = [
-    ('TEST', test)
-]
-handlers = defaultdict(lambda: noop, _handlers)
-
 
 def serve(x, sock, addr):
-    # needs to thread off at some point
-    with sock.makefile(buffering=1) as f:
-        reader = iter(f)
-        for name, args in call_iter(reader):
-            try:
-                handlers[name](*args, conn=(sock, addr), reader=reader)
-            except TypeError:  # bad call
-                pass
+    pass
 
 
 if __name__ == "__main__":
@@ -69,18 +43,19 @@ if __name__ == "__main__":
         if not x > 1:
             raise ArgumentTypeError("Must have more than 1 player.")
         return x
+
     parser = ArgumentParser("Threes server")
     parser.add_argument("players", type=player_type,
                         help="Number of players to serve")
     parser.add_argument(
         "--mode", default='inet', choices=trans_mode.keys(), help="Network family")
-    nspace = parser.parse_args()
+    argv = parser.parse_args()
 
-    server = socket.socket(trans_mode[nspace.mode][0])
-    server.bind(*trans_mode[nspace.mode][1])
-    for x in range(nspace.players):
+    server = socket.socket(trans_mode[argv.mode][0])
+    server.bind(*trans_mode[argv.mode][1])
+    for x in range(argv.players):
         serve(x, *server.accept())
 
-    if nspace.mode == 'unix':
+    if argv.mode == 'unix':
         from pathlib import Path
         Path(NIX).unlink()

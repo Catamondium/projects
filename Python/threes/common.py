@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
-
+import socket
 REMOTE = ('', 22555)
 NIX = '/tmp/threes_sock'
+trans_mode = {
+    'inet': (socket.AF_INET, (REMOTE,)),
+    'unix': (socket.AF_UNIX, NIX)
+}
 
 
 def window(seq, n=2):
