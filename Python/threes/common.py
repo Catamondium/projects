@@ -18,3 +18,22 @@ def window(seq, n=2):
     for elem in it:
         result = result[1:] + (elem,)
         yield result
+
+
+"""
+App level handling api?
+        dict[funcs] -> Callable
+        call_iter -> name, *args
+        peripheral data -> **kwargs
+        dict[name](*args, **kwargs)
+"""
+
+
+def call_iter(it, sep=' '):
+    """
+    Adapt it to yield (name, *args) by word splitting
+    Output is stripped of whitespace
+    """
+    for i in it:
+        head, *tail = i.strip().split(sep)
+        yield (head, tail)

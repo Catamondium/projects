@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import unittest
 import deck
+import common
 
 
 class TestDeck(unittest.TestCase):
@@ -21,6 +22,21 @@ class TestDeck(unittest.TestCase):
 
         flat = deck.Deck(sorted(flat, key=deck.byBase))
         self.assertListEqual(flat._cards, deck.Deck()._cards, "Modified list")
+
+
+class TestCommon(unittest.TestCase):
+    def test_window(self):
+        case = "ABCD"
+        expected = [('A', 'B'), ('B', 'C'), ('C', 'D')]
+        result = list(common.window(case))
+        self.assertListEqual(expected, result)
+
+    def test_call_iter(self):
+        from io import StringIO
+        case = StringIO("CALL ABC\nGALL DEF XYZ")
+        expected = [('CALL', ['ABC']), ('GALL', ['DEF', 'XYZ'])]
+        result = list(common.call_iter(case))
+        self.assertListEqual(expected, result)
 
 
 if __name__ == "__main__":
