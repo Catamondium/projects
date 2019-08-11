@@ -4,7 +4,7 @@ import socket
 from common import *
 
 """
-Should client ever recieve a Hand?
+Should the client ever recieve a Hand?
     no, because facedown's musn't be seen
     just send a printing for stdout
 """

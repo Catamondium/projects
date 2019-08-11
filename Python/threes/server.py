@@ -32,6 +32,11 @@ test over Unix sockets?
 
 
 def serve(x, sock, addr):
+    """
+    Not sure individualised service is appropriate
+    But we do need threads to check their queues
+    as individuals
+    """
     pass
 
 
