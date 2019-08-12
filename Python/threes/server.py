@@ -106,7 +106,7 @@ if __name__ == "__main__":
     server.bind(*(trans_mode[argv.mode][1]))
     try:
         bar = Barrier(argv.players)
-        server.listen(argv.players * 3)
+        server.listen()
         players = []
         for x in range(argv.players):
             players.append(Player(x, bar, *server.accept()))
