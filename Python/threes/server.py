@@ -78,12 +78,12 @@ def multicast(msg, players, xs, inclusive=True):
 def gameloop(players):
     """Main controller"""
     for player in players:
+        print(f"Conn on: {player.addr or trans_mode['unix'][1]}")
         player.start()
     # just terminate game for now
     broadcast("ENDGAME none\n", players)
     for player in players:
         player.join()
-        print(f"Joined {player.id}")
 
 
 if __name__ == "__main__":
