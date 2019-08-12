@@ -10,18 +10,34 @@ Should the client ever recieve a Hand?
 """
 
 
-def noop(*argv, **kwargv):
+handlers = defaultdict(lambda: noop)
+
+
+def handler(func):
+    handlers[func.__name__.lower()] = func
+    return func
+
+
+def noop(*argv, **kwargs):
     pass
 
 
-_handlers = []
-handlers = defaultdict(lambda: noop, _handlers)
+@handler
+def endgame(winner, **kwargs):
+    """
+    Game end.
+    Reciept of this call should imply subsequent EOF on reader
+    terminating the client
+    """
+    print(f"{winner} won!")
 
 
 def run_loop(sock):
+    global started
+    started = True
     reader = iter(sock.makefile())
     for name, argv in call_iter(reader):
-        handlers[name](*argv, sock=sock, reader=reader)
+        handlers[name.lower()](*argv, sock=sock, reader=reader)
 
 
 if __name__ == "__main__":
@@ -31,10 +47,14 @@ if __name__ == "__main__":
         "--mode", default='inet', choices=trans_mode.keys(), help="Network family")
     argv = parser.parse_args()
 
+    global started
+    started = False
     client = socket.socket(trans_mode[argv.mode][0])
-    client.connect(*trans_mode[argv.mode][1])
-    run_loop(client)
-
-    if argv.mode == 'unix':
-        from pathlib import Path
-        Path(NIX).unlink()
+    try:
+        client.connect(*trans_mode[argv.mode][1])
+        run_loop(client)
+    except FileNotFoundError:
+        if started:
+            pass
+        else:
+            print("ERROR: no local server running")

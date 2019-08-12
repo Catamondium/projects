@@ -3,13 +3,16 @@ import socket
 from common import *
 from collections import defaultdict
 from deck import Card, Deck, byRank
+
+from threading import Thread, Barrier
+from queue import Queue
 """
 https://en.wikipedia.org/wiki/Shithead_(card_game)
 Currently unplayable, representation only
 """
 
 """ rules TODO
-turntaking (toggleable socket?)
+turntaking
 game start:
     9 cards each initially (3 per hand)
     switch primaries and faceups
@@ -31,13 +34,56 @@ test over Unix sockets?
 """
 
 
-def serve(x, sock, addr):
-    """
-    Not sure individualised service is appropriate
-    But we do need threads to check their queues
-    as individuals
-    """
-    pass
+class Player(Thread):
+    """client handler"""
+
+    def __init__(self, x, startbarrier, sock, addr):
+        self.queue = Queue()
+        self.sock = sock
+        self.addr = addr
+        self.id = x
+        self.barrier = startbarrier
+        super().__init__()
+
+    def run(self):
+        with self.sock.makefile() as f:
+            reader = iter(f)
+            while (True):
+                self.barrier.wait()
+                task = self.queue.get()  # blocking get
+                self.sock.sendall(task.encode('utf-8'))
+                if task[:7] == "ENDGAME":
+                    break
+
+
+def broadcast(msg, players):
+    """SEND to all players"""
+    for player in players:
+        player.queue.put_nowait(msg)
+
+
+def multicast(msg, players, xs, inclusive=True):
+    """SEND to xs in players, if inclusive=False, send to all except"""
+    import operator
+    if inclusive:
+        def pred(x): return x in xs
+    else:
+        def pred(x): return x not in xs
+
+    for player in players:
+        if pred(player.id):
+            player.queue.put_nowait(msg)
+
+
+def gameloop(players):
+    """Main controller"""
+    for player in players:
+        player.start()
+    # just terminate game for now
+    broadcast("ENDGAME none\n", players)
+    for player in players:
+        player.join()
+        print(f"Joined {player.id}")
 
 
 if __name__ == "__main__":
@@ -57,10 +103,16 @@ if __name__ == "__main__":
     argv = parser.parse_args()
 
     server = socket.socket(trans_mode[argv.mode][0])
-    server.bind(*trans_mode[argv.mode][1])
-    for x in range(argv.players):
-        serve(x, *server.accept())
+    server.bind(*(trans_mode[argv.mode][1]))
+    try:
+        bar = Barrier(argv.players)
+        server.listen(argv.players * 3)
+        players = []
+        for x in range(argv.players):
+            players.append(Player(x, bar, *server.accept()))
 
-    if argv.mode == 'unix':
-        from pathlib import Path
-        Path(NIX).unlink()
+        gameloop(players)
+    finally:
+        if argv.mode == 'unix':
+            from pathlib import Path
+            Path(NIX).unlink()

@@ -3,8 +3,8 @@ import socket
 REMOTE = ('', 22555)
 NIX = '/tmp/threes_sock'
 trans_mode = {
-    'inet': (socket.AF_INET, (REMOTE,)),
-    'unix': (socket.AF_UNIX, NIX)
+    'inet': (socket.AF_INET, REMOTE),
+    'unix': (socket.AF_UNIX, (NIX,))
 }
 
 
