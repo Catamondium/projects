@@ -1,14 +1,7 @@
 #!/usr/bin/env python3
 from collections import defaultdict
 import socket
-from common import *
-
-"""
-Should the client ever recieve a Hand?
-    no, because facedown's musn't be seen
-    just send a printing for stdout
-"""
-
+from common import trans_mode, call_iter
 
 handlers = defaultdict(lambda: noop)
 
@@ -18,12 +11,20 @@ def handler(func):
     return func
 
 
-def noop(*argv, **kwargs):
+def noop(*argv, **kw):
     pass
 
 
 @handler
-def endgame(winner, **kwargs):
+def msg(lines, reader=None, **kw):
+    msg = str()
+    for _ in range(int(lines)):
+        msg += reader.readline()
+    print(msg)
+
+
+@handler
+def endgame(winner, **kw):
     """
     Game end.
     Reciept of this call should imply subsequent EOF on reader

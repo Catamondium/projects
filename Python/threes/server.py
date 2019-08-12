@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
+"""
+https://en.wikipedia.org/wiki/Shithead_(card_game)
+Currently unplayable
+"""
 import socket
 from common import *
 from collections import defaultdict
-from deck import Card, Deck, byRank
+from random import shuffle
+from deck import Card, Deck, Hand, byRank
 
 from threading import Thread, Barrier
 from queue import Queue
-"""
-https://en.wikipedia.org/wiki/Shithead_(card_game)
-Currently unplayable, representation only
-"""
 
 """ rules TODO
 turntaking
@@ -37,12 +38,13 @@ test over Unix sockets?
 class Player(Thread):
     """client handler"""
 
-    def __init__(self, x, startbarrier, sock, addr):
+    def __init__(self, x, hand, startbarrier, sock, addr=None):
         self.queue = Queue()
+        self.id = x
+        self.hand = hand
+        self.barrier = startbarrier
         self.sock = sock
         self.addr = addr
-        self.id = x
-        self.barrier = startbarrier
         super().__init__()
 
     def run(self):
@@ -51,7 +53,7 @@ class Player(Thread):
             while (True):
                 self.barrier.wait()
                 task = self.queue.get()  # blocking get
-                self.sock.sendall(task.encode('utf-8'))
+                self.sock.sendall((task + '\n').encode('utf-8'))
                 if task[:7] == "ENDGAME":
                     break
 
@@ -64,15 +66,21 @@ def broadcast(msg, players):
 
 def multicast(msg, players, xs, inclusive=True):
     """SEND to xs in players, if inclusive=False, send to all except"""
-    import operator
     if inclusive:
         def pred(x): return x in xs
     else:
         def pred(x): return x not in xs
 
-    for player in players:
-        if pred(player.id):
+    for k, player in players:
+        if pred(k):
             player.queue.put_nowait(msg)
+
+
+"""
+When purely string messaging gets silly
+We should probably use Player methods and
+a struct with enums
+"""
 
 
 def gameloop(players):
@@ -80,8 +88,15 @@ def gameloop(players):
     for player in players:
         print(f"Conn on: {player.addr or trans_mode['unix'][1]}")
         player.start()
-    # just terminate game for now
-    broadcast("ENDGAME none\n", players)
+    turnkeys = players.keys()
+    shuffle(turnkeys)
+
+    # just terminate game for now, after showing hand
+    for _, p in players:
+        s = str(p.hand)
+        lines = len(s.split('\n'))
+        p.queue.put_nowait(f"MSG {lines}\n{s}")
+    broadcast("ENDGAME none", players)
     for player in players:
         player.join()
 
@@ -107,9 +122,14 @@ if __name__ == "__main__":
     try:
         bar = Barrier(argv.players)
         server.listen()
-        players = []
+        players = dict()
+        global playpile
+        global graveyard
+        hands, playpile = Deck.deal(argv.players, 9)
+        hands = list(map(Hand, hands))
+
         for x in range(argv.players):
-            players.append(Player(x, bar, *server.accept()))
+            players[x] = Player(x, hands[x], bar, *server.accept())
 
         gameloop(players)
     finally:
