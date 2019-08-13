@@ -32,7 +32,7 @@ held, faceup and faceown may only be accessed
 in sequence as exhausted
 
 test over Unix sockets?
-    INET won't allow morethan 1 concurrent localhost conn
+    INET won't allow moterminatehan 1 concurrent localhost conn
 """
 
 
@@ -56,19 +56,19 @@ class Player(Thread):
     def run(self):
         with self.sock.makefile() as f:
             reader = iter(f)
-            ret = False
+            terminate = False
             while (True):
                 self.barrier.wait()
                 task, *args = self.queue.get()
 
                 if task == Task.ENDGAME:
                     msg = f"{task.name} {args[0]}"
-                    ret = True
+                    terminate = True
                 elif task == Task.MSG:
                     msg = f"{task.name} {args[0]}\n{args[1]}"
 
                 self.sock.sendall((msg + '\n').encode('utf-8'))
-                if ret:
+                if terminate:
                     break
 
     def showHand(self):
@@ -88,16 +88,13 @@ def broadcast(players, method, *args):
         method(player, *args)
 
 
-def multicast(players, xs, method, *args, inclusive=True):
-    """SEND to xs in players, if inclusive=False, send to all except"""
+def multicast(players, ks, method, *args, inclusive=True):
+    """SEND to ks in players, if inclusive=False, send to all except"""
     if inclusive:
-        def pred(x): return x in xs
+        recievers = {k: v for k, v in players.items() if k in ks}
     else:
-        def pred(x): return x not in xs
-
-    for k, player in players.items():
-        if pred(k):
-            method(player, *args)
+        recievers = {k: v for k, v in players.items() if k not in ks}
+    broadcast(recievers, method, *args)
 
 
 def gameloop(players):
@@ -127,6 +124,7 @@ if __name__ == "__main__":
     parser = ArgumentParser("Threes server")
     parser.add_argument("players", type=player_type,
                         help="Number of players to serve")
+    # Change to boolean?
     parser.add_argument(
         "--mode", default='inet', choices=trans_mode.keys(), help="Network family")
     argv = parser.parse_args()
