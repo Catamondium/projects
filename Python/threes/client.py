@@ -45,14 +45,14 @@ if __name__ == "__main__":
     from argparse import ArgumentParser, ArgumentTypeError
     parser = ArgumentParser("Threes client")
     parser.add_argument(
-        "--mode", default='inet', choices=trans_mode.keys(), help="Network family")
+        "--local", default='inet', const='unix', help="Network over unix sockets")
     argv = parser.parse_args()
 
     global started
     started = False
-    client = socket.socket(trans_mode[argv.mode][0])
+    client = socket.socket(trans_mode[argv.local][0])
     try:
-        client.connect(*trans_mode[argv.mode][1])
+        client.connect(*trans_mode[argv.local][1])
         run_loop(client)
     except FileNotFoundError:
         if started:

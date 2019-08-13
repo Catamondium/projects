@@ -53,6 +53,16 @@ class Player(Thread):
         self.addr = addr
         super().__init__()
 
+    def __eq__(self, other):
+        if isinstance(other, Player):
+            oid = other.id
+        elif isinstance(other, int):
+            oid = other
+        return self.id == oid
+
+    def __hash__(self):
+        return hash(self.id)
+
     def run(self):
         with self.sock.makefile() as f:
             reader = iter(f)
@@ -91,10 +101,10 @@ def broadcast(players, method, *args):
 def multicast(players, ks, method, *args, inclusive=True):
     """SEND to ks in players, if inclusive=False, send to all except"""
     if inclusive:
-        recievers = {k: v for k, v in players.items() if k in ks}
+        def pred(k): return k not in ks
     else:
-        recievers = {k: v for k, v in players.items() if k not in ks}
-    broadcast(recievers, method, *args)
+        def pred(k): return k in ks
+    broadcast({k: v for k, v in players.items() if pred(k)}, method, *args)
 
 
 def gameloop(players):
@@ -124,13 +134,12 @@ if __name__ == "__main__":
     parser = ArgumentParser("Threes server")
     parser.add_argument("players", type=player_type,
                         help="Number of players to serve")
-    # Change to boolean?
     parser.add_argument(
-        "--mode", default='inet', choices=trans_mode.keys(), help="Network family")
+        "--local", default='inet', const='unix', help="Network over unix sockets")
     argv = parser.parse_args()
 
-    server = socket.socket(trans_mode[argv.mode][0])
-    server.bind(*(trans_mode[argv.mode][1]))
+    server = socket.socket(trans_mode[argv.local][0])
+    server.bind(*(trans_mode[argv.local][1]))
     try:
         bar = Barrier(argv.players)
         server.listen()
@@ -145,6 +154,6 @@ if __name__ == "__main__":
 
         gameloop(players)
     finally:
-        if argv.mode == 'unix':
+        if argv.local == 'unix':
             from pathlib import Path
             Path(NIX).unlink()
