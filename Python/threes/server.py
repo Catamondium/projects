@@ -30,9 +30,6 @@ chaining rules:
     ^ either must hold throughout chain
 held, faceup and faceown may only be accessed
 in sequence as exhausted
-
-test over Unix sockets?
-    INET won't allow moterminatehan 1 concurrent localhost conn
 """
 
 
@@ -53,6 +50,9 @@ class Player(Thread):
         self.addr = addr
         super().__init__()
 
+    def __hash__(self):
+        return hash(self.id)
+
     def __eq__(self, other):
         if isinstance(other, Player):
             oid = other.id
@@ -60,12 +60,9 @@ class Player(Thread):
             oid = other
         return self.id == oid
 
-    def __hash__(self):
-        return hash(self.id)
-
     def run(self):
         with self.sock.makefile() as f:
-            reader = iter(f)
+            #reader = iter(f)
             terminate = False
             while (True):
                 self.barrier.wait()
@@ -75,7 +72,8 @@ class Player(Thread):
                     msg = f"{task.name} {args[0]}"
                     terminate = True
                 elif task == Task.MSG:
-                    msg = f"{task.name} {args[0]}\n{args[1]}"
+                    lines, msg = args
+                    msg = f"{task.name} {lines}\n{msg}"
 
                 self.sock.sendall((msg + '\n').encode('utf-8'))
                 if terminate:

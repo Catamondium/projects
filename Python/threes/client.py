@@ -3,10 +3,14 @@ from collections import defaultdict
 import socket
 from common import trans_mode, call_iter
 
-handlers = defaultdict(lambda: noop)
+handlers = dict()
 
 
 def handler(func):
+    """
+    Decorator registering
+    func as remote call handler
+    """
     handlers[func.__name__.lower()] = func
     return func
 
@@ -17,6 +21,7 @@ def noop(*argv, **kw):
 
 @handler
 def msg(lines, reader=None, **kw):
+    """Forward general information to player"""
     msg = str()
     for _ in range(int(lines)):
         msg += reader.readline()
@@ -27,7 +32,7 @@ def msg(lines, reader=None, **kw):
 def endgame(winner, **kw):
     """
     Game end.
-    Reciept of this call should imply subsequent EOF on reader
+    Reciept of this call should imply subsequent EOF on socket
     terminating the client
     """
     print(f"{winner} won!")
@@ -38,7 +43,7 @@ def run_loop(sock):
     started = True
     reader = iter(sock.makefile())
     for name, argv in call_iter(reader):
-        handlers[name.lower()](*argv, sock=sock, reader=reader)
+        handlers.get(name.lower(), noop)(*argv, sock=sock, reader=reader)
 
 
 if __name__ == "__main__":
