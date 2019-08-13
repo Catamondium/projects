@@ -3,9 +3,27 @@
 from collections import namedtuple
 from random import shuffle
 
-Card = namedtuple('Card', ["rank", "suite"])
-Card.__repr__ = lambda c: f"{c.rank} of {c.suite}"
-Card.__doc__ = "Playing card representation"
+
+class Card:
+    "Playing card"
+
+    def __init__(self, rank, suite):
+        if rank not in Deck.ranks:
+            raise TypeError(f"{rank} is not a rank")
+        if suite not in Deck.suites:
+            raise TypeError(f"{suite} is not a suite")
+
+        self.rank = rank
+        self.suite = suite
+
+    def __eq__(self, other):
+        return (self.rank == other.rank) and (self.suite == other.suite)
+
+    def __hash__(self):
+        return hash((self.rank, self.suite))
+
+    def __repr__(self):
+        return f"{self.rank} of {self.suite}"
 
 
 def cardToNet(c):
