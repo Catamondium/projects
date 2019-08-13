@@ -45,7 +45,7 @@ if __name__ == "__main__":
     from argparse import ArgumentParser, ArgumentTypeError
     parser = ArgumentParser("Threes client")
     parser.add_argument(
-        "--local", default='inet', const='unix', help="Network over unix sockets")
+        "--local", action='store_const', default='inet', const='unix', help="Network over unix sockets")
     argv = parser.parse_args()
 
     global started

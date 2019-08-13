@@ -135,7 +135,7 @@ if __name__ == "__main__":
     parser.add_argument("players", type=player_type,
                         help="Number of players to serve")
     parser.add_argument(
-        "--local", default='inet', const='unix', help="Network over unix sockets")
+        "--local", action='store_const', default='inet', const='unix', help="Network over unix sockets")
     argv = parser.parse_args()
 
     server = socket.socket(trans_mode[argv.local][0])
