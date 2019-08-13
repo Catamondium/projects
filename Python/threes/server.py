@@ -11,6 +11,7 @@ from deck import Card, Deck, Hand, byRank
 
 from threading import Thread, Barrier
 from queue import Queue
+from enum import Enum, auto
 
 """ rules TODO
 turntaking
@@ -35,10 +36,15 @@ test over Unix sockets?
 """
 
 
+class Task(Enum):
+    MSG = auto()
+    ENDGAME = auto()
+
+
 class Player(Thread):
     """client handler"""
 
-    def __init__(self, x, hand, startbarrier, sock, addr=None):
+    def __init__(self, x, hand, startbarrier, sock, addr=NIX):
         self.queue = Queue()
         self.id = x
         self.hand = hand
@@ -50,54 +56,62 @@ class Player(Thread):
     def run(self):
         with self.sock.makefile() as f:
             reader = iter(f)
+            ret = False
             while (True):
                 self.barrier.wait()
-                task = self.queue.get()  # blocking get
-                self.sock.sendall((task + '\n').encode('utf-8'))
-                if task[:7] == "ENDGAME":
+                task, *args = self.queue.get()
+
+                if task == Task.ENDGAME:
+                    msg = f"{task.name} {args[0]}"
+                    ret = True
+                elif task == Task.MSG:
+                    msg = f"{task.name} {args[0]}\n{args[1]}"
+
+                self.sock.sendall((msg + '\n').encode('utf-8'))
+                if ret:
                     break
 
+    def showHand(self):
+        self.msg(str(self.hand))
 
-def broadcast(msg, players):
+    def msg(self, msg):
+        lines = len(msg.split('\n'))
+        self.queue.put_nowait((Task.MSG, lines, msg))
+
+    def endgame(self, winner):
+        self.queue.put_nowait((Task.ENDGAME, winner))
+
+
+def broadcast(players, method, *args):
     """SEND to all players"""
-    for player in players:
-        player.queue.put_nowait(msg)
+    for player in players.values():
+        method(player, *args)
 
 
-def multicast(msg, players, xs, inclusive=True):
+def multicast(players, xs, method, *args, inclusive=True):
     """SEND to xs in players, if inclusive=False, send to all except"""
     if inclusive:
         def pred(x): return x in xs
     else:
         def pred(x): return x not in xs
 
-    for k, player in players:
+    for k, player in players.items():
         if pred(k):
-            player.queue.put_nowait(msg)
-
-
-"""
-When purely string messaging gets silly
-We should probably use Player methods and
-a struct with enums
-"""
+            method(player, *args)
 
 
 def gameloop(players):
     """Main controller"""
-    for player in players:
-        print(f"Conn on: {player.addr or trans_mode['unix'][1]}")
+    for player in players.values():
+        print(f"Conn on: {player.addr or NIX}")
         player.start()
-    turnkeys = players.keys()
+    turnkeys = list(players.keys())
     shuffle(turnkeys)
 
     # just terminate game for now, after showing hand
-    for _, p in players:
-        s = str(p.hand)
-        lines = len(s.split('\n'))
-        p.queue.put_nowait(f"MSG {lines}\n{s}")
-    broadcast("ENDGAME none", players)
-    for player in players:
+    broadcast(players, Player.showHand)
+    broadcast(players, Player.endgame, "none")
+    for player in players.values():
         player.join()
 
 
