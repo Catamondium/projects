@@ -41,24 +41,14 @@ class Task(Enum):
 class Player(Thread):
     """client handler"""
 
-    def __init__(self, x, hand, startbarrier, sock, addr=NIX):
+    def __init__(self, hand, startbarrier, sock, addr=NIX):
         self.queue = Queue()
-        self.id = x
+        #self.id = x
         self.hand = hand
         self.barrier = startbarrier
         self.sock = sock
         self.addr = addr
         super().__init__()
-
-    def __hash__(self):
-        return hash(self.id)
-
-    def __eq__(self, other):
-        if isinstance(other, Player):
-            oid = other.id
-        elif isinstance(other, int):
-            oid = other
-        return self.id == oid
 
     def run(self):
         with self.sock.makefile() as f:
@@ -109,7 +99,6 @@ def gameloop(players):
     """Main controller"""
     for player in players.values():
         print(f"Conn on: {player.addr or NIX}")
-        player.start()
     turnkeys = list(players.keys())
     shuffle(turnkeys)
 
@@ -148,7 +137,9 @@ if __name__ == "__main__":
         hands = list(map(Hand, hands))
 
         for x in range(argv.players):
-            players[x] = Player(x, hands[x], bar, *server.accept())
+            p = Player(hands[x], bar, *server.accept())
+            p.start()
+            players[p.ident] = p
 
         gameloop(players)
     finally:
