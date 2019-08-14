@@ -31,13 +31,3 @@ App level handling api?
         peripheral data -> **kwargs
         dict[name](*args, **kwargs)
 """
-
-
-def call_iter(it, sep=' '):
-    """
-    Adapt it to yield (name, *args) by word splitting
-    Output is stripped of whitespace
-    """
-    for i in it:
-        head, *tail = i.strip().split(sep)
-        yield (head, tail)

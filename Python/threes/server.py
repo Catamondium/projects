@@ -50,10 +50,10 @@ class Player(Thread):
         super().__init__()
 
     def run(self):
-        with self.sock.makefile() as f:
+        with self.sock.makefile(buffering=1) as f:
             #reader = iter(f)
             terminate = False
-            while (True):
+            while (not terminate):
                 self.barrier.wait()
                 task, *args = self.queue.get()
 
@@ -65,17 +65,22 @@ class Player(Thread):
                     msg = f"{task.name} {lines}\n{msg}"
 
                 self.sock.sendall((msg + '\n').encode('utf-8'))
-                if terminate:
-                    break
 
     def showHand(self):
+        """Display hand to user"""
         self.msg(str(self.hand))
 
     def msg(self, msg):
+        """Send general information to user"""
         lines = len(msg.split('\n'))
         self.queue.put_nowait((Task.MSG, lines, msg))
 
+    def sort(self):
+        """Sort the hand"""
+        self.hand.sort()
+
     def endgame(self, winner):
+        """Declare game finished, and winner"""
         self.queue.put_nowait((Task.ENDGAME, winner))
 
 
@@ -86,7 +91,10 @@ def broadcast(players, method, *args):
 
 
 def multicast(players, ks, method, *args, inclusive=True):
-    """SEND to ks in players, if inclusive=False, send to all except"""
+    """
+    SEND to players in ks
+    if inclusive==False, SEND to all except
+    """
     if inclusive:
         def pred(k): return k not in ks
     else:
@@ -103,7 +111,7 @@ def gameloop(players):
 
     # just terminate game for now, after showing hand
     broadcast(players, Player.showHand)
-    broadcast(players, Player.endgame, "none")
+    broadcast(players, Player.endgame, None)
     for player in players.values():
         player.join()
 
@@ -132,11 +140,12 @@ if __name__ == "__main__":
         players = dict()
         global playpile
         global graveyard
+        graveyard = []
         hands, playpile = Deck.deal(argv.players, 9)
-        hands = list(map(Hand, hands))
+        hands = map(Hand, hands)
 
-        for x in range(argv.players):
-            p = Player(hands[x], bar, *server.accept())
+        for hand in hands:
+            p = Player(hand, bar, *server.accept())
             p.start()
             players[p.ident] = p
 

@@ -52,6 +52,10 @@ def cardToNet(c):
     return f"{c.rank}:{c.suite}"
 
 
+def netToCard(word):
+    return Card(*word.split(':'))
+
+
 def byRank(c: Card):
     """keyfunction, sort by card rank"""
     return c.rank.index
@@ -113,12 +117,18 @@ class Deck:
 
 
 class Hand:
+    """Player hand"""
+
     def __init__(self, deal):
         assert(len(deal) == 9)
-        self.held = sorted(deal[:3], key=byRank)
-        self.faceup = sorted(deal[3:6], key=byRank)
+        self.held = deal[:3]
+        self.faceup = deal[3:6]
         self.facedown = deal[6:]
         self.hidden = True
+
+    def sort(self):
+        self.held = sorted(self.held, key=byRank)
+        self.faceup = sorted(self.faceup, key=byRank)
 
     def __repr__(self):
         return f"held    :\t{self.held}\nfaceup  :\t{self.faceup}\nfacedown:\t[ {len(self.facedown)} cards ]"

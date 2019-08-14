@@ -1,7 +1,18 @@
 #!/usr/bin/env python3
 from collections import defaultdict
 import socket
-from common import trans_mode, call_iter
+from common import trans_mode
+
+
+def call_iter(it, sep=' '):
+    """
+    Adapt it to yield (name, *args) by word splitting
+    Output is stripped of whitespace
+    """
+    for i in it:
+        head, *tail = i.strip().split(sep)
+        yield (head, tail)
+
 
 handlers = dict()
 
