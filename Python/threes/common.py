@@ -7,6 +7,9 @@ trans_mode = {
     'unix': (socket.AF_UNIX, (NIX,))
 }
 
+AFFIRM = "OK"
+RETRY = "RETRY"
+
 
 def window(seq, n=2):
     import itertools

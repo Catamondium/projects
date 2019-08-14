@@ -9,7 +9,7 @@ class Rank:
 
     def __init__(self, value):
         if value not in Deck.ranks:
-            raise TypeError(f"{value} is not a rank")
+            raise TypeError(f"'{value}' is not a rank")
         self.value = value
 
     @property
@@ -32,7 +32,7 @@ class Card:
     def __init__(self, rank, suite):
 
         if suite not in Deck.suites:
-            raise TypeError(f"{suite} is not a suite")
+            raise TypeError(f"'{suite}' is not a suite")
 
         self.rank = Rank(rank)
         self.suite = suite
@@ -129,6 +129,17 @@ class Hand:
     def sort(self):
         self.held = sorted(self.held, key=byRank)
         self.faceup = sorted(self.faceup, key=byRank)
+
+    def swap(self, handcard, faceupcard):
+        if handcard in self.held and faceupcard in self.faceup:
+            hidx = self.held.index(handcard)
+            fidx = self.faceup.index(faceupcard)
+
+            hitem = self.held[hidx]
+            fitem = self.faceup[fidx]
+
+            self.held[hidx] = fitem
+            self.faceup[fidx] = hitem
 
     def __repr__(self):
         return f"held    :\t{self.held}\nfaceup  :\t{self.faceup}\nfacedown:\t[ {len(self.facedown)} cards ]"

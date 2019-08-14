@@ -14,6 +14,7 @@ for i, win in enumerate(window(lst, n=4)):
     # they're all equal to each other
     if all(map(partial(eq, win[0]), win)):
         idx.append(i)
+assert(idx == [0, 6])
 print(idx)  # -> [0, 6]
 
 # rising rank rule

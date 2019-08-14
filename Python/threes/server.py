@@ -7,7 +7,8 @@ import socket
 from common import *
 from collections import defaultdict
 from random import shuffle
-from deck import Card, Deck, Hand, byRank
+from deck import Card, Deck, Hand, byRank, netToCard
+from itertools import starmap, takewhile
 
 from threading import Thread, Barrier
 from queue import Queue
@@ -36,12 +37,13 @@ in sequence as exhausted
 class Task(Enum):
     MSG = auto()
     ENDGAME = auto()
+    SWAP = auto()
 
 
 class Player(Thread):
     """client handler"""
 
-    def __init__(self, hand, startbarrier, sock, addr=NIX):
+    def __init__(self, hand: Hand, startbarrier, sock, addr=NIX):
         self.queue = Queue()
         self.hand = hand
         self.barrier = startbarrier
@@ -50,8 +52,7 @@ class Player(Thread):
         super().__init__()
 
     def run(self):
-        with self.sock.makefile(buffering=1) as f:
-            #reader = iter(f)
+        with self.sock.makefile(buffering=1) as reader:
             terminate = False
             while (not terminate):
                 self.barrier.wait()
@@ -63,12 +64,28 @@ class Player(Thread):
                 elif task == Task.MSG:
                     lines, msg = args
                     msg = f"{task.name} {lines}\n{msg}"
-
+                elif task == Task.SWAP:
+                    self._swap(reader)
                 self.sock.sendall((msg + '\n').encode('utf-8'))
 
     def showHand(self):
         """Display hand to user"""
         self.msg(str(self.hand))
+
+    def swap(self):
+        """Request user swaps faceups"""
+        self.queue.put_nowait((Task.SWAP,))
+
+    def _swap(self, reader):
+        # NOTE, implementation doesn't have error conditions
+        self.sock.sendall(
+            f"{Task.MSG.name} 1\nSwap your cards, hand -> faceup\n".encode('utf-8'))
+        self.sock.sendall((Task.SWAP.name + '\n').encode('utf-8'))
+        cards = list(map(netToCard, reader.readline().strip().split(' ')))
+        froms, tos = cards[::2], cards[1::2]
+        starmap(self.hand.swap, zip(froms, tos)) # You're not doing anything!
+        self.sock.sendall((AFFIRM + '\n').encode('utf-8'))
+        self.showHand()
 
     def msg(self, msg):
         """Send general information to user"""
@@ -111,6 +128,7 @@ def gameloop(players):
 
     # just terminate game for now, after showing hand
     broadcast(players, Player.showHand)
+    broadcast(players, Player.swap)
     broadcast(players, Player.endgame, None)
     for player in players.values():
         player.join()

@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 from collections import defaultdict
 import socket
-from common import trans_mode
+from common import trans_mode, AFFIRM
+from sys import stdin
+from deck import cardToNet, Card
 
 
 def call_iter(it, sep=' '):
@@ -47,6 +49,28 @@ def endgame(winner, **kw):
     terminating the client
     """
     print(f"{winner} won!")
+
+
+def readcards():
+    from itertools import starmap
+    words = filter(lambda x: x != 'of', stdin.readline().split(' '))
+    words = list(map(str.strip, words))
+    ranks, suites = words[::2], words[1::2]
+    return starmap(Card, zip(ranks, suites))
+
+
+@handler
+def swap(reader=None, sock=None, **kw):
+    """Read in Cards for user faceup"""
+    while(True):
+        cards = readcards()
+        netstr = ' '.join(map(cardToNet, cards))
+        sock.sendall((netstr + '\n').encode('utf-8'))
+        resp = reader.readline().strip()
+
+        if resp == AFFIRM:
+            break
+        print("Try again")
 
 
 def run_loop(sock):
