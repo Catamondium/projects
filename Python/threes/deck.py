@@ -131,15 +131,10 @@ class Hand:
         self.faceup = sorted(self.faceup, key=byRank)
 
     def swap(self, handcard, faceupcard):
-        if handcard in self.held and faceupcard in self.faceup:
-            hidx = self.held.index(handcard)
-            fidx = self.faceup.index(faceupcard)
-
-            hitem = self.held[hidx]
-            fitem = self.faceup[fidx]
-
-            self.held[hidx] = fitem
-            self.faceup[fidx] = hitem
+        hidx = self.held.index(handcard)
+        fidx = self.faceup.index(faceupcard)
+        self.held[hidx], self.faceup[fidx] = self.faceup[fidx], self.held[hidx]
+        print(self.held)
 
     def __repr__(self):
         return f"held    :\t{self.held}\nfaceup  :\t{self.faceup}\nfacedown:\t[ {len(self.facedown)} cards ]"

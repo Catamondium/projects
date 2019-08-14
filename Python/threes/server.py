@@ -38,6 +38,7 @@ class Task(Enum):
     MSG = auto()
     ENDGAME = auto()
     SWAP = auto()
+    WAIT = auto()
 
 
 class Player(Thread):
@@ -66,6 +67,8 @@ class Player(Thread):
                     msg = f"{task.name} {lines}\n{msg}"
                 elif task == Task.SWAP:
                     self._swap(reader)
+                elif task == Task.WAIT:
+                    self.barrier.wait()
                 self.sock.sendall((msg + '\n').encode('utf-8'))
 
     def showHand(self):
@@ -83,9 +86,8 @@ class Player(Thread):
         self.sock.sendall((Task.SWAP.name + '\n').encode('utf-8'))
         cards = list(map(netToCard, reader.readline().strip().split(' ')))
         froms, tos = cards[::2], cards[1::2]
-        starmap(self.hand.swap, zip(froms, tos)) # You're not doing anything!
+        starmap(self.hand.swap, zip(froms, tos))  # You're not doing anything!
         self.sock.sendall((AFFIRM + '\n').encode('utf-8'))
-        self.showHand()
 
     def msg(self, msg):
         """Send general information to user"""
@@ -99,6 +101,9 @@ class Player(Thread):
     def endgame(self, winner):
         """Declare game finished, and winner"""
         self.queue.put_nowait((Task.ENDGAME, winner))
+
+    def wait(self):
+        self.queue.put_nowait((Task.WAIT,))
 
 
 def broadcast(players, method, *args):
