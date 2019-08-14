@@ -12,11 +12,15 @@ class Rank:
             raise TypeError(f"{value} is not a rank")
         self.value = value
 
+    @property
+    def index(self):
+        return Deck.ranks.index(self.value)
+
     def __eq__(self, other):
         return self.value == other.value
 
     def __lt__(self, other):
-        return Deck.ranks.index(self.value) < Deck.ranks.index(other.value)
+        return self.index < other.index
 
     def __repr__(self):
         return self.value
@@ -50,7 +54,7 @@ def cardToNet(c):
 
 def byRank(c: Card):
     """keyfunction, sort by card rank"""
-    return Deck.ranks.index(c.rank)
+    return c.rank.index
 
 
 def byBase(c: Card):

@@ -43,7 +43,6 @@ class Player(Thread):
 
     def __init__(self, hand, startbarrier, sock, addr=NIX):
         self.queue = Queue()
-        #self.id = x
         self.hand = hand
         self.barrier = startbarrier
         self.sock = sock
