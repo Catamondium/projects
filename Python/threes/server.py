@@ -26,7 +26,7 @@ played pile may only rise in rank
     ELSE pickup played pile to hand
 chaining rules:
     rank rises for same suit
-    suit changes for same rank
+    suit can change for same rank
     ^ either must hold throughout chain
 held, faceup and faceown may only be accessed
 in sequence as exhausted

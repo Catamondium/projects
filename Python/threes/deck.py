@@ -4,16 +4,33 @@ from collections import namedtuple
 from random import shuffle
 
 
+class Rank:
+    """Richly comparable rank type"""
+
+    def __init__(self, value):
+        if value not in Deck.ranks:
+            raise TypeError(f"{value} is not a rank")
+        self.value = value
+
+    def __eq__(self, other):
+        return self.value == other.value
+
+    def __lt__(self, other):
+        return Deck.ranks.index(self.value) < Deck.ranks.index(other.value)
+
+    def __repr__(self):
+        return self.value
+
+
 class Card:
     "Playing card"
 
     def __init__(self, rank, suite):
-        if rank not in Deck.ranks:
-            raise TypeError(f"{rank} is not a rank")
+
         if suite not in Deck.suites:
             raise TypeError(f"{suite} is not a suite")
 
-        self.rank = rank
+        self.rank = Rank(rank)
         self.suite = suite
 
     def __eq__(self, other):
