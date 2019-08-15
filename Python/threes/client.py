@@ -83,7 +83,7 @@ def run_loop(sock):
     conn = sock.makefile(mode='rw')
     # call_iter is tested, therefore uninvolved
     for name, argv in call_iter(conn):
-        print(f"-> {name}, {argv}")  # MSG showhand at beginning, is replayed
+        print(f"-> {name}, {argv}")  # MSG showhand at begin, is replayed
         handlers.get(name.lower(), noop)(*argv, conn=conn)
 
 

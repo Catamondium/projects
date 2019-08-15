@@ -2,6 +2,20 @@
 import unittest
 import deck
 import common
+import client
+
+
+class TestClient(unittest.TestCase):
+    def test_call_iter(self):
+        from io import StringIO
+        case = StringIO("CALL ABC\nGALL DEF XYZ")
+        expected = [('CALL', ['ABC']), ('GALL', ['DEF', 'XYZ'])]
+        result = list(client.call_iter(case))
+        self.assertListEqual(expected, result)
+
+
+class TestServer(unittest.TestCase):
+    pass
 
 
 class TestDeck(unittest.TestCase):
