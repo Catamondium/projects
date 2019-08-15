@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import logging
 """
 https://en.wikipedia.org/wiki/Shithead_(card_game)
 Currently unplayable
@@ -9,8 +10,9 @@ from collections import defaultdict
 from random import shuffle
 from deck import Card, Deck, Hand, byRank, netToCard
 from itertools import starmap, takewhile
+from functools import partial
 
-from threading import Thread, Barrier
+from threading import Thread, Barrier, current_thread
 from queue import Queue
 from enum import Enum, auto
 
@@ -58,6 +60,16 @@ class Player(Thread):
             while (not terminate):
                 self.barrier.wait()
                 task, *args = self.queue.get()
+                print(f"{self.ident} -> {task.name}")
+
+                # What's with the extra showhand on the client?
+                """
+                Per thread queue OPs:
+                MSG # opening showhand
+                SWAP
+                <- mystery MSG somewhere here
+                ENDGAME # delcaring none victory
+                """
 
                 if task == Task.ENDGAME:
                     msg = f"{task.name} {args[0]}"
@@ -81,12 +93,12 @@ class Player(Thread):
 
     def _swap(self, reader):
         # NOTE, implementation doesn't have error conditions
-        self.sock.sendall(
-            f"{Task.MSG.name} 1\nSwap your cards, hand -> faceup\n".encode('utf-8'))
         self.sock.sendall((Task.SWAP.name + '\n').encode('utf-8'))
-        cards = list(map(netToCard, reader.readline().strip().split(' ')))
+        stuff = reader.readline().strip().split(' ')
+        cards = list(map(netToCard, stuff))
         froms, tos = cards[::2], cards[1::2]
-        starmap(self.hand.swap, zip(froms, tos))  # You're not doing anything!
+        for tup in zip(froms, tos):
+            self.hand.swap(*tup)
         self.sock.sendall((AFFIRM + '\n').encode('utf-8'))
 
     def msg(self, msg):

@@ -24,18 +24,28 @@ class TestDeck(unittest.TestCase):
         self.assertListEqual(flat._cards, deck.Deck()._cards, "Modified list")
 
 
+class TestHand(unittest.TestCase):
+    def test_swap(self):
+        from itertools import repeat
+        A = deck.Card('a', 'spades')
+        B = deck.Card('j', 'hearts')
+        C = deck.Card('k', 'clubs')
+
+        held = list(repeat(A, 3))
+        faceup = list(repeat(B, 3))
+        facedown = list(repeat(C, 3))
+
+        hand = deck.Hand(held + faceup + facedown)
+        hand.swap(A, B)
+        self.assertIn(B, hand.held)
+        self.assertIn(A, hand.faceup)
+
+
 class TestCommon(unittest.TestCase):
     def test_window(self):
         case = "ABCD"
         expected = [('A', 'B'), ('B', 'C'), ('C', 'D')]
         result = list(common.window(case))
-        self.assertListEqual(expected, result)
-
-    def test_call_iter(self):
-        from io import StringIO
-        case = StringIO("CALL ABC\nGALL DEF XYZ")
-        expected = [('CALL', ['ABC']), ('GALL', ['DEF', 'XYZ'])]
-        result = list(common.call_iter(case))
         self.assertListEqual(expected, result)
 
 

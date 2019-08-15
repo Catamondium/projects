@@ -7,7 +7,7 @@ from random import shuffle
 class Rank:
     """Richly comparable rank type"""
 
-    def __init__(self, value):
+    def __init__(self, value: str):
         if value not in Deck.ranks:
             raise TypeError(f"'{value}' is not a rank")
         self.value = value
@@ -23,6 +23,9 @@ class Rank:
         return self.index < other.index
 
     def __repr__(self):
+        return self.value.upper()
+
+    def __str__(self):
         return self.value
 
 
@@ -44,7 +47,7 @@ class Card:
         return hash((self.rank, self.suite))
 
     def __repr__(self):
-        return f"{self.rank} of {self.suite}"
+        return f"{repr(self.rank)} of {self.suite.capitalize()}"
 
 
 def cardToNet(c):
@@ -68,8 +71,8 @@ def byBase(c: Card):
 
 class Deck:
     """Normal french deck representation"""
-    ranks = [str(x) for x in range(2, 11)] + list("JKQA")
-    suites = "Hearts Spades Diamonds Clubs".split(' ')
+    ranks = [str(x) for x in range(2, 11)] + list("jkqa")
+    suites = "hearts spades diamonds clubs".split(' ')
 
     def __init__(self, cards=None):
         """
@@ -134,7 +137,6 @@ class Hand:
         hidx = self.held.index(handcard)
         fidx = self.faceup.index(faceupcard)
         self.held[hidx], self.faceup[fidx] = self.faceup[fidx], self.held[hidx]
-        print(self.held)
 
     def __repr__(self):
         return f"held    :\t{self.held}\nfaceup  :\t{self.faceup}\nfacedown:\t[ {len(self.facedown)} cards ]"

@@ -53,7 +53,7 @@ def endgame(winner, **kw):
 
 def readcards():
     from itertools import starmap
-    words = filter(lambda x: x != 'of', stdin.readline().split(' '))
+    words = filter(lambda x: x != 'of', stdin.readline().lower().split(' '))
     words = list(map(str.strip, words))
     ranks, suites = words[::2], words[1::2]
     return starmap(Card, zip(ranks, suites))
@@ -62,6 +62,8 @@ def readcards():
 @handler
 def swap(reader=None, sock=None, **kw):
     """Read in Cards for user faceup"""
+    print("Swap your cards: held -> faceup")
+    stdin.flush()
     while(True):
         cards = readcards()
         netstr = ' '.join(map(cardToNet, cards))
@@ -76,7 +78,7 @@ def swap(reader=None, sock=None, **kw):
 def run_loop(sock):
     global started
     started = True
-    reader = iter(sock.makefile())
+    reader = iter(sock.makefile(buffering=1))
     for name, argv in call_iter(reader):
         handlers.get(name.lower(), noop)(*argv, sock=sock, reader=reader)
 
