@@ -55,7 +55,7 @@ class Player(Thread):
         super().__init__()
 
     def run(self):
-        with self.sock.makefile(buffering=1) as reader:
+        with self.sock.makefile(mode='rw') as conn:
             terminate = False
             while (not terminate):
                 self.barrier.wait()
@@ -78,10 +78,11 @@ class Player(Thread):
                     lines, msg = args
                     msg = f"{task.name} {lines}\n{msg}"
                 elif task == Task.SWAP:
-                    self._swap(reader)
+                    self._swap(conn)
                 elif task == Task.WAIT:
                     self.barrier.wait()
-                self.sock.sendall((msg + '\n').encode('utf-8'))
+                conn.write(msg + '\n')
+                conn.flush()
 
     def showHand(self):
         """Display hand to user"""
@@ -91,15 +92,17 @@ class Player(Thread):
         """Request user swaps faceups"""
         self.queue.put_nowait((Task.SWAP,))
 
-    def _swap(self, reader):
+    def _swap(self, conn):
         # NOTE, implementation doesn't have error conditions
-        self.sock.sendall((Task.SWAP.name + '\n').encode('utf-8'))
-        stuff = reader.readline().strip().split(' ')
+        conn.write(Task.SWAP.name + '\n')
+        conn.flush()
+        stuff = conn.readline().strip().split(' ')
         cards = list(map(netToCard, stuff))
         froms, tos = cards[::2], cards[1::2]
         for tup in zip(froms, tos):
             self.hand.swap(*tup)
-        self.sock.sendall((AFFIRM + '\n').encode('utf-8'))
+        conn.write(ACK + '\n')
+        conn.flush()
 
     def msg(self, msg):
         """Send general information to user"""

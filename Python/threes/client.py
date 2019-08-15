@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from collections import defaultdict
 import socket
-from common import trans_mode, AFFIRM
+from common import trans_mode, ACK
 from sys import stdin
 from deck import cardToNet, Card
 
@@ -33,11 +33,11 @@ def noop(*argv, **kw):
 
 
 @handler
-def msg(lines, reader=None, **kw):
+def msg(lines, conn=None, **kw):
     """Forward general information to player"""
     msg = str()
     for _ in range(int(lines)):
-        msg += reader.readline()
+        msg += conn.readline()
     print(msg)
 
 
@@ -60,17 +60,18 @@ def readcards():
 
 
 @handler
-def swap(reader=None, sock=None, **kw):
+def swap(conn=None, **kw):
     """Read in Cards for user faceup"""
     print("Swap your cards: held -> faceup")
     stdin.flush()
     while(True):
         cards = readcards()
         netstr = ' '.join(map(cardToNet, cards))
-        sock.sendall((netstr + '\n').encode('utf-8'))
-        resp = reader.readline().strip()
+        conn.write(netstr + '\n')
+        conn.flush()
+        resp = conn.readline().strip()
 
-        if resp == AFFIRM:
+        if resp == ACK:
             break
         print("Try again")
 
@@ -78,9 +79,12 @@ def swap(reader=None, sock=None, **kw):
 def run_loop(sock):
     global started
     started = True
-    reader = iter(sock.makefile(buffering=1))
-    for name, argv in call_iter(reader):
-        handlers.get(name.lower(), noop)(*argv, sock=sock, reader=reader)
+    # I can't change you much though :(
+    conn = sock.makefile(mode='rw')
+    # call_iter is tested, therefore uninvolved
+    for name, argv in call_iter(conn):
+        print(f"-> {name}, {argv}")  # MSG showhand at beginning, is replayed
+        handlers.get(name.lower(), noop)(*argv, conn=conn)
 
 
 if __name__ == "__main__":
