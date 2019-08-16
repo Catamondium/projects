@@ -12,7 +12,7 @@ from deck import Card, Deck, Hand, byRank, netToCard
 from itertools import starmap, takewhile
 from functools import partial
 
-from threading import Thread, Barrier, Event
+from threading import Thread, Barrier  # , Event
 from queue import Queue
 from enum import Enum, auto
 
@@ -61,17 +61,8 @@ class Player(Thread):
             while (not terminate):
                 self.barrier.wait()
                 task, *args = self.queue.get()
-                print(f"{self.ident} -> {task.name}")
 
-                # What's with the extra showhand on the client?
-                """
-                Per thread queue OPs:
-                MSG # opening showhand
-                SWAP
-                <- mystery MSG somewhere here
-                ENDGAME # delcaring none victory
-                """
-
+                msg = ""
                 if task == Task.ENDGAME:
                     msg = f"{task.name} {args[0]}"
                     terminate = True
@@ -104,7 +95,7 @@ class Player(Thread):
         cards = list(map(netToCard, stuff))
         froms, tos = cards[::2], cards[1::2]
         for tup in zip(froms, tos):
-            self.hand.swap(*tup)
+            self.hand.swap(*tup)  # you do stuff now though?
         conn.write(ACK + '\n')
         conn.flush()
 
@@ -154,26 +145,24 @@ def porter(players, event):
     allowing survivors to shutdown gracefully
     """
     event.clear()
-    while (all(map(Player.is_alive, players))):
+    while (all(map(Player.is_alive, players.values()))):
         pass
     event.set()
 
 
 def gameloop(players):
     """Main controller"""
-    sigfault = Event()
-    pth = Thread(target=porter, args=(players, sigfault), daemon=True)
-    pth.start()
+    #sigfault = Event()
+    #pth = Thread(target=porter, args=(players, sigfault), daemon=True)
+    # pth.start()
     for player in players.values():
         print(f"Conn on: {player.addr or NIX}")
     turnkeys = list(players.keys())
     shuffle(turnkeys)
-
     # just terminate game for now, after showing hand
     broadcast(players, Player.showHand)
     broadcast(players, Player.swap)
-    if sigfault.wait(timeout=(3 * 60)):
-        broadcast(players, Player.kill)
+    broadcast(players, Player.showHand)
     broadcast(players, Player.endgame, None)
     for player in players.values():
         player.join()

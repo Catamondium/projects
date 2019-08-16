@@ -85,11 +85,8 @@ def swap(conn=None, **kw):
 def run_loop(sock):
     global started
     started = True
-    # I can't change you much though :(
     conn = sock.makefile(mode='rw')
-    # call_iter is tested, therefore uninvolved
     for name, argv in call_iter(conn):
-        print(f"-> {name}, {argv}")  # MSG showhand at begin, is replayed
         handlers.get(name.lower(), noop)(*argv, conn=conn)
 
 
