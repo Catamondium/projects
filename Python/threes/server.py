@@ -12,7 +12,7 @@ from deck import Card, Deck, Hand, byRank, netToCard
 from itertools import starmap, takewhile
 from functools import partial
 
-from threading import Thread, Barrier, current_thread
+from threading import Thread, Barrier, Event
 from queue import Queue
 from enum import Enum, auto
 
@@ -41,6 +41,7 @@ class Task(Enum):
     ENDGAME = auto()
     SWAP = auto()
     WAIT = auto()
+    KILL = auto()
 
 
 class Player(Thread):
@@ -72,6 +73,9 @@ class Player(Thread):
                 """
 
                 if task == Task.ENDGAME:
+                    msg = f"{task.name} {args[0]}"
+                    terminate = True
+                elif task == Task.KILL:
                     msg = f"{task.name} {args[0]}"
                     terminate = True
                 elif task == Task.MSG:
@@ -117,6 +121,10 @@ class Player(Thread):
         """Declare game finished, and winner"""
         self.queue.put_nowait((Task.ENDGAME, winner))
 
+    def kill(self, deceased=""):
+        """Emergency shutdown"""
+        self.queue.put_nowait((Task.KILL, deceased))
+
     def wait(self):
         self.queue.put_nowait((Task.WAIT,))
 
@@ -139,8 +147,23 @@ def multicast(players, ks, method, *args, inclusive=True):
     broadcast({k: v for k, v in players.items() if pred(k)}, method, *args)
 
 
+def porter(players, event):
+    """
+    client handler exception daemon,
+    signals event when any Player threads die,
+    allowing survivors to shutdown gracefully
+    """
+    event.clear()
+    while (all(map(Player.is_alive, players))):
+        pass
+    event.set()
+
+
 def gameloop(players):
     """Main controller"""
+    sigfault = Event()
+    pth = Thread(target=porter, args=(players, sigfault), daemon=True)
+    pth.start()
     for player in players.values():
         print(f"Conn on: {player.addr or NIX}")
     turnkeys = list(players.keys())
@@ -149,6 +172,8 @@ def gameloop(players):
     # just terminate game for now, after showing hand
     broadcast(players, Player.showHand)
     broadcast(players, Player.swap)
+    if sigfault.wait(timeout=(3 * 60)):
+        broadcast(players, Player.kill)
     broadcast(players, Player.endgame, None)
     for player in players.values():
         player.join()
