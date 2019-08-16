@@ -12,7 +12,7 @@ from deck import Card, Deck, Hand, byRank, netToCard
 from itertools import starmap, takewhile, islice
 from functools import partial
 
-from threading import Thread, Barrier  # , Event
+from threading import Thread, Barrier, Event
 from queue import Queue
 from enum import Enum, auto
 
@@ -41,41 +41,41 @@ class Task(Enum):
     ENDGAME = auto()
     SWAP = auto()
     WAIT = auto()
-    KILL = auto()
 
 
 class Player(Thread):
     """client handler"""
 
-    def __init__(self, hand: Hand, sock, addr=NIX):
+    def __init__(self, hand: Hand, deathevent: Event, sock, addr=NIX):
         self.pipe = Queue()
         self.hand = hand
         self.sock = sock
         self.addr = addr
+        self.deathevent = deathevent
         super().__init__()
 
     def run(self):
         with self.sock.makefile(mode='rw') as conn:
             terminate = False
-            while (not terminate):
-                task, *args = self.pipe.get()
+            while not terminate or not self.deathevent.wait(0.5):
 
-                msg = ""
-                if task == Task.ENDGAME:
-                    msg = f"{task.name} {args[0]}"
-                    terminate = True
-                elif task == Task.KILL:
-                    msg = f"{task.name} {args[0]}"
-                    terminate = True
-                elif task == Task.MSG:
-                    lines, msg = args
-                    msg = f"{task.name} {lines}\n{msg}"
-                elif task == Task.SWAP:
-                    self._swap(conn)
-                elif task == Task.WAIT:
-                    args[0].wait()
-                conn.write(msg + '\n')
-                conn.flush()
+                try:
+                    task, *args = self.pipe.get()
+                    msg = ""
+                    if task == Task.ENDGAME:
+                        msg = f"{task.name} {args[0]}"
+                        terminate = True
+                    elif task == Task.MSG:
+                        lines, msg = args
+                        msg = f"{task.name} {lines}\n{msg}"
+                    elif task == Task.SWAP:
+                        self._swap(conn)
+                    elif task == Task.WAIT:
+                        args[0].wait()
+                    conn.write(msg + '\n')
+                    conn.flush()
+                except:
+                    self.deathevent.set()
 
     def showHand(self):
         """Display hand to user"""
@@ -110,10 +110,6 @@ class Player(Thread):
         """Declare game finished, and winner"""
         self.pipe.put_nowait((Task.ENDGAME, winner))
 
-    def kill(self, deceased=""):
-        """Emergency shutdown"""
-        self.pipe.put_nowait((Task.KILL, deceased))
-
     def wait(self, bar: Barrier):
         self.pipe.put_nowait((Task.WAIT, bar))
 
@@ -136,23 +132,8 @@ def multicast(players, ks, method, *args, inclusive=True):
     broadcast({k: v for k, v in players.items() if pred(k)}, method, *args)
 
 
-def porter(players, event):
-    """
-    client handler exception daemon,
-    signals event when any Player threads die,
-    allowing survivors to shutdown gracefully
-    """
-    event.clear()
-    while (all(map(Player.is_alive, players.values()))):
-        pass
-    event.set()
-
-
 def gameloop(players):
     """Main controller"""
-    #sigfault = Event()
-    #pth = Thread(target=porter, args=(players, sigfault), daemon=True)
-    # pth.start()
     for player in players.values():
         print(f"Conn on: {player.addr or NIX}")
     turnkeys = list(players.keys())
@@ -194,9 +175,10 @@ if __name__ == "__main__":
         graveyard = []
         hands, playpile = Deck.deal(argv.players, 9)
         hands = map(Hand, hands)
+        deathevent = Event()
 
         for hand in hands:
-            p = Player(hand, *server.accept())
+            p = Player(hand, deathevent, *server.accept())
             p.start()
             players[p.ident] = p
 

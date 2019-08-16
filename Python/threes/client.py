@@ -33,12 +33,6 @@ def noop(*argv, **kw):
 
 
 @handler
-def kill(player=None, **kw):
-    p = player or "A player"
-    print(f"{p} left the game")
-
-
-@handler
 def msg(lines, conn=None, **kw):
     """Forward general information to player"""
     msg = str()
