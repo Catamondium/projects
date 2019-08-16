@@ -9,7 +9,7 @@ from common import *
 from collections import defaultdict
 from random import shuffle
 from deck import Card, Deck, Hand, byRank, netToCard
-from itertools import starmap, takewhile
+from itertools import starmap, takewhile, islice
 from functools import partial
 
 from threading import Thread, Barrier  # , Event
@@ -47,10 +47,9 @@ class Task(Enum):
 class Player(Thread):
     """client handler"""
 
-    def __init__(self, hand: Hand, startbarrier, sock, addr=NIX):
-        self.queue = Queue()
+    def __init__(self, hand: Hand, sock, addr=NIX):
+        self.pipe = Queue()
         self.hand = hand
-        self.barrier = startbarrier
         self.sock = sock
         self.addr = addr
         super().__init__()
@@ -59,8 +58,7 @@ class Player(Thread):
         with self.sock.makefile(mode='rw') as conn:
             terminate = False
             while (not terminate):
-                self.barrier.wait()
-                task, *args = self.queue.get()
+                task, *args = self.pipe.get()
 
                 msg = ""
                 if task == Task.ENDGAME:
@@ -75,7 +73,7 @@ class Player(Thread):
                 elif task == Task.SWAP:
                     self._swap(conn)
                 elif task == Task.WAIT:
-                    self.barrier.wait()
+                    args[0].wait()
                 conn.write(msg + '\n')
                 conn.flush()
 
@@ -85,7 +83,7 @@ class Player(Thread):
 
     def swap(self):
         """Request user swaps faceups"""
-        self.queue.put_nowait((Task.SWAP,))
+        self.pipe.put_nowait((Task.SWAP,))
 
     def _swap(self, conn):
         # NOTE, implementation doesn't have error conditions
@@ -102,7 +100,7 @@ class Player(Thread):
     def msg(self, msg):
         """Send general information to user"""
         lines = len(msg.split('\n'))
-        self.queue.put_nowait((Task.MSG, lines, msg))
+        self.pipe.put_nowait((Task.MSG, lines, msg))
 
     def sort(self):
         """Sort the hand"""
@@ -110,14 +108,14 @@ class Player(Thread):
 
     def endgame(self, winner):
         """Declare game finished, and winner"""
-        self.queue.put_nowait((Task.ENDGAME, winner))
+        self.pipe.put_nowait((Task.ENDGAME, winner))
 
     def kill(self, deceased=""):
         """Emergency shutdown"""
-        self.queue.put_nowait((Task.KILL, deceased))
+        self.pipe.put_nowait((Task.KILL, deceased))
 
-    def wait(self):
-        self.queue.put_nowait((Task.WAIT,))
+    def wait(self, bar: Barrier):
+        self.pipe.put_nowait((Task.WAIT, bar))
 
 
 def broadcast(players, method, *args):
@@ -160,6 +158,8 @@ def gameloop(players):
     turnkeys = list(players.keys())
     shuffle(turnkeys)
     # just terminate game for now, after showing hand
+    bar = Barrier(len(players))
+    broadcast(players, Player.wait, bar)
     broadcast(players, Player.showHand)
     broadcast(players, Player.swap)
     broadcast(players, Player.showHand)
@@ -187,7 +187,6 @@ if __name__ == "__main__":
     server = socket.socket(trans_mode[argv.local][0])
     server.bind(*(trans_mode[argv.local][1]))
     try:
-        bar = Barrier(argv.players)
         server.listen()
         players = dict()
         global playpile
@@ -197,7 +196,7 @@ if __name__ == "__main__":
         hands = map(Hand, hands)
 
         for hand in hands:
-            p = Player(hand, bar, *server.accept())
+            p = Player(hand, *server.accept())
             p.start()
             players[p.ident] = p
 
