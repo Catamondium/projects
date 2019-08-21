@@ -41,6 +41,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser("Upload directory to dropbox recursively")
     parser.add_argument("pair", type=pair, nargs='+',
                         help="LOCAL,DROP directory pairs")
+    parser.add_argument("--dry", action='store_true',
+                        help="Print changes w/o sending")
     args = parser.parse_args()
 
     for local, drop in args.pair:
@@ -55,11 +57,14 @@ if __name__ == "__main__":
             relative_path = local_path.relative_to(local)
             drop_path = str(Path(drop) / relative_path)
 
-            # upload the file
-            with open(local_path, 'rb') as f:
-                try:
-                    client.files_upload(f.read(), drop_path,
-                                        mode=dropbox.files.WriteMode("overwrite"))
-                except:  # write timeout
-                    large_upload(
-                        client, f, local_path.stat().st_size, drop_path)
+            if args.dry:
+                print(f"{local_path} -> {drop_path}")
+            else:
+                # upload the file
+                with open(local_path, 'rb') as f:
+                    try:
+                        client.files_upload(f.read(), drop_path,
+                                            mode=dropbox.files.WriteMode("overwrite"))
+                    except:  # write timeout
+                        large_upload(
+                            client, f, local_path.stat().st_size, drop_path)
