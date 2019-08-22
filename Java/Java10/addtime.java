@@ -1,4 +1,4 @@
-import java.lang.Math;
+import java.util.Arrays;
 
 class Time {
     public int hrs;
@@ -33,16 +33,19 @@ class addtime {
     }
 
     public static void main(String[] argv) {
+        boolean version_opt = Arrays.stream(argv).anyMatch(x -> x.equals("-l"));
         if (argv.length < 2)
             usage();
+        else if (version_opt) {
+            System.out.format("Java: %s\n", System.getProperty("java.version"));
+            System.exit(0);
+        }
 
         Time start = new Time(argv[0]);
         int elapse = Integer.parseInt(argv[1]);
         Time end = Time.elapse(start, elapse);
 
-        String p1 = String.format("Start:\t%s\t%+d", start.format(), elapse);
-        String p2 = String.format("End:\t%s", end.format());
-        System.out.println(p1);
-        System.out.println(p2);
+        System.out.format("Start:\t%s\t%+d\n", start.format(), elapse);
+        System.out.format("End:\t%s\n", end.format());
     }
 }
