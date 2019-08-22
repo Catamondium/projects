@@ -1,4 +1,5 @@
 import kotlin.system.exitProcess
+import kotlin.KotlinVersion
 
 class Time(val hrs: Int, val mins: Int) {
     val abs = hrs * 60 + mins
@@ -23,11 +24,12 @@ operator fun Time.plus(other: Time): Time {
 
 fun usage() {
     println("""
-    |Usage: addtime [-qh] HH:MM HH:MM|mins_elapse
+    |Usage: addtime [-qhl] HH:MM HH:MM|mins_elapse
     |Note: if mins_elapse is negative, precede it with '--'
     |Options:
     |        -q quietly output end time
     |        -h print this message and exit
+    |        -l print version information
     """.trimMargin())
     exitProcess(1)
 }
@@ -45,7 +47,11 @@ fun main(args: Array<String>) {
     val re = "^-[a-zA-Z]+".toRegex()
     val (opts, free) = args.partition { thing -> re.matches(thing) }
 
-    if ("-h" in opts || free.size < 2) {
+    if ("-l" in opts) {
+        println("Kotlin: %s".format(KotlinVersion.CURRENT))
+        exitProcess(0)
+    }
+    else if ("-h" in opts || free.size < 2) {
         usage()
     }
 
@@ -53,7 +59,7 @@ fun main(args: Array<String>) {
     val start = str_start.toTime()
     val elapse = str_elapse.toTime()
 
-    if (opts.contains("-q")) {
+    if ("-q" in opts) {
         println("${start + elapse}")
     } else {
         println("Start:\t%s\t%+d".format(start, elapse.abs))
