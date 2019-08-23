@@ -1,6 +1,7 @@
 import java.util.Arrays;
 import java.util.regex.*;
 import java.util.Vector;
+import java.util.List;
 
 class Time {
     public int hrs = 0;
@@ -47,8 +48,8 @@ class Time {
 
 class Argparse {
     public static Pattern optRe = Pattern.compile("^-[-a-zA-Z]+");
-    public Vector<String> opts = new Vector<String>();
-    public Vector<String> free = new Vector<String>();
+    public List<String> opts = new Vector<String>();
+    public List<String> free = new Vector<String>();
 
     Argparse(String[] argv) {
         for (String s : argv) {
