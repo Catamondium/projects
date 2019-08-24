@@ -3,21 +3,18 @@ import java.util.regex.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.java.util.function.Predicate;
+import java.util.function.Predicate;
 
 class Time {
     public int hrs = 0;
     public int mins = 0;
 
-    public Time(String strTime) {
+    public static Time fromString(String strTime) {
         if (strTime.contains(":")) {
             String[] parts = strTime.split(":");
-            this.hrs = Integer.parseInt(parts[0]);
-            this.mins = Integer.parseInt(parts[1]);
+            return new Time(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
         } else {
-            int mins = Integer.parseInt(strTime);
-            this.hrs = Math.floorDiv(mins, 60);
-            this.mins = Math.floorMod(mins, 60);
+            return new Time(Integer.parseInt(strTime));
         }
     }
 
@@ -88,8 +85,8 @@ class addtime {
         } else if (args.free.size() < 2)
             usage();
 
-        Time start = new Time(args.free.get(0));
-        Time elapse = new Time(args.free.get(1));
+        Time start = Time.fromString(args.free.get(0));
+        Time elapse = Time.fromString(args.free.get(1));
         Time end = start.elapse(elapse);
 
         if (args.hasOpt("-q")) {
