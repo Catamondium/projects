@@ -1,7 +1,9 @@
-import java.util.Arrays;
+import java.util.stream.*;
 import java.util.regex.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.java.util.function.Predicate;
 
 class Time {
     public int hrs = 0;
@@ -47,19 +49,16 @@ class Time {
 }
 
 class Argparse {
-    public static Pattern optRe = Pattern.compile("^-[-a-zA-Z]+");
+    private static Pattern optRe = Pattern.compile("^-[-a-zA-Z]+");
+    private static Predicate<String> pred = x -> optRe.matcher(x).matches();
     public List<String> opts = new ArrayList<String>();
     public List<String> free = new ArrayList<String>();
 
     Argparse(String[] argv) {
-        for (String s : argv) {
-            Matcher m = optRe.matcher(s);
-            if (m.matches()) {
-                this.opts.add(s);
-            } else {
-                this.free.add(s);
-            }
-        }
+        Map<Boolean, List<String>> mp = Stream.of(argv).collect(Collectors.partitioningBy(pred));
+
+        opts = mp.get(true);
+        free = mp.get(false);
     }
 
     public boolean hasOpt(String opt) {
