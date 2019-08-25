@@ -12,7 +12,7 @@ from deck import Card, Deck, Hand, byRank, netToCard
 from itertools import starmap, takewhile, islice
 from functools import partial
 
-from threading import Thread, Barrier, Event
+from threading import Thread, Barrier, Event, Lock
 from queue import Queue
 from enum import Enum, auto
 
@@ -46,9 +46,8 @@ class Task(Enum):
 class Player(Thread):
     """client handler"""
 
-    def __init__(self, hand: Hand, deathevent: Event, sock, addr=NIX):
+    def __init__(self, deathevent: Event, sock, addr=NIX):
         self.pipe = Queue()
-        self.hand = hand
         self.sock = sock
         self.addr = addr
         self.deathevent = deathevent
@@ -79,7 +78,8 @@ class Player(Thread):
 
     def showHand(self):
         """Display hand to user"""
-        self.msg(str(self.hand))
+        with datalock:
+            self.msg(str(playerdata[self.ident]))
 
     def swap(self):
         """Request user swaps faceups"""
@@ -92,8 +92,9 @@ class Player(Thread):
         stuff = conn.readline().strip().split(' ')
         cards = list(map(netToCard, stuff))
         froms, tos = cards[::2], cards[1::2]
-        for tup in zip(froms, tos):
-            self.hand.swap(*tup)  # you do stuff now though?
+        with datalock:
+            for tup in zip(froms, tos):
+                playerdata[self.ident].swap(*tup)  # you do stuff now though?
         conn.write(ACK + '\n')
         conn.flush()
 
@@ -104,7 +105,8 @@ class Player(Thread):
 
     def sort(self):
         """Sort the hand"""
-        self.hand.sort()
+        with datalock:
+            playerdata[self.ident].sort()
 
     def endgame(self, winner):
         """Declare game finished, and winner"""
@@ -172,14 +174,24 @@ if __name__ == "__main__":
         players = dict()
         global playpile
         global graveyard
+        global playerdata
+        global datalock
+        datalock = Lock()
+        playerdata = dict()
         graveyard = []
         hands, playpile = Deck.deal(argv.players, 9)
         hands = map(Hand, hands)
         deathevent = Event()
 
         for hand in hands:
-            p = Player(hand, deathevent, *server.accept())
+            p = Player(deathevent, *server.accept())
             p.start()
+            """
+            performing the binding now could be safe
+            because no commands are issued yet
+            and a barrier must be passed first
+            """
+            playerdata[p.ident] = hand
             players[p.ident] = p
 
         gameloop(players)
