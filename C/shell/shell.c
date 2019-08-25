@@ -15,11 +15,6 @@
 /* TODO
  * preproc
  * * elide escapes
- * globbing
- * * general
- * * prefixed
- * * suffixed
- * * pre & suffixed
  */
 
 #ifdef READLINE
