@@ -8,6 +8,7 @@ import java.util.*;
 public class Parser {
     Optional<String> desc = Optional.empty();
     List<Option> positionals = new ArrayList<Option>();
+    Map<String, Option> keywords = new HashMap<String, Option>();
 
     /**
      * Create Parser w/ description
@@ -19,10 +20,27 @@ public class Parser {
     }
 
     /**
-     * create Parser w/o description
+     * Create Parser w/o description
      */
     public Parser() {
 
+    }
+
+    /**
+     * Add a sequence of options to Parser
+     *
+     * @param options options
+     * @return this
+     */
+    public Parser addOptions(Option... options) {
+        for (Option o : options) {
+            if (o.isKeyword()) {
+                keywords.put(o.destination, o);
+            } else {
+                positionals.add(o);
+            }
+        }
+        return this;
     }
 
     /**

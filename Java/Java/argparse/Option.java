@@ -3,7 +3,7 @@ package argparse;
 import java.util.Optional;
 
 class OptArity {
-    int n = 0; // 0 signals presence-boolean
+    int n = 0; // 0 signals boolean flag
     ArityMod mod = ArityMod.FIXED;
 
     OptArity(int n, ArityMod mod) {
@@ -11,7 +11,7 @@ class OptArity {
         switch (mod) {
         case REST:
         case GREEDY:
-            this.n = -1; // -1 signals irrelevance
+            this.n = -1;
             break;
         case FIXED:
             this.n = Math.abs(n);
@@ -98,7 +98,7 @@ class Option {
     }
 
     /**
-     * sets nullary arity, i.e boolean flag
+     * Sets nullary arity, i.e boolean flag
      *
      * @return this
      */
@@ -108,7 +108,7 @@ class Option {
     }
 
     /**
-     * sets Option description
+     * Sets Option description
      *
      * @param desc description
      * @return this
