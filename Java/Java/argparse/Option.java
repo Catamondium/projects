@@ -67,10 +67,10 @@ public class Option {
      * @param longname  long form e.g "--help"
      */
     public Option(String smallname, String longname) {
-        String[] strs = dashize(smallname, longname);
+        var strs = dashize(smallname, longname);
         this.smallname = strs[0];
         this.longname = Optional.of(strs[1]);
-        destination = strs[2];
+        destination = strs[1];
         keyword = true;
     }
 
@@ -138,6 +138,22 @@ public class Option {
         return keyword;
     }
 
+    /**
+     * Options with equal destinations are deemed identical
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (other.getClass() == this.getClass()) {
+            return destination == ((Option) other).destination;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return destination.hashCode();
+    }
+
     private String[] dashize(String smallname, String longname) {
         String[] ret = { "", "", "" };
         if (smallname.startsWith("-")) {
@@ -153,9 +169,11 @@ public class Option {
         } else {
             ret[1] = "--" + longname;
         }
-
-        ret[2] = ret[1];
-
         return ret;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Option(\"%s\")", destination);
     }
 }

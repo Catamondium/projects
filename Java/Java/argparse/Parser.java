@@ -33,7 +33,7 @@ public class Parser {
      * @return this
      */
     public Parser addOptions(Option... options) {
-        for (Option o : options) {
+        for (var o : options) {
             if (o.isKeyword()) {
                 keywords.put(o.destination, o);
             } else {
