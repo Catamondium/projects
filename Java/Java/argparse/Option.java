@@ -36,7 +36,7 @@ class OptArity {
 /**
  * Option builder
  */
-class Option {
+public class Option {
     boolean keyword = false;
     String smallname;
     String destination;
@@ -79,7 +79,7 @@ class Option {
      *
      * @param n   required args / lower bound
      * @param mod special arities e.g variadic
-     * @return
+     * @return this
      */
     public Option arity(int n, ArityMod mod) {
         arity = new OptArity(n, mod);
@@ -130,6 +130,7 @@ class Option {
     }
 
     /**
+     * Keyword status
      *
      * @return option keyword status
      */

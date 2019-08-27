@@ -11,7 +11,8 @@ public class Argument {
     List<String> data = new ArrayList<String>();
 
     /**
-     *
+     * Return data with fun mapped
+     * 
      * @param <R> StringFunction return type
      * @param fun StringFunction to apply
      * @return fun applied to contents
@@ -21,6 +22,7 @@ public class Argument {
     }
 
     /**
+     * Return argument data
      *
      * @return argument data
      */
@@ -38,7 +40,7 @@ public class Argument {
     }
 
     /**
-     * complement to isTrue
+     * Complement to isTrue
      *
      * @return if argument is falsy
      */
