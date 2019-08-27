@@ -21,11 +21,28 @@ public class Argument {
     }
 
     /**
+     *
+     * @return argument data
+     */
+    public List<String> get() {
+        return data;
+    }
+
+    /**
      * Flag test shorthand
      *
      * @return if argument is truthy
      */
     public boolean isTrue() {
         return !data.isEmpty() && Boolean.parseBoolean(data.get(0));
+    }
+
+    /**
+     * complement to isTrue
+     *
+     * @return if argument is falsy
+     */
+    public boolean isFalse() {
+        return !isTrue();
     }
 }
