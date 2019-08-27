@@ -33,38 +33,108 @@ class OptArity {
     }
 }
 
+/**
+ * Option builder
+ */
 class Option {
-    boolean positional = false;
+    boolean keyword = false;
     String smallname;
-    Optional<String> longname = Optional.empty();
-    String assumed_name;
+    String destination;
     OptArity arity = new OptArity();
 
-    public Option(String smallname) {
-        this.smallname = smallname;
+    Optional<String> longname = Optional.empty();
+    Optional<String> desc = Optional.empty();
+
+    /**
+     * Constructs keyword or positional argument
+     *
+     * @param name given name of Option
+     */
+    public Option(String name) {
+        this.smallname = name;
         if (smallname.startsWith("-")) {
-            positional = true;
-            assumed_name = smallname.substring(1);
+            keyword = true;
+            destination = name.substring(1);
         } else {
-            assumed_name = smallname;
+            destination = name;
         }
     }
 
+    /**
+     * Constructs keyword argument
+     *
+     * @param smallname small form e.g "-h"
+     * @param longname  long form e.g "--help"
+     */
     public Option(String smallname, String longname) {
         String[] strs = dashize(smallname, longname);
         this.smallname = strs[0];
         this.longname = Optional.of(strs[1]);
-        assumed_name = strs[2];
+        destination = strs[2];
+        keyword = true;
     }
 
-    public Option arity(int n, ArityMod m) {
-        arity = new OptArity(n, m);
+    /**
+     * Sets Option arity
+     *
+     * @param n   required args / lower bound
+     * @param mod special arities e.g variadic
+     * @return
+     */
+    public Option arity(int n, ArityMod mod) {
+        arity = new OptArity(n, mod);
         return this;
     }
 
+    /**
+     * Equivalent to arity(n, ArityMod.FIXED), sets n-ary requirement
+     *
+     * @param n required args
+     * @return this
+     */
     public Option arity(int n) {
         arity = new OptArity(n);
         return this;
+    }
+
+    /**
+     * sets nullary arity, i.e boolean flag
+     *
+     * @return this
+     */
+    public Option arity() {
+        arity = new OptArity();
+        return this;
+    }
+
+    /**
+     * sets Option description
+     *
+     * @param desc description
+     * @return this
+     */
+    public Option description(String desc) {
+        this.desc = Optional.of(desc);
+        return this;
+    }
+
+    /**
+     * Sets destination key, defaults to longname else smallname
+     *
+     * @param dest key
+     * @return this
+     */
+    public Option destination(String dest) {
+        destination = dest;
+        return this;
+    }
+
+    /**
+     *
+     * @return option keyword status
+     */
+    public boolean isKeyword() {
+        return keyword;
     }
 
     private String[] dashize(String smallname, String longname) {
@@ -77,14 +147,14 @@ class Option {
 
         if (longname.startsWith("--")) {
             ret[1] = longname;
-            ret[2] = longname.substring(1);
         } else if (longname.startsWith("-")) {
             ret[1] = "-" + longname;
-            ret[2] = longname.substring(2);
         } else {
             ret[1] = "--" + longname;
-            ret[2] = longname;
         }
+
+        ret[2] = ret[1];
+
         return ret;
     }
 }
