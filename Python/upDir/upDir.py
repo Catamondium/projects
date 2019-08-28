@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!envrun -c
 import dropbox
 from pathlib import Path
 

@@ -1,4 +1,4 @@
-#!/bin/envrun -c
+#!envrun -c
 import datetime
 import pickle
 from pathlib import Path
