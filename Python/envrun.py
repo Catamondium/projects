@@ -60,5 +60,4 @@ if __name__ == "__main__":
         exit(1)
     pyprog = pyprog.resolve()
     newenv = envmod(pyprog, environ)
-
     exit(execute(pyprog, argv.args, newenv, interpereter=argv.py))
