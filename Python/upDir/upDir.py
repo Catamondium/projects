@@ -1,4 +1,4 @@
-#!/bin/envrun -c
+#!/bin/envrun
 import dropbox
 from pathlib import Path
 

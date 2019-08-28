@@ -44,17 +44,18 @@ if __name__ == "__main__":
     from argparse import ArgumentParser, REMAINDER
     parser = ArgumentParser(description="virtualenv resolver")
     parser.add_argument(
-        "-p", "--prog", help="python program to run. NOTE: if searched in PATH, PATH must be a symlink to the venv")
+        "prog", help="python program to run. NOTE: if searched in PATH, PATH must be a symlink to the venv")
     parser.add_argument("--path", default=environ['PATH'])
-    parser.add_argument("-c", "--call", default=None,
-                        help="Call direct, useful for shebangs")
     parser.add_argument("--py", default="python",
                         help="python version to run")
     parser.add_argument("args", nargs=REMAINDER,
                         help="args to pass to prog")
 
     argv = parser.parse_args()
-    pyprog = Path(argv.call) or searchPaths(argv.prog, path=argv.path)
+    if Path(argv.prog).is_absolute():
+        pyprog = Path(argv.prog)
+    else:
+        pyprog = searchPaths(argv.prog, path=argv.path)
     if not pyprog:
         print(f"Couldn't find {argv.prog}")
         exit(1)
