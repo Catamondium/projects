@@ -12,7 +12,7 @@ public class Argument {
 
     /**
      * Return data with fun mapped
-     * 
+     *
      * @param <R> StringFunction return type
      * @param fun StringFunction to apply
      * @return fun applied to contents
@@ -40,7 +40,7 @@ public class Argument {
     }
 
     /**
-     * Complement to isTrue
+     * Complement to {@link argparse.Argument#isTrue isTrue}
      *
      * @return if argument is falsy
      */

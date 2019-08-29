@@ -15,10 +15,14 @@ public enum ArityMod {
     /**
      * GREEDY with minimum n
      */
-    PLUS,
+    LOWER_BOUND,
     /**
      * Consume remaining arguments. NOTE: a given parser will only acknowledge the
      * first REST; evaluated after all other options
      */
-    REST, OPTIONAL
+    REMAINDER,
+    /**
+     * Take up-to n
+     */
+    UPPER_BOUND
 }

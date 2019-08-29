@@ -1,6 +1,12 @@
 package argparse;
 
 import java.util.*;
+import java.util.stream.Stream;
+
+/*
+ * parsing notes:
+ *  w/o rest param '--' delimiter fails on following arg
+ */
 
 /**
  * Parser builder
@@ -8,7 +14,8 @@ import java.util.*;
 public class Parser {
     Optional<String> desc = Optional.empty();
     List<Option> positionals = new ArrayList<Option>();
-    Map<String, Option> keywords = new HashMap<String, Option>();
+    List<Option> keywords = new ArrayList<Option>();
+    Optional<Option> rest = Optional.empty();
 
     /**
      * Create Parser w/ description
@@ -34,8 +41,17 @@ public class Parser {
      */
     public Parser addOptions(Option... options) {
         for (var o : options) {
+            if (o.arity.mod == ArityMod.REMAINDER) {
+                if (!rest.isPresent()) {
+                    rest = Optional.of(o);
+                } else {
+                    // Acknowledge no further remainders
+                    continue;
+                }
+            }
+
             if (o.isKeyword()) {
-                keywords.put(o.destination, o);
+                keywords.add(o);
             } else {
                 positionals.add(o);
             }
@@ -49,7 +65,7 @@ public class Parser {
      * @param argv command line arguments
      * @return mapping of Option.destination to Argument
      */
-    public Map<String, Argument> parse(String[] argv) {
-        return new HashMap<String, Argument>();
+    public ArgResult parse(String[] argv) {
+        return new ArgResult();
     }
 }

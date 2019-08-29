@@ -9,17 +9,14 @@ class OptArity {
     OptArity(int n, ArityMod mod) {
         this.mod = mod;
         switch (mod) {
-        case REST:
+        case REMAINDER:
         case GREEDY:
             this.n = -1;
             break;
         case FIXED:
+        case UPPER_BOUND:
+        case LOWER_BOUND:
             this.n = Math.abs(n);
-            break;
-        case PLUS:
-            this.n = Math.abs(n);
-            break;
-        default:
             break;
         }
     }
@@ -30,6 +27,20 @@ class OptArity {
 
     OptArity(int n) {
         this.n = n;
+    }
+
+    boolean isRequired() {
+        switch (mod) {
+        case GREEDY:
+        case REMAINDER:
+        case UPPER_BOUND:
+            return false;
+        case FIXED:
+        case LOWER_BOUND:
+            return n != 0;
+        default:
+            return false;
+        }
     }
 }
 
@@ -175,5 +186,14 @@ public class Option {
     @Override
     public String toString() {
         return String.format("Option(\"%s\")", destination);
+    }
+
+    /**
+     * Is this option required?
+     *
+     * @return whether the option is required
+     */
+    public boolean isRequired() {
+        return arity.isRequired();
     }
 }
