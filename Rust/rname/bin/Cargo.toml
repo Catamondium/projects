@@ -1,0 +1,27 @@
+[package]
+name = "rname-bin"
+version = "0.1.0"
+authors = ["Catamondium <30911915+Catamondium@users.noreply.github.com>"]
+edition = "2018"
+publish = false
+
+[dependencies]
+getopts = {version = "0.2", optional = true} # client
+inotify = {version = "0.7", optional = true} # daemon
+daemonize = {version = "0.4", optional = true} # daemon
+
+rname = {path = "../rname"} # common
+
+[features]
+build-bin = ["getopts"]
+build-daemon = ["inotify", "daemonize"]
+
+[[bin]]
+name = "client"
+path = "client.rs"
+required-features = ["build-bin"]
+
+[[bin]]
+name = "rnamed"
+path = "daemon.rs"
+required-features = ["build-daemon"]

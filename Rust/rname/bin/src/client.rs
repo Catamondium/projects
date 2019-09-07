@@ -6,7 +6,6 @@ use std::error::Error;
 use std::io::prelude::*;
 use std::path::Path;
 
-mod rname;
 use rname::*;
 
 fn verify(path: &str) -> bool {
