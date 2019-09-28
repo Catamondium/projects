@@ -1,19 +1,45 @@
 #!/bin/envrun
 import dropbox
+import pickle
 from pathlib import Path
 
 CHUNK_SIZE = 4 * 1024 * 1024
 
-
-def read_token(tok='creds.secret'):
+def loadcreds(location: Path):
     """
-    Read client token relative to script
+    Load application credentials
     """
-    # access client secret relative to script
-    fpath = Path(__file__).resolve().parent / tok
-    with open(fpath, 'r') as f:
-        return f.readline().strip()
+    with open(location, 'r') as f:
+        lines = list(map(str.strip, f))
+        return lines[:2]
 
+# Using OAuth2 app credentials
+def connect(creds='creds.secret', access='client.secret') -> dropbox.Dropbox:
+    """
+    Authorises application w/ user and loads client
+    """
+    # TODO fix variable names
+    parent = Path(__file__).resolve().parent
+    app_id, app_sec = loadcreds(parent / creds)
+    apath = parent / access
+
+    ucreds = None
+    if apath.exists():
+        with open(apath, 'rb') as token:
+            ucreds = pickle.load(token)
+    
+    if not ucreds:
+        flow = dropbox.DropboxOAuth2FlowNoRedirect(app_id, app_sec)
+        redirect = flow.start()
+        print(f"Go here to authorise:")
+        print(redirect)
+        token = input("Copy access token here: ").strip()
+        if not token:
+            exit(1)
+        ucreds = flow.finish(token)
+        with open(apath, 'wb+') as cfile:
+            pickle.dump(ucreds, cfile)
+    return dropbox.Dropbox(ucreds.access_token)
 
 def pair(arg):
     return arg.split(',')
@@ -45,8 +71,8 @@ if __name__ == "__main__":
                         help="Print changes w/o sending")
     args = parser.parse_args()
 
+    client = connect()
     for local, drop in args.pair:
-        client = dropbox.Dropbox(read_token())
         # enumerate local files recursively
         for i in Path(local).rglob("*"):
             local_path = i.root / i
