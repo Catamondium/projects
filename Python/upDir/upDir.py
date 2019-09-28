@@ -31,8 +31,7 @@ def connect(creds='creds.secret', access='client.secret') -> dropbox.Dropbox:
     if not ucreds:
         flow = dropbox.DropboxOAuth2FlowNoRedirect(app_id, app_sec)
         redirect = flow.start()
-        print(f"Go here to authorise:")
-        print(redirect)
+        print(f"Go here to authorise: {redirect}")
         token = input("Copy access token here: ").strip()
         if not token:
             exit(1)
