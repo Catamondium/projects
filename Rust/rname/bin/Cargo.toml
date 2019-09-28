@@ -18,10 +18,10 @@ build-daemon = ["inotify", "daemonize"]
 
 [[bin]]
 name = "client"
-path = "client.rs"
+path = "src/client.rs"
 required-features = ["build-bin"]
 
 [[bin]]
 name = "rnamed"
-path = "daemon.rs"
+path = "src/daemon.rs"
 required-features = ["build-daemon"]
