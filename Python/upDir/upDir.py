@@ -1,6 +1,7 @@
 #!/bin/envrun
 import dropbox
 import pickle
+from sys import stderr
 from pathlib import Path
 
 CHUNK_SIZE = 4 * 1024 * 1024
@@ -13,32 +14,32 @@ def loadcreds(location: Path):
         lines = list(map(str.strip, f))
         return lines[:2]
 
-# Using OAuth2 app credentials
+
 def connect(creds='creds.secret', access='client.secret') -> dropbox.Dropbox:
     """
     Authorises application w/ user and loads client
     """
-    # TODO fix variable names
     parent = Path(__file__).resolve().parent
-    app_id, app_sec = loadcreds(parent / creds)
-    apath = parent / access
+    app = loadcreds(parent / creds)
+    access_p = parent / access
 
-    ucreds = None
-    if apath.exists():
-        with open(apath, 'rb') as token:
-            ucreds = pickle.load(token)
+    user = None
+    if access_p.exists():
+        with open(access_p, 'rb') as token:
+            user = pickle.load(token)
     
-    if not ucreds:
-        flow = dropbox.DropboxOAuth2FlowNoRedirect(app_id, app_sec)
+    if not user:
+        flow = dropbox.DropboxOAuth2FlowNoRedirect(*app)
         redirect = flow.start()
         print(f"Go here to authorise: {redirect}")
         token = input("Copy access token here: ").strip()
         if not token:
+            print("Error: bad input", file=stderr)
             exit(1)
-        ucreds = flow.finish(token)
-        with open(apath, 'wb+') as cfile:
-            pickle.dump(ucreds, cfile)
-    return dropbox.Dropbox(ucreds.access_token)
+        user = flow.finish(token)
+        with open(access_p, 'wb+') as token:
+            pickle.dump(user, token)
+    return dropbox.Dropbox(user.access_token)
 
 def pair(arg):
     return arg.split(',')
