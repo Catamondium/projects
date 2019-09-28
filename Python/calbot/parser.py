@@ -27,7 +27,7 @@ def decomment(csvfile, symbol='#'):
     """Strip line comments, delimited by symbol"""
     for line in csvfile:
         nline = takewhile(partial(ne, symbol), line)
-        yield reduce(add, nline)
+        yield reduce(add, nline).strip()
 
 
 def parse(f):
