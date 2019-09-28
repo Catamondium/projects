@@ -4,6 +4,7 @@ use regex::{escape, Error as reError, Regex};
 use std::error::Error;
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::string::ToString;
 
 #[derive(Debug, Clone, Default)]
 pub struct Config {
@@ -47,7 +48,7 @@ pub fn mv(rel_parent: &Path, conf: &Config) -> Result<(), Box<dyn Error>> {
     let (dirs, files): (Vec<fs::DirEntry>, Vec<fs::DirEntry>) = filtered.partition(is_directory);
 
     let fpaths: Vec<PathBuf> = files.iter().map(|f| f.path()).collect();
-    let width = (fpaths.len() as f32).log10().ceil() as usize;
+    let width = fpaths.len().to_string().len();
     let dirname = parent
         .file_name()
         .and_then(|x| x.to_str())
