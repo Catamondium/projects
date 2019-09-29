@@ -119,13 +119,16 @@ if __name__ == "__main__":
     import argparse
     service = connect()
     parser = argparse.ArgumentParser(description="Delete reccuring events")
-    parser.add_argument("descriptor", type=argparse.FileType(mode='r'), metavar="Descriptor",
+    parser.add_argument("descriptor",
+                        type=argparse.FileType(mode='r'),
+                        metavar="Descriptor",
                         help="space-delimited table of event ranges to be cleared")
+
     parser.add_argument("target", metavar="Target calendar", nargs='?',
                         help="Calendar to be cleared", default=None)
     args = parser.parse_args()
 
-    if args.target == None:
+    if args.target is None:
         parser.print_usage()
         print_cals(service)
         sys.exit(1)

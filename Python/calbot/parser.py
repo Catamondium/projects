@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from datetime import date, datetime
+from datetime import date, datetime as dt
 from time import strftime, localtime
 from collections import namedtuple
 from csv import reader
@@ -13,7 +13,7 @@ Holiday = namedtuple("Holiday", "start end")
 def gtime(event):
     """Convert date() object into Google calendar api UTC-ISO timestamp
     """
-    return datetime(event.year, event.month, event.day).isoformat() + strftime("%z", localtime())
+    return dt(event.year, event.month, event.day).isoformat() + strftime("%z", localtime())
 
 
 def tparse(string):
@@ -27,7 +27,9 @@ def decomment(csvfile, symbol='#'):
     """Strip line comments, delimited by symbol"""
     for line in csvfile:
         nline = takewhile(partial(ne, symbol), line)
-        yield reduce(add, nline).strip()
+        stripped = reduce(add, nline).strip()
+        if stripped:
+            yield stripped
 
 
 def parse(f):
