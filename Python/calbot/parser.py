@@ -47,8 +47,10 @@ def decomment(csvfile, symbol='#'):
 
 def parse(f):
     """Parse holiday descriptors."""
+    ret = []
     for start, end in reader(decomment(f), delimiter=' ', skipinitialspace=True):
-        yield Holiday(gb_date(start), gb_date(end))
+        ret.append(Holiday(gb_date(start), gb_date(end)))
+    return ret
 
 
 def fullparse(f):

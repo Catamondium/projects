@@ -19,16 +19,16 @@ def tabulate(dvals):
     return sg.Table(table_v, key='holidays', headings=['START', 'END'], justification='center')
 
 
-def radio_group(title, choices, group_id):
+def radio_group(title, choices, group_id, frame=True):
     """
     Generate framed horisontal Radio group
     keyed in {title}_{choice} form
     """
     radios = [sg.Radio(ch, group_id, key=f"{title}_{ch}") for ch in choices]
-    return sg.Frame(title, [radios])
+    return sg.Frame(title, [radios]) if frame else radios
 
 
-def gen(hols):
+def gen(*hols):
     width = len(str(len(hols)))
     return [[sg.In(h.start, key=f"hol_{i:0{width}}s", size=(10, 1)), sg.CalendarButton('cal', target=(i, 0), format=GB_FORMAT),
             sg.In(h.end, key=f"hol_{i:0{width}}e", size=(10, 1)), sg.CalendarButton('cal', target=(i, 2), format=GB_FORMAT)] for i,h in enumerate(hols)]
@@ -39,23 +39,27 @@ if __name__ == "__main__":
     else:
         descriptor = sg.PopupGetFile('Open calendar descriptor')
     with open(descriptor) as f:
-        data = list(tclsmap(Holiday, gb_conv, parse(f)))
+        data = tclsmap(Holiday, gb_conv, parse(f))
 
-    layout = [*gen(data), [sg.Ok()]]
+    layout = [*gen(*data), [sg.Quit()]]
     w = sg.Window('Cal manager', layout)
     event, values = w.read()
     w.close()
 
-    layout = [[radio_group('Bound', ['Start', 'End'], 0)], [tabulate(values)], [sg.Ok()]]
+    layout = [[*radio_group('Bound', ['Start', 'End'], 0, False), sg.Button('Append'), sg.Spin(list(range(len(values) // 2)))], [tabulate(values)], [sg.Quit()]]
     w = sg.Window('Values', layout).finalize()
     hols = w['holidays']
-    hols.update(values=hols.get() + [['A', 'B']]) # Table is updateable
     """
     Design idea:
         Enumerate holidays in Table
         Spinboxes selects element to edit
         Button to append
     """
-    _, values = w.read()
-    print(values)
+    while True:
+        event, values = w.read()
+        if event in (None, 'Quit'):
+            break
+        else:
+            hols.update(values=hols.get() + [['A', 'B']]) # Table is updateable
+            print(values)
     w.close()
