@@ -8,7 +8,7 @@ from google.auth.transport.requests import Request
 
 
 import sys
-from parser import parse, Holiday
+from parser import fullparse, Holiday
 import logging
 from functools import wraps
 
@@ -134,7 +134,7 @@ if __name__ == "__main__":
         sys.exit(1)
     data = None
     with args.descriptor:
-        data = parse(args.descriptor)
+        data = fullparse(args.descriptor)
     calID = get_cal(service, args.target)
     expanded = get_events(service, calID, data)
     del_events(service, calID, expanded)
