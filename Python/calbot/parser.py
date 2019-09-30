@@ -29,10 +29,11 @@ def tclsmap(cls, f, iterable):
             tpl += (f(elem),)
         yield cls(*tpl)
 
+GB_FORMAT = "%d/%m/%Y"
 
 def gb_date(string):
     """Convert "DD/MM/YYYY" into Datetime"""
-    return dt.strptime(string, "%d/%m/%Y")
+    return dt.strptime(string, GB_FORMAT)
 
 
 def decomment(csvfile, symbol='#'):
