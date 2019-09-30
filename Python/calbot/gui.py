@@ -5,6 +5,22 @@ from sys import argv
 from datetime import datetime as dt
 
 
+"""
+Design idea:
+    Box sizes = (10, 1) for dates
+
+    Enumerate holidays in Table
+    Spins & Radios selects element to edit
+    Buttons for Append, Remove, Edit & Submit
+
+    Load selected bound into In, Cal pair? In requires validation
+
+
+    Events:
+        Enable for Spins & Radios
+"""
+
+
 def gb_conv(value):
     return dt.strftime(value, GB_FORMAT)
 
@@ -49,12 +65,6 @@ if __name__ == "__main__":
     layout = [[*radio_group('Bound', ['Start', 'End'], 0, False), sg.Button('Append'), sg.Spin(list(range(len(values) // 2)))], [tabulate(values)], [sg.Quit()]]
     w = sg.Window('Values', layout).finalize()
     hols = w['holidays']
-    """
-    Design idea:
-        Enumerate holidays in Table
-        Spinboxes selects element to edit
-        Button to append
-    """
     while True:
         event, values = w.read()
         if event in (None, 'Quit'):
