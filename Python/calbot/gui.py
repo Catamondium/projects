@@ -34,16 +34,13 @@ def tabulate(dvals, **kwargs):
     return sg.Table(table_v, headings=['START', 'END'], **kwargs)
 
 
-def radio_group(title, choices, group_id, frame=False, sep='', **kwargs):
-    """
-    Generate framed horisontal Radio group
-    keyed in {title}_{choice} form
-    """
-    radios = [sg.Radio(ch, group_id, key=f"{title}{sep}{ch}", **kwargs) for ch in choices]
-    return sg.Frame(title, [radios]) if frame else radios
+def toggle(win, keys, disabled=True):
+    for k in keys:
+        win[k].update(disabled=bool(disabled))
 
 
 if __name__ == "__main__":
+    fields = ('Start', 'End')
     sg.change_look_and_feel('GreenTan')
     if len(argv) > 1:
         descriptor = argv[1]
@@ -62,11 +59,11 @@ if __name__ == "__main__":
         init = None
     ctl = [
             [
-                sg.In(key='-D_TXT-', size=(10, 1), justification='center'),
+                sg.In(key='-D_TXT-', size=(10, 1), justification='center', enable_events=1),
                 sg.CalendarButton('Cal', target='-D_TXT-', format=GB_FORMAT, key='-D_RAW-')
             ],
             [
-                *radio_group('', ['-START-', '-END-'], 0, enable_events=1),
+                sg.Spin(fields, initial_value='Start', key='-FIELD-'),
                 sg.Spin(list(range(len(data))), initial_value=init, key='-ROW-', enable_events=1)
             ],
             [
@@ -85,17 +82,19 @@ if __name__ == "__main__":
         ]
     w = sg.Window('Main', layout).finalize()
     hols = w['-DATA-']
-    w['-START-'].update(True)
-    fields = ('-START-', '-END-')
     while True:
+        toggle(w, ['Remove', 'Add', 'Apply'], '' == w['-D_TXT-'].get())
+        toggle(w, ['Remove', 'Apply'], not w['-DATA-'].get())
+
         event, values = w.read()
+
         if event in (None, 'Quit'):
             break
         elif event == 'Append':
             hols.update(values=hols.get() + [['A', 'B']])
         elif event in ('-ROW-',) + fields:
             row = int(w['-ROW-'].get() or -1)
-            field = 0 if w['-START-'].get() else 1
+            field = fields.index(w['-FIELD-'].get())
             if row == -1:
                 continue
             val = w['-DATA-'].get()[row][field]
@@ -103,3 +102,5 @@ if __name__ == "__main__":
             print(f"Event: {event}")
             print(f"Vals: {values}")
     w.close()
+    # Do we keep going?
+    # Supporting comments should do for usability
