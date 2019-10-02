@@ -4,6 +4,7 @@ from parser import parse, GB_FORMAT, tclsmap, Holiday
 from sys import argv
 from datetime import datetime as dt
 from itertools import starmap
+from csv import writer
 
 
 """
@@ -84,7 +85,8 @@ if __name__ == "__main__":
     w = sg.Window('Main', layout).finalize()
     hols = w['-DATA-']
 
-    execute = False
+    ndata = None
+    rlen = len(data)
     while True:
         toggle(w, ['Remove', 'Add', 'Apply'], '' == w['-D_TXT-'].get())
         toggle(w, ['Remove', 'Apply'], not w['-DATA-'].get())
@@ -94,10 +96,12 @@ if __name__ == "__main__":
         if event in (None, 'Cancel'):
             break
         elif event == 'Submit':
-            execute = True
+            ndata = w['-DATA-'].get()
             break
         elif event == 'Add':
             hols.update(values=hols.get() + [[w['-D_TXT-'].get(), '']])
+            rlen += 1
+            w['-ROW-'].update(values=list(range(rlen)))
         elif event == 'Apply':
             row = int(w['-ROW-'].get())
             field = fields.index(w['-FIELD-'].get())
@@ -110,6 +114,8 @@ if __name__ == "__main__":
             vals = w['-DATA-'].get()
             del vals[row]
             w['-DATA-'].update(vals)
+            rlen -= 1
+            w['-ROW-'].update(values=list(range(rlen)))
         elif event in ('-ROW-',) + fields:
             row = int(w['-ROW-'].get())
             field = fields.index(w['-FIELD-'].get())
@@ -122,6 +128,7 @@ if __name__ == "__main__":
         print(f"Vals: {values}")
     w.close()
 
-    if execute:
-        # TODO
-        pass
+    if ndata is not None:
+        with open(descriptor, 'w+') as f:
+            cwriter = writer(f, delimiter=' ')
+            cwriter.writerows(ndata)
