@@ -77,30 +77,51 @@ if __name__ == "__main__":
                     sg.Frame('Controls', ctl, element_justification='center')
                 ],
                 [
-                    sg.Quit()
+                    sg.Cancel(),
+                    sg.Submit()
                 ]
         ]
     w = sg.Window('Main', layout).finalize()
     hols = w['-DATA-']
+
+    execute = False
     while True:
         toggle(w, ['Remove', 'Add', 'Apply'], '' == w['-D_TXT-'].get())
         toggle(w, ['Remove', 'Apply'], not w['-DATA-'].get())
 
         event, values = w.read()
 
-        if event in (None, 'Quit'):
+        if event in (None, 'Cancel'):
             break
-        elif event == 'Append':
-            hols.update(values=hols.get() + [['A', 'B']])
+        elif event == 'Submit':
+            execute = True
+            break
+        elif event == 'Add':
+            hols.update(values=hols.get() + [[w['-D_TXT-'].get(), '']])
+        elif event == 'Apply':
+            row = int(w['-ROW-'].get())
+            field = fields.index(w['-FIELD-'].get())
+            vals = w['-DATA-'].get()
+            nval = w['-D_TXT-'].get()
+            vals[row][field] = nval
+            w['-DATA-'].update(vals)
+        elif event == 'Remove':
+            row = int(w['-ROW-'].get())
+            vals = w['-DATA-'].get()
+            del vals[row]
+            w['-DATA-'].update(vals)
         elif event in ('-ROW-',) + fields:
-            row = int(w['-ROW-'].get() or -1)
+            row = int(w['-ROW-'].get())
             field = fields.index(w['-FIELD-'].get())
             if row == -1:
                 continue
             val = w['-DATA-'].get()[row][field]
             w['-D_TXT-'].update(val)
-            print(f"Event: {event}")
-            print(f"Vals: {values}")
+
+        print(f"Event: {event}")
+        print(f"Vals: {values}")
     w.close()
-    # Do we keep going?
-    # Supporting comments should do for usability
+
+    if execute:
+        # TODO
+        pass
