@@ -67,15 +67,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser("Upload directory to dropbox recursively")
     parser.add_argument("pair", type=pair, nargs='+',
                         help="LOCAL,DROP directory pairs")
-    parser.add_argument("--dry", action='store_true',
+    parser.add_argument("--dry", "-d", action='store_true',
                         help="Print changes w/o sending")
     args = parser.parse_args()
 
     client = connect()
     for local, drop in args.pair:
         # enumerate local files recursively
-        for i in Path(local).rglob("*"):
-            local_path = i.root / i
+        for local_path in Path(local).rglob("*"):
 
             if local_path.is_dir():
                 continue
