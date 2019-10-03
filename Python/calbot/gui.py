@@ -7,6 +7,12 @@ from itertools import starmap
 from csv import writer
 
 
+""" Refactoring TODO
+    Table wrapper
+    indexed string spinner
+"""
+
+
 class IntSpinner:
     def __init__(self, spinner, upper):
         self.spinner = spinner
@@ -27,7 +33,7 @@ class IntSpinner:
         self.spinner.update(values=list(range(self.upper)))
 
     def get(self):
-        return self.spinner.get()
+        return int(self.spinner.get())
 
 
 def gb_conv(value):
@@ -96,7 +102,6 @@ if __name__ == "__main__":
     text = w['-D_TXT-']
 
     ndata = None
-    rlen = len(data)
     while True:
         toggle(w, ['Remove', 'Add', 'Apply'], '' == text.get())
         toggle(w, ['Remove', 'Apply'], not tdata.get())
@@ -112,14 +117,14 @@ if __name__ == "__main__":
             tdata.update(values=tdata.get() + [[text.get(), '']])
             row += 1
         elif event == 'Apply':
-            row = int(row.get())
+            row = row.get()
             field = fields.index(rfield.get())
             vals = tdata.get()
             nval = text.get()
             vals[row][field] = nval
             tdata.update(vals)
         elif event == 'Remove':
-            nrow = int(row.get())
+            nrow = row.get()
             vals = tdata.get()
             del vals[nrow]
             tdata.update(vals)
