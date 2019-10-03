@@ -7,20 +7,27 @@ from itertools import starmap
 from csv import writer
 
 
-"""
-Design idea: TODO
-    Box sizes = (10, 1) for dates
+class IntSpinner:
+    def __init__(self, spinner, upper):
+        self.spinner = spinner
+        self.upper = upper
+        self.update()
 
-    #Enumerate holidays in Table
-    #Spins & Radios selects element to edit
-    #Buttons for Append, Remove, Edit & Submit
+    def __iadd__(self, val):
+        self.upper += val
+        self.update()
+        return self
 
-    Load selected bound into In, Cal pair? In requires validation
+    def __isub__(self, val):
+        self.upper -= val
+        self.update()
+        return self
 
+    def update(self):
+        self.spinner.update(values=list(range(self.upper)))
 
-    Events:
-        Enable for Spins & Radios
-"""
+    def get(self):
+        return self.spinner.get()
 
 
 def gb_conv(value):
@@ -83,46 +90,47 @@ if __name__ == "__main__":
                 ]
         ]
     w = sg.Window('Main', layout).finalize()
-    hols = w['-DATA-']
+    tdata = w['-DATA-']
+    row = IntSpinner(w['-ROW-'], len(tdata.get()))
+    rfield = w['-FIELD-']
+    text = w['-D_TXT-']
 
     ndata = None
     rlen = len(data)
     while True:
-        toggle(w, ['Remove', 'Add', 'Apply'], '' == w['-D_TXT-'].get())
-        toggle(w, ['Remove', 'Apply'], not w['-DATA-'].get())
+        toggle(w, ['Remove', 'Add', 'Apply'], '' == text.get())
+        toggle(w, ['Remove', 'Apply'], not tdata.get())
 
         event, values = w.read()
 
         if event in (None, 'Cancel'):
             break
         elif event == 'Submit':
-            ndata = w['-DATA-'].get()
+            ndata = tdata.get()
             break
         elif event == 'Add':
-            hols.update(values=hols.get() + [[w['-D_TXT-'].get(), '']])
-            rlen += 1
-            w['-ROW-'].update(values=list(range(rlen)))
+            tdata.update(values=tdata.get() + [[text.get(), '']])
+            row += 1
         elif event == 'Apply':
-            row = int(w['-ROW-'].get())
-            field = fields.index(w['-FIELD-'].get())
-            vals = w['-DATA-'].get()
-            nval = w['-D_TXT-'].get()
+            row = int(row.get())
+            field = fields.index(rfield.get())
+            vals = tdata.get()
+            nval = text.get()
             vals[row][field] = nval
-            w['-DATA-'].update(vals)
+            tdata.update(vals)
         elif event == 'Remove':
-            row = int(w['-ROW-'].get())
-            vals = w['-DATA-'].get()
-            del vals[row]
-            w['-DATA-'].update(vals)
-            rlen -= 1
-            w['-ROW-'].update(values=list(range(rlen)))
+            nrow = int(row.get())
+            vals = tdata.get()
+            del vals[nrow]
+            tdata.update(vals)
+            row -= 1
         elif event in ('-ROW-',) + fields:
-            row = int(w['-ROW-'].get())
-            field = fields.index(w['-FIELD-'].get())
-            if row == -1:
+            nrow = int(row.get())
+            field = fields.index(rfield.get())
+            if nrow == -1:
                 continue
-            val = w['-DATA-'].get()[row][field]
-            w['-D_TXT-'].update(val)
+            val = tdata.get()[nrow][field]
+            text.update(val)
 
         print(f"Event: {event}")
         print(f"Vals: {values}")
