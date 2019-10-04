@@ -8,12 +8,14 @@ from csv import writer
 
 
 """ Refactoring TODO
-    Table wrapper
-    indexed string spinner
+    indexed string spinner?
 """
 
 
 class IntSpinner:
+    """
+    Integer range(0, upper) spin element wrapper
+    """
     def __init__(self, spinner, upper):
         self.spinner = spinner
         self.upper = upper
@@ -34,6 +36,46 @@ class IntSpinner:
 
     def get(self):
         return int(self.spinner.get())
+
+
+class CTable:
+    """
+    Custom table element wrapper
+    """
+    def __init__(self, table):
+        self.table = table
+
+    def __getitem__(self, x, y=None):
+        if y is None:
+            return self.table.get()[x]
+        else:
+            return self.table.get()[x][y]
+
+    def __setitem__(self, coords, val):
+        origonal = self.table.get()
+        assert coords
+        if len(coords) == 1:
+            origonal[coords[0]] = val
+        else:
+            origonal[coords[0]][coords[1]] = val
+        self.table.update(values=origonal)
+
+    def __delitem__(self, x, y=None):
+        origonal = self.table.get()
+        if y is None:
+            del origonal[x]
+        else:
+            del origonal[x][y]
+        self.table.update(values=origonal)
+
+    def get(self):
+        return self.table.get()
+
+    def __iadd__(self, val):
+        origonal = self.table.get()
+        origonal += val
+        self.table.update(origonal)
+        return self
 
 
 def gb_conv(value):
@@ -77,7 +119,7 @@ if __name__ == "__main__":
                 sg.CalendarButton('Cal', target='-D_TXT-', format=GB_FORMAT, key='-D_RAW-')
             ],
             [
-                sg.Spin(fields, initial_value='Start', key='-FIELD-'),
+                sg.Spin(fields, initial_value='Start', key='-FIELD-', enable_events=1),
                 sg.Spin(list(range(len(data))), initial_value=init, key='-ROW-', enable_events=1)
             ],
             [
@@ -96,7 +138,7 @@ if __name__ == "__main__":
                 ]
         ]
     w = sg.Window('Main', layout).finalize()
-    tdata = w['-DATA-']
+    tdata = CTable(w['-DATA-'])
     row = IntSpinner(w['-ROW-'], len(tdata.get()))
     rfield = w['-FIELD-']
     text = w['-D_TXT-']
@@ -114,27 +156,18 @@ if __name__ == "__main__":
             ndata = tdata.get()
             break
         elif event == 'Add':
-            tdata.update(values=tdata.get() + [[text.get(), '']])
+            tdata += [[text.get(), '']]
             row += 1
         elif event == 'Apply':
-            row = row.get()
             field = fields.index(rfield.get())
-            vals = tdata.get()
             nval = text.get()
-            vals[row][field] = nval
-            tdata.update(vals)
+            tdata[row.get(), field] = nval
         elif event == 'Remove':
-            nrow = row.get()
-            vals = tdata.get()
-            del vals[nrow]
-            tdata.update(vals)
+            del tdata[row.get()]
             row -= 1
-        elif event in ('-ROW-',) + fields:
-            nrow = int(row.get())
+        elif event in ('-ROW-', '-FIELD-'):
             field = fields.index(rfield.get())
-            if nrow == -1:
-                continue
-            val = tdata.get()[nrow][field]
+            val = tdata[row.get()][field]
             text.update(val)
 
         print(f"Event: {event}")
