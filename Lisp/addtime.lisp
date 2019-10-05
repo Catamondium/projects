@@ -1,15 +1,16 @@
-#!/usr/bin/clisp
+;;;; CL addtime implementation
+(load "~/quicklisp/setup.lisp") ; how to do properly?
+(ql:quickload "split-sequence")
 
-(load "~/quicklisp/setup.lisp" :verbose nil) ; necessary for quicklisp in CLisp
-(ql:quickload "split-sequence") ; Unsuppressed stdout
-
-(defclass time_c () 
+(defclass time_c ()
   ((hrs :accessor time-hrs
-	:initarg :hrs
-	:type number)
+	      :initarg :hrs
+        :initform 0
+      	:type number)
   (mins :accessor time-mins
-	:initarg :mins
-	:type number)))
+	      :initarg :mins
+        :initform 0
+	      :type number)))
 
 (defmethod print-object ((obj time_c) out) ; __repr__ equivalent
     (format out "~2,'0D:~2,'0D" (time-hrs obj) (time-mins obj)))
@@ -29,9 +30,11 @@
       :hrs (floor (/ total 60))
       :mins (mod total 60))))
 
-; Main
+;;; Main
 (setq start (parse-time (pop *args*)))
 (setq estr (pop *args*))
-(setq elapse (if (find #\: estr) (tInt (parse-time estr)) (parse-integer estr)))
+(setq elapse (if (find #\: estr)
+                 (tInt (parse-time estr))
+                 (parse-integer estr)))
 
 (format t "Start: ~S ~@D~%End: ~S~%" start elapse (calctime start elapse))

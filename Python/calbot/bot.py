@@ -134,7 +134,7 @@ if __name__ == "__main__":
         sys.exit(1)
     data = None
     with args.descriptor as f:
-        data = fullparse(f)
+        data = list(fullparse(f))
     calID = get_cal(service, args.target)
     expanded = get_events(service, calID, data)
     del_events(service, calID, expanded)
