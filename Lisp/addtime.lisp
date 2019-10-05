@@ -8,10 +8,10 @@
         :initform 0
         :type number)
 
-  (mins :accessor time-mins
-        :initarg :mins
-        :initform 0
-        :type number)))
+   (mins :accessor time-mins
+         :initarg :mins
+         :initform 0
+         :type number)))
 
 (defmethod print-object ((obj time_c) out) ; __repr__ equivalent
     (format out "~2,'0D:~2,'0D" (time-hrs obj) (time-mins obj)))
