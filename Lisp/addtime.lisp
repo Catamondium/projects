@@ -1,6 +1,15 @@
 ;;;; CL addtime implementation
-(load "~/quicklisp/setup.lisp") ; how to do properly?
-(ql:quickload "split-sequence")
+
+(defun split-sequence (target subject)
+  (let ((pos (position target subject)))
+    (if (null pos)
+      (list subject)
+      (nconc
+        (list (subseq subject 0 pos))
+        (split-sequence target (subseq subject (+ pos 1)))))))
+
+(defun divmod (x y)
+  (list (floor (/ x y)) (mod x y)))
 
 (defclass time_c ()
   ((hrs :accessor time-hrs
@@ -18,7 +27,7 @@
 
 (defun parse-time (str)
   (let*
-    ((vals (split-sequence:split-sequence #\: str)))
+    ((vals (split-sequence #\: str)))
     (make-instance 'time_c
       :hrs (parse-integer (pop vals))
       :mins (parse-integer (pop vals)))))
@@ -28,10 +37,11 @@
 
 (defun calctime (S to_elapse)
  (let*
-    ((total (+ (tInt S) to_elapse)))
+    ((total (+ (tInt S) to_elapse))
+     (parts (divmod total 60)))
     (make-instance 'time_c
-      :hrs (floor (/ total 60))
-      :mins (mod total 60))))
+      :hrs (pop parts)
+      :mins (pop parts))))
 
 ;;; Main
 (setq start (parse-time (pop *args*)))
@@ -41,4 +51,4 @@
     (tInt (parse-time estr))
     (parse-integer estr)))
 
-(format t "Start: ~S ~@D~%End: ~S~%" start elapse (calctime start elapse))
+(format t "Start: ~S ~@D~%End:   ~S~%" start elapse (calctime start elapse))
