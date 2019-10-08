@@ -3,6 +3,7 @@ import dropbox
 import pickle
 from sys import stderr
 from pathlib import Path
+from webbrowser import open as wbopen
 
 CHUNK_SIZE = 4 * 1024 * 1024
 
@@ -31,7 +32,8 @@ def connect(creds='creds.secret', access='client.secret') -> dropbox.Dropbox:
     if not user:
         flow = dropbox.DropboxOAuth2FlowNoRedirect(*app)
         redirect = flow.start()
-        print(f"Go here to authorise: {redirect}")
+        print(f"Redirecting for authorisation: {redirect}\nCtl-C to continue...")
+        wbopen(redirect)
         token = input("Copy access token here: ").strip()
         if not token:
             print("Error: bad input", file=stderr)
