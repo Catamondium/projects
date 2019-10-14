@@ -63,8 +63,19 @@ def large_upload(dbx, f, file_size, dest_path):
                 f.read(CHUNK_SIZE), cursor.session_id, cursor.offset)
             cursor.offset = f.tell()
 
+def small_upload(dbx, f, file_size, dest_path):
+    dbx.files_upload(f.read(), dest_path,
+                    mode=dropbox.files.WriteMode("overwrite"))
 
-if __name__ == "__main__":
+def upload(dbx, f, file_size, dest_path):
+    try:
+        small_upload(
+            client, f, local_path.stat().st_size, drop_path)
+    except:  # write timeout
+        large_upload(
+            client, f, local_path.stat().st_size, drop_path)
+
+def _main():
     import argparse
     parser = argparse.ArgumentParser("Upload directory to dropbox recursively")
     parser.add_argument("pair", type=pair, nargs='+',
@@ -89,9 +100,8 @@ if __name__ == "__main__":
             else:
                 # upload the file
                 with open(local_path, 'rb') as f:
-                    try:
-                        client.files_upload(f.read(), drop_path,
-                                            mode=dropbox.files.WriteMode("overwrite"))
-                    except:  # write timeout
-                        large_upload(
-                            client, f, local_path.stat().st_size, drop_path)
+                    upload(client, f, local_path.stat().st_size, drop_path)
+
+
+if __name__ == "__main__":
+    _main()
