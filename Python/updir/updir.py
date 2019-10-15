@@ -70,10 +70,10 @@ def small_upload(dbx, f, file_size, dest_path):
 def upload(dbx, f, file_size, dest_path):
     try:
         small_upload(
-            client, f, local_path.stat().st_size, drop_path)
+            dbx, f, file_size, dest_path)
     except:  # write timeout
         large_upload(
-            client, f, local_path.stat().st_size, drop_path)
+            dbx, f, file_size, dest_path)
 
 def _main():
     import argparse
