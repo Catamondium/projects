@@ -13,11 +13,12 @@ def md5(file):
             hash_md5.update(chunk)
     return hash_md5.hexdigest()
 
+
 def dedup(path, recurse=True):
     """Deduplicate exact file matches from directory"""
     uniques = defaultdict(set)
     glob = path.rglob if recurse else path.glob
-    fs = {x for x in glob('*') if not x.is_dir()}
+    fs = {x for x in glob('*') if not x.is_dir() and not x.is_symlink()}
 
     dels = set()
     for f in fs:
