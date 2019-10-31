@@ -13,7 +13,7 @@ function Time:add (elapse)
 	local offset = self.hrs * 60 + self.mins
 	local tot = offset + elapse
 	return Time:new{
-		hrs = math.floor(tot / 60),
+		hrs = tot // 60,
 		mins = tot % 60}
 end
 
