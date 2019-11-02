@@ -8,6 +8,7 @@
 #include <lualib.h>
 
 #include "vec.hpp"
+#include "player.hpp"
 #include "../cursesgame.hpp"
 #include "pallete.hpp"
 
@@ -18,13 +19,10 @@ for implementing a Lua moddable application
 
 #define LUA_ROAM "internal.lua"
 
-struct Player {
-    Vec pos;
-};
-
-struct RoamGame:public CursesGame < 2 > {
+struct RoamGame : public CursesGame <2> {
     Player player; // pass to lua via userdata closure?
     lua_State *L;
+    int framebase;
 
     RoamGame() {
         pallete = {
@@ -34,6 +32,9 @@ struct RoamGame:public CursesGame < 2 > {
         L = luaL_newstate();
         assert(L != NULL);
         luaL_openlibs(L);
+
+        // custom libs
+        player.open(L);
         assert(LUA_OK == luaL_dofile(L, LUA_ROAM));
     }
 
@@ -49,6 +50,7 @@ struct RoamGame:public CursesGame < 2 > {
             std::cerr << "lua: " << lua_tostring(L, -1) << std::endl;
             throw "Lua exception";
         }
+        framebase = lua_gettop(L);
     }
 
     void loop() override;
@@ -57,9 +59,15 @@ struct RoamGame:public CursesGame < 2 > {
 
 void RoamGame::loop()
 {
+    //noLoop();
+
+    player.lua_serialize(L);
 
     lua_getglobal(L, "_call_on_tick");
     lua_pcall(L, 0, 0, 0);
+    lua_settop(L, framebase);
+
+    player.lua_refresh(L);
 }
 
 void RoamGame::keyPressed(int ch)
@@ -91,24 +99,6 @@ void RoamGame::keyPressed(int ch)
 
 int main()
 {
-#ifdef REAL
     RoamGame g;
     g.run();
-#else
-
-    lua_State *L = luaL_newstate();
-    luaL_openlibs(L);		// loads lua standard lib
-
-    // 5 + 5
-    lua_Integer a = 5;
-    lua_Integer b = 5;
-    lua_pushinteger(L, a);	// Push params to stack
-    lua_pushinteger(L, b);	// Push params to stack
-    lua_arith(L, LUA_OPADD);	// Perform binary ADD, pops 2, pushes 1
-    int ret = lua_tointeger(L, -1);	// read top of stack, DOESN'T POP
-    lua_pop(L, 1);		// clean stack
-    std::cout << "Lua " << a << " + " << b << " == " << ret << std::endl;
-
-    lua_close(L);
-#endif
 }

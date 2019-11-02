@@ -1,12 +1,12 @@
 
-local i = 0
 roam.register_on_tick(function ()
-    file = io.open("test.log", "a")
+    file = io.open("log", "a")
     io.output(file)
-    io.write(string.format("tick: %d\n", i))
-    --for k,v in pairs(roam) do 
-    --    io.write(string.format("%s: %s\n", k, v))
-    --end
+    --io.write("RVRVTRBRBRBTB\n")
+    local player = roam.player.fetch()
+    --io.write(string.format("pos: %s\n", player:getpos()))
+    io.write(string.format("player: %s\n", player))
+    player:setpos({x = player:getpos().x + 1})
+    io.write(string.format("PLA: %s\n", player))
     io.close(file)
-    i = i + 1
 end)
