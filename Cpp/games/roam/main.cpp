@@ -1,4 +1,5 @@
 #include <array>
+#include <functional>
 #include <curses.h>
 #include <cstdlib>
 #include <time.h>
@@ -53,6 +54,13 @@ struct RoamGame : public CursesGame <2> {
         framebase = lua_gettop(L);
     }
 
+    void lua_event(std::function<void()> event) {
+        player.lua_serialize(L);
+        event();
+        lua_settop(L, framebase);
+        player.lua_refresh(L);
+    }
+
     void loop() override;
     void keyPressed(int) override;
 };
@@ -66,13 +74,10 @@ void RoamGame::loop()
     lua_setfield(L, -2, "height");
     noLoop();
 
-    player.lua_serialize(L);
-
-    lua_getglobal(L, "_call_on_tick");
-    lua_pcall(L, 0, 0, 0);
-    lua_settop(L, framebase);
-
-    player.lua_refresh(L);
+    lua_event([&]{
+        lua_getglobal(L, "_call_on_tick");
+        lua_pcall(L, 0, 0, 0);
+    });
 }
 
 void RoamGame::keyPressed(int ch)
