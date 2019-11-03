@@ -1,42 +1,4 @@
-pos: table: 0x55972befe590
-pos: table: 0x55972befe850
-pos: table: 0x55972bf00430
-pos: table: 0x55972bf006a0
-pos: table: 0x55972befa660
-pos: table: 0x55972befa8d0
-pos: table: 0x55972befab40
-pos: table: 0x55972bf01860
-pos: table: 0x55972bf01ad0
-pos: table: 0x55972bf01d40
-pos: table: 0x55972bf01fb0
-pos: table: 0x55972bf02220
 player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
-player: Player(0, pos{0, 0})
+prepos
+ppos
+PLA: Player(0, pos{1, 0})

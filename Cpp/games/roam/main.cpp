@@ -59,7 +59,12 @@ struct RoamGame : public CursesGame <2> {
 
 void RoamGame::loop()
 {
-    //noLoop();
+    lua_getglobal(L, "roam");
+    lua_pushinteger(L, width);
+    lua_setfield(L, -2, "width");
+    lua_pushinteger(L, height);
+    lua_setfield(L, -2, "height");
+    noLoop();
 
     player.lua_serialize(L);
 

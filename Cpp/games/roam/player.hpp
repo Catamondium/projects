@@ -28,22 +28,15 @@ struct Player {
         p->pos = pos;
         p->score = score;
         luaL_setmetatable(L, "player");
-
-        lua_pushcclosure(L, l_identity, 1); // bind 'self'
-        lua_newtable(L);
-        lua_rotate(L, -2, 1); // swap
-        lua_setfield(L, -2, "fetch"); // player.fetch
         
         lua_getglobal(L, "roam");
-        lua_rotate(L, -2, 1);
+        lua_swap(L);
         lua_setfield(L, -2, "player");
     }
 
     void lua_refresh(lua_State *L) {
         lua_getglobal(L, "roam");
         lua_getfield(L, -1, "player");
-        lua_getfield(L, -1, "fetch");
-        lua_pcall(L, 0, 1, 0);
 
         Player *p = (Player *)luaL_checkudata(L, -1, "player");
         pos.x = p->pos.x;
@@ -81,26 +74,20 @@ static int getppos(lua_State *L){
     return 1;
 }
 
-// FIXME
 static int setppos(lua_State *L) {
-    lua_checkstack(L, 2);
-    Player *p = (Player *)luaL_checkudata(L, -1, "player");
-    assert(lua_istable(L, -1));
-    int x = p->pos.x, y = p->pos.y;
-    lua_getfield(L, -1, "x");
-    lua_getfield(L, -2, "y");
+    Player *p = (Player *)luaL_checkudata(L, 1, "player");
+    int x = p->pos.x;
+    int y = p->pos.y;
 
-    // if 'y' is not nil
+    lua_getfield(L, 2, "x");
     if (lua_isinteger(L, -1)) {
-        y = lua_tointeger(L, -1);
+        x = luaL_checkinteger(L, -1);
     }
 
-    lua_pop(L, 1);
-
+    lua_getfield(L, 2, "y");
     if (lua_isinteger(L, -1)) {
-        x = lua_tointeger(L, -1);
+        y = luaL_checkinteger(L, -1);
     }
-    lua_pop(L, 1);
 
     p->pos.x = x;
     p->pos.y = y;

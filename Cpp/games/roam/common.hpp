@@ -1,5 +1,8 @@
 #include <lua.h>
 
+#define lua_swap(L) \
+    lua_rotate((L), -2, 1)
+
 /// LuaCClosure
 /// Identity closure
 /// returns (Lua): 1st upvalue
