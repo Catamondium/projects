@@ -76,7 +76,10 @@ void RoamGame::loop()
 
     lua_event([&]{
         lua_getglobal(L, "_call_on_tick");
-        lua_pcall(L, 0, 0, 0);
+        if (LUA_OK != lua_pcall(L, 0, 0, 0)) {
+            std::cerr << "lua: " << lua_tostring(L, -1) << std::endl;
+            throw "Lua exception";
+        }
     });
 }
 
