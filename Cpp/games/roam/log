@@ -1,4 +1,2 @@
 player: Player(0, pos{0, 0})
-prepos
-ppos
-PLA: Player(0, pos{1, 0})
+2player: Player(0, pos{1, 0})
