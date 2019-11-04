@@ -4,10 +4,6 @@ roam.register_on_tick(function ()
     io.output(file)
 
     local player = roam.player
-    io.write(string.format("player: %s\n", player))
-
-    player:setpos({x = player:getpos().x + 1})
-    io.write(string.format("2player: %s\n", player))
-
+    io.write(string.format("%d, %d\n", player.score, player.pos.x))
     io.close(file)
 end)

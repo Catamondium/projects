@@ -6,14 +6,12 @@
 #include "vec.hpp"
 #include "common.hpp"
 
-static int getppos(lua_State *L);
 static int setppos(lua_State *L);
-static int getpscore(lua_State *L);
 static int player2string(lua_State *L);
+static int pindex(lua_State *L);
 static const struct luaL_Reg playerlib_m [] = {
-    {"getpos", getppos},
+    {"__index", pindex},
     {"setpos", setppos},
-    {"score", getpscore},
     {"__tostring", player2string},
     {NULL, NULL}
 };
@@ -23,7 +21,8 @@ struct Player {
     Vec pos = Vec{0, 0};
 
     /// Build Player closure
-    void lua_serialize(lua_State *L) {
+    void lua_serialize(lua_State *L)
+    {
         Player *p = (Player *)lua_newuserdata(L, sizeof(Player));
         p->pos = pos;
         p->score = score;
@@ -34,7 +33,8 @@ struct Player {
         lua_setfield(L, -2, "player");
     }
 
-    void lua_refresh(lua_State *L) {
+    void lua_refresh(lua_State *L)
+    {
         lua_getglobal(L, "roam");
         lua_getfield(L, -1, "player");
 
@@ -44,7 +44,8 @@ struct Player {
         score = p->score;
     }
 
-    static void open(lua_State *L) {
+    static void open(lua_State *L)
+    {
         // player { __index = self }
         luaL_newmetatable(L, "player");
         lua_pushstring(L, "__index");
@@ -57,21 +58,39 @@ struct Player {
     }
 };
 
-static int player2string(lua_State *L) {
-    Player *p = (Player *)luaL_checkudata(L, -1, "player");
+static int player2string(lua_State *L)
+{
+    Player *p = (Player *)luaL_checkudata(L, 1, "player");
     lua_pushfstring(L, "Player(%d, pos{%d, %d})", p->score, p->pos.x, p->pos.y);
     return 1;
 }
 
-static int getppos(lua_State *L){
-    Player *p = (Player *)luaL_checkudata(L, -1, "player");
-    lua_newtable(L);
-    lua_pushinteger(L, p->pos.x);
-    lua_setfield(L, -2, "x");
+static int pindex(lua_State *L)
+{
+    Player *p = (Player *)luaL_checkudata(L, 1, "player");
+    if (lua_isstring(L, 2)) {
+        std::string key = std::string{luaL_checkstring(L, 2)};
+        if (key == "pos") {
+            lua_newtable(L);
+            lua_pushinteger(L, p->pos.x);
+            lua_setfield(L, -2, "x");
 
-    lua_pushinteger(L, p->pos.y);
-    lua_setfield(L, -2, "y");
-    return 1;
+            lua_pushinteger(L, p->pos.y);
+            lua_setfield(L, -2, "y");
+            return 1;
+        } else if (key == "score") {
+            lua_pushinteger(L, p->score);
+            return 1;
+        }
+
+        for (auto method : playerlib_m) {
+            if (key == std::string{method.name}) {
+                lua_pushcfunction(L, method.func);
+                return 1;
+            }
+        }
+    }
+    return 0;
 }
 
 static int setppos(lua_State *L) {
@@ -92,10 +111,4 @@ static int setppos(lua_State *L) {
     p->pos.x = x;
     p->pos.y = y;
     return 0;
-}
-
-static int getpscore(lua_State *L) {
-    Player *p = (Player *)luaL_checkudata(L, -1, "player");
-    lua_pushinteger(L, p->score);
-    return 1;
 }
