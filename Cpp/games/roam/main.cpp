@@ -25,7 +25,8 @@ struct RoamGame : public CursesGame <2> {
     lua_State *L;
     int framebase;
 
-    RoamGame() {
+    RoamGame()
+    {
         pallete = {
             Color {FOOD, COLOR_GREEN, COLOR_BLACK},
             Color {PLAYER, COLOR_RED, COLOR_BLACK},
@@ -43,7 +44,8 @@ struct RoamGame : public CursesGame <2> {
 	    lua_close(L);
     }
 
-    void init() override {
+    void init() override
+    {
         setFrameRate(10);
         srand(time(NULL));
         // mocked load procedure, mod locations undetermined
@@ -54,7 +56,8 @@ struct RoamGame : public CursesGame <2> {
         framebase = lua_gettop(L);
     }
 
-    void lua_event(std::function<void()> event) {
+    void lua_event(std::function<void()> event)
+    {
         player.lua_serialize(L);
         event();
         lua_settop(L, framebase);

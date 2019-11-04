@@ -28,7 +28,7 @@ struct Player {
         p->pos = pos;
         p->score = score;
         luaL_setmetatable(L, "player");
-        
+
         lua_getglobal(L, "roam");
         lua_swap(L);
         lua_setfield(L, -2, "player");
@@ -85,7 +85,7 @@ static int pindex(lua_State *L)
         }
 
         for (auto method : playerlib_m) {
-            if (key == std::string{method.name}) {
+            if (key == method.name) {
                 lua_pushcfunction(L, method.func);
                 return 1;
             }
@@ -94,7 +94,8 @@ static int pindex(lua_State *L)
     return 0;
 }
 
-static int pnewindex(lua_State *L) {
+static int pnewindex(lua_State *L)
+{
     Player *p = (Player *)luaL_checkudata(L, 1, "player");
     if (std::string{"pos"} == luaL_checkstring(L, 2)) {
         int x = p->pos.x;
