@@ -9,9 +9,11 @@
 static int setppos(lua_State *L);
 static int player2string(lua_State *L);
 static int pindex(lua_State *L);
+static int pnewindex(lua_State *L);
 static const struct luaL_Reg playerlib_m [] = {
     {"__index", pindex},
-    {"setpos", setppos},
+    {"__newindex", pnewindex},
+    //{"setpos", setppos},
     {"__tostring", player2string},
     {NULL, NULL}
 };
@@ -89,6 +91,28 @@ static int pindex(lua_State *L)
                 return 1;
             }
         }
+    }
+    return 0;
+}
+
+static int pnewindex(lua_State *L) {
+    Player *p = (Player *)luaL_checkudata(L, 1, "player");
+    if (std::string{"pos"} == luaL_checkstring(L, 2)) {
+        int x = p->pos.x;
+        int y = p->pos.y;
+
+        lua_getfield(L, 3, "x");
+        if (lua_isinteger(L, -1)) {
+            x = luaL_checkinteger(L, -1);
+        }
+
+        lua_getfield(L, 3, "y");
+        if (lua_isinteger(L, -1)) {
+            y = luaL_checkinteger(L, -1);
+        }
+
+        p->pos.x = x;
+        p->pos.y = y;
     }
     return 0;
 }
