@@ -2,18 +2,16 @@
 #include <lauxlib.h>
 #include <lualib.h>
 
-#include "gameobject.hpp"
 #include "vec.hpp"
 #include "common.hpp"
 
-static int setppos(lua_State *L);
-static int player2string(lua_State *L);
-static int pindex(lua_State *L);
-static int pnewindex(lua_State *L);
+static int tostring(lua_State *L);
+static int index(lua_State *L);
+static int newindex(lua_State *L);
 static const struct luaL_Reg playerlib_m [] = {
-    {"__index", pindex},
-    {"__newindex", pnewindex},
-    {"__tostring", player2string},
+    {"__index", index},
+    {"__newindex", newindex},
+    {"__tostring", tostring},
     {NULL, NULL}
 };
 
@@ -59,14 +57,14 @@ struct Player {
     }
 };
 
-static int player2string(lua_State *L)
+static int tostring(lua_State *L)
 {
     Player *p = (Player *)luaL_checkudata(L, 1, "player");
     lua_pushfstring(L, "Player(%d, pos{%d, %d})", p->score, p->pos.x, p->pos.y);
     return 1;
 }
 
-static int pindex(lua_State *L)
+static int index(lua_State *L)
 {
     Player *p = (Player *)luaL_checkudata(L, 1, "player");
     if (lua_isstring(L, 2)) {
@@ -94,7 +92,7 @@ static int pindex(lua_State *L)
     return 0;
 }
 
-static int pnewindex(lua_State *L)
+static int newindex(lua_State *L)
 {
     Player *p = (Player *)luaL_checkudata(L, 1, "player");
     if (std::string{"pos"} == luaL_checkstring(L, 2)) {

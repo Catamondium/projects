@@ -3,7 +3,6 @@
 #include <cmath>
 #include <iostream>
 #include <cassert>
-#include "iterable_queue.hpp"
 #include "pallete.hpp"
 
 struct Vec
