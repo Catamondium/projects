@@ -11,7 +11,11 @@ struct Vec
     int y = 0;
     Vec() = default;
     Vec(int x, int y) : x(x), y(y){};
-    Vec operator+(Vec) const;
+
+    Vec operator+(Vec o) const {
+        return Vec{x + o.x, y + o.y};
+    };
+
     bool operator==(Vec o) const
     {
         return x == o.x && y == o.y;
@@ -41,15 +45,18 @@ struct Vec
     {
         return "P(" + std::to_string(x) + ", " + std::to_string(y) + ")";
     };
+
+    void lua_serialize(lua_State *L) {
+        lua_newtable(L);
+        lua_pushinteger(L, x);
+        lua_setfield(L, -2, "x");
+        lua_pushinteger(L, y);
+        lua_setfield(L, -2, "y");
+    }
 };
 
 Vec spawn(int &width, int &height)
 {
     return Vec{rand() % width,
                rand() % height};
-}
-
-Vec Vec::operator+(Vec other) const
-{
-    return Vec{this->x + other.x, this->y + other.y};
 }

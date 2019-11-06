@@ -18,8 +18,6 @@ This is not intended as a proper game, this is more of a scratchpad
 for implementing a Lua moddable application
 */
 
-#define LUA_ROAM "internal.lua"
-
 struct RoamGame : public CursesGame <2> {
     Player player; // pass to lua via userdata closure?
     lua_State *L;
@@ -49,10 +47,7 @@ struct RoamGame : public CursesGame <2> {
         setFrameRate(10);
         srand(time(NULL));
         // mocked load procedure, mod locations undetermined
-        if (LUA_OK != luaL_dofile(L, "test.lua")) {
-            std::cerr << "lua: " << lua_tostring(L, -1) << std::endl;
-            throw "Lua exception";
-        }
+        LUA_PROTEC(luaL_dofile(L, "test.lua"));
         framebase = lua_gettop(L);
     }
 
@@ -75,41 +70,56 @@ void RoamGame::loop()
     lua_setfield(L, -2, "width");
     lua_pushinteger(L, height);
     lua_setfield(L, -2, "height");
-    noLoop();
+
+    attron(COLOR_PAIR(PLAYER));
+    mvaddch(player.pos.y, player.pos.x, '@');
+    attroff(COLOR_PAIR(PLAYER));
 
     lua_event([&]{
         lua_getglobal(L, "_call_on_tick");
-        if (LUA_OK != lua_pcall(L, 0, 0, 0)) {
-            std::cerr << "lua: " << lua_tostring(L, -1) << std::endl;
-            throw "Lua exception";
-        }
+        LUA_PROTEC(lua_pcall(L, 0, 0, 0));
     });
 }
 
 void RoamGame::keyPressed(int ch)
 {
+    Vec *dir = NULL;
     switch (ch) {
     case 'w':			// UP
     case KEY_UP:
+        dir = new Vec{0, 1};
 	break;
 
     case 's':			// RIGHT
     case KEY_DOWN:
+        dir = new Vec{0, -1};
 	break;
 
     case 'a':			// LEFT
     case KEY_LEFT:
+        dir = new Vec{-1, 0};
 	break;
 
     case 'd':			// DOWN
     case KEY_RIGHT:
+        dir = new Vec{1, 0};
 	break;
 
     case 'q':			// QUIT
+    case KEY_EXIT:
 	noLoop();
 	break;
     default:
 	break;
+    }
+
+    if (dir != NULL) {
+        player.move(*dir);
+        lua_event([&]{
+            lua_getglobal(L, "_call_on_move");
+            dir->lua_serialize(L);
+            LUA_PROTEC(lua_pcall(L, 1, 0, 0));
+        });
     }
 }
 

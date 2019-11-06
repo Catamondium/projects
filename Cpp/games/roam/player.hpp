@@ -55,6 +55,10 @@ struct Player {
         assert(lua_istable(L, -1));
         luaL_setfuncs(L, playerlib_m, 0);
     }
+
+    void move(Vec ds) {
+        pos = pos + ds;
+    }
 };
 
 static int tostring(lua_State *L)
@@ -70,12 +74,7 @@ static int index(lua_State *L)
     if (lua_isstring(L, 2)) {
         std::string key = std::string{luaL_checkstring(L, 2)};
         if (key == "pos") {
-            lua_newtable(L);
-            lua_pushinteger(L, p->pos.x);
-            lua_setfield(L, -2, "x");
-
-            lua_pushinteger(L, p->pos.y);
-            lua_setfield(L, -2, "y");
+            p->pos.lua_serialize(L);
             return 1;
         } else if (key == "score") {
             lua_pushinteger(L, p->score);
