@@ -1,5 +1,6 @@
 #pragma once
 #include <curses.h>
+#include <iostream>
 #include <cstdlib>
 #include <chrono>
 #include <thread>
@@ -54,6 +55,8 @@ struct CursesGame : public Game
 
     void run() final
     {
+        std::ofstream log{log_target};
+        old_stdout = std::cout.rdbuf();
         init_pallete();
         init();
         while (true)
@@ -68,6 +71,7 @@ struct CursesGame : public Game
 
             std::this_thread::sleep_for(frameperiod);
         }
+        std::cout.rdbuf(old_stdout);
     }
 
     virtual void input() override
@@ -124,9 +128,13 @@ struct CursesGame : public Game
         }
     };
 
+private:
+    std::streambuf old_stdout;
+
 protected:
     int height;
     int width;
+    std::string log_target = "game.log";
     std::array<Color, N> pallete;
     std::chrono::milliseconds frameperiod = frameRate(60);
 };
