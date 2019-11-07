@@ -57,6 +57,7 @@ struct CursesGame : public Game
     {
         std::ofstream log{log_target};
         old_stdout = std::cout.rdbuf();
+        std::cout.rdbuf(log.rdbuf());
         init_pallete();
         init();
         while (true)
