@@ -1,17 +1,15 @@
-import
-    parsecsv,
-    streams,
-    tables,
-    strtabs,
-    strformat,
-    strutils,
-    re,
-    parseopt
+import parsecsv
+import streams
+import tables
+import strtabs
+import strformat
+import strutils
+import re
+import parseopt
 
 
 
-proc loadtable(loc: string): Table[string, float] =
-    #let str = staticRead(loc)
+proc loadtable*(loc: string): Table[string, float] =
     var
         strm = staticRead(loc).newStringStream
         p: CsvParser
@@ -32,29 +30,27 @@ proc valid(c: char): bool =
     c.isAlphaNumeric or c in "()"
 
 proc sanitise(src: string): string =
-    let ttable = static(newStringTable("{", "(", "[", "(", "]", ")", "}", ")", modeCaseSensitive))
+    let ttable = static(newStringTable("{", "(", "[", "(", "]", ")", "}", ")",
+            modeCaseSensitive))
     result = newStringOfCap(src.len)
     for ch in src:
         let nch = ttable.getOrDefault($ch, $ch)
         if nch[0].valid:
             result.add($nch)
 
-proc mass(comp: string): float =
+proc mass*(comp: string): float =
     let
-        coeffre = re"^(\d+)" # overall coefficient
-        elem = "([A-Z][a-z]*)" # element identifier
+        coeffre = re"^(\d+)"                 # overall coefficient
+        elem = "([A-Z][a-z]*)"               # element identifier
         tokre = re(fmt"\(.*?\)|{elem}(\d*)") # a given 'token'
-        subre = re"\((.*)\)(\d*)" # a subexpression
-    
+        subre = re"\((.*)\)(\d*)"            # a subexpression
+
     var
         bigcoeff = 1
         acc = 0.0
-    
+
     if comp =~ coeffre:
         bigcoeff = try: matches[0].parseInt except: 1
-    
-    #for m in comp.findAll(elem):
-    #    echo fmt"elem: {m}"
 
     for m in comp.findAll(tokre):
         if m =~ tokre:
@@ -64,8 +60,7 @@ proc mass(comp: string): float =
                 coeff = try: matches[1].parseInt except: 1
                 mr = ptable[matches[0]]
             acc += float(coeff) * mr
-            echo fmt"tokre: {matches}"
-    
+
     for m in comp.findAll(subre):
         if m =~ subre:
             if matches[0] == "":
@@ -74,7 +69,6 @@ proc mass(comp: string): float =
                 coeff = try: matches[1].parseInt except: 1
                 mr = mass(matches[0])
             acc += float(coeff) * mr
-            echo fmt"subre: {matches}"
     float(bigcoeff) * acc
 
 var p = initOptParser()
