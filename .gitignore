@@ -8,7 +8,7 @@
 *.elf
 *__pycache__*
 *.mypy_cache*
-
+**/.cpcache/**
 #py venv
 Python/**/*share*
 Python/**/*include*
@@ -69,6 +69,7 @@ build-*-Debug
 # Temporary files
 *~*
 *.swp
+**/.cpcache/**
 
 # Java bytecode
 *.class
