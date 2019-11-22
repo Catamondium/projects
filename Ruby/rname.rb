@@ -16,7 +16,7 @@ def mv(parent, conf)
     files, dirs = path.each_child.partition {|f| f.file?}
 
         if files.length != 0
-            width = Math::log10(files.length).ceil
+            width = files.length.to_s.length
             files = re_sort(files, path.basename.to_s, width)
             files.each_with_index do |f, i|
                 n = "%s-%0*d%s" % [path.basename, width, i, f.extname]
