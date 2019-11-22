@@ -13,9 +13,8 @@ end
 
 def mv(parent, conf)
     path = Pathname.new(parent).expand_path
-    files, dirs = path.each_child
-        .partition {|f| f.file?}
-        
+    files, dirs = path.each_child.partition {|f| f.file?}
+
         if files.length != 0
             width = Math::log10(files.length).ceil
             files = re_sort(files, path.basename.to_s, width)
@@ -82,8 +81,7 @@ end
 conf = parse(ARGV)
 
 ARGV.each do |a|
-    if !conf.force and !approve(a)
-        next
+    if conf.force or approve(a)
+        mv(a, conf)
     end
-    mv(a, conf)
 end
