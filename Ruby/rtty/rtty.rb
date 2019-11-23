@@ -20,5 +20,6 @@ def rtty(path)
 end
 
 slave = rtty(path)
-p slave.stdin.read(10)
+slave.stdout.puts "SLAVE TERM #{slave}"
+p slave.stdin.readline
 slave.kill
