@@ -1,11 +1,4 @@
 #!/usr/bin/env ruby2.6
-=begin
-Slave program for Remote tty control.
-
-Default state is as a RAW/uncooked terminal until activated
-for further duty
-=end
-
 
 require 'drb'
 require 'delegate'
