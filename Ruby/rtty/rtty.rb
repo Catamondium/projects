@@ -14,7 +14,6 @@ class Rtty
     extend Forwardable
     def_delegators :@slave, :stdin, :stdout
 
-    # Does NOT activate slave, just load metadate & preamble
     def initialize()
         @slave = nil
         DRb.start_service
@@ -22,7 +21,7 @@ class Rtty
         @id = @@displays
         @@displays += 1
         # Derive sock path like HMAC
-        @path = "rtty#{Process.id}_#{id}"
+        @path = "#{Dir.tmpdir}/rtty#{Process.id}_#{id}"
     end
 
     def activate()
