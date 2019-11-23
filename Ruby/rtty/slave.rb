@@ -8,9 +8,11 @@ class Slave
     include DRb::DRbUndumped # Referential access only
     attr_accessor :stdin
     attr_accessor :stdout
+    attr_accessor :stderr
     def initialize()
         @stdin = SimpleDelegator.new($stdin)
         @stdout = SimpleDelegator.new($stdout)
+        @stderr = SimpleDelegator.new($stderr)
     end
 
     def kill()
