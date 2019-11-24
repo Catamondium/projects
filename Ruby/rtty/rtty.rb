@@ -12,7 +12,7 @@ class Rtty
 
     attr_reader :slave # DRbObject Slave
     extend Forwardable
-    def_delegators :@slave, :stdin, :stdout
+    def_delegators :@slave, :stdin, :stdout, :stderr
 
     def initialize()
         @slave = nil
@@ -21,7 +21,7 @@ class Rtty
         @id = @@displays
         @@displays += 1
         # Derive sock path like HMAC
-        @path = "#{Dir.tmpdir}/rtty#{Process.id}_#{id}"
+        @path = "#{Dir.tmpdir}/rtty#{Process.pid}_#{@id}"
     end
 
     def activate()
@@ -56,15 +56,28 @@ class Rtty
         return !@slave.nil?
     end
     alias_method :active, :active?
+
+    ## Call with std* redirected through an rtty
+    def self.redirect()
+        tty = Rtty.new
+        tty.activate
+
+        oldstdin = $stdin
+        oldstdout = $stdout
+        $oldstderr = $stderr
+
+        $stdin = tty.stdin
+        $stdout = tty.stdout
+        $stderr = tty.stderr
+        yield
+        tty.deactivate
+        $stdin = oldstdin
+        $stdout = oldstdout
+        $stderr = oldstderr
+    end
 end
 
-tty = Rtty.new
-tty2 = Rtty.new
-
-tty2.active = true
-tty.active = true
-p tty.stdin.readline
-p tty2.stdin.readline
-
-tty.deactivate
-tty2.deactivate
+Rtty.redirect do
+    puts "abc"
+    STDIN.p $stdin.getpass
+end
