@@ -4,6 +4,7 @@ require 'drb'
 require 'tmpdir'
 require 'fileutils'
 require 'forwardable'
+require 'stringio'
 
 class Rtty
     @@displays = 0
@@ -16,8 +17,6 @@ class Rtty
 
     def initialize()
         @slave = nil
-        DRb.start_service
-
         @id = @@displays
         @@displays += 1
         # Derive sock path like HMAC
@@ -26,6 +25,7 @@ class Rtty
 
     def activate()
         unless self.active?
+            DRb.start_service
             success = system("gnome-terminal -- ./slave.rb #{@path}")
             if !success
                 raise "Failed to open slave"
@@ -57,27 +57,25 @@ class Rtty
     end
     alias_method :active, :active?
 
-    ## Call with std* redirected through an rtty
+    ## Call with stdio redirected through an rtty
     def self.redirect()
         tty = Rtty.new
         tty.activate
-
-        oldstdin = $stdin
-        oldstdout = $stdout
-        $oldstderr = $stderr
 
         $stdin = tty.stdin
         $stdout = tty.stdout
         $stderr = tty.stderr
         yield
         tty.deactivate
-        $stdin = oldstdin
-        $stdout = oldstdout
-        $stderr = oldstderr
+        $stdin = STDIN
+        $stdout = STDOUT
+        $stderr = STDERR
     end
 end
 
+str = StringIO.new
 Rtty.redirect do
-    puts "abc"
-    STDIN.p $stdin.getpass
+    puts "prompt"
+    str.puts $stdin.readline
 end
+puts str.string.upcase
