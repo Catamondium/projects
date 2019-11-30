@@ -5,12 +5,12 @@
 #include <algorithm>
 #include <queue>
 #include <cctype>
+#include <optional>
 
-// Emulate std::hash<T>{}(thing) interface
 template <class T>
 struct repr
 {
-    std::string operator()(T in)
+    std::string visit(T in)
     {
         std::stringstream ss;
         ss << in;
@@ -21,7 +21,7 @@ struct repr
 template <>
 struct repr<bool>
 {
-    std::string operator()(bool bol)
+    std::string visit(bool bol)
     {
         std::stringstream ss;
         ss << std::boolalpha << bol;
@@ -31,153 +31,67 @@ struct repr<bool>
 
 struct fmt
 {
-    std::string str;
-    fmt(const std::string &str) : str(str){};
-    fmt(const char *str) : str(str){};
+    std::string format;
+    fmt(const std::string &format) : format(format){};
+    fmt(const char *format) : format(format){};
     fmt(fmt &) = default;
     fmt(const fmt &) = default;
     template <class... Ts>
     fmt operator()(Ts...);
-    operator std::string() const { return str; };
-    template <class T>
-    friend fmt &operator%(fmt &&, T &&);
+    operator std::string() const { return format; };
     friend std::ostream &operator<<(std::ostream &, const fmt &);
 
-    struct Spec
-    {
-        static constexpr std::string_view TYPES = "%sr";
-        char type = 'r';
-        char fill = ' ';
-        int width = 0;
-        bool capture = false;
-        bool align_left = false;
-        bool sign = false;
-        Spec() = default;
-        Spec(char type) : type(type){};
-        std::string operator()(std::queue<std::string> &) const;
-    };
-
 protected:
-    std::queue<std::string> queue;
+    std::optional<std::string> result;
 };
 
-std::string fmt::Spec::operator()(std::queue<std::string> &q) const
-{
-    if (type == '%')
-        return "%";
-
-    std::stringstream ss;
-    ss << ((sign) ? std::showpos : std::noshowpos);
-    ss << ((align_left) ? std::left : std::right);
-
-    int w;
-    if (capture)
-    {
-        if (q.empty())
-            throw std::logic_error("Insufficient arguments");
-        w = stoi(q.front());
-        q.pop();
-    }
-    else
-    {
-        w = width;
-    }
-
-    ss << std::setfill(fill) << std::setw(w);
-    // Currently used type has only 1 meaning;
-    std::string item = q.front();
-    ss << item;
-    q.pop();
-
-    return ss.str();
-}
-
-fmt::Spec _parse(std::string::iterator begin, std::string::iterator end)
-{
-    fmt::Spec sp(*end);
-    std::string width = "";
-
-    while (begin != end)
-    {
-        char c = *begin;
-
-        switch (c)
-        {
-        case ' ':
-        case '0':
-            sp.fill = c;
-            break;
-        case '-':
-            sp.align_left = true;
-            break;
-        case '+':
-            sp.sign = true;
-        case '*':
-            sp.capture = true;
-            break;
-        default:
-            if (std::isdigit(c))
-                width.push_back(c);
-        }
-
-        begin++;
-    }
-
-    if (width != "")
-        sp.width = std::stoi(width);
-
-    return sp;
-}
 
 fmt operator""_fmt(const char *str, std::size_t)
 {
     return fmt{str};
 }
 
-template <class T>
-fmt &operator%(fmt &&f, T &&arg)
-{
-    f.queue.push(repr<T>{}(arg));
-    return f;
-}
-
 std::ostream &operator<<(std::ostream &os, const fmt &f)
 {
-    fmt tmp = f;
-    for (int i = 0; i < tmp.str.length(); ++i)
-    {
-        if (tmp.str[i] == '%')
-        {
-            ++i;
-            auto specbegin = tmp.str.begin() + i;
-            auto specend = std::find_first_of(specbegin, tmp.str.end(), fmt::Spec::TYPES.begin(), fmt::Spec::TYPES.end());
-            fmt::Spec sp;
-            if (specend != tmp.str.end())
-            {
-                sp = _parse(specbegin, specend);
-                os << sp(tmp.queue);
-                i = specend - tmp.str.begin() + 1;
-            }
-            else
-            {
-                if (tmp.queue.empty())
-                    throw std::logic_error("Too few arguments");
-                os << tmp.queue.front();
-                tmp.queue.pop();
-            }
-        }
-        os << tmp.str[i];
-    }
-    if (!tmp.queue.empty())
-        throw std::logic_error("Unused arguments");
-
+    os << *(f.result); // deliberately error prone
     return os;
 }
 
 template <class... Ts>
 fmt fmt::operator()(Ts... args)
 {
-    (this->queue.push(repr<Ts>{}(args)), ...);
+    size_t max = format.length();
+    std::string out;
+    out.reserve(max); // prevent overdone allocations
+
+    size_t i = 0; // leave iterators for now
+    while (i < max) {
+        if (format[i] == '{') {
+            if (i+1 < max-1) {
+                if (format[i+1] == '{') {
+                    out += '{';
+                    i += 2;
+                    continue;
+                }
+            }
+
+            auto oi = format.find('}', i);
+            if (oi == std::string::npos) {
+                throw std::logic_error("Unterminated format");
+            }
+
+            std::string pattern = format.substr(i+1, oi-i-1);
+            out += "<sub '" + pattern + "'>";
+            i = oi + 1;
+        } else if (format[i] == '}') {
+            out += '}';
+            i += 2;
+        } else {
+            out += format[i];
+            i += 1;
+        }
+    }
+    result = out;
     return *this;
 }
 

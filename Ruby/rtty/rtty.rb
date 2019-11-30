@@ -78,4 +78,4 @@ Rtty.redirect do
     puts "prompt"
     str.puts $stdin.readline
 end
-puts str.string.upcase
+puts str.string.dump
