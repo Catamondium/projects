@@ -1,19 +1,22 @@
 extern crate getopts;
 use getopts::Options;
 
-use std::hash::Hasher;
-use std::collections::{HashMap, HashSet};
 use std::collections::hash_map::DefaultHasher;
+use std::collections::{HashMap, HashSet};
 use std::fs::{DirEntry, File};
+use std::hash::Hasher;
+use std::io::Read;
 use std::path::{Path, PathBuf};
-use std::io::{Read, BufReader, BufRead};
 
-trait Consumer<T> {
-    fn consume(&mut self, item: T);
+trait Consumer<T, R = ()> {
+    fn consume(&mut self, item: T) -> R;
 }
 
 /// recursively walks 'dir', returning files to ret Consumer
-fn walkdir<T: Consumer<DirEntry>>(dir: &Path, ret: &mut T, recurse: &bool) -> std::io::Result<()> {
+fn walkdir<T>(dir: &Path, ret: &mut T, recurse: &bool) -> std::io::Result<()>
+where
+    T: Consumer<DirEntry, std::io::Result<()>>,
+{
     if dir.is_file() {
         Ok(())
     } else {
@@ -22,7 +25,7 @@ fn walkdir<T: Consumer<DirEntry>>(dir: &Path, ret: &mut T, recurse: &bool) -> st
             if let Ok(file) = entry {
                 let kind = file.metadata()?.file_type();
                 if kind.is_file() {
-                    ret.consume(file);
+                    ret.consume(file)?;
                 } else {
                     walkdir(&file.path(), ret, recurse)?;
                 }
@@ -32,41 +35,43 @@ fn walkdir<T: Consumer<DirEntry>>(dir: &Path, ret: &mut T, recurse: &bool) -> st
     }
 }
 
-fn hashfile(path: PathBuf) -> u64 {
+fn hashfile(path: PathBuf) -> std::io::Result<u64> {
     let mut hasher = DefaultHasher::new();
     let mut bytes = Vec::new();
-    let mut f = File::open(&path).expect("Unopenable file");
-    
-    f.read(&mut bytes).expect("Unreadable file"); // Not good for large files, most efficient option
+    let mut f = File::open(&path)?;
+    f.read(&mut bytes)?; // Not good for large files, most efficient option
     hasher.write(&bytes);
-    hasher.finish()
+    Ok(hasher.finish())
 }
 
 struct Dedup {
     files: HashMap<u64, HashSet<u64>>,
-    dry: bool
+    dry: bool,
+    deletions: u64
 }
 
 impl Dedup {
-    fn new(dry: bool) -> Self {
+    fn new(dry: &bool) -> Self {
         Dedup {
-            dry,
-            files: HashMap::new()
+            dry: dry.clone(),
+            files: HashMap::new(),
+            deletions: 0
         }
     }
 }
 
-impl Consumer<DirEntry> for Dedup {
-    fn consume(&mut self, item: DirEntry) {
-        let fsize = item.metadata().expect("Cannot meta").len();
-        let hash = hashfile(item.path());
+impl Consumer<DirEntry, std::io::Result<()>> for Dedup {
+    fn consume(&mut self, item: DirEntry) -> std::io::Result<()> {
+        let fsize = item.metadata()?.len();
+        let hash = hashfile(item.path())?;
         if let Some(bucket) = self.files.get_mut(&fsize) {
             if let Some(_) = bucket.get(&hash) {
                 if self.dry {
-                println!("REPEAT: {:?}", item.path());
+                    println!("REPEAT: {:?}", item.path());
                 } else {
-                    let _ = std::fs::remove_file(item.path());
+                    std::fs::remove_file(item.path())?;
                 }
+                self.deletions += 1;
             } else {
                 bucket.insert(hash);
             }
@@ -75,14 +80,16 @@ impl Consumer<DirEntry> for Dedup {
             set.insert(hash);
             self.files.insert(fsize, set);
         }
+        Ok(())
     }
 }
 
 fn main() -> std::io::Result<()> {
-    let mut dedup = Dedup::new(true);
     let argv: Vec<String> = std::env::args().skip(1).collect();
     for arg in argv {
+        let mut dedup = Dedup::new(&true);
         walkdir(&Path::new(&arg), &mut dedup, &true)?;
+        println!("{}: {} deletions", arg, dedup.deletions);
     }
     Ok(())
 }
