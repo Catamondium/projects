@@ -60,13 +60,15 @@ impl Consumer<DirEntry> for Dedup {
     fn consume(&mut self, item: DirEntry) {
         let fsize = item.metadata().expect("Cannot meta").len();
         let hash = hashfile(item.path());
-        if let Some(bucket) = self.files.get(&fsize) {
+        if let Some(bucket) = self.files.get_mut(&fsize) {
             if let Some(_) = bucket.get(&hash) {
                 if self.dry {
                 println!("REPEAT: {:?}", item.path());
                 } else {
                     let _ = std::fs::remove_file(item.path());
                 }
+            } else {
+                bucket.insert(hash);
             }
         } else {
             let mut set = HashSet::new();
