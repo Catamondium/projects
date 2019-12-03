@@ -2,10 +2,10 @@ extern crate getopts;
 use getopts::Options;
 
 use std::collections::hash_map::DefaultHasher;
-use std::collections::{HashMap, HashSet};
-use std::fs::{DirEntry, File};
 use std::hash::Hasher;
-use std::io::Read;
+use std::collections::{HashMap, BTreeSet};
+use std::fs::{DirEntry, File};
+use std::io::{ Read};
 use std::path::{Path, PathBuf};
 
 trait Consumer<T, R = ()> {
@@ -36,16 +36,26 @@ where
 }
 
 fn hashfile(path: PathBuf) -> std::io::Result<u64> {
-    let mut hasher = DefaultHasher::new();
     let mut bytes = Vec::new();
+    let mut hasher = DefaultHasher::new();
     let mut f = File::open(&path)?;
     f.read(&mut bytes)?; // Not good for large files, most efficient option
+    /*
+    Combinations tried:
+        HashSet DefaultHasher
+        HashSet MD5
+        BtreeSet DefaultHasher
+
+    No longer sure if we have the issue, or the Python version
+    They both used md5, only big thing is that we're consuming entire files at once,
+    don't trust this version
+    */
     hasher.write(&bytes);
     Ok(hasher.finish())
 }
 
 struct Dedup {
-    files: HashMap<u64, HashSet<u64>>,
+    files: HashMap<u64, BTreeSet<u64>>,
     dry: bool,
     deletions: u64
 }
@@ -76,7 +86,7 @@ impl Consumer<DirEntry, std::io::Result<()>> for Dedup {
                 bucket.insert(hash);
             }
         } else {
-            let mut set = HashSet::new();
+            let mut set = BTreeSet::new();
             set.insert(hash);
             self.files.insert(fsize, set);
         }
