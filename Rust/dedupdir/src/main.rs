@@ -45,6 +45,7 @@ fn hashfile(path: PathBuf) -> std::io::Result<u64> {
         HashSet DefaultHasher
         HashSet MD5
         BtreeSet DefaultHasher
+        Vec DefaultHasher
 
     No longer sure if we have the issue, or the Python version
     They both used md5, only big thing is that we're consuming entire files at once,
@@ -55,7 +56,7 @@ fn hashfile(path: PathBuf) -> std::io::Result<u64> {
 }
 
 struct Dedup {
-    files: HashMap<u64, BTreeSet<u64>>,
+    files: HashMap<u64, Vec<u64>>,
     dry: bool,
     deletions: u64
 }
@@ -75,7 +76,7 @@ impl Consumer<DirEntry, std::io::Result<()>> for Dedup {
         let fsize = item.metadata()?.len();
         let hash = hashfile(item.path())?;
         if let Some(bucket) = self.files.get_mut(&fsize) {
-            if let Some(_) = bucket.get(&hash) {
+            if  bucket.contains(&hash) {
                 if self.dry {
                     println!("REPEAT: {:?}", item.path());
                 } else {
@@ -83,11 +84,11 @@ impl Consumer<DirEntry, std::io::Result<()>> for Dedup {
                 }
                 self.deletions += 1;
             } else {
-                bucket.insert(hash);
+                bucket.push(hash);
             }
         } else {
-            let mut set = BTreeSet::new();
-            set.insert(hash);
+            let mut set = Vec::new();
+            set.push(hash);
             self.files.insert(fsize, set);
         }
         Ok(())
