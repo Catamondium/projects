@@ -1,4 +1,5 @@
-#!/usr/bin/perl6
+#!/usr/bin/env rakudo
+use v6;
 use strict;
 use worries;
 
