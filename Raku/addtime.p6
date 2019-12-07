@@ -16,6 +16,7 @@ class Time {
 	}
 }
 
+#| Construct Time from HH:MM
 sub pTime (Str $s) {
 	my @subs = $s.split(':');
 	Time.new: :hrs(@subs[0].Int), :mins(@subs[1].Int);
@@ -27,7 +28,7 @@ multi infix:<+>(Time $t, Int $elapse) {
 }
 
 my %*SUB-MAIN-OPTS = :named-anywhere(True);
-sub MAIN(Str $start, Str $mins, Bool :$quiet=False) {
+multi MAIN(Str $start, Str $mins, Bool :$quiet=False) {
 	my $begin = pTime $start;
 	my $elapse = $mins.contains(':') ?? Int(pTime($mins)) !! Int($mins);
 
@@ -36,4 +37,8 @@ sub MAIN(Str $start, Str $mins, Bool :$quiet=False) {
 	} else {
 		printf "Start:\t{$begin}\t%+d\nEnd:\t{$begin + $elapse}\n", $elapse
 	}
+}
+
+multi MAIN(Bool :$man) {
+	run $*EXECUTABLE, "--doc", $*PROGRAM;
 }
