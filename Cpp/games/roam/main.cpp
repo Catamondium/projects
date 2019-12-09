@@ -3,6 +3,7 @@
 #include <curses.h>
 #include <cstdlib>
 #include <time.h>
+#include <optional>
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -83,26 +84,26 @@ void RoamGame::loop()
 
 void RoamGame::keyPressed(int ch)
 {
-    Vec *dir = NULL;
+    std::optional<Vec> dir;
     switch (ch) {
     case 'w':			// UP
     case KEY_UP:
-        dir = new Vec{0, 1};
+        dir = Vec{0, -1};
 	break;
 
     case 's':			// RIGHT
     case KEY_DOWN:
-        dir = new Vec{0, -1};
+        dir = Vec{0, 1};
 	break;
 
     case 'a':			// LEFT
     case KEY_LEFT:
-        dir = new Vec{-1, 0};
+        dir = Vec{-1, 0};
 	break;
 
     case 'd':			// DOWN
     case KEY_RIGHT:
-        dir = new Vec{1, 0};
+        dir = Vec{1, 0};
 	break;
 
     case 'q':			// QUIT
@@ -113,8 +114,8 @@ void RoamGame::keyPressed(int ch)
 	break;
     }
 
-    if (dir != NULL) {
-        player.move(*dir);
+    if (dir.has_value()) {
+        player.move(dir.value());
         lua_event([&]{
             lua_getglobal(L, "_call_on_move");
             dir->lua_serialize(L);
