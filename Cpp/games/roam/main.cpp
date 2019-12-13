@@ -5,9 +5,9 @@
 #include <time.h>
 #include <optional>
 
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
+#include <lua5.3/lua.h>
+#include <lua5.3/lauxlib.h>
+#include <lua5.3/lualib.h>
 
 #include "vec.hpp"
 #include "player.hpp"
@@ -40,6 +40,7 @@ struct RoamGame : public CursesGame <2> {
     }
 
     ~RoamGame() {
+        std::cout << std::endl;
 	    lua_close(L);
     }
 
@@ -75,7 +76,7 @@ void RoamGame::loop()
     attron(COLOR_PAIR(PLAYER));
     mvaddch(player.pos.y, player.pos.x, '@');
     attroff(COLOR_PAIR(PLAYER));
-
+    std::cout << "loop" << "\n";
     lua_event([&]{
         lua_getglobal(L, "_call_on_tick");
         LUA_PROTEC(lua_pcall(L, 0, 0, 0));
@@ -110,15 +111,19 @@ void RoamGame::keyPressed(int ch)
     case KEY_EXIT:
 	noLoop();
 	break;
+
     default:
 	break;
     }
 
+    // blocking loop here somehow
+    std::cout << "keypressed" << "\n";
     if (dir.has_value()) {
         player.move(dir.value());
+        // movement issue is internal, not ncurses
         lua_event([&]{
             lua_getglobal(L, "_call_on_move");
-            dir->lua_serialize(L);
+            dir.value().lua_serialize(L);
             LUA_PROTEC(lua_pcall(L, 1, 0, 0));
         });
     }

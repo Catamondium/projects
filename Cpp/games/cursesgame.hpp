@@ -1,6 +1,7 @@
 #pragma once
 #include <curses.h>
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 #include <chrono>
 #include <thread>
@@ -130,7 +131,7 @@ struct CursesGame : public Game
     };
 
 private:
-    std::streambuf old_stdout;
+    std::streambuf *old_stdout;
 
 protected:
     int height;
