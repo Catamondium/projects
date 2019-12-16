@@ -115,20 +115,23 @@ def del_events(service, cal, events):
         service.events().delete(calendarId=cal, eventId=event).execute()
 
 
-if __name__ == "__main__":
+def _main():
     import argparse
     service = connect()
     parser = argparse.ArgumentParser(description="Delete reccuring events")
+
+    parser.add_argument("target", metavar="Target calendar", nargs='?',
+                    help="Calendar to be cleared", default=None)
+
     parser.add_argument("descriptor",
                         type=argparse.FileType(mode='r'),
                         metavar="Descriptor",
+                        nargs='?',
                         help="space-delimited table of event ranges to be cleared")
 
-    parser.add_argument("target", metavar="Target calendar", nargs='?',
-                        help="Calendar to be cleared", default=None)
     args = parser.parse_args()
 
-    if args.target is None:
+    if None in (args.target, args.descriptor):
         parser.print_usage()
         print_cals(service)
         sys.exit(1)
@@ -139,3 +142,6 @@ if __name__ == "__main__":
     expanded = get_events(service, calID, data)
     del_events(service, calID, expanded)
     print(f"{len(expanded)} Events deleted from '{args.target}'")
+
+if __name__ == "__main__":
+    _main()
