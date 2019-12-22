@@ -29,10 +29,9 @@ def launch_request_handler(handler_input: HandlerInput):
 def finish_intent_handler(handler_input: HandlerInput):
     text = "No calculations made"
     try:
-        text = f"Result is {handler.attributes.session_attributes["stack"][0]}"
-    except KeyError:
-        pass
-    except IndexError:
+        val = handler.attributes.session_attributes["stack"][0]
+        text = f"Result is {val}"
+    except:
         pass
 
     handler_input.response_builder.speak(text).set_card(
