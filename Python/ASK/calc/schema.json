@@ -28,10 +28,7 @@
           "slots": [
             {
               "name": "operand",
-              "type": "AMAZON.NUMBER",
-              "samples": [
-                "{operand}"
-              ]
+              "type": "AMAZON.NUMBER"
             }
           ],
           "samples": [
@@ -46,10 +43,7 @@
           "slots": [
             {
               "name": "operator",
-              "type": "OPERATOR",
-              "samples": [
-                "{operator}"
-              ]
+              "type": "OPERATOR"
             }
           ],
           "samples": [
