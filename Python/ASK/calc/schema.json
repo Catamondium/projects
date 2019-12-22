@@ -47,6 +47,7 @@
             }
           ],
           "samples": [
+            "{operator}",
             "Invoke {operator}",
             "Call {operator}"
           ]
