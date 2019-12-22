@@ -16,6 +16,14 @@
           "samples": []
         },
         {
+          "name": "ExecuteIntent",
+          "samples": [
+            "finish",
+            "finalize",
+            "execute"
+          ]
+        },
+        {
           "name": "OperandIntent",
           "slots": [
             {

@@ -25,6 +25,31 @@ def launch_request_handler(handler_input: HandlerInput):
         SimpleCard("Calculator", text)).set_should_end_session(False)
     return handler_input.response_builder.response
 
+@sb.request_handler(can_handle_func=is_intent_name("ExecuteIntent"))
+def finish_intent_handler(handler_input: HandlerInput):
+    text = "No calculations made"
+    try:
+        text = f"Result is {handler.attributes.session_attributes["stack"][0]}"
+    except KeyError:
+        pass
+    except IndexError:
+        pass
+
+    handler_input.response_builder.speak(text).set_card(
+        SimpleCard("Calculator", text)).set_should_end_session(True)
+    return handler_input.response_builder.response
+
+@sb.request_handler(can_handle_func=is_intent_name("OperandIntent"))
+def operand_intent_handler(handler_input: HandlerInput):
+    val = float(get_slot_value(handler_input, "operand"))
+    print(f"STACK {val}")
+    init_or_append(handler_input.attributes_manager.session_attributes, "stack", val)
+    text = "Operand intent, placeholder"
+
+    handler_input.response_builder.speak(text).set_card(
+        SimpleCard("Calculator", text)).set_should_end_session(DEBUG)
+    return handler_input.response_builder.response
+
 @sb.request_handler(can_handle_func=is_intent_name("OperatorIntent"))
 def operator_intent_handler(handler_input: HandlerInput):
     op = get_slot_value(handler_input, "operand")
@@ -39,21 +64,11 @@ def operator_intent_handler(handler_input: HandlerInput):
         SimpleCard("Calculator", text)).set_should_end_session(DEBUG)
     return handler_input.response_builder.response
 
-@sb.request_handler(can_handle_func=is_intent_name("OperandIntent"))
-def operand_intent_handler(handler_input: HandlerInput):
-    val = float(get_slot_value(handler_input, "operand"))
-    print(f"STACK {val}")
-    init_or_append(handler_input.attributes_manager.session_attributes, "stack", val)
-    text = "Operand intent, placeholder"
-    handler_input.response_builder.speak(text).set_card(
-        SimpleCard("Calculator", text)).set_should_end_session(DEBUG)
-    return handler_input.response_builder.response
-
 @sb.request_handler(can_handle_func=is_intent_name("AMAZON.HelpIntent"))
 def help_intent_handler(handler_input: HandlerInput):
     text = "Stack-based calculator"
-    handler_input.response_builder.speak(text).set_card(
-        SimpleCard("Calculator", text)).set_should_end_session(True)
+    handler_input.response_builder.speak(text).ask(text).set_card(
+        SimpleCard("Calculator", text)).set_should_end_session(False)
     return handler_input.response_builder.response
 
 @sb.request_handler(
