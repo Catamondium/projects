@@ -52,7 +52,7 @@ if __name__ == "__main__":
                         help="args to pass to prog")
 
     argv = parser.parse_args()
-    if Path(argv.prog).is_absolute():
+    if Path(argv.prog).resolve().is_absolute():
         pyprog = Path(argv.prog)
     else:
         pyprog = searchPaths(argv.prog, path=argv.path)
