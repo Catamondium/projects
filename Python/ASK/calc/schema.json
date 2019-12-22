@@ -1,7 +1,7 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "calculator",
+      "invocationName": "stack calculator",
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
