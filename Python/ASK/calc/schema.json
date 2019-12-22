@@ -1,0 +1,83 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "calculator",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "OperandIntent",
+          "slots": [
+            {
+              "name": "operand",
+              "type": "AMAZON.NUMBER",
+              "samples": [
+                "{operand}"
+              ]
+            }
+          ],
+          "samples": [
+            "{operand}",
+            "include {operand}",
+            "stack {operand}",
+            "push {operand}"
+          ]
+        },
+        {
+          "name": "OperatorIntent",
+          "slots": [
+            {
+              "name": "operator",
+              "type": "OPERATOR",
+              "samples": [
+                "{operator}"
+              ]
+            }
+          ],
+          "samples": [
+            "Invoke {operator}",
+            "Call {operator}"
+          ]
+        }
+      ],
+      "types": [
+        {
+          "name": "OPERATOR",
+          "values": [
+            {
+              "id": "SUM",
+              "name": {
+                "value": "sum",
+                "synonyms": [
+                  "add",
+                  "sum",
+                  "summate"
+                ]
+              }
+            },
+            {
+              "id": "PRODUCT",
+              "name": {
+                "value": "product",
+                "synonyms": [
+                  "multiply",
+                  "product"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
