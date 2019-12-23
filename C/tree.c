@@ -5,14 +5,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
-#include <unistd.h>
+
+#define END "|- "
+#define INDENT " "
 
 /*
  * Recursively lists files
- * basic ls with -r, printing unrooted names
+ * basic tree
  */
 
-void ls(char *dirstr)
+void tree(char *dirstr, char *indent)
 {
     DIR *dir = NULL;
     dir = opendir(dirstr);
@@ -26,17 +28,19 @@ void ls(char *dirstr)
             if(strcmp("..", entry->d_name) == 0)
                 continue;
 
+            printf("%s" END "%s\n", indent, entry->d_name);
             if(entry->d_type == DT_DIR)
             {
                 char *path = NULL;
+                char *nident = NULL;
                 asprintf(&path, "%s/%s", dirstr, entry->d_name);
-                if(path == NULL)
+                asprintf(&nident, "%s" INDENT, indent);
+                if(path == NULL || nident == NULL)
                     continue;
-                ls(path);
+                tree(path, nident);
                 free(path);
+                free(nident);
             }
-            else
-                puts(entry->d_name);
         }
 
         closedir(dir);
@@ -56,7 +60,10 @@ int main(int argc, char **argv)
         }
 
         if((statbuf.st_mode & S_IFMT) == S_IFDIR)
-            ls(argv[i]);
+        {
+            puts(argv[i]);
+            tree(argv[i], INDENT);
+        }
         else
             puts(argv[i]);
     }
