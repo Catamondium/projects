@@ -4,6 +4,7 @@
 #include <signal.h>
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 
 void usage(char *prog, int status)
 {
@@ -26,14 +27,20 @@ void onexit(pid_t pid, char **com)
 
 char **build_com(int argc, int fromn, char **argv)
 {
-    int n = 0;
-    char **com = malloc(sizeof(char *) * (argc - fromn + 1));
+    assert(argc >= fromn + 1);
+    size_t size;
+    char **com;
 
-    for (int i = fromn; i < argc; ++i) {
-	com[n] = argv[i];
-	++n;
-    }
+    size = sizeof(char *) * (argc - fromn + 1);
+    com = malloc(size);
+    // argv[fromn:] -> com[:-1], using Python slice notation
+    memcpy(com, argv + fromn, size - sizeof(char));
     com[argc - fromn] = NULL;
+
+#ifdef DEBUG
+    for (char **i = com; *i != NULL; ++i)
+	printf("call: \'%s\'\n", *i);
+#endif
 
     return com;
 }
@@ -48,8 +55,8 @@ int main(int argc, char **argv)
 	    usage(argv[0], EXIT_SUCCESS);
     }
 
-    if (optind >= argc - 1) {
-	fprintf(stderr, "expected 2 arguments after opts\n");
+    if (argc <= optind + 1) {
+	fprintf(stderr, "expected 2+ arguments after opts\n");
 	usage(argv[0], EXIT_FAILURE);
     }
 
