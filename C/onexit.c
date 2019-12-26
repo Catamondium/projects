@@ -18,37 +18,24 @@ void usage(char *prog, int status)
 
 void onexit(pid_t pid, char **com)
 {
+#ifdef DEBUG
+    printf("pid: %d\n", pid);
+    for (int i = 0; com[i] != NULL; ++i)
+	printf("call[%d]: \'%s\'\n", i, com[i]);
+#endif
+
     while (kill(pid, 0) != -1)
 	sleep(5);
 
     if (execvp(com[0], com) == -1)
-	perror("trigger");
-}
-
-char **build_com(int argc, int fromn, char **argv)
-{
-    assert(argc >= fromn + 1);
-    size_t size;
-    char **com;
-
-    size = sizeof(char *) * (argc - fromn + 1);
-    com = malloc(size);
-    // argv[fromn:] -> com[:-1], using Python slice notation
-    memcpy(com, argv + fromn, size - sizeof(char));
-    com[argc - fromn] = NULL;
-
-#ifdef DEBUG
-    for (char **i = com; *i != NULL; ++i)
-	printf("call: \'%s\'\n", *i);
-#endif
-
-    return com;
+	perror("exec");
 }
 
 int main(int argc, char **argv)
 {
     int opt;
-    char **com;
+    pid_t pid;
+    size_t size;
 
     while ((opt = getopt(argc, argv, "h")) != -1) {
 	if (opt == 'h')
@@ -60,8 +47,15 @@ int main(int argc, char **argv)
 	usage(argv[0], EXIT_FAILURE);
     }
 
-    com = build_com(argc, optind + 1, argv);
+    pid = atoi(argv[optind]);
+    ++optind;
+
+    // Build command arguments
+    size = argc - optind + 1;
+    char *com[size];
+    memcpy(com, argv + optind, sizeof(*com) * (size - 1));
+    com[size - 1] = NULL;
+
     assert(com[0] != NULL);
-    onexit(atoi(argv[optind]), com);
-    free(com);
+    onexit(pid, com);
 }
