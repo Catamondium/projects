@@ -18,7 +18,10 @@ void onexit(pid_t pid, char *com)
     while (kill(pid, 0) != -1) {
 	sleep(5);
     }
-    system(com);
+
+    if (system(com) == -1) {
+	perror("system");
+    }
 }
 
 int main(int argc, char **argv)
