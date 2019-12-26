@@ -31,7 +31,7 @@ char **build_com(int argc, int fromn, char **argv)
 
     for (int i = fromn; i < argc; ++i) {
 	com[n] = argv[i];
-    ++n;
+	++n;
     }
     com[argc - fromn] = NULL;
 
