@@ -5,12 +5,10 @@ use std::fs::remove_file;
 use std::io::{self, stdin, BufRead, BufReader, BufWriter, LineWriter, Write};
 use std::net::TcpStream;
 use std::os::unix::net::{SocketAddr, UnixListener, UnixStream};
+use std::process;
 use std::process::Command;
 use std::sync::mpsc;
 use std::thread;
-
-/// Common Unix Socket
-pub const SOCK: &str = "/tmp/chat_path";
 
 /// UnixStream wrapper providing Drop\
 /// UnixStream is wrapped in BufWriter to delegate Write impl
@@ -66,11 +64,11 @@ fn input_thread(chan: mpsc::Sender<String>) -> Result<(), mpsc::SendError<String
     }
 }
 
-
 /// Spawn slave process in new terminal.\
 /// Start Unix server (common::SOCK) & return stream
 fn slaveinit() -> GenericResult<LineWriter<UnixProtect>> {
-    let pipe = UnixListener::bind(SOCK).expect("BIND");
+    let addr = format!("/tmp/slave_{}", process::id());
+    let pipe = UnixListener::bind(addr.clone()).expect("BIND");
     Command::new("x-terminal-emulator")
         .arg("-e")
         .arg(
@@ -79,6 +77,7 @@ fn slaveinit() -> GenericResult<LineWriter<UnixProtect>> {
                 .ok_or("Can't do convert `current exe`")?,
         )
         .arg("-s")
+        .arg(addr)
         .spawn()?;
 
     let (sock, _) = pipe.accept().expect("ACCEPT");
@@ -104,7 +103,6 @@ fn readnick() -> io::Result<String> {
             }
         }
     }
-
 }
 
 // SEND all pending messages
@@ -123,8 +121,8 @@ fn send(
     }
 
     if pending {
-        println!("SENT");
         write!(remote_write, "{}\n{}\n", buf, END_DELIM)?;
+        println!("SENT");
     }
     Ok(())
 }
@@ -141,13 +139,11 @@ fn recv(
         .filter_map(|x| x.ok())
         .take_while(|l| l != END_DELIM)
         .filter(|l| l != "");
-    /**** NOT PASSING */
-    // END_DELIM not passed?
+    // RECVs blocked when server hits ELSE
     for (i, line) in lines.enumerate() {
         println!("recv passover: {}", i);
         writeln!(display, "{}", line)?;
     }
-    /**** NOT reached at bug condition */
     Ok(())
 }
 
@@ -174,9 +170,9 @@ fn master(port: String) -> GenericResult<()> {
     }
 }
 
-/// Writes everything recieved on common::SOCK to stdout
-fn slave() {
-    let pipe = UnixStream::connect(SOCK).unwrap();
+/// Display mode 'client' to avoid conflicts on STDOUT
+fn slave(sock: &str) {
+    let pipe = UnixStream::connect(sock).unwrap();
     let reader = BufReader::new(pipe);
 
     for line in reader.lines().filter_map(|x| x.ok()).filter(|l| l != "") {
@@ -188,7 +184,7 @@ fn main() -> GenericResult<()> {
     match env::args().nth(1) {
         Some(x) => {
             if x == "-s" {
-                slave();
+                slave(env::args().nth(2).expect("Unbound slave").as_str());
             } else {
                 master(x)?;
             }

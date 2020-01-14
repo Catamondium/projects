@@ -35,7 +35,6 @@ fn recv(reader: &mut BufReader<TcpStream>, nick: &str, conn: &mut Connection) {
         .collect::<Vec<String>>()
         .join("\n");
 
-
     conn.write()
         .unwrap()
         .iter_mut()
@@ -75,14 +74,16 @@ fn serv_loop(
     let lines = BufReader::new(inner).lines().filter_map(|x| x.ok());
 
     for line in lines.filter(|l| l != "") {
+        // BUG server hit ELSE at a RECV
+        // The readers are stealing from each other :(
+        // Rc<Cell<BufReader>> ? try later
         if line == SER_SEND {
             send(&mut writer, &nick, &mut conn)?;
             println!("SEND");
         } else if line == SER_RECV {
             recv(&mut reader2, &nick, &mut conn);
-            println!("RECV");
         } else {
-            println!("invalid: {}", line);
+            panic!("invalid from \'{}\': \'{}\'", nick, line);
         }
     }
 
