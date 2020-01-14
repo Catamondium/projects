@@ -2,7 +2,7 @@ use common::*;
 use std::env;
 use std::fmt::Write as fwrite;
 use std::fs::remove_file;
-use std::io::{self, stdin, BufRead, BufReader, BufWriter, LineWriter, Write};
+use std::io::{self, stdin, BufRead, BufReader, BufWriter, LineWriter, Read, Write};
 use std::net::TcpStream;
 use std::os::unix::net::{SocketAddr, UnixListener, UnixStream};
 use std::process;
@@ -106,11 +106,11 @@ fn readnick() -> io::Result<String> {
 }
 
 // SEND all pending messages
-fn send(
+fn send<A: Write, B: Write>(
     nick: &str,
     chan: &mpsc::Receiver<String>,
-    display: &mut LineWriter<UnixProtect>,
-    remote_write: &mut LineWriter<TcpStream>,
+    display: &mut LineWriter<A>,
+    remote_write: &mut LineWriter<B>,
 ) -> GenericResult<()> {
     let mut pending = false;
     let mut buf = String::from(format!("{}\n", CLI_SEND));
@@ -128,10 +128,10 @@ fn send(
 }
 
 /// RECV all pending messages
-fn recv(
-    display: &mut LineWriter<UnixProtect>,
-    remote_write: &mut LineWriter<TcpStream>,
-    remote_read: &mut BufReader<TcpStream>,
+fn recv<A: Write, B: Write, C: Read>(
+    display: &mut LineWriter<A>,
+    remote_write: &mut LineWriter<B>,
+    remote_read: &mut BufReader<C>,
 ) -> GenericResult<()> {
     write!(remote_write, "{}\n", CLI_RECV)?;
     let lines = remote_read
@@ -139,8 +139,7 @@ fn recv(
         .filter_map(|x| x.ok())
         .take_while(|l| l != END_DELIM)
         .filter(|l| l != "");
-    // RECVs blocked when server hits ELSE
-    for (i, line) in lines.enumerate() {
+    for (_, line) in lines.enumerate() {
         writeln!(display, "{}", line)?;
     }
     Ok(())
@@ -163,7 +162,6 @@ fn master(port: String) -> GenericResult<()> {
     });
 
     loop {
-        // SEND return w/o error
         send(&nick, &rx, &mut display, &mut remote_write)?;
         recv(&mut display, &mut remote_write, &mut remote_read)?;
     }
