@@ -69,22 +69,26 @@ fn serv_loop(
     println!("REG: {}", nick);
     conn.write().unwrap().insert(nick.clone(), String::new());
 
-    let inner = reader.into_inner();
-    let mut reader2 = BufReader::new(inner.try_clone()?);
-    let lines = BufReader::new(inner).lines().filter_map(|x| x.ok());
+    let mut line = String::new();
+    let mut size = reader.read_line(&mut line)?;
 
-    for line in lines.filter(|l| l != "") {
-        // BUG server hit ELSE at a RECV
-        // The readers are stealing from each other :(
-        // Rc<Cell<BufReader>> ? try later
-        if line == SER_SEND {
+    while size != 0 {
+        let trimmed = line.trim();
+        if trimmed == "" {
+            continue;
+        }
+
+        if trimmed == SER_SEND {
             send(&mut writer, &nick, &mut conn)?;
             println!("SEND");
-        } else if line == SER_RECV {
-            recv(&mut reader2, &nick, &mut conn);
+        } else if trimmed == SER_RECV {
+            recv(&mut reader, &nick, &mut conn);
         } else {
-            panic!("invalid from \'{}\': \'{}\'", nick, line);
+            panic!("bad RECV from \'{}\': \'{}\'", nick, trimmed);
         }
+
+        line = String::new();
+        size = reader.read_line(&mut line)?;
     }
 
     // Deregister
