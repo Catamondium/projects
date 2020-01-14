@@ -141,7 +141,6 @@ fn recv(
         .filter(|l| l != "");
     // RECVs blocked when server hits ELSE
     for (i, line) in lines.enumerate() {
-        println!("recv passover: {}", i);
         writeln!(display, "{}", line)?;
     }
     Ok(())
