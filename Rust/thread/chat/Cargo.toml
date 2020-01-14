@@ -13,12 +13,8 @@ path = "src/common.rs"
 
 [[bin]]
 name = "client"
-path = "src/client/main.rs"
+path = "src/client.rs"
 
 [[bin]]
 name = "server"
-path = "src/server/main.rs"
-
-#[[bin]]
-#name = "itertest"
-#path = "src/util.rs"
+path = "src/server.rs"
