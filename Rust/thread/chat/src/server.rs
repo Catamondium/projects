@@ -1,7 +1,7 @@
 use common::*;
 use std::collections::HashMap;
 use std::fmt::Write as fwrite;
-use std::io::{BufRead, BufReader, LineWriter, Write};
+use std::io::{BufRead, BufReader, LineWriter, Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::sync::{Arc, LockResult, RwLock, RwLockWriteGuard};
 use std::thread;
@@ -25,7 +25,7 @@ impl Connection {
 }
 
 /// Recieve content from client
-fn recv(reader: &mut BufReader<TcpStream>, nick: &str, conn: &mut Connection) {
+fn recv<S: Read>(reader: &mut BufReader<S>, nick: &str, conn: &mut Connection) {
     let concat = reader
         .lines()
         .filter_map(|x| x.ok())
@@ -45,8 +45,8 @@ fn recv(reader: &mut BufReader<TcpStream>, nick: &str, conn: &mut Connection) {
 }
 
 /// Send content to client
-fn send(
-    writer: &mut LineWriter<TcpStream>,
+fn send<S: Write>(
+    writer: &mut LineWriter<S>,
     nick: &str,
     conn: &mut Connection,
 ) -> GenericResult<()> {
@@ -54,7 +54,6 @@ fn send(
     let mycontent = writeaccess.get_mut(nick).ok_or("Failed to get")?;
     write!(writer, "{}\n{}\n", mycontent, END_DELIM)?;
     mycontent.clear();
-    println!("SEND");
     Ok(())
 }
 
@@ -66,7 +65,7 @@ fn serv_loop(
     // Register
     let mut nick = String::new();
     reader.read_line(&mut nick)?;
-    println!("REG: {}", nick);
+    println!("REG: \'{}\'", nick);
     conn.write().unwrap().insert(nick.clone(), String::new());
 
     let mut line = String::new();
@@ -80,7 +79,6 @@ fn serv_loop(
 
         if trimmed == SER_SEND {
             send(&mut writer, &nick, &mut conn)?;
-            println!("SEND");
         } else if trimmed == SER_RECV {
             recv(&mut reader, &nick, &mut conn);
         } else {
@@ -93,7 +91,7 @@ fn serv_loop(
 
     // Deregister
     conn.write().unwrap().remove(&nick);
-    println!("DEREG: {}", nick);
+    println!("DEREG: \'{}\'", nick);
     Ok(())
 }
 
