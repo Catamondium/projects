@@ -46,7 +46,6 @@ mod tests {
     fn five_struct_dimethylpropane() {
         assert_eq!(5.0 * 72.05, mass(&"5C(CH3)4".to_string()).unwrap());
     }
-
 }
 
 const PTABLE_FILE: &str = include_str!("ptable.tsv");
@@ -93,10 +92,7 @@ fn load_table() -> Ptable {
     for (i, line) in PTABLE_FILE.lines().skip(1).enumerate() {
         let fields: Vec<&str> = line.split("\t").collect();
         if out.contains_key(fields[0]) {
-            panic!(format!(
-                "Table error: line {}, Repeated element: {}",
-                i, fields[0]
-            ));
+            panic!("Table error: line {}, Repeated element: {}", i, fields[0]);
         };
 
         out.insert(

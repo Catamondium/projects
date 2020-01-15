@@ -2,10 +2,10 @@ extern crate getopts;
 use getopts::Options;
 
 use std::collections::hash_map::DefaultHasher;
-use std::hash::Hasher;
-use std::collections::{HashMap, BTreeSet};
+use std::collections::{BTreeSet, HashMap};
 use std::fs::{DirEntry, File};
-use std::io::{ Read};
+use std::hash::Hasher;
+use std::io::Read;
 use std::path::{Path, PathBuf};
 
 trait Consumer<T, R = ()> {
@@ -40,17 +40,17 @@ fn hashfile(path: PathBuf) -> std::io::Result<u64> {
     let mut hasher = DefaultHasher::new();
     let mut f = File::open(&path)?;
     f.read(&mut bytes)?; // Not good for large files, most efficient option
-    /*
-    Combinations tried:
-        HashSet DefaultHasher
-        HashSet MD5
-        BtreeSet DefaultHasher
-        Vec DefaultHasher
+                         /*
+                         Combinations tried:
+                             HashSet DefaultHasher
+                             HashSet MD5
+                             BtreeSet DefaultHasher
+                             Vec DefaultHasher
 
-    No longer sure if we have the issue, or the Python version
-    They both used md5, only big thing is that we're consuming entire files at once,
-    don't trust this version
-    */
+                         No longer sure if we have the issue, or the Python version
+                         They both used md5, only big thing is that we're consuming entire files at once,
+                         don't trust this version
+                         */
     hasher.write(&bytes);
     Ok(hasher.finish())
 }
@@ -58,7 +58,7 @@ fn hashfile(path: PathBuf) -> std::io::Result<u64> {
 struct Dedup {
     files: HashMap<u64, Vec<u64>>,
     dry: bool,
-    deletions: u64
+    deletions: u64,
 }
 
 impl Dedup {
@@ -66,7 +66,7 @@ impl Dedup {
         Dedup {
             dry: dry.clone(),
             files: HashMap::new(),
-            deletions: 0
+            deletions: 0,
         }
     }
 }
@@ -76,7 +76,7 @@ impl Consumer<DirEntry, std::io::Result<()>> for Dedup {
         let fsize = item.metadata()?.len();
         let hash = hashfile(item.path())?;
         if let Some(bucket) = self.files.get_mut(&fsize) {
-            if  bucket.contains(&hash) {
+            if bucket.contains(&hash) {
                 if self.dry {
                     println!("REPEAT: {:?}", item.path());
                 } else {

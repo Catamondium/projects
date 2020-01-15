@@ -1,7 +1,7 @@
 use common::*;
 use std::collections::HashMap;
 use std::fmt::Write as fwrite;
-use std::io::{BufRead, BufReader, LineWriter, Write, Read};
+use std::io::{BufRead, BufReader, LineWriter, Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::sync::{Arc, LockResult, RwLock, RwLockWriteGuard};
 use std::thread;

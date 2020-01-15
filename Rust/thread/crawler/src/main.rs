@@ -61,10 +61,7 @@ impl<T: Iterator<Item = usize>> Iterator for Producer<T> {
 /// panics if max < n.
 fn random_set(n: usize, max: usize) -> HashSet<usize> {
     if max < n {
-        panic!(format!(
-            "Insufficient range: [0, {}) to fill {} spots",
-            max, n
-        ))
+        panic!("Insufficient range: [0, {}) to fill {} spots", max, n);
     }
 
     let mut set = HashSet::new();
