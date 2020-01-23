@@ -23,30 +23,30 @@
 char *readline(const char *prompt)
 {
     if (prompt)
-	printf("%s", prompt);
+        printf("%s", prompt);
 
     size_t bufsize = BUFSIZE_CSH, position = 0;
     char *buffer = malloc(bufsize * sizeof(char));
     int ch;
 
     if (!buffer)
-	handle_error("Bad allocation");
+        handle_error("Bad allocation");
 
     while (true) {
-	ch = getchar();
+        ch = getchar();
 
-	if (ch == '\n' || ch == EOF) {
-	    buffer[position] = '\0';
-	    return buffer;
-	}
+        if (ch == '\n' || ch == EOF) {
+            buffer[position] = '\0';
+            return buffer;
+        }
 
-	buffer[position++] = ch;
-	if (position >= bufsize) {
-	    bufsize += BUFSIZE_CSH;
-	    buffer = realloc(buffer, bufsize * sizeof(char));
-	    if (!buffer)
-		handle_error("Bad allocation");
-	}
+        buffer[position++] = ch;
+        if (position >= bufsize) {
+            bufsize += BUFSIZE_CSH;
+            buffer = realloc(buffer, bufsize * sizeof(char));
+            if (!buffer)
+                handle_error("Bad allocation");
+        }
     }
     return buffer;
 }
@@ -58,21 +58,21 @@ void csh_loop()
     char **args = NULL;
     int status = true;
     do {
-	line = readline("CSH> ");
-	if (!line) {
-	    putchar('\n');
-	    continue;
-	}
-	expanded = tilde_expand(line);
-	args = tokenize(expanded);
-	status = csh_exec(args);
+        line = readline("CSH> ");
+        if (!line) {
+            putchar('\n');
+            continue;
+        }
+        expanded = tilde_expand(line);
+        args = tokenize(expanded);
+        status = csh_exec(args);
 
 #ifndef READLINE
-	add_history(line);
+        add_history(line);
 #endif
-	free(line);
-	free(expanded);
-	free(args);
+        free(line);
+        free(expanded);
+        free(args);
     } while (status);
 }
 

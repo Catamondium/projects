@@ -1,9 +1,9 @@
 #include <getopt.h>
-#include <math.h>		// floor
+#include <math.h>               // floor
 #include <stdio.h>
-#include <stdlib.h>		// exit, atoi
-#include <string.h>		// strstr
-#include <unistd.h>		// getopt
+#include <stdlib.h>             // exit, atoi
+#include <string.h>             // strstr
+#include <unistd.h>             // getopt
 
 typedef struct Time {
     unsigned int hrs;
@@ -37,10 +37,10 @@ Time doElapse(const Time s, const signed int t)
 void usage(const char *prog)
 {
     printf("Usage: %s [-hql] <HH:MM> <mins | HH:MM>\n "
-	   "Note: if mins_elapse is negative, precede it with '--'\n"
-	   "Options:\n\t-q quietly output end time\n"
-	   "\t-h print this message and exit\n"
-	   "\t-l print written language\n", prog);
+           "Note: if mins_elapse is negative, precede it with '--'\n"
+           "Options:\n\t-q quietly output end time\n"
+           "\t-h print this message and exit\n"
+           "\t-l print written language\n", prog);
     exit(1);
 }
 
@@ -53,33 +53,33 @@ int main(int argc, char **argv)
 
     int c;
     while ((c = getopt(argc, argv, "qhl")) != -1) {
-	switch (c) {
-	case 'q':
-	    quiet = 1;
-	    break;
-	case 'l':
-	    printf("C: %ld\n", __STDC_VERSION__);
-	    return 0;
-	default:
-	    usage(argv[0]);
-	    break;
-	}
+        switch (c) {
+        case 'q':
+            quiet = 1;
+            break;
+        case 'l':
+            printf("C: %ld\n", __STDC_VERSION__);
+            return 0;
+        default:
+            usage(argv[0]);
+            break;
+        }
     }
 
     if (argc < 3)
-	usage(argv[0]);
+        usage(argv[0]);
 
     start = pTime(argv[optind++]);
     elapse =
-	strstr(argv[optind],
-	       ":") !=
-	NULL ? getMins(pTime(argv[optind])) : atoi(argv[optind]);
+        strstr(argv[optind],
+               ":") !=
+        NULL ? getMins(pTime(argv[optind])) : atoi(argv[optind]);
 
     end = doElapse(start, elapse);
     if (!quiet) {
-	sTime(strStart, start);
-	sTime(strEnd, end);
-	printf("Start:\t%s\t%+d\nEnd:\t%s\n", strStart, elapse, strEnd);
+        sTime(strStart, start);
+        sTime(strEnd, end);
+        printf("Start:\t%s\t%+d\nEnd:\t%s\n", strStart, elapse, strEnd);
     } else
-	printf("%02d:%02d\n", end.hrs, end.mins);
+        printf("%02d:%02d\n", end.hrs, end.mins);
 }
