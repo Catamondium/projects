@@ -1,18 +1,12 @@
 #!/bin/envrun
 # Based on nltk.org/howto/sentiment.html
 
-from nltk.classify import NaiveBayesClassifier
-from nltk.corpus import subjectivity
-from nltk.sentiment import SentimentAnalyzer
-from nltk.sentiment.util import *
-
 """
 Classifiers for use in crawler,
 to include polarity, subjectivity and (if not provided by nltk) name classification
 """
 
 def __init__():
-    print("init")
     download_dicts()
 
 def download_dicts():
@@ -24,6 +18,10 @@ def download_dicts():
     nltk.download('subjectivity')
 
 def subjectivity_classifier():
+    from nltk.classify import NaiveBayesClassifier
+    from nltk.corpus import subjectivity
+    from nltk.sentiment import SentimentAnalyzer
+    from nltk.sentiment.util import *
     """
     Initializes and trains categorical subjectivity analyzer
     """
@@ -33,9 +31,9 @@ def subjectivity_classifier():
     obj_docs = [(sent, 'obj') for sent in subjectivity.sents(categories='obj')[:N_INSTANCES]]
 
     train_subj_docs = subj_docs[:80]
-    test_subj_docs = subj_docs[80:100]
+    test_subj_docs = subj_docs[80:]
     train_obj_docs = obj_docs[:80]
-    test_obj_docs = obj_docs[80:100]
+    test_obj_docs = obj_docs[80:]
     training_docs = train_subj_docs + train_obj_docs
     testing_docs = test_subj_docs + test_obj_docs
 
@@ -43,7 +41,7 @@ def subjectivity_classifier():
     all_words_neg = sent_analyzer.all_words([mark_negation(doc) for doc in training_docs])
 
     unigram_feats = sent_analyzer.unigram_word_feats(all_words_neg, min_freq=4)
-    print(f"unifeats: {len(unigram_feats)}")
+    print(f"unigram feats: {len(unigram_feats)}")
 
     sent_analyzer.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
 
@@ -59,7 +57,6 @@ def subjectivity_classifier():
 
 # Pretrained polarity classifier
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-from nltk import tokenize
 
 subj_analyzer = subjectivity_classifier()
 polarity_analyzer = SentimentIntensityAnalyzer()
