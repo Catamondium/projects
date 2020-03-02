@@ -2,47 +2,13 @@ use common::*;
 use std::env;
 use std::fmt::Write as fwrite;
 use std::fs::remove_file;
-use std::io::{self, stdin, BufRead, BufReader, BufWriter, LineWriter, Read, Write};
+use std::io::{self, stdin, BufRead, BufReader, LineWriter, Read, Write};
 use std::net::TcpStream;
-use std::os::unix::net::{SocketAddr, UnixListener, UnixStream};
+use std::os::unix::net::{UnixListener, UnixStream};
 use std::process;
 use std::process::Command;
 use std::sync::mpsc;
 use std::thread;
-
-/// UnixStream wrapper providing Drop\
-/// UnixStream is wrapped in BufWriter to delegate Write impl
-struct UnixProtect {
-    inner: BufWriter<UnixStream>,
-    addr: SocketAddr,
-}
-
-impl UnixProtect {
-    fn new(strm: UnixStream) -> Self {
-        let addr = strm.local_addr().expect("Unnamed socket");
-        let inner = BufWriter::new(strm);
-        Self { addr, inner }
-    }
-}
-
-impl Drop for UnixProtect {
-    /// Automatically removes socket file
-    fn drop(&mut self) {
-        if !self.addr.is_unnamed() {
-            let _ = remove_file(self.addr.as_pathname().unwrap());
-        }
-    }
-}
-
-impl Write for UnixProtect {
-    fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
-        self.inner.write(buf)
-    }
-
-    fn flush(&mut self) -> io::Result<()> {
-        self.inner.flush()
-    }
-}
 
 fn input_thread(chan: mpsc::Sender<String>) -> Result<(), mpsc::SendError<String>> {
     loop {
@@ -66,8 +32,9 @@ fn input_thread(chan: mpsc::Sender<String>) -> Result<(), mpsc::SendError<String
 
 /// Spawn slave process in new terminal.\
 /// Start Unix server (common::SOCK) & return stream
-fn slaveinit() -> GenericResult<LineWriter<UnixProtect>> {
+fn slaveinit() -> GenericResult<LineWriter<UnixStream>> {
     let addr = format!("/tmp/slave_{}", process::id());
+    let _ = remove_file(addr.clone());
     let pipe = UnixListener::bind(addr.clone()).expect("BIND");
     Command::new("x-terminal-emulator")
         .arg("-e")
@@ -81,7 +48,7 @@ fn slaveinit() -> GenericResult<LineWriter<UnixProtect>> {
         .spawn()?;
 
     let (sock, _) = pipe.accept().expect("ACCEPT");
-    return Ok(LineWriter::new(UnixProtect::new(sock)));
+    return Ok(LineWriter::new(sock));
 }
 
 fn readnick() -> io::Result<String> {
