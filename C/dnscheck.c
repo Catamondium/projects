@@ -17,6 +17,16 @@ typedef struct Context {
     int type;
 } Context;
 
+void help(char *prog, int status)
+{
+    printf("Usage: %s HOST|DOMAIN[:PORT] [-p PORT] [-DhH]\n"
+	   "OPTIONS:\n"
+	   "\t-p : port select (HOST:PORT takes precedence)\n"
+	   "\t-D : test over dcp transport\n"
+	   "\t -h, -H : display this message\n", prog);
+    exit(status);
+}
+
 Context argparse(int argc, char **argv)
 {
     int opt;
@@ -38,15 +48,14 @@ Context argparse(int argc, char **argv)
 	    break;
 	case 'h':
 	case 'H':
-	    // TODO help()
+	    help(argv[0], EXIT_SUCCESS);
 	    break;
 	}
     }
 
-    optind;
     if (argc - optind < 1) {
-	fprintf(stderr, "Host required");
-	exit(EXIT_FAILURE);
+	fprintf(stderr, "Error: Host required\n");
+	help(argv[0], EXIT_FAILURE);
     }
 
     char *dptr = strchr(argv[optind], ':');
