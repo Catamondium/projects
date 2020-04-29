@@ -10,24 +10,40 @@
 
 typedef struct Context {
     char *port;
+    int palloc;
     char *domain;
     int type;
 } Context;
 
 Context argparse(int argc, char **argv)
 {
+    int opt;
     Context ctx = {
 	.port = HTTP,
+	.palloc = 0,
 	.domain = NULL,
 	.type = SOCK_STREAM,
     };
 
-    if (argc < 2) {
+    while ((opt = getopt(argc, argv, "Dp:")) != -1) {
+	switch(opt) {
+	    case 'D':
+		ctx.type = SOCK_DGRAM;
+		break;
+	    case 'p':
+		ctx.port = strdup(optarg);
+		ctx.palloc = 1;
+		break;
+	}
+    }
+
+    optind;
+    if (argc - optind < 1) {
 	fprintf(stderr, "Host/domain name required");
 	exit(EXIT_FAILURE);
     }
 
-    ctx.domain = argv[1];
+    ctx.domain = argv[optind];
 
     return ctx;
 }
@@ -77,6 +93,8 @@ int main(int argc, char **argv)
 	printf("success %d / %d => %02d%%\n", success, total,
 	       (100 * success) / total);
 	freeaddrinfo(result);
+	if (ctx.palloc)
+	    free(ctx.port);
 
     }
 }
