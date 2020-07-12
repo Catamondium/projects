@@ -3,7 +3,9 @@
 const fs = require('fs');
 const readline = require('readline');
 const { google } = require('googleapis'); // {} cast to object
-const parse = require('./parser.js').parse;
+const { parse } = require('./parser.js');
+
+const credentials = require('./credentials.json');
 
 // If modifying these scopes, delete token.json.
 const SCOPES = [
@@ -11,21 +13,14 @@ const SCOPES = [
     "https://www.googleapis.com/auth/calendar.events"];
 const TOKEN_PATH = 'token.json';
 
-// Load client secrets from a local file.
-fs.readFile('credentials.json', (err, content) => {
-    if (err) return console.log('Error loading client secret file:', err);
-    // Authorize a client with credentials, then call the Google Calendar API.
-    authorize(JSON.parse(content), main);
-});
-
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
  * given callback function.
  * @param {Object} credentials The authorization client credentials.
  * @param {function} callback The callback to call with the authorized client.
  */
-function authorize(credentials, callback) {
-    const { client_secret, client_id, redirect_uris } = credentials.installed;
+function authorize(callback) {
+    const {client_secret, client_id, redirect_uris } = credentials.installed;
     const oAuth2Client = new google.auth.OAuth2(
         client_id, client_secret, redirect_uris[0]);
 
@@ -59,10 +54,7 @@ function getAccessToken(oAuth2Client, callback) {
             if (err) return console.error('Error retrieving access token', err);
             oAuth2Client.setCredentials(token);
             // Store the token to disk for later program executions
-            fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-                if (err) console.error(err);
-                console.log('Token stored to', TOKEN_PATH);
-            });
+            fs.writeFileSync(TOKEN_PATH, JSON.stringify(token));
             callback(oAuth2Client);
         });
     });
@@ -70,7 +62,7 @@ function getAccessToken(oAuth2Client, callback) {
 
 function logCals(api) {
     api.calendarList.list({ showHidden: true, minAccessRole: "writer" },
-        (err, cals) => { // Never called
+        (err, cals) => {
             if (err) throw err;
             sums = cals.data.items.map(x => x = x.summary);
             console.log("Calendars:");
@@ -162,14 +154,13 @@ function del(api, cal, events) {
 function main(auth) {
     const calendar = google.calendar({ version: 'v3', auth });
     let args = process.argv.slice(2);
-    if (args.length == 0) {
+    if (args.length < 3) {
         console.log("Usage: ./bot.js spec calendar");
-        process.exit(1);
-    } else if (args.length == 1) {
         logCals(calendar);
-        process.exit(1);
     } else {
         let dat = parse(args[0]);
         delEvents(calendar, args[1], dat);
     }
 }
+
+authorize(main);
