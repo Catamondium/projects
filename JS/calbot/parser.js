@@ -2,21 +2,21 @@ const readFileSync = require('fs').readFileSync;
 
 exports.gdate = function (ukdate) {
     // DD/MM/YYYY parser
-    let segs = ukdate.split('/');
-    segs = segs.map(n => parseInt(n));
-    return new Date(segs[2], segs[1] - 1, segs[0]).toISOString();
+    const [dd, mm, yy] = ukdate.split('/');
+    return new Date(yy, mm, dd).toISOString();
 }
 
 exports.parse = function (file) {
     let ret = new Array();
-    data = readFileSync(file).toString();
+    data = readFileSync(file, {encoding: 'utf-8'});
     let pairs = data.split('\n');
     pairs.forEach((pair) => {
+        pair = pair.slice(0, pair.indexOf('#') - 1).trim() // comment support
         if (pair != '') {
-            let dates = pair.split('\t');
+            const [start, end,] = pair.split(/\s/).map(exports.gdate);
             ret.push({
-                start: exports.gdate(dates[0]),
-                end: exports.gdate(dates[1])
+                start: start,
+                end: end
             });
         }
     })

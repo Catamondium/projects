@@ -65,7 +65,6 @@ function getAccessToken(oAuth2Client, callback) {
 }
 //**** END OF AUTH
 
-//wrap promisify
 function as_promisify(fn, ...rest) {
     return promisify(fn)(...rest);
 }
@@ -84,22 +83,13 @@ function logCals(api) {
     );
 }
 
-function simplify(item) {
-    ret = {
-        sum: item.summary,
-        rec: item.recurrence,
-        id: item.id
-    };
-    return ret;
-}
-
 async function get_hols(api, name, data) {
     cals = await as_promisify(api.calendarList.list, { showHidden: true, minAccessRole: "writer" });
-    calIDs = cals.data.items.map(x => x = simplify(x));
+    calIDs = cals.data.items;
     let cal;
 
     calIDs.some(item => {
-        if (item.sum == name) {
+        if (item.summary == name) {
             cal = item.id;
             return true
         }
@@ -118,21 +108,19 @@ async function getEvents(api, cal, data) {
     lst = promisify(api.events.list);
     instances = promisify(api.events.instances);
     data.map(async function (hol) {
-        events = await lst({
+        params = {
             calendarId: cal,
             timeMin: hol.start,
             timeMax: hol.end
-        });
-        eventIDs = new Set(events.data.items.map(
-            x => x = simplify(x)));
+        };
+        events = await lst(params);
+        eventIDs = new Set(events.data.items);
         eventIDs.forEach(ev => {
-            if (ev.rec) {
+            if (ev.recurrence) {
                 insts = instances({
-                    calendarId: cal,
                     eventId: ev.id,
-                    timeMin: hol.start,
-                    timeMax: hol.end
-                })
+                    ...params
+                });
 
                 return insts.map(x => x.id);
             }
