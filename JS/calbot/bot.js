@@ -107,27 +107,26 @@ async function get_hols(api, name, data) {
 async function getEvents(api, cal, data) {
     lst = promisify(api.events.list);
     instances = promisify(api.events.instances);
-    data.map(async function (hol) {
+    data = data.map(async function (hol) {
         params = {
             calendarId: cal,
             timeMin: hol.start,
             timeMax: hol.end
         };
         events = await lst(params);
-        eventIDs = new Set(events.data.items);
-        eventIDs.forEach(ev => {
+        eventIDs = Array.from(new Set(events.data.items));
+        eventIDs = eventIDs.map(async function (ev) {
             if (ev.recurrence) {
-                insts = instances({
+                insts = await instances({
                     eventId: ev.id,
                     ...params
                 });
-
-                return insts.map(x => x.id);
+                return insts.data.items.map(x => x.id);
             }
-        })
-    })
-
-    return await Promise.allSettled(data).then(xs.flat());
+        });
+        return await Promise.all(eventIDs);
+    });
+    return data
 }
 
 function del(api, cal, events) {
@@ -147,10 +146,11 @@ async function main(auth) {
         console.log(`Usage: ./bot.js calendar spec`);
         logCals(calendar);
     } else {
-        let dat = await parse(args[1]);
+        let dat = parse(args[1]);
         let cal = args[0];
         events = await get_hols(calendar, cal, dat);
-        del(events);
+        console.log(await Promise.all(events)) // loaded with undef??
+        //del(calendar, cal, events);
     }
 }
 
