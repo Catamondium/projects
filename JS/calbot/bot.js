@@ -1,10 +1,12 @@
 #!/usr/bin/env node
-
 const fs = require('fs');
 const readline = require('readline');
-const { google } = require('googleapis'); // {} cast to object
+const { google } = require('googleapis');
 const { parse } = require('./parser.js');
+const { promisify } = require('util');
+const { argv } = require('process');
 
+//****  AUTH
 const credentials = require('./credentials.json');
 
 // If modifying these scopes, delete token.json.
@@ -28,7 +30,9 @@ function authorize(callback) {
     fs.readFile(TOKEN_PATH, (err, token) => {
         if (err) return getAccessToken(oAuth2Client, callback);
         oAuth2Client.setCredentials(JSON.parse(token));
-        callback(oAuth2Client);
+        callback(oAuth2Client).catch(err => {
+            console.error(err);
+        });
     });
 }
 
@@ -59,7 +63,14 @@ function getAccessToken(oAuth2Client, callback) {
         });
     });
 }
+//**** END OF AUTH
 
+//wrap promisify
+function as_promisify(fn, ...rest) {
+    return promisify(fn)(...rest);
+}
+
+// print available calendars
 function logCals(api) {
     api.calendarList.list({ showHidden: true, minAccessRole: "writer" },
         (err, cals) => {
@@ -82,64 +93,53 @@ function simplify(item) {
     return ret;
 }
 
-function delEvents(api, name, data) {
-    api.calendarList.list({ showHidden: true, minAccessRole: "writer" },
-        (err, cals) => {
-            if (err) throw err;
-            calIDs = cals.data.items.map(x => x = simplify(x));
-            let cal;
+async function get_hols(api, name, data) {
+    cals = await as_promisify(api.calendarList.list, { showHidden: true, minAccessRole: "writer" });
+    calIDs = cals.data.items.map(x => x = simplify(x));
+    let cal;
 
-            calIDs.some(item => {
-                if (item.sum == name) {
-                    cal = item.id;
-                    return true
-                }
-            });
-
-            if (!cal) {
-                console.log("Calendar not found.");
-                logCals(api);
-                process.exit(1);
-            } else
-                getEvents(api, cal, data);
+    calIDs.some(item => {
+        if (item.sum == name) {
+            cal = item.id;
+            return true
         }
-    );
+        return false;
+    });
+
+    if (!cal) {
+        logCals(api);
+        throw `Calendar ${name} not found`;
+    }
+        
+    return await getEvents(api, cal, data);
 }
 
-function getEvents(api, cal, data) {
-    data.forEach(hol => {
-        api.events.list({
+async function getEvents(api, cal, data) {
+    lst = promisify(api.events.list);
+    instances = promisify(api.events.instances);
+    data.map(async function (hol) {
+        events = await lst({
             calendarId: cal,
             timeMin: hol.start,
             timeMax: hol.end
-        },
-            (err, events) => {
-                if (err) throw err;
-                eventIDs = new Set(events.data.items.map(
-                    x => x = simplify(x)));
-                eventIDs.forEach(ev => {
-                    if (ev.rec) {
-                        expand(api, cal, ev, hol)
-                    }
-                })
-            }
-        )
-    })
-}
-
-function expand(api, cal, ev, hol) {
-    api.events.instances({
-        calendarId: cal,
-        eventId: ev.id,
-        timeMin: hol.start,
-        timeMax: hol.end
-    },
-        (err, events) => {
-            if (err) throw err;
-            eventIDs = events.data.items.map(
-                x => x = x.id);
-            del(api, cal, eventIDs);
         });
+        eventIDs = new Set(events.data.items.map(
+            x => x = simplify(x)));
+        eventIDs.forEach(ev => {
+            if (ev.rec) {
+                insts = instances({
+                    calendarId: cal,
+                    eventId: ev.id,
+                    timeMin: hol.start,
+                    timeMax: hol.end
+                })
+
+                return insts.map(x => x.id);
+            }
+        })
+    })
+
+    return await Promise.allSettled(data).then(xs.flat());
 }
 
 function del(api, cal, events) {
@@ -151,15 +151,18 @@ function del(api, cal, events) {
     });
 }
 
-function main(auth) {
+// Arg processing
+async function main(auth) {
     const calendar = google.calendar({ version: 'v3', auth });
-    let args = process.argv.slice(2);
-    if (args.length < 3) {
-        console.log("Usage: ./bot.js spec calendar");
+    let args = argv.slice(2);
+    if (args.length < 2) {
+        console.log(`Usage: ./bot.js calendar spec`);
         logCals(calendar);
     } else {
-        let dat = parse(args[0]);
-        delEvents(calendar, args[1], dat);
+        let dat = await parse(args[1]);
+        let cal = args[0];
+        events = await get_hols(calendar, cal, dat);
+        del(events);
     }
 }
 
