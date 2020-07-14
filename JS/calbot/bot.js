@@ -59,15 +59,13 @@ function getAccessToken(oAuth2Client, callback) {
             oAuth2Client.setCredentials(token);
             // Store the token to disk for later program executions
             fs.writeFileSync(TOKEN_PATH, JSON.stringify(token));
-            callback(oAuth2Client);
+            callback(oAuth2Client).catch(err => {
+                console.error(err);
+            });
         });
     });
 }
 //**** END OF AUTH
-
-function as_promisify(fn, ...rest) {
-    return promisify(fn)(...rest);
-}
 
 // print available calendars
 function logCals(api) {
@@ -84,28 +82,17 @@ function logCals(api) {
 }
 
 async function get_hols(api, name, data) {
-    cals = await as_promisify(api.calendarList.list, { showHidden: true, minAccessRole: "writer" });
+    cals = await promisify(api.calendarList.list)({ showHidden: true, minAccessRole: "writer" });
     calIDs = cals.data.items;
-    let cal;
 
-    calIDs.some(item => {
-        if (item.summary == name) {
-            cal = item.id;
-            return true
-        }
-        return false;
-    });
+    cal = calIDs.find(item => item.summary == name)
 
     if (!cal) {
         logCals(api);
         throw `Calendar ${name} not found`;
     }
         
-    return await getEvents(api, cal, data);
-}
-
-function simplify(x) {
-    return {id: x.id, recurrence: x.recurrence}
+    return await getEvents(api, cal.id, data);
 }
 
 function expand(api, params, events) {
@@ -130,18 +117,18 @@ async function getEvents(api, cal, data) {
         };
         events = await lst(params);
         eventIDs = Array.from(new Set(events.data.items));
-        return expand(api, params, eventIDs.map(simplify));
+        return expand(api, params, eventIDs);
     });
     return await Promise.all(ids);
 }
 
 function del(api, cal, events) {
-    events.forEach(ev => {
+    events.forEach(inner.forEach( ev => {
         api.events.delete({
             calendarId: cal,
             eventId: ev
         });
-    });
+    }));
 }
 
 
@@ -158,7 +145,6 @@ async function main(auth) {
         let cal = args[0];
         events = await get_hols(calendar, cal, dat);
         console.log(events);
-        //console.log(await Promise.all(events)) // loaded with undef??
         //del(calendar, cal, events);
     }
 }
