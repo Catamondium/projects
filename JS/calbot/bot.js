@@ -104,10 +104,25 @@ async function get_hols(api, name, data) {
     return await getEvents(api, cal, data);
 }
 
+function simplify(x) {
+    return {id: x.id, recurrence: x.recurrence}
+}
+
+function expand(api, params, events) {
+    ret = new Array();
+    events.filter(ev => ev.recurrence !== undefined).forEach(ev => {
+        // refused promisify??
+        api.events.instances({eventId: ev.id, ...params}, (err, res) => {
+            if (err) throw err;
+            ret.push(res.data.items.map(x => x.id)); // race condition?
+        })
+    });
+    return ret;
+}
+
 async function getEvents(api, cal, data) {
     lst = promisify(api.events.list);
-    instances = promisify(api.events.instances);
-    data = data.map(async function (hol) {
+    ids = data.map(async function (hol) {
         params = {
             calendarId: cal,
             timeMin: hol.start,
@@ -115,18 +130,9 @@ async function getEvents(api, cal, data) {
         };
         events = await lst(params);
         eventIDs = Array.from(new Set(events.data.items));
-        eventIDs = eventIDs.map(async function (ev) {
-            if (ev.recurrence) {
-                insts = await instances({
-                    eventId: ev.id,
-                    ...params
-                });
-                return insts.data.items.map(x => x.id);
-            }
-        });
-        return await Promise.all(eventIDs);
+        return expand(api, params, eventIDs.map(simplify));
     });
-    return data
+    return await Promise.all(ids);
 }
 
 function del(api, cal, events) {
@@ -137,6 +143,8 @@ function del(api, cal, events) {
         });
     });
 }
+
+
 
 // Arg processing
 async function main(auth) {
@@ -149,7 +157,8 @@ async function main(auth) {
         let dat = parse(args[1]);
         let cal = args[0];
         events = await get_hols(calendar, cal, dat);
-        console.log(await Promise.all(events)) // loaded with undef??
+        console.log(events);
+        //console.log(await Promise.all(events)) // loaded with undef??
         //del(calendar, cal, events);
     }
 }
