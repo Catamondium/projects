@@ -55,7 +55,6 @@ class Snake:
 
     def __init__(self, grid, length):
         width, height = grid
-        print(Vec.random(width - length, height))
         body = deque()
 
         origin = Vec.random(width - length, height)

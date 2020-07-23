@@ -1,3 +1,4 @@
+#!/usr/bin/envrun
 import sys, pygame
 from player import Vec, Snake
 pygame.init()
@@ -48,7 +49,6 @@ while 1:
         food = Vec.random(*GRID)
 
     snake.render(screen, GRID)
-    print(snake)
     food.render(screen, GRID)
 
     text_surface = font.render(scr, True, white)
