@@ -10,20 +10,7 @@ class Diff {
         this.value = val;
         this.state = state;
     }
-    
-    /*get color() { // implemented in styling
-        switch(this.state) {
-            case Diff.states.CORRECT:
-                return 'green';
-            case Diff.states.BPOS:
-                return 'yellow';
-            case Diff.states.INCORRECT:
-                return 'red';
-            default:
-                throw 'Unreachable';
-        }
-    }*/
-    
+
     render() {
         return this.state;
     }
@@ -53,11 +40,12 @@ function newAnswer() {
         } else {
             status.value = "FAILED";
             document.getElementById('answer').disabled = true;
+            document.getElementById('status').classList.add(`S${Diff.states.INCORRECT}`)
         }
     } else {
         document.getElementById('answer').disabled = true;
         status.value = "SUCCESS";
-
+        document.getElementById('status').classList.add(`S${Diff.states.CORRECT}`)
     }
 }
 
@@ -128,4 +116,6 @@ function rstState() {
     status.value = `Remaining Attempts: ${state.attempts}`;
     document.getElementById('guessbox').value = '';
     document.getElementById('answer').disabled = false;
+
+    document.getElementById('status').removeAttribute('class');
 }

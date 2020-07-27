@@ -10,9 +10,10 @@
 <body onload='rstState()'>
     <div id='SD_game'>
       <script src="script.js"></script>
-      <table id='display'>
-      </table>
-      <input id='guessbox' onload='makeEnter()' maxlength='4' size='4' min=0 autofocus></input>
+      <div id='interaction'>
+        <table id='display' cellspacing='0'></table>
+        <input id='guessbox' onload='makeEnter()' maxlength='4' size='4' min=0 autofocus></input>
+      </div>
       <input id='status' disabled></input>
       <button id='answer' onclick='newAnswer()'>Answer</button>
       <button onclick='rstState()'>Reset</button>
