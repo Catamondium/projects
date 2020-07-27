@@ -1,0 +1,31 @@
+table {
+    border: 1px solid black;
+    background-color: grey;
+    font-size: 20pt;
+}
+
+input#guessbox {
+    font-size: 20pt;
+    justify-content: center;
+    text-align: center;
+    width: 76px;
+
+    background-color: black;
+    color: white;
+}
+
+input#status {
+    width: 135px
+}
+
+td.S0 { /* CORRECT */
+    background-color: #5def5d;
+}
+
+td.S1 { /* BPOS */
+    background-color: #FBC02D;
+}
+
+td.S2 { /* INCORRECT */
+    background-color: #ff7878;
+}

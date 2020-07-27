@@ -1,0 +1,21 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SD camera game</title>
+  <link rel='stylesheet' href='styles.css'></link>
+</head>
+
+<body onload='rstState()'>
+    <div id='SD_game'>
+      <script src="script.js"></script>
+      <table id='display'>
+      </table>
+      <input id='guessbox' onload='makeEnter()' maxlength='4' size='4' min=0 autofocus></input>
+      <input id='status' disabled></input>
+      <button id='answer' onclick='newAnswer()'>Answer</button>
+      <button onclick='rstState()'>Reset</button>
+    </div>
+</body>
+</html>
