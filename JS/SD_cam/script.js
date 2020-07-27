@@ -1,15 +1,15 @@
 class Diff {
-	static states = {
+    static states = {
         CORRECT: 0,
         BPOS: 1,
         INCORRECT: 2
     };
     
-	constructor(val, state) {
-		if (!Object.values(Diff.states).includes(state)) {throw "Invalid state"};
-		this.value = val;
-		this.state = state;
-	}
+    constructor(val, state) {
+        if (!Object.values(Diff.states).includes(state)) {throw "Invalid state"};
+        this.value = val;
+        this.state = state;
+    }
     
     /*get color() { // implemented in styling
         switch(this.state) {
@@ -31,14 +31,14 @@ class Diff {
 
 
 function newAnswer() {
-	let res = document.getElementById('guessbox');
-	// just encase input 'type' is ignored
-	let ans = res.value.toString().replace(/\D/.r, '');
-	ans = ans.padStart(4, '0');
-	if (ans.length > 4 || !unique(ans)) {
-		res.value = '';
-		return;
-	}
+    let res = document.getElementById('guessbox');
+    // just encase input 'type' is ignored
+    let ans = res.value.toString().replace(/\D/.r, '');
+    ans = ans.padStart(4, '0');
+    if (ans.length > 4 || !unique(ans)) {
+        res.value = '';
+        return;
+    }
     
     let display = document.getElementById('display');
     let diffs = compare(ans, state.goal);
@@ -80,41 +80,41 @@ function correct(diffs) {
 }
 
 function compare(ans, goal) {
-	ret = new Array();
-	
-	for (i in ans) {
-		if (ans[i] == goal[i]){
+    ret = new Array();
+    
+    for (i in ans) {
+        if (ans[i] == goal[i]){
             ret.push(new Diff(ans[i], Diff.states.CORRECT));
-		} else if (goal.includes(ans[i])) {
-			ret.push(new Diff(ans[i], Diff.states.BPOS));
-		} else {
-			ret.push(new Diff(ans[i], Diff.states.INCORRECT));
-		}
-	}
-	
-	return ret;
+        } else if (goal.includes(ans[i])) {
+            ret.push(new Diff(ans[i], Diff.states.BPOS));
+        } else {
+            ret.push(new Diff(ans[i], Diff.states.INCORRECT));
+        }
+    }
+    
+    return ret;
 }
 
 function unique(ans) {
-	for (d of ans) {
-		if(ans.indexOf(d) != ans.lastIndexOf(d)) {
-			return false;
-		}
-	}
-	return true;
+    for (d of ans) {
+        if(ans.indexOf(d) != ans.lastIndexOf(d)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 function genGoal() {
-	digits = new Array();
-	
-	while (digits.length != 4) {
-		let n = Math.floor(Math.random() * 10)
-		if (!digits.includes(n)) {
-			digits.push(n);
-		}
-	}
-	
-	return digits.join('');
+    digits = new Array();
+    
+    while (digits.length != 4) {
+        let n = Math.floor(Math.random() * 10)
+        if (!digits.includes(n)) {
+            digits.push(n);
+        }
+    }
+    
+    return digits.join('');
 }
 
 var state = undefined;
@@ -127,5 +127,5 @@ function rstState() {
     document.getElementById('display').innerHTML = '';
     status.value = `Remaining Attempts: ${state.attempts}`;
     document.getElementById('guessbox').value = '';
-    document.getElementById('answer').disabled = true;
+    document.getElementById('answer').disabled = false;
 }
