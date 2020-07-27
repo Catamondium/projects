@@ -127,4 +127,5 @@ function rstState() {
     document.getElementById('display').innerHTML = '';
     status.value = `Remaining Attempts: ${state.attempts}`;
     document.getElementById('guessbox').value = '';
+    document.getElementById('answer').disabled = true;
 }
