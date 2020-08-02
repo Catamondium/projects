@@ -9,9 +9,9 @@
 #define handle_error(call) onerr(call, __LINE__)
 static void onerr(int call, int line) {
     if (call == -1) {
-    perror("Error");
-    printf("line: %d\n", line);
-    exit(EXIT_FAILURE);
+        perror("Error");
+        printf("line: %d\n", line);
+        exit(EXIT_FAILURE);
     }
 }
 
