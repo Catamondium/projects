@@ -20,7 +20,7 @@ typedef struct Context {
 void help(char *prog, int status)
 {
     printf("Usage: %s HOST|DOMAIN[:PORT] [-p PORT] [-DhH]\n"
-	    "PORT defaults to 80 (HTTP check)\n"
+	   "PORT defaults to 80 (HTTP check)\n"
 	   "OPTIONS:\n"
 	   "\t-p : port select (overrides HOST:PORT)\n"
 	   "\t-D : test over dcp transport\n"
@@ -64,7 +64,7 @@ Context argparse(int argc, char **argv)
 	// Extract port from host:port notation
 	// don't override -p
 	if (!ctx.palloc && isdigit(dptr[1]))
-	ctx.port = dptr + 1;
+	    ctx.port = dptr + 1;
 	dptr[0] = '\0';
     }
 

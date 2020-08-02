@@ -9,8 +9,8 @@ node *newNode(int i)
     node *newElem = malloc(sizeof(node));
 
     if (newElem == NULL) {
-        fprintf(stderr, "Failed to allocate new element");
-        exit(-1);
+	fprintf(stderr, "Failed to allocate new element");
+	exit(-1);
     }
 
     newElem->data = i;
@@ -23,54 +23,54 @@ node *newNode(int i)
 void add(node ** n, int i)
 {
     if (*n == NULL)
-        *n = newNode(i);
+	*n = newNode(i);
 
     else if ((*n)->data < i) {
-        if ((*n)->lesser == NULL)
-            (*n)->lesser = newNode(i);
-        else
-            add(&((*n)->lesser), i);
+	if ((*n)->lesser == NULL)
+	    (*n)->lesser = newNode(i);
+	else
+	    add(&((*n)->lesser), i);
     } else {
-        if ((*n)->greater == NULL)
-            (*n)->greater = newNode(i);
-        else
-            add(&((*n)->greater), i);
+	if ((*n)->greater == NULL)
+	    (*n)->greater = newNode(i);
+	else
+	    add(&((*n)->greater), i);
     }
 }
 
 void rm(node * n)
 {
     if (n != NULL) {
-        if (n->lesser != NULL)
-            rm(n->lesser);
-        if (n->greater != NULL)
-            rm(n->greater);
+	if (n->lesser != NULL)
+	    rm(n->lesser);
+	if (n->greater != NULL)
+	    rm(n->greater);
 
-        free(n);
+	free(n);
     }
 }
 
 void visit(node * n, int *arr, int *index)
 {
     if (n->lesser != NULL)
-        visit(n->lesser, arr, index);
+	visit(n->lesser, arr, index);
 
     arr[*index] = n->data;
     (*index)++;
 
     if (n->greater != NULL)
-        visit(n->greater, arr, index);
+	visit(n->greater, arr, index);
 }
 
 void pvisit(node * n)
 {
     if (n->lesser != NULL)
-        pvisit(n->lesser);
+	pvisit(n->lesser);
 
     printf("%d\n", n->data);
 
     if (n->greater != NULL)
-        pvisit(n->greater);
+	pvisit(n->greater);
 }
 
 // TREE section
@@ -97,11 +97,11 @@ void sort(bTree tree, int *arr)
 {
     int i = 0;
     if (tree.root != NULL)
-        visit(tree.root, arr, &i);
+	visit(tree.root, arr, &i);
 }
 
 void tprint(bTree tree)
 {
     if (tree.root != NULL)
-        pvisit(tree.root);
+	pvisit(tree.root);
 }

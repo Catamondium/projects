@@ -6,13 +6,14 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#define handle_error(msg)   \
-    do                      \
-    {                       \
-        perror(msg);        \
-        putchar('\n');      \
-        exit(EXIT_FAILURE); \
-    } while (false)
+#define handle_error(call) onerr(call, __LINE__)
+static void onerr(int call, int line) {
+    if (call == -1) {
+    perror("Error");
+    printf("line: %d\n", line);
+    exit(EXIT_FAILURE);
+    }
+}
 
 typedef int (*builtin_fun)(char **);
 int csh_cd(char **args);

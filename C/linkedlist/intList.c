@@ -24,13 +24,13 @@ int stdIndex(node * head, signed int index)
 
     unsigned int len = length(head);
     if (index >= 0)
-        return index;
+	return index;
 
     else if (len == 0)
-        return 0;
+	return 0;
 
     else
-        return len - 1;         // append for all -ve indices
+	return len - 1;		// append for all -ve indices
 }
 
 node *travP1(node * head, signed int index)
@@ -41,13 +41,13 @@ node *travP1(node * head, signed int index)
     int i = 0;
     node *current = head;
     while (i < index && current != NULL) {
-        current = current->next;
-        ++i;
+	current = current->next;
+	++i;
     }
 
     if (current == NULL) {
-        fprintf(stderr, "IndexOutofBounds\n");
-        exit(-1);
+	fprintf(stderr, "IndexOutofBounds\n");
+	exit(-1);
     }
 
     return current;
@@ -61,13 +61,13 @@ node **travP2(node ** headAddr, signed int index)
     int i = 0;
     node **current = headAddr;
     while (i < index && *current != NULL) {
-        current = (&(*current)->next);
-        ++i;
+	current = (&(*current)->next);
+	++i;
     }
 
     if (i != index) {
-        fprintf(stderr, "IndexOutofBounds\n");
-        exit(-1);
+	fprintf(stderr, "IndexOutofBounds\n");
+	exit(-1);
     }
 
     return current;
@@ -77,8 +77,8 @@ node *makeNode(const int x)
 {
     node *newElem = malloc(sizeof(node));
     if (newElem == NULL) {
-        fprintf(stderr, "Unable to allocate new element\n");
-        exit(-1);
+	fprintf(stderr, "Unable to allocate new element\n");
+	exit(-1);
     }
 
     newElem->data = x;
@@ -93,8 +93,8 @@ unsigned int length(node * head)
     node *current = head;
     int ret = 0;
     while (current != NULL) {
-        ret++;
-        current = current->next;
+	ret++;
+	current = current->next;
     }
     return ret;
 }
@@ -115,13 +115,13 @@ int pop(node ** headAddr)
     int ret;
 
     if (*headAddr != EMPTYLIST) {
-        ret = returnSafe((*headAddr)->data);
-        node *tmp = (*headAddr)->next;
-        free(*headAddr);
-        *headAddr = tmp;
+	ret = returnSafe((*headAddr)->data);
+	node *tmp = (*headAddr)->next;
+	free(*headAddr);
+	*headAddr = tmp;
     } else {
-        fprintf(stderr, "Popped from empty list");
-        exit(-1);
+	fprintf(stderr, "Popped from empty list");
+	exit(-1);
     }
 
     return ret;
@@ -157,7 +157,7 @@ void set(node * head, const signed int index, const int x)
 int removeAt(node ** headAddr, const signed int index)
 {
     if (index == 0)
-        return pop(headAddr);
+	return pop(headAddr);
 
     int ret;
 
@@ -178,8 +178,8 @@ int reduce(node * head, R_agent f, const int init)
     int ret = init;
     node *current = head;
     while (current != NULL) {
-        ret = (*f) (ret, current->data);
-        current = current->next;
+	ret = (*f) (ret, current->data);
+	current = current->next;
     }
     return ret;
 }
@@ -188,8 +188,8 @@ void map(node * head, M_agent f)
 {
     node *current = head;
     while (current != NULL) {
-        current->data = (*f) (current->data);
-        current = current->next;
+	current->data = (*f) (current->data);
+	current = current->next;
     }
 }
 
@@ -198,10 +198,10 @@ int toArray(node * head, int arr[])
 {
     node *current = head;
     for (unsigned int i = 0; i < length(head); ++i) {
-        if (current == NULL)
-            return 1;
-        arr[i] = current->data;
-        current = current->next;
+	if (current == NULL)
+	    return 1;
+	arr[i] = current->data;
+	current = current->next;
     }
     return 0;
 }
@@ -212,16 +212,16 @@ node *fromArray(int arr[], const unsigned int arrsize)
 
     node **linker = NULL;
     for (unsigned int i = 0; i < arrsize; ++i) {
-        node *newElem = makeNode(arr[i]);
+	node *newElem = makeNode(arr[i]);
 
-        if (i == 0) {           // bind heads
-            head = newElem;
-            linker = &head;
-        } else {                // bind to tailend
+	if (i == 0) {		// bind heads
+	    head = newElem;
+	    linker = &head;
+	} else {		// bind to tailend
 
-            linker = &(*linker)->next;
-            *linker = newElem;
-        }
+	    linker = &(*linker)->next;
+	    *linker = newElem;
+	}
     }
     return head;
 }
@@ -235,20 +235,20 @@ node *copy(node * h_origin)
     node **linker = NULL;
     node *current = h_origin;
     while (current != NULL) {
-        node *newElem = makeNode(current->data);
+	node *newElem = makeNode(current->data);
 
-        if (init) {             // bind h_news
-            h_new = newElem;
-            linker = &h_new;
+	if (init) {		// bind h_news
+	    h_new = newElem;
+	    linker = &h_new;
 
-            init = 0;
-        } else {                // bind to tailend
+	    init = 0;
+	} else {		// bind to tailend
 
-            linker = &(*linker)->next;
-            *linker = newElem;
-        }
+	    linker = &(*linker)->next;
+	    *linker = newElem;
+	}
 
-        current = current->next;
+	current = current->next;
     }
     return h_new;
 }
@@ -258,9 +258,9 @@ int destroy(node ** headAddr)
     node *current = *headAddr;
     node *next;
     while (current != NULL) {
-        next = current->next;
-        free(current);
-        current = next;
+	next = current->next;
+	free(current);
+	current = next;
     }
     *headAddr = NULL;
     return 0;

@@ -9,7 +9,7 @@
 void printList(intList list)
 {
     for (unsigned int i = 0; i < length(list); ++i) {
-        printf("[%02d]:\t%d\n", i, get(list, i));
+	printf("[%02d]:\t%d\n", i, get(list, i));
     }
 }
 
@@ -38,7 +38,7 @@ int main()
     intList list = EMPTYLIST;
 
     for (int i = 0; i < 10; ++i) {
-        insert(&list, -1, i);
+	insert(&list, -1, i);
     }
 
     assert(length(list) == 10);
@@ -59,8 +59,8 @@ int main()
 
     section("\nSetting");
     for (unsigned int i = 0; i < length(list); ++i) {
-        set(list, i, i * 20);
-        printf("[%d]:\t%d\n", i, i * 20);
+	set(list, i, i * 20);
+	printf("[%d]:\t%d\n", i, i * 20);
     }
 
     printf("\nremove[5]:\t%d\n", removeAt(&list, 5));
@@ -70,13 +70,13 @@ int main()
 
     section("\nPopping");
     for (unsigned int i = 0; length(list) != 0; ++i) {
-        printf("[%02d]:\t%d\n", i, pop(&list));
+	printf("[%02d]:\t%d\n", i, pop(&list));
     }
 
     printf("\nemptylist:\t%d items\n", length(list));
 
     for (int i = 0; i < 10; ++i) {
-        insert(&list, i, i);
+	insert(&list, i, i);
     }
 
     printf("generated list, length 11, pushed 255\n");
@@ -86,7 +86,7 @@ int main()
     toArray(list, testarr);
     section("\nArray construction");
     for (unsigned int i = 0; i < length(list); ++i) {
-        printf("arr[%02d]:\t%d\n", i, testarr[i]);
+	printf("arr[%02d]:\t%d\n", i, testarr[i]);
     }
 
     intList fromArr = fromArray(testarr, length(list));
@@ -100,8 +100,8 @@ int main()
     section("\nMapping:\t(x > 5)");
     map(list, mapfunc);
     for (unsigned int i = 0; i < length(list); ++i) {
-        int val = get(list, i);
-        printf("[%02d]:\t%d\t%s\n", i, val, (val) ? "true" : "false");
+	int val = get(list, i);
+	printf("[%02d]:\t%d\t%s\n", i, val, (val) ? "true" : "false");
     }
 
     int red = reduce(list, reduceOR, false);
