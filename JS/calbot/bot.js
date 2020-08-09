@@ -2,7 +2,7 @@
 const fs = require('fs');
 const readline = require('readline');
 const { google } = require('googleapis');
-const { parse } = require('./parser.js');
+const parser = require('./parser.js');
 const { promisify } = require('util');
 const { argv } = require('process');
 
@@ -68,17 +68,14 @@ function getAccessToken(oAuth2Client, callback) {
 //**** END OF AUTH
 
 // print available calendars
-function logCals(api) {
-    api.calendarList.list({ showHidden: true, minAccessRole: "writer" },
-        (err, cals) => {
-            if (err) throw err;
-            sums = cals.data.items.map(x => x = x.summary);
-            console.log("Calendars:");
-            sums.forEach(item => {
-                console.log(`\t${item}`);
-            });
-        }
-    );
+async function logCals(api) {
+    console.log("Calendars:");
+    console.group();
+    cals = await promisify(api.calendarList.list)({ showHidden: true, minAccessRole: "writer" });
+    cals.data.items.forEach(itm => {
+        console.log(itm.summary);
+    })
+    console.groupEnd();
 }
 
 async function get_hols(api, name, data) {
@@ -107,19 +104,16 @@ function expand(api, params, events) {
     return ret;
 }
 
-async function getEvents(api, cal, data) {
+async function getEvents(api, cal, hol) {
     lst = promisify(api.events.list);
-    ids = data.map(async function (hol) {
-        params = {
-            calendarId: cal,
-            timeMin: hol.start,
-            timeMax: hol.end
-        };
-        events = await lst(params);
-        eventIDs = Array.from(new Set(events.data.items));
-        return expand(api, params, eventIDs);
-    });
-    return await Promise.all(ids);
+    params = {
+        calendarId: cal,
+        timeMin: hol.start,
+        timeMax: hol.end
+    };
+    events = await lst(params);
+    eventIDs = Array.from(new Set(events.data.items));
+    return expand(api, params, eventIDs);
 }
 
 function del(api, cal, events) {
@@ -139,13 +133,13 @@ async function main(auth) {
     let args = argv.slice(2);
     if (args.length < 2) {
         console.log(`Usage: ./bot.js calendar spec`);
-        logCals(calendar);
+        await logCals(calendar);
     } else {
-        let dat = parse(args[1]);
         let cal = args[0];
-        events = await get_hols(calendar, cal, dat);
-        console.log(events);
-        //del(calendar, cal, events);
+        for (let datum of parser.parse(args[1])) {
+            events = await get_hols(calendar, cal, datum);
+            //del(calendar, cal, events);
+        }
     }
 }
 
