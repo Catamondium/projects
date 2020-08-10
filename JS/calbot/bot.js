@@ -72,8 +72,8 @@ async function logCals(api) {
     console.log("Calendars:");
     console.group();
     cals = await promisify(api.calendarList.list)({ showHidden: true, minAccessRole: "writer" });
-    cals.data.items.forEach(itm => {
-        console.log(itm.summary);
+    cals.data.items.forEach(({summary}) => {
+        console.log(summary);
     })
     console.groupEnd();
 }
@@ -117,12 +117,12 @@ async function getEvents(api, cal, hol) {
 }
 
 function del(api, cal, events) {
-    events.forEach(inner.forEach( ev => {
+    events.forEach(ev => {
         api.events.delete({
             calendarId: cal,
             eventId: ev
         });
-    }));
+    });
 }
 
 
