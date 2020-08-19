@@ -2,7 +2,7 @@
 const fs = require('fs');
 const readline = require('readline');
 const { google } = require('googleapis');
-const parser = require('./parser.js');
+const parse_hols = require('./parser.js');
 const { promisify } = require('util');
 const { argv } = require('process');
 
@@ -136,7 +136,7 @@ async function main(auth) {
         await logCals(calendar);
     } else {
         let cal = args[0];
-        for (let datum of parser.parse(args[1])) {
+        for (let datum of parse_hols(args[1])) {
             events = await get_hols(calendar, cal, datum);
             //del(calendar, cal, events);
         }

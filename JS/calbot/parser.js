@@ -5,7 +5,7 @@ const readFileSync = require('fs').readFileSync;
  * @param {String} path table of start end pairs
  * @returns {Generator<{start: String, end: String}>} ISO compliant date ranges
  */
-exports.parse = function* (path) {
+module.exports = function* (path) {
     function gdate(ukdate) {
         // DD/MM/YYYY parser
         const [dd, mm, yy,] = ukdate.split('/').map(x => parseInt(x, 10));
