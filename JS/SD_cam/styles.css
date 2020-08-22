@@ -5,6 +5,12 @@ table {
     display: inline-block;
 }
 
+#viewport {
+    width: 84px;
+    height: calc(33px * 4); /* 4 * COLS */
+    overflow: auto;
+}
+
 #interaction {
     width: 66px;
     display: flex;

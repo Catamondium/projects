@@ -32,6 +32,9 @@ function newAnswer() {
     let row = display.insertRow(display.rows.length);
     genRow(row, diffs);
     
+    let viewport = document.getElementById('viewport');
+    viewport.scrollTop = viewport.scrollHeight;
+    
     let status = document.getElementById('status');
     if (!correct(diffs)) {
         state.attempts--;
