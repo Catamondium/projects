@@ -4,7 +4,7 @@ private class Layout implements UI {
   PVector shape = new PVector();
   PVector dims = new PVector();
   PVector origin = new PVector();
-  
+
   PVector porigin = new PVector();
 
   boolean showGrid = false;
@@ -18,7 +18,7 @@ private class Layout implements UI {
     this.margin = margin;
     this.dims = dims;
     this.subs = subs;
-    
+
     assert(this.shape.x * this.shape.y == subs.length);
   }
 
@@ -45,7 +45,7 @@ private class Layout implements UI {
       ((x >= ox + origin.y + w - margin) || (y >= oy+ origin.y + h - margin)) // too far lower-right
       );
   }
-  
+
   public void onPress(float x, float y) {
     if (!visible) return;
     // Cell dims
@@ -55,15 +55,18 @@ private class Layout implements UI {
       for (int j = 0; j < shape.y; j++) {
         int idx = floor(i + shape.x * j); // column-major index
         if (idx < subs.length && isPressed(x, y, i * cw, j * ch, cw, ch)) {
-          subs[idx].onPress(x - i * cw - margin - origin.x, y - j * ch - margin - origin.x, cw - 2 * margin, ch - 2 * margin); // Rebase clicks relative to element
+          // Translate clicks relative to UIs rendering origin
+          float nx = x - i * cw - margin - origin.x;
+          float ny = y - j * ch - margin - origin.x;
+          subs[idx].onPress(nx, ny, cw - 2 * margin, ch - 2 * margin);
           break;
         }
       }
     }
   }
-  
+
   public void onPress(float x, float y, float w, float h) {
-    origin = new PVector();
+    origin = new PVector(0, 0);
     dims = new PVector(w, h);
     this.onPress(x, y);
   }
@@ -87,10 +90,10 @@ private class Layout implements UI {
 
     canvas.popStyle();
   }
-  
-  public void render(PGraphics pcanvas, float x, float y, float w, float h) {
+
+  public void render(PGraphics pcanvas, float w, float h) {
     // Use geometry hints
-    porigin = new PVector(y, x);
+    porigin = new PVector(0, 0);
     dims = new PVector(w, h);
     pcanvas.image(render(), porigin.x, porigin.y);
   }
@@ -108,8 +111,13 @@ private class Layout implements UI {
           int idx = floor(i + shape.x * j); // column-major index
           if (idx < subs.length) {
             canvas.pushStyle();
-            // Rendering context is relative, origin not included
-            subs[idx].render(canvas, i * cw + 2 * margin, j * ch + 2 * margin, cw - 2 * margin, ch - 2 * margin);
+            canvas.pushMatrix();
+            canvas.translate(i * cw + 2 * margin, j * ch + 2 * margin);
+
+            // render w/o provided origin, UIs render with O=0,0
+            subs[idx].render(canvas, cw - 2 * margin, ch - 2 * margin);
+
+            canvas.popMatrix();
             canvas.popStyle();
 
             if (showGrid) {
@@ -158,16 +166,16 @@ private class LayoutBuilder {
     }
     return this;
   }
-  
+
   public LayoutBuilder addButton(BClick cb) {
     return addUI(new Button(cb));
   }
-  
-    public LayoutBuilder addSlider(SClick cb) {
+
+  public LayoutBuilder addSlider(SClick cb) {
     return addUI(new Slider(cb));
   }
-  
-    public LayoutBuilder addToggle(TClick cb) {
+
+  public LayoutBuilder addToggle(TClick cb) {
     return addUI(new Toggle(cb));
   }
 

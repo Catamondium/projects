@@ -10,9 +10,9 @@ public class Button implements UI {
     listener.onPress();
   }
 
-  void render(PGraphics canvas, float x, float y, float w, float h) {
+  void render(PGraphics canvas, float w, float h) {
     canvas.fill(255);
-    canvas.rect(x, y, w, h);
+    canvas.rect(0, 0, w, h);
   }
 }
 
@@ -36,10 +36,10 @@ public class Toggle implements UI, Supplier<Boolean> {
     return state;
   }
 
-  void render(PGraphics canvas, float x, float y, float w, float h) {
+  void render(PGraphics canvas, float w, float h) {
     color c = state ? color(0, 255, 0) : color(255, 0, 0);
     canvas.fill(c);
-    canvas.rect(x, y, w, h);
+    canvas.rect(0, 0, w, h);
   }
 }
 
@@ -64,12 +64,12 @@ public class Slider implements UI, Supplier<Float> {
     value = nval;
   }
 
-  void render(PGraphics canvas, float x, float y, float w, float h) {
+  void render(PGraphics canvas, float w, float h) {
     float sw = value * w;
     canvas.noFill();
     canvas.stroke(255);
-    canvas.rect(x, y, w, h);
+    canvas.rect(0, 0, w, h);
     canvas.fill(0, 255, 0);
-    canvas.rect(x, y, sw, h);
+    canvas.rect(0, 0, sw, h);
   }
 }
