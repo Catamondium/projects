@@ -2,7 +2,7 @@ extern crate getopts;
 use getopts::Options;
 
 use std::collections::hash_map::DefaultHasher;
-use std::collections::{BTreeSet, HashMap};
+use std::collections::HashMap;
 use std::fs::{DirEntry, File};
 use std::hash::Hasher;
 use std::io::Read;
@@ -36,21 +36,19 @@ where
 }
 
 fn hashfile(path: PathBuf) -> std::io::Result<u64> {
-    let mut bytes = Vec::new();
+    const CHUNK_SIZE: usize = 1024;
+
     let mut hasher = DefaultHasher::new();
     let mut f = File::open(&path)?;
-    f.read(&mut bytes)?; // Not good for large files, most efficient option
-                         /*
-                         Combinations tried:
-                             HashSet DefaultHasher
-                             HashSet MD5
-                             BtreeSet DefaultHasher
-                             Vec DefaultHasher
 
-                         No longer sure if we have the issue, or the Python version
-                         They both used md5, only big thing is that we're consuming entire files at once,
-                         don't trust this version
-                         */
+    let mut bytes = [0; CHUNK_SIZE];
+    let mut eof = f.read(&mut bytes)? == 0;
+
+    while !eof {
+        bytes = [0; CHUNK_SIZE];
+        eof = f.read(&mut bytes)? == 0;
+    }
+
     hasher.write(&bytes);
     Ok(hasher.finish())
 }
