@@ -16,6 +16,8 @@ Python/**/*lib64*
 Python/**/*lib*
 Python/**/*bin*
 Python/**/*pyvenv*
+# clj kondo?
+**/clj-kondo/*
 
 # Linker output
 *.ilk
