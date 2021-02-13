@@ -1,4 +1,4 @@
-# internal repr
+# internal str
 from enum import Enum, auto
 from functools import reduce
 
@@ -7,22 +7,29 @@ from functools import reduce
 
 class Logic(Enum):
     IN = auto()
-    OUT = auto()
+
     OR = auto()
     AND = auto()
     NOT = auto()
 
+    OUT = auto()
+
 
 class Node:
+    """
+    circ graph Node class
+    deriving components form RAW primatives for Circuit
+    """
     # Input inputs
     inputs = None
-    def __init__(self, sym: Logic):
-        self.children = [] # inputs
+    def __init__(self, logic: Logic):
+        self.logic = logic
+        self.children = list() # inputs
         self._id = None # nodeID
         self.value = None # cached fn
     
     def input(self, *ins):
-        self.children.append(ins)
+        self.children += ins
         return self
     
     def eval(self):
@@ -41,6 +48,9 @@ class Node:
     
     def __call__(self):
         return self.eval()
+    
+    def __repr__(self):
+        return f"{self.logic.name}:{self._id}"
 
 class Or(Node):
     def __init__(self):
@@ -52,8 +62,8 @@ class Or(Node):
         self.value = reduce(fn, self.children, False)
         return self.value
     
-    def __repr__(self):
-        return "OR:{}{}".format(self._id, "\n, ".join(map(repr, self.children)))
+    def debug(self):
+        return "OR:{}({})".format(self._id, ", ".join(map(lambda x: x.debug(), self.children)))
 
 class And(Node):
     def __init__(self):
@@ -65,8 +75,8 @@ class And(Node):
         self.value = reduce(fn, self.children, True)
         return self.value
     
-    def __repr__(self):
-        return "AND:{}{}".format(self._id, "\n, ".join(map(repr, self.children)))
+    def debug(self):
+        return "AND:{}({})".format(self._id, ", ".join(map(lambda x: x.debug(), self.children)))
 
 class Not(Node):
     inputs = 1 # can only validly take 1 INode
@@ -76,24 +86,40 @@ class Not(Node):
     def _eval(self):
         return not self.children[0].value
     
-    def __repr__(self):
-        return f"NOT:{self._id}{repr(self.children[0])}"[:-2]
+    def  debug(self):
+        return f"NOT:{self._id}({self.children[0].debug()})"[:-2]
 
 class In(Node):
     inputs = 0 # takes no INodes
     def __init__(self):
+        self.name = None
         super().__init__(Logic.IN)
-    
+
     def setVal(self, nval):
         self.value = nval
     
+    def setName(self, name):
+        self.name = name
+    
+    def debug(self):
+        return repr(self)
+
     def __repr__(self):
-        return f"IN:{self._id}"
+       n = f"'{self.name}'" if self.name is not None else ''
+       return f"I{n}:{self._id}"
 
 class Out(Node):
+    inputs = 1
     def __init__(self):
+        self.name = None
         super().__init__(Logic.OUT)
     
+    def setName(self, name):
+        self.name = name
+    
+    def debug(self):
+        return f"{self} = {self.children[0].debug()}"
+    
     def __repr__(self):
-        return f"OUT:{self._id}"
-    # impl provided by Node
+        n = f"'{self.name}'" if self.name is not None else ''
+        return f"O{n}:{self._id}"

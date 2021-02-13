@@ -1,4 +1,4 @@
-#!./bin/python3
+#!/bin/envrun
 import z3
 import circ as ci
 
@@ -14,6 +14,7 @@ expr = z3.And( # 'z'
 print("z3\n-------")
 print(expr)
 
+print("internal\n-------")
 ca, cb = ci.In(), ci.In()
 cz = ci.Out()
 symbols = [
@@ -28,11 +29,19 @@ symbols = [
 
 symbols[3].input(symbols[4])
 symbols[5].input(symbols[2], symbols[3])
-symbols[6].input(symbols[5])
+cz.input(symbols[5])
 
+#ca.setName('a')
+#cb.setName('b')
+#cz.setName('z')
+
+"""
 # IDs reflect notes
 for i,sym in enumerate(symbols):
     sym._id = i
-print("internal\n-------")
 for sym in symbols:
     print(repr(sym))
+"""
+
+circuit = ci.Circuit.fromRAW(*symbols)
+print(circuit.debug())

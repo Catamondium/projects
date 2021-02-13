@@ -1,7 +1,10 @@
+z = And(Or(a, b), Not(And(a, b)))
+-------
 And * 2
 + Or + Not
 2 * I_bit
 + O_bit
+-------
 6 symbols/nodes
 
 # serialise as counts?
