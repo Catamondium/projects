@@ -4,25 +4,25 @@ import circ as ci
 
 # XOR test case
 # (A + B)* ~(AB)
-a = z3.Bool('a')
-b = z3.Bool('b')
+x = z3.Bool('x')
+y = z3.Bool('y')
 
 expr = z3.And( # 'z'
-    z3.Or(a, b),
-    z3.Not(z3.And(a, b))
+    z3.Or(x, y),
+    z3.Not(z3.And(x, y))
 )
 print("z3\n-------")
 print(expr)
 
 print("internal\n-------")
-ca, cb = ci.In(), ci.In()
+cx, cy = ci.In(), ci.In()
 cz = ci.Out()
 symbols = [
-    ca, cb,
+    cx, cy,
 
-    ci.Or().input(ca, cb),
+    ci.Or().input(cx, cy),
     ci.Not(),
-    ci.And().input(ca, cb), ci.And(),
+    ci.And().input(cx, cy), ci.And(),
 
     cz
 ]
@@ -43,11 +43,12 @@ for sym in symbols:
     print(repr(sym))
 """
 
-circuit = ci.Circuit.fromRAW(*symbols)
-print(circuit.debug())
+xor = ci.Circuit.fromRAW(*symbols)
+print(xor)
+print(xor.debug())
 
 for x in False,True:
     for y in False,True:
-        xor = circuit.eval(x= x, y= y)['z']
-        print(f"{x},{y} = {xor}")
-        assert(xor == (x ^ y))
+        out = xor.eval(x= x, y= y)
+        print(f"{x},\t{y} =\t{out}")
+        assert(out['z'] == (x ^ y))

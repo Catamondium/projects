@@ -5,7 +5,8 @@ class Circuit:
     A managed circuit backed by Node graph
     """
     def __init__(self):
-        self.io = dict()
+        self.inputs = dict()
+        self.outputs = dict()
         self.data: list[Node] = [] # all symbols
     
     @staticmethod
@@ -30,7 +31,11 @@ class Circuit:
             if s.logic in (Logic.IN, Logic.OUT):
                 nname = s.name or chr(char)
                 s.name = nname
-                self.io[nname] = s
+
+                if s.logic == Logic.IN:
+                    self.inputs[nname] = s
+                else:
+                    self.outputs[nname] = s
                 char += 1
                 if char > ord('z'):
                     char = ord('a')
@@ -43,19 +48,17 @@ class Circuit:
         Evaluate contained circuit
         """
         for k,v in kwargs.items():
-            if k in self.io:
-                self.io[k].value = v # OUTs reset themselves anyway
+            if k in self.inputs:
+                self.inputs[k].value = v # OUTs reset themselves anyway
         out = dict()
-        for o in self.data:
+        for o in self.outputs.values():
             if o.logic == Logic.OUT:
                 o.eval()
                 out[o.name] = o.value
         return out
     
     def __repr__(self):
-        ins = len(list(filter(lambda x: x.logic == Logic.IN, self.data)))
-        outs = len(list(filter(lambda x: x.logic == Logic.OUT, self.data)))
-        return f"Circuit({len(self.data)}, I/O={ins}/{outs})"
+        return f"Circuit({len(self.data)}, I/O = {len(self.inputs)}/{len(self.outputs)})"
 
     def debug(self) -> str:
         cat = []

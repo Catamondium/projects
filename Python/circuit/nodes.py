@@ -67,7 +67,7 @@ class Or(Node):
         return self.value
     
     def debug(self):
-        return "OR:{}({})".format(self._id, ", ".join(map(lambda x: x.debug(), self.children)))
+        return "OR({})".format(", ".join(map(lambda x: x.debug(), self.children)))
 
 class And(Node):
     def __init__(self):
@@ -80,7 +80,7 @@ class And(Node):
         return self.value
     
     def debug(self):
-        return "AND:{}({})".format(self._id, ", ".join(map(lambda x: x.debug(), self.children)))
+        return "AND({})".format(", ".join(map(lambda x: x.debug(), self.children)))
 
 class Not(Node):
     inputs = 1 # can only validly take 1 INode
@@ -91,7 +91,7 @@ class Not(Node):
         return not self.children[0].eval()
     
     def  debug(self):
-        return f"NOT:{self._id}({self.children[0].debug()})"[:-2]
+        return f"NOT({self.children[0].debug()})"[:-2]
 
 class In(Node):
     inputs = 0 # takes no INodes
@@ -106,7 +106,7 @@ class In(Node):
         self.name = name
     
     def debug(self):
-        return repr(self)
+        return str(self.name)
 
     def _eval(self):
         return self.value
@@ -125,7 +125,7 @@ class Out(Node):
         self.name = name
     
     def debug(self):
-        return f"{self} = {self.children[0].debug()}"
+        return f"{self.name} = {self.children[0].debug()}"
     
     def _eval(self): # Depth-first order
         self.value = self.children[0].eval()

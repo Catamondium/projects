@@ -1,6 +1,6 @@
-[] Wrap graph IO
+[+] Wrap graph IO
     [+] Evaluation model
-    [] circuit logic testing instrumentation?
+[] circuit logic testing instrumentation?
 [] Serialise uncompressed
     [] Basic
         [] Compressed
