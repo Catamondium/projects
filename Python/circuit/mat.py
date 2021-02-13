@@ -45,3 +45,9 @@ for sym in symbols:
 
 circuit = ci.Circuit.fromRAW(*symbols)
 print(circuit.debug())
+
+for x in False,True:
+    for y in False,True:
+        xor = circuit.eval(x= x, y= y)['z']
+        print(f"{x},{y} = {xor}")
+        assert(xor == (x ^ y))

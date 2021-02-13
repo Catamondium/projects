@@ -28,9 +28,28 @@ class Circuit:
         char = ord('x')
         for s in self.data:
             if s.logic in (Logic.IN, Logic.OUT):
-                self.io[s.name or chr(char)] = s
+                nname = s.name or chr(char)
+                s.name = nname
+                self.io[nname] = s
                 char += 1
                 char %= ord('z')+1
+    
+    def __call__(self, **kwargs):
+        return self.eval(**kwargs)
+
+    def eval(self, **kwargs):
+        """
+        Evaluate contained circuit
+        """
+        for k,v in kwargs.items():
+            if k in self.io:
+                self.io[k].value = v # OUTs reset themselves anyway
+        out = dict()
+        for o in self.data:
+            if o.logic == Logic.OUT:
+                o.eval()
+                out[o.name] = o.value
+        return out
     
     def __repr__(self):
         ins = len(list(filter(lambda x: x.logic == Logic.IN, self.data)))
@@ -40,6 +59,6 @@ class Circuit:
     def debug(self) -> str:
         cat = []
         for s in self.data:
-            if s.logic == Logic.OUT:
+            if s.logic == Logic.OUT: # image via depth-first search
                 cat.append(s.debug())
         return "Circuit({})".format("\n\t".join(cat))

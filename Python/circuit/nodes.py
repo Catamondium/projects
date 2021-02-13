@@ -6,6 +6,10 @@ from functools import reduce
 # Evaluation model assumes DFS ordering
 
 class Logic(Enum):
+    """
+    Logic typing of graph nodes
+    Also determines serialisation order of new circuits
+    """
     IN = auto()
 
     OR = auto()
@@ -37,7 +41,7 @@ class Node:
         Evaluate node fn
         IN/OUTs forward self.value
         """
-        assert(inputs is None or len(self.children) == inputs)
+        assert(self.inputs is None or len(self.children) == self.inputs)
         return self._eval()
     
     def _eval(self):
@@ -58,7 +62,7 @@ class Or(Node):
     
     def _eval(self):
         def fn(a, b):
-            return a.value or b.value
+            return a or b.eval()
         self.value = reduce(fn, self.children, False)
         return self.value
     
@@ -71,7 +75,7 @@ class And(Node):
     
     def _eval(self):
         def fn(a, b):
-            return a.value and b.value
+            return a and b.eval()
         self.value = reduce(fn, self.children, True)
         return self.value
     
@@ -84,7 +88,7 @@ class Not(Node):
         super().__init__(Logic.NOT)
     
     def _eval(self):
-        return not self.children[0].value
+        return not self.children[0].eval()
     
     def  debug(self):
         return f"NOT:{self._id}({self.children[0].debug()})"[:-2]
@@ -104,6 +108,9 @@ class In(Node):
     def debug(self):
         return repr(self)
 
+    def _eval(self):
+        return self.value
+
     def __repr__(self):
        n = f"'{self.name}'" if self.name is not None else ''
        return f"I{n}:{self._id}"
@@ -119,6 +126,10 @@ class Out(Node):
     
     def debug(self):
         return f"{self} = {self.children[0].debug()}"
+    
+    def _eval(self): # Depth-first order
+        self.value = self.children[0].eval()
+        return self.value
     
     def __repr__(self):
         n = f"'{self.name}'" if self.name is not None else ''
