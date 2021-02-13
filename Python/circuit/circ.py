@@ -32,7 +32,8 @@ class Circuit:
                 s.name = nname
                 self.io[nname] = s
                 char += 1
-                char %= ord('z')+1
+                if char > ord('z'):
+                    char = ord('a')
     
     def __call__(self, **kwargs):
         return self.eval(**kwargs)
