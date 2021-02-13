@@ -1,0 +1,9 @@
+[] Wrap graph IO
+[] Serialise uncompressed
+    [] Basic
+        [] Compressed
+            https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_column_(CSC_or_CCS)
+    [] Deserialisation
+        [] Compressed
+[] Graphical builder
+    [] error marking
