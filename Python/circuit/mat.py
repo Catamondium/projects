@@ -17,13 +17,12 @@ print(expr)
 
 print("internal-------")
 ix, iy = ci.In(), ci.In()
-ox = ci.Out()
+#ox = ci.Out()
 
 xor = ci.Circuit.fromRAW(
-    ox.input(
         ci.And(
             ci.Or(ix, iy),
-            ci.Not(ci.And(ix, iy)))))
+            ci.Not(ci.And(ix, iy))))
 print(xor)
 print(xor.debug())
 print(xor.data)
