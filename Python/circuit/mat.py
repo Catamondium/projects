@@ -2,6 +2,7 @@
 import z3
 import circ as ci
 
+print("z3------")
 # XOR test case
 # (A + B)* ~(AB)
 x = z3.Bool('x')
@@ -11,10 +12,10 @@ expr = z3.And( # 'z'
     z3.Or(x, y),
     z3.Not(z3.And(x, y))
 )
-print("z3\n-------")
+
 print(expr)
 
-print("internal\n-------")
+print("internal-------")
 cx, cy = ci.In(), ci.In()
 cz = ci.Out()
 symbols = [
@@ -50,5 +51,5 @@ print(xor.debug())
 for x in False,True:
     for y in False,True:
         out = xor.eval(x= x, y= y)
-        print(f"{x},\t{y} =\t{out}")
+        print(f"{x},\t{y}\t= {out}")
         assert(out['z'] == (x ^ y))

@@ -1,5 +1,6 @@
 [+] Wrap graph IO
     [+] Evaluation model
+
 [] circuit logic testing instrumentation?
 [] Serialise uncompressed
     [] Basic
@@ -7,5 +8,15 @@
             https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_column_(CSC_or_CCS)
     [] Deserialisation
         [] Compressed
+
+[] Fluent interface, like z3
+    [] refit __call__
+    [] discovery mechanism
+        [] mutual registration, or we'd lose unknown outputs
+            [] .accept()
+            [] create outputs for floating devices?
+        [] roleCall() DFS
+    [] deduplication of device IO
+
 [] Graphical builder
     [] error marking
