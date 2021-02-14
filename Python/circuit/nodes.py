@@ -95,7 +95,7 @@ class Or(Logic):
         return self.value
 
     def debug(self):
-        return "OR({})".format(", ".join(map(lambda x: x.debug(), self.inputs)))
+        return "{}({})".format(type(self).__name__, ", ".join(map(lambda x: x.debug(), self.inputs)))
 
 class And(Logic):
     def __init__(self, *inputs):
@@ -108,7 +108,7 @@ class And(Logic):
         return self.value
 
     def debug(self):
-        return "AND({})".format(", ".join(map(lambda x: x.debug(), self.inputs)))
+        return "{}({})".format(type(self).__name__, ", ".join(map(lambda x: x.debug(), self.inputs)))
 
 class Not(Logic):
     in_limit = 1 # can only validly take 1 INode
@@ -119,7 +119,7 @@ class Not(Logic):
         return not list(self.inputs)[0].eval()
     
     def  debug(self):
-        return f"NOT({list(self.inputs)[0].debug()})"[:-2]
+        return f"{type(self).__name__}({list(self.inputs)[0].debug()})"[:-2]
 
 class IO(Node):
     def __init__(self, name=None):
