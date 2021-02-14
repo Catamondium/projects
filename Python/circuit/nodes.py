@@ -121,7 +121,7 @@ class Not(Logic):
     def  debug(self):
         return f"NOT({list(self.inputs)[0].debug()})"[:-2]
 
-class IO(Logic):
+class IO(Node):
     def __init__(self, name=None):
         self.name = name
         super().__init__()
