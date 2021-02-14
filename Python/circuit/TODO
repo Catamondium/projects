@@ -10,13 +10,13 @@
         [] Compressed
 
 [] Fluent interface, like z3
-    [] refit __call__
+    [+] refit __call__
     [] discovery mechanism
-        [] mutual registration, or we'd lose unknown outputs
-            [] .accept()
+        [+] mutual registration, or we'd lose unknown outputs
+            [+] .accept()
             [] create outputs for floating devices?
-        [] roleCall() DFS
-    [] deduplication of device IO
+        [+] roleCall() DFS
+    [+] deduplication of device IO
 
 [] Graphical builder
     [] error marking

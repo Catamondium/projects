@@ -1,4 +1,5 @@
 from nodes import * # forward
+from random import choice
 
 class Circuit:
     """
@@ -13,9 +14,20 @@ class Circuit:
     def fromRAW(*syms: Node):
         c = Circuit()
         c.data = syms
-        c._genIds()
-        c._map()
+        c.reflect()
         return c
+    
+    def reflect(self):
+        """
+        Canonicalise internal graph
+        """
+        self.rolecall()
+        self._genIds()
+        self._map()
+
+    def rolecall(self):
+        n = choice(self.data)
+        self.data = n.rolecall()
     
     def _genIds(self):
         """
@@ -26,19 +38,27 @@ class Circuit:
             s._id = i
     
     def _map(self):
-        char = ord('x')
+        char_i = ord('x')
+        char_o = ord('x')
         for s in self.data:
             if s.logic in (Logic.IN, Logic.OUT):
-                nname = s.name or chr(char)
-                s.name = nname
+                iname = s.name or chr(char_i)
+                oname = s.name or chr(char_o)
 
                 if s.logic == Logic.IN:
-                    self.inputs[nname] = s
+                    s.setName('i' + iname)
+                    self.inputs['i' + iname] = s
+                    char_i += 1
+
                 else:
-                    self.outputs[nname] = s
-                char += 1
-                if char > ord('z'):
-                    char = ord('a')
+                    s.setName('o' + oname)
+                    self.outputs['o' + oname] = s
+                    char_o += 1
+
+                if char_i > ord('z'):
+                    char_i = ord('a')
+                if char_o > ord('z'):
+                    char_o = ord('a')
     
     def __call__(self, **kwargs):
         return self.eval(**kwargs)

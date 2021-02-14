@@ -16,40 +16,23 @@ expr = z3.And( # 'z'
 print(expr)
 
 print("internal-------")
-cx, cy = ci.In(), ci.In()
-cz = ci.Out()
-symbols = [
-    cx, cy,
+ix, iy = ci.In(), ci.In()
+ox = ci.Out()
 
-    ci.Or().input(cx, cy),
-    ci.Not(),
-    ci.And().input(cx, cy), ci.And(),
-
-    cz
-]
-
-symbols[3].input(symbols[4])
-symbols[5].input(symbols[2], symbols[3])
-cz.input(symbols[5])
-
-#ca.setName('a')
-#cb.setName('b')
-#cz.setName('z')
-
-"""
-# IDs reflect notes
-for i,sym in enumerate(symbols):
-    sym._id = i
-for sym in symbols:
-    print(repr(sym))
-"""
-
-xor = ci.Circuit.fromRAW(*symbols)
+xor = ci.Circuit.fromRAW(
+    ox.input(
+        ci.And(
+            ci.Or(ix, iy),
+            ci.Not(ci.And(ix, iy)))))
 print(xor)
 print(xor.debug())
+print(xor.data)
 
-for x in False,True:
-    for y in False,True:
-        out = xor.eval(x= x, y= y)
-        print(f"{x},\t{y}\t= {out}")
-        assert(out['z'] == (x ^ y))
+try:
+    for x in False,True:
+        for y in False,True:
+            out = xor.eval(ix= x, iy= y)
+            print(f"{x},\t{y}\t= {out}")
+            assert(out['ox'] == (x ^ y))
+except ci.InputConflict as e:
+    print(e)
