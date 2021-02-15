@@ -2,19 +2,26 @@
     [+] Evaluation model
 
 [] circuit logic testing instrumentation?
-[] Serialise uncompressed
+[] Serialise
+    [] Impl neutral interface?
+        [] .symbols
+        [] .adjacency
+            [] list -> matrix
     [] Basic
         [] Compressed
             https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_column_(CSC_or_CCS)
     [] Deserialisation
+        [] Impl neutral interfacing
+            [] symbol manifest
+            [] adjacency negotiation?
         [] Compressed
 
-[] Fluent interface, like z3
+[+] Fluent interface, like z3
     [+] refit __call__
-    [] discovery mechanism
+    [+] discovery mechanism
         [+] mutual registration, or we'd lose unknown outputs
             [+] .accept()
-            [] create outputs for floating devices?
+            [+] create outputs for floating devices?
         [+] roleCall() DFS
     [+] deduplication of device IO
 

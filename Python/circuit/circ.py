@@ -15,6 +15,17 @@ class Circuit:
         c.data = syms
         c.reflect()
         return c
+    
+    @staticmethod
+    def fromFile(name): #TODO
+        pass
+    def toFile(self, f): #TODO
+        pass
+    @staticmethod
+    def fromDescriptor(desc): #TODO
+        pass
+    def toDescriptor(self): #TODO
+        pass
 
     def reflect(self):
         """
