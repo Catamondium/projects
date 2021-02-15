@@ -1,5 +1,4 @@
 from nodes import * # forward
-from random import choice
 
 class Circuit:
     """
@@ -27,6 +26,7 @@ class Circuit:
         self._map()
 
     def rolecall(self):
+        from random import choice
         n = choice(self.data)
         self.data = n.rolecall()
 

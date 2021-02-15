@@ -1,7 +1,3 @@
-# internal str
-from enum import Enum, auto
-from functools import reduce
-
 ##### WARNING
 # Evaluation model assumes DFS ordering
 
@@ -82,33 +78,30 @@ class Node:
         return f"{type(self).__name__}:{self._id}"
 
 class Logic(Node): # marker type
-    pass
+    def debug(self):
+        return "{}({})".format(type(self).__name__, ", ".join(map(lambda x: x.debug(), self.inputs)))
 
 class Or(Logic):
     def __init__(self, *inputs):
         super().__init__(*inputs)
 
     def _eval(self):
+        from functools import reduce
         def fn(a, b):
             return a or b.eval()
         self.value = reduce(fn, self.inputs, False)
         return self.value
-
-    def debug(self):
-        return "{}({})".format(type(self).__name__, ", ".join(map(lambda x: x.debug(), self.inputs)))
 
 class And(Logic):
     def __init__(self, *inputs):
         super().__init__(*inputs)
 
     def _eval(self):
+        from functools import reduce
         def fn(a, b):
             return a and b.eval()
         self.value = reduce(fn, self.inputs, True)
         return self.value
-
-    def debug(self):
-        return "{}({})".format(type(self).__name__, ", ".join(map(lambda x: x.debug(), self.inputs)))
 
 class Not(Logic):
     in_limit = 1 # can only validly take 1 INode
