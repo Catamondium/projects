@@ -12,6 +12,7 @@ The client application would've been somewhat simple if I had work with terminal
 
 The server itself buffers pending data to broadcast to clients. The protocol is simplistic over TCP, clients introduce themselves with a NICK call, providing their name. Control over exchanges continues to be with the client, writing to the server to send/recv data. The protocol is entirely human readable, with components both sides of the exchange depend on specified in common.rs with redundant constants defined for each perspective in transactions.
 
+
 ## Notably large projects
 The largest projects inhabit /Java/Processing, most notably Tetris and Snake; many of these projects are common artistic simulations or clones of relatively simplistic games. Some of these sims use significant data structures to optimise complexity, hence, two versions of the Autoagents sim exist; One uses a basic linear search when evaluating current state.
 
