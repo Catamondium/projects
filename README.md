@@ -29,7 +29,7 @@ Any python programs not headed with the shebang `#/bin/envrun` will run as-is wi
 
 If a program does have the envrun header, the envrun program is included in the general python directory an can run as is, symlinking it in /usr/bin/envrun with executable permissions will be enough to run venv programs.
 
-As a matter of disclosure, the repo is solely operated by myself with public domain licensing, the envrun prog modifies the prog running environment as if `. ./bin/activate` were run for the shebang'd prog, beyond that it chooses the interpreting Python binary by a flag in the shebang; defaulting to Python3 as my system-wide default.
+As a matter of disclosure, the repo is solely operated by myself with public domain licensing, the envrun program modifies the program running environment as if `. ./bin/activate` were run for the shebang'd prog, beyond that it chooses the interpreting Python binary by a flag in the shebang; defaulting to Python3 as my system-wide default.
 
 ## Calling into OAuth apis
 Naturally, for security reasons, development and client tokens are excluded from repos requiring authorisation for rate management and user security. The common format in my programs is to decouple these tokens to an on-system plaintext file pulled in by the relevant program.
