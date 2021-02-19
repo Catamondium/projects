@@ -31,7 +31,7 @@ If a program does have the envrun header, the envrun program is included in the 
 
 As a matter of disclosure, the repo is solely operated by myself with public domain licensing, the envrun program modifies the program running environment as if `. ./bin/activate` were run for the shebang'd prog, beyond that it chooses the interpreting Python binary by a flag in the shebang; defaulting to Python3 as my system-wide default.
 
-## Calling into OAuth apis
+## Calling into OAuth APIs
 Naturally, for security reasons, development and client tokens are excluded from repos requiring authorisation for rate management and user security. The common format in my programs is to decouple these tokens to an on-system plaintext file pulled in by the relevant program.
 
 Development token filenames can be found with a simple string search in the program's main file, OAuth is always one of the functions at the very top of my main files, so the filename should be very easy to determine.
