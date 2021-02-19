@@ -1,4 +1,4 @@
-#!/usr/bin/envrun
+#!/bin/envrun
 import sys, pygame
 from player import Vec, Snake
 pygame.init()
