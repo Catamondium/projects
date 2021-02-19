@@ -4,8 +4,7 @@ This repo is intended for collected small-medium projects across various languag
 Addtime files are simple utility programs I've done for learning syntax, all they do is convert hh:mm +mins to an end time, initially this was used to adapt cinema viewings in that format for putting into my calendar without the fuss of mental arithmetic.
 
 # Notable projects
-## Projects on notable practices
-### Multithreading / Async
+## Multithreading / Async
 For the most part, I've practiced multithreading in Rust, since it provides static analysis and readable feedback on sharing semantics throughout development. Everything under /Rust/threading uses threads in some form. The most significant of these is chat, a client-server chatting application.
 
 The client application would've been somewhat simple if I had work with terminal control from the beginning, I didn't. As such, the client spawns a new terminal window running the client in 'slave' mode to act as a display, where the program initially ran is where the user actually interacts with the server.
