@@ -4,8 +4,16 @@ This repo is intended for collected small-medium projects across various languag
 Addtime files are simple utility programs I've done for learning syntax, all they do is convert hh:mm +mins to an end time, initially this was used to adapt cinema viewings in that format for putting into my calendar without the fuss of mental arithmetic.
 
 # Notable projects
+## Projects on notable practices
+### Multithreading / Async
+For the most part, I've practiced multithreading in Rust, since it provides static analysis and readable feedback on sharing semantics throughout development. Everything under /Rust/threading uses threads in some form. The most significant of these is chat, a client-server chatting application.
+
+The client application would've been somewhat simple if I had work with terminal control from the beginning, I didn't. As such, the client spawns a new terminal window running the client in 'slave' mode to act as a display, where the program initially ran is where the user actually interacts with the server.
+
+The server itself buffers pending data to broadcast to clients. The protocol is simplistic over TCP, clients introduce themselves with a NICK call, providing their name. Control over exchanges continues to be with the client, writing to the server to send/recv data. The protocol is entirely human readable, with components both sides of the exchange depend on specified in common.rs with redundant constants defined for each perspective in transactions.
+
 ## Notably large projects
-The largest projects inhabit /Java/Processing, most notably Tetris and Snake; many of these projects are common artistic simulations or clones of relatively simplistic games. Some of these sims use significant data structures to optimise complexity, hence, two versions of the Autoagents sym exist; One uses a basic linear search when evaluating current state.
+The largest projects inhabit /Java/Processing, most notably Tetris and Snake; many of these projects are common artistic simulations or clones of relatively simplistic games. Some of these sims use significant data structures to optimise complexity, hence, two versions of the Autoagents sim exist; One uses a basic linear search when evaluating current state.
 
 The other uses spatial partitioning to evaluate an agent's local environment in O(nLog(n)) time on average, one caveat being that the tree is rebuilt on every update, which by itself takes linear time guaranteed. This is to isolate the preceding system from the system with forced applied as agents evaluate their environment such that it isn't skewed by the state proceeding it.
 # Common installation patterns
