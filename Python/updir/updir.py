@@ -4,8 +4,10 @@ import pickle
 from sys import stderr
 from pathlib import Path
 from webbrowser import open as wbopen
+from tqdm import tqdm
+from math import ceil
 
-CHUNK_SIZE = 4 * 1024 * 1024
+CHUNK_SIZE = int(4 * 1E6)
 
 def loadcreds(location: Path):
     """
@@ -87,7 +89,8 @@ def _main():
     client = connect()
     for local, drop in args.pair:
         # enumerate local files recursively
-        for local_path in Path(local).rglob("*"):
+        length = sum(1 for x in Path(local).rglob("*"))
+        for local_path in tqdm(Path(local).rglob("*"), desc="Files done", total=length):
 
             if local_path.is_dir():
                 continue

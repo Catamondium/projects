@@ -1,5 +1,4 @@
 extern crate getopts;
-use getopts::Options;
 
 use std::collections::hash_map::DefaultHasher;
 use std::collections::HashMap;
