@@ -109,7 +109,7 @@ def _main():
     parser.add_argument("--up", "-u", action='store_true',
                         help="Upload recursively")
     parser.add_argument("--sync", "-s", action='store_true',
-                        help="Print upload, then download difference")
+                        help="Upload, then download difference")
     args = parser.parse_args()
 
     do_up = args.up or args.sync
