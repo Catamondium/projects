@@ -99,8 +99,23 @@ def download(dbx, dnames, local, drop):
         else:
             local_path.parent.mkdir(parents=True, exist_ok=True)
             local_path.touch(exist_ok=True)
-            print(local_path, drop_path.path)
             dbx.files_download_to_file(str(local_path), drop_path.path)
+def delete(dbx, dnames):
+    from os import sleep
+    if len(dnames) > 0:
+        job = dbx.files_delete_batch(list(map(lambda x: x.path, dnames)))
+        print(f"Waiting on batch delete of {len(dnames)} items")
+        i = 0
+        status = dbx.files_delete_check(job)
+        while status.is_other():
+            print("." * i, end='\r')
+            i += 1
+            sleep(500)
+            status = dbx.files_delete_check(job)
+        stat = "success" if status.is_complete() else  "failure"
+        print(f"Batch deletion finished with {stat}")
+
+        
 
 def _main():
     import argparse
@@ -116,10 +131,13 @@ def _main():
                         help="Upload recursively")
     parser.add_argument("--sync", "-s", action='store_true',
                         help="Upload, then download difference")
+    #parser.add_argument('--rebase', choices=["dropbox", "local", "no"], default="no",
+    #                    help="syncing resets to a given target, 'no' syncs normally (additive)")
     args = parser.parse_args()
 
-    do_up = args.up or args.sync
-    do_down = args.down or args.sync
+    base = None #None if args.rebase == 'no' else args.rebase
+    do_up = args.up or args.sync or base
+    do_down = args.down or args.sync or base
     client = connect()
     for local, drop in args.pair:
         # enumerate local files recursively
@@ -129,21 +147,27 @@ def _main():
             for local_path in tqdm(up, desc="Up"):
                 relative_path = local_path.path.relative_to(local)
                 drop_path = str(Path(drop) / relative_path)
-                ups.add(drop_path)
-
-                if local_path.is_dir:
-                    client.files_create_folder_v2(drop_path, autorename=True)
+                ups.add(OPath(drop_path, local_path.is_dir))
 
                 if args.dry:
                     print(f"{local_path.path} -> {drop_path}")
-                elif not local_path.is_dir:
+                elif local_path.is_dir:
+                    client.files_create_folder_v2(drop_path, autorename=True)
+                else:
                     # upload the file
                     with open(local_path.path, 'rb') as f:
                         upload(client, f, local_path.path.stat().st_size, drop_path)
+
         if do_down:
             downs = dbx_list(client, drop)
-            diff = downs - ups
-            download(client, diff, local, drop)
+            downs.remove(OPath(drop, True)) # rglob never includes itself
+            diff = ups - downs if base == 'local' else downs - ups
+            if base == 'dropbox':
+                pass
+            elif base == 'local':
+                delete(client, diff)
+            else:
+                download(client, diff, local, drop)
 
 
 if __name__ == "__main__":
