@@ -6,6 +6,9 @@ from pathlib import Path
 from webbrowser import open as wbopen
 from tqdm import tqdm
 from math import ceil
+from collections import namedtuple
+
+OPath  = namedtuple("OPath", ['path', 'is_dir'])
 
 CHUNK_SIZE = int(4 * 1E6)
 
@@ -68,12 +71,11 @@ def large_upload(dbx, f, file_size, dest_path):
 def dbx_list(dbx, drop):
     files = []
     resp = dbx.files_list_folder(drop, recursive=True, include_non_downloadable_files=False)
-    files += [x.path_display for x in resp.entries
-                if isinstance(x, dropbox.files.FileMetadata)]
+    files += [OPath(x.path_display, not isinstance(x, dropbox.files.FileMetadata)) for x in resp.entries]
     while resp.has_more:
         resp = dbx.files_list_folder_continue(resp.cursor)
-        files += [x.path_display for x in resp.entries
-                    if isinstance(x, dropbox.files.FileMetadata)]
+        files += [OPath(x.path_display, not isinstance(x, dropbox.files.FileMetadata)) for x in resp.entries]
+
     return set(files)
 
 def small_upload(dbx, f, file_size, dest_path):
@@ -90,11 +92,15 @@ def upload(dbx, f, file_size, dest_path):
 
 def download(dbx, dnames, local, drop):
     for drop_path in tqdm(dnames, desc="Down"):
-        relative_path = Path(drop_path).relative_to(drop)
+        relative_path = Path(drop_path.path).relative_to(drop)
         local_path = Path(local) / relative_path
-        local_path.parent.mkdir(parents=True, exist_ok=True)
-        local_path.touch(exist_ok=True)
-        dbx.files_download_to_file(str(local_path), drop_path)
+        if drop_path.is_dir:
+            local_path.mkdir(parents=True, exist_ok=True)
+        else:
+            local_path.parent.mkdir(parents=True, exist_ok=True)
+            local_path.touch(exist_ok=True)
+            print(local_path, drop_path.path)
+            dbx.files_download_to_file(str(local_path), drop_path.path)
 
 def _main():
     import argparse
@@ -117,23 +123,23 @@ def _main():
     client = connect()
     for local, drop in args.pair:
         # enumerate local files recursively
-        up = list(Path(local).rglob("*"))
+        up = list(map(lambda x: OPath(x,x.is_dir()), Path(local).rglob("*/")))
         ups = set()
         if do_up:
             for local_path in tqdm(up, desc="Up"):
-
-                if local_path.is_dir():
-                    continue
-
-                relative_path = local_path.relative_to(local)
+                relative_path = local_path.path.relative_to(local)
                 drop_path = str(Path(drop) / relative_path)
                 ups.add(drop_path)
+
+                if local_path.is_dir:
+                    client.files_create_folder_v2(drop_path, autorename=True)
+
                 if args.dry:
-                    print(f"{local_path} -> {drop_path}")
-                else:
+                    print(f"{local_path.path} -> {drop_path}")
+                elif not local_path.is_dir:
                     # upload the file
-                    with open(local_path, 'rb') as f:
-                        upload(client, f, local_path.stat().st_size, drop_path)
+                    with open(local_path.path, 'rb') as f:
+                        upload(client, f, local_path.path.stat().st_size, drop_path)
         if do_down:
             downs = dbx_list(client, drop)
             diff = downs - ups
