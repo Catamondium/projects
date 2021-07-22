@@ -122,8 +122,6 @@ def _main():
     parser = argparse.ArgumentParser("Manage dropbox stuff")
     parser.add_argument("pair", type=pair, nargs='+',
                         help="LOCAL,DROP directory pairs")
-    parser.add_argument("--dry", action='store_true',
-                        help="Print changes w/o sending")
 
     parser.add_argument("--down", "-d", action='store_true',
                         help="Download recursively")
@@ -148,10 +146,10 @@ def _main():
                 relative_path = local_path.path.relative_to(local)
                 drop_path = str(Path(drop) / relative_path)
                 ups.add(OPath(drop_path, local_path.is_dir))
+                if base == 'dropbox':
+                    continue
 
-                if args.dry:
-                    print(f"{local_path.path} -> {drop_path}")
-                elif local_path.is_dir:
+                if local_path.is_dir:
                     client.files_create_folder_v2(drop_path, autorename=True)
                 else:
                     # upload the file
@@ -161,7 +159,7 @@ def _main():
         if do_down:
             downs = dbx_list(client, drop)
             downs.remove(OPath(drop, True)) # rglob never includes itself
-            diff = ups - downs if base == 'local' else downs - ups
+            diff = ups - downs if base == 'dropbox' else downs - ups
             if base == 'dropbox':
                 pass
             elif base == 'local':
