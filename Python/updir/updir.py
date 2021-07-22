@@ -131,11 +131,11 @@ def _main():
                         help="Upload recursively")
     parser.add_argument("--sync", "-s", action='store_true',
                         help="Upload, then download difference")
-    #parser.add_argument('--rebase', choices=["dropbox", "local", "no"], default="no",
-    #                    help="syncing resets to a given target, 'no' syncs normally (additive)")
+    parser.add_argument('--rebase', choices=["local", "no"], default="no",
+                        help="syncing resets to a given target, 'no' syncs normally (additive)")
     args = parser.parse_args()
 
-    base = None #None if args.rebase == 'no' else args.rebase
+    base = None if args.rebase == 'no' else args.rebase
     do_up = args.up or args.sync or base
     do_down = args.down or args.sync or base
     client = connect()
