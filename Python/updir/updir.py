@@ -148,9 +148,11 @@ def _main():
                 ups.add(OPath(drop_path, local_path.is_dir))
                 if base == 'dropbox':
                     continue
-
                 if local_path.is_dir:
-                    client.files_create_folder_v2(drop_path, autorename=True)
+                    try:
+                        client.files_create_folder_v2(drop_path, autorename=False)
+                    except:
+                        pass # Hope they're all 'folder exists' errors
                 else:
                     # upload the file
                     with open(local_path.path, 'rb') as f:
