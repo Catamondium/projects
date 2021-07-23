@@ -10,7 +10,7 @@ from collections import namedtuple
 
 OPath  = namedtuple("OPath", ['path', 'is_dir'])
 
-CHUNK_SIZE = int(1.5E8) # 150 MB, max request upload
+CHUNK_SIZE = int(150E6) # 150 MB, max request upload
 
 def loadcreds(location: Path):
     """
@@ -53,6 +53,7 @@ def pair(arg):
 
 
 def large_upload(dbx, f, file_size, dest_path):
+    #TODO batch upload
     f.seek(0)
     commit = dropbox.files.CommitInfo(
         path=dest_path, mode=dropbox.files.WriteMode("overwrite"))
@@ -84,13 +85,22 @@ def small_upload(dbx, f, file_size, dest_path):
     dbx.files_upload(f.read(), dest_path,
                     mode=dropbox.files.WriteMode("overwrite"))
 
-def upload(dbx, f, file_size, dest_path):
-    try:
-        small_upload(
-            dbx, f, file_size, dest_path)
-    except:  # write timeout
-        large_upload(
-            dbx, f, file_size, dest_path)
+def upload(dbx, local_path, dest_path):
+    if local_path.is_dir:
+        dbx.files_create_folder_v2(dest_path, autorename=False)
+    else:
+        with open(local_path.path, 'rb') as f:
+            file_size = local_path.path.stat().st_size
+            if file_size > CHUNK_SIZE:
+                large_upload(
+                    dbx, f, file_size, dest_path)
+            else:
+                try:
+                    small_upload(
+                        dbx, f, file_size, dest_path)
+                except:  # write timeout
+                    large_upload(
+                        dbx, f, file_size, dest_path)
 
 def download(dbx, dnames, local, drop):
     for drop_path in tqdm(dnames, desc="Down"):
@@ -120,7 +130,20 @@ def delete(dbx, dnames):
         stat = "failed" if status.is_failed() else "success"
         print(f"\nBatch deletion finished with {stat}")
 
-        
+def path_forms(local, drop):
+    def to_dbx(pth):
+        relative_path = pth.path.relative_to(local)
+        return Path(drop) / relative_path
+
+    def to_local(dpath):
+        relative_path = dpath.path.relative_to(drop)
+        return Path(local) / relative_path
+
+    return {
+        "to_dbx": to_dbx,
+        "to_local": to_local,
+    }
+
 
 def _main():
     import argparse
@@ -146,29 +169,25 @@ def _main():
         # enumerate local files recursively
         up = list(map(lambda x: OPath(x,x.is_dir()), Path(local).rglob("*/")))
         ups = set()
+        #TODO Simplify & consolidate
         if do_up:
             for local_path in tqdm(up, desc="Up"):
                 relative_path = local_path.path.relative_to(local)
                 drop_path = str(Path(drop) / relative_path)
                 ups.add(OPath(drop_path, local_path.is_dir))
-                if base == 'dropbox':
-                    continue
-                if local_path.is_dir:
-                    try:
-                        client.files_create_folder_v2(drop_path, autorename=False)
-                    except dropbox.exceptions.ApiError as err:
-                        pass #print(err) TODO
-                else:
-                    # upload the file
-                    with open(local_path.path, 'rb') as f:
-                        upload(client, f, local_path.path.stat().st_size, drop_path)
+
+                if base != 'dropbox':
+                    upload(client, local_path, drop_path)
 
         if do_down:
             downs = dbx_list(client, drop)
             downs.remove(OPath(drop, True)) # rglob never includes itself
-            diff = ups - downs if base == 'dropbox' else downs - ups
+            diff = downs - ups
             if base == 'dropbox':
-                pass
+                diff = ups - downs
+                download(client, downs, local, drop)
+                for opth in diff:
+                    pass
             elif base == 'local':
                 delete(client, diff)
             else:
