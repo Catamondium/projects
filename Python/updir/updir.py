@@ -87,7 +87,11 @@ def small_upload(dbx, f, file_size, dest_path):
 
 def upload(dbx, local_path, dest_path):
     if local_path.is_dir:
-        dbx.files_create_folder_v2(dest_path, autorename=False)
+        try:
+            dbx.files_create_folder_v2(dest_path, autorename=False)
+        except dropbox.exceptions.ApiError as err:
+            #TODO acceptable exceptions
+            pass
     else:
         with open(local_path.path, 'rb') as f:
             file_size = local_path.path.stat().st_size
@@ -128,7 +132,7 @@ def delete(dbx, dnames):
             sleep(.5)
             status = dbx.files_delete_batch_check(job)
         stat = "failed" if status.is_failed() else "success"
-        print(f"\nBatch deletion finished with {stat}")
+        print(f"Batch deletion finished with {stat}")
 
 def path_forms(local, drop):
     def to_dbx(pth):
