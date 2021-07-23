@@ -10,7 +10,7 @@ from collections import namedtuple
 
 OPath  = namedtuple("OPath", ['path', 'is_dir'])
 
-CHUNK_SIZE = int(4 * 1E6)
+CHUNK_SIZE = int(1.5E8) # 150 MB, max request upload
 
 def loadcreds(location: Path):
     """
@@ -53,12 +53,13 @@ def pair(arg):
 
 
 def large_upload(dbx, f, file_size, dest_path):
+    f.seek(0)
+    commit = dropbox.files.CommitInfo(
+        path=dest_path, mode=dropbox.files.WriteMode("overwrite"))
     upload_session_start_result = dbx.files_upload_session_start(
         f.read(CHUNK_SIZE))
     cursor = dropbox.files.UploadSessionCursor(
         upload_session_start_result.session_id, f.tell())
-    commit = dropbox.files.CommitInfo(
-        path=dest_path, mode=dropbox.files.WriteMode("overwrite"))
     while f.tell() < file_size:
         if ((file_size - f.tell()) <= CHUNK_SIZE):
             dbx.files_upload_session_finish(
@@ -79,6 +80,7 @@ def dbx_list(dbx, drop):
     return set(files)
 
 def small_upload(dbx, f, file_size, dest_path):
+    f.seek(0)
     dbx.files_upload(f.read(), dest_path,
                     mode=dropbox.files.WriteMode("overwrite"))
 
@@ -100,20 +102,23 @@ def download(dbx, dnames, local, drop):
             local_path.parent.mkdir(parents=True, exist_ok=True)
             local_path.touch(exist_ok=True)
             dbx.files_download_to_file(str(local_path), drop_path.path)
+
 def delete(dbx, dnames):
-    from os import sleep
+    from time import sleep
     if len(dnames) > 0:
-        job = dbx.files_delete_batch(list(map(lambda x: x.path, dnames)))
-        print(f"Waiting on batch delete of {len(dnames)} items")
+        args = map(lambda x: dropbox.files.DeleteArg(path=x.path), dnames)
+        job = dbx.files_delete_batch(list(args))
+        job = job.get_async_job_id()
+        print(f"\nWaiting on batch delete of {len(dnames)} items")
         i = 0
-        status = dbx.files_delete_check(job)
-        while status.is_other():
-            print("." * i, end='\r')
+        status = dbx.files_delete_batch_check(job)
+        while status.is_in_progress():
+            print("/" if i % 2 == 0 else "\\", end='\r')
             i += 1
-            sleep(500)
-            status = dbx.files_delete_check(job)
-        stat = "success" if status.is_complete() else  "failure"
-        print(f"Batch deletion finished with {stat}")
+            sleep(.5)
+            status = dbx.files_delete_batch_check(job)
+        stat = "failed" if status.is_failed() else "success"
+        print(f"\nBatch deletion finished with {stat}")
 
         
 
@@ -129,11 +134,11 @@ def _main():
                         help="Upload recursively")
     parser.add_argument("--sync", "-s", action='store_true',
                         help="Upload, then download difference")
-    parser.add_argument('--rebase', choices=["local", "no"], default="no",
-                        help="syncing resets to a given target, 'no' syncs normally (additive)")
+    parser.add_argument('--rebase', choices=["local", "additive"], default="additive",
+                        help="syncing resets to a given target, defaults to additive (no rebase)")
     args = parser.parse_args()
 
-    base = None if args.rebase == 'no' else args.rebase
+    base = None if args.rebase == 'additive' else args.rebase
     do_up = args.up or args.sync or base
     do_down = args.down or args.sync or base
     client = connect()
@@ -151,8 +156,8 @@ def _main():
                 if local_path.is_dir:
                     try:
                         client.files_create_folder_v2(drop_path, autorename=False)
-                    except:
-                        pass # Hope they're all 'folder exists' errors
+                    except dropbox.exceptions.ApiError as err:
+                        pass #print(err) TODO
                 else:
                     # upload the file
                     with open(local_path.path, 'rb') as f:
